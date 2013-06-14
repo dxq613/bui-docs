@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+define('bui/data/proxy',function(require) {
+
+  var Sortable = require('bui/data/sortable');
+
+<span id='BUI-Data-Proxy'>  /**
+</span>   * 数据代理对象，加载数据,
+   * 一般不直接使用，在store里面决定使用什么类型的数据代理对象
+   * @class BUI.Data.Proxy
+   * @extends BUI.Base
+   * @abstract 
+   */
+  var proxy = function(config){
+    proxy.superclass.constructor.call(this,config);
+  };
+
+  proxy.ATTRS = {
+    
+  };
+
+  BUI.extend(proxy,BUI.Base);
+
+  BUI.augment(proxy,
+<span id='global-property-'>  /**
+</span>   * @lends BUI.Data.Proxy.prototype
+   * @ignore
+   */
+  {
+<span id='BUI-Data-Proxy-method-_read'>    /**
+</span>     * @protected
+     * @private
+     */
+    _read : function(params,callback){
+
+    },
+<span id='BUI-Data-Proxy-method-read'>    /**
+</span>     * 读数据
+     * @param  {Object} params 键值对形式的参数
+     * @param {Function} callback 回调函数，函数原型 function(data){}
+     * @param {Object} scope 回调函数的上下文
+     */
+    read : function(params,callback,scope){
+      var _self = this;
+      scope = scope || _self;
+
+      _self._read(params,function(data){
+        callback.call(scope,data);
+      });
+    },
+<span id='BUI-Data-Proxy-method-update'>    /**
+</span>     * 更新数据
+     * @protected
+     */
+    update : function(params,callback,scope){
+
+    }
+  });
+
+<span id='BUI-Data-Proxy-Ajax'>  /**
+</span>   * 异步加载数据的代理
+   * @class BUI.Data.Proxy.Ajax
+   * @extends BUI.Data.Proxy
+   */
+  var ajaxProxy = function(config){
+    ajaxProxy.superclass.constructor.call(this,config);
+  };
+
+  ajaxProxy.ATTRS = BUI.mix(true,proxy.ATTRS,
+<span id='global-property-'>  /**
+</span>   * @lends BUI.Data.Proxy.Ajax#
+   * @ignore
+   */
+  {
+<span id='BUI-Data-Proxy-Ajax-cfg-limitParam'>    /**
+</span>     * 限制条数
+     * @cfg {String} [limitParam='limit'] 
+     */
+<span id='BUI-Data-Proxy-Ajax-property-limitParam'>    /**
+</span>     * 限制条数
+     * @type {String}
+     * @default 'limit'
+     */
+    limitParam : {
+      value : 'limit'
+    },
+<span id='BUI-Data-Proxy-Ajax-cfg-startParam'>    /**
+</span>     * 起始纪录代表的字段
+     * @cfg {String} [startParam='start']
+     */
+<span id='BUI-Data-Proxy-Ajax-property-startParam'>    /**
+</span>     * 起始纪录代表的字段
+     * @type {String}
+     */
+    startParam : {
+      value : 'start'
+    },
+<span id='BUI-Data-Proxy-Ajax-cfg-pageIndexParam'>    /**
+</span>     * 页码的字段名
+     * @cfg {String} [pageIndexParam='pageIndex']
+     */
+<span id='BUI-Data-Proxy-Ajax-property-pageIndexParam'>    /**
+</span>     * 页码的字段名
+     * @type {String}
+     * @default 'pageIndex'
+     */
+    pageIndexParam : {
+      value : 'pageIndex'
+    },
+<span id='BUI-Data-Proxy-Ajax-cfg-dataType'>    /**
+</span>    * 加载数据时，返回的格式,目前只支持&quot;json、jsonp&quot;格式&lt;br&gt;
+    * @cfg {String} [dataType='json']
+    */
+<span id='BUI-Data-Proxy-Ajax-property-dataType'>   /**
+</span>    * 加载数据时，返回的格式,目前只支持&quot;json、jsonp&quot;格式&lt;br&gt;
+    * @type {String}
+    * @default &quot;json&quot;
+    */
+    dataType: {
+      value : 'json'
+    },
+<span id='BUI-Data-Proxy-Ajax-cfg-method'>    /**
+</span>     * 获取数据的方式,'GET'或者'POST',默认为'GET'
+     * @cfg {String} [method='GET']
+     */
+<span id='BUI-Data-Proxy-Ajax-property-method'>    /**
+</span>     * 获取数据的方式,'GET'或者'POST',默认为'GET'
+     * @type {String}
+     * @default 'GET'
+     */
+    method : {
+      value : 'GET'
+    },
+<span id='BUI-Data-Proxy-Ajax-cfg-noCache'>    /**
+</span>     * 是否不读取缓存数据
+     * @cfg {Boolean} [noCache=true]
+     */
+<span id='BUI-Data-Proxy-Ajax-property-noCache'>    /**
+</span>     * 是否不读取缓存数据
+     * @type {Boolean}
+     */
+    noCache : {
+      value : true
+    },
+<span id='BUI-Data-Proxy-Ajax-property-cache'>    /**
+</span>     * 是否使用Cache
+     * @type {Boolean}
+     */
+    cache : {
+      value : false
+    },
+<span id='BUI-Data-Proxy-Ajax-cfg-url'>    /**
+</span>     * 加载数据的链接
+     * @cfg {String} url
+     * @required
+     */
+<span id='BUI-Data-Proxy-Ajax-property-url'>    /**
+</span>     * 加载数据的链接
+     * @type {String}
+     * @required
+     */
+    url :{
+
+    }
+
+  });
+  BUI.extend(ajaxProxy,proxy);
+
+  BUI.augment(ajaxProxy,{
+    _processParams : function(params){
+      var _self = this,
+        arr = ['start','limit','pageIndex'];
+
+      $.each(arr,function(field){
+        var fieldParam = _self.get(field+'Param');
+        if(fieldParam !== field){
+          params[fieldParam] = params[field];
+          delete params[field];
+        }
+      });
+    },
+<span id='BUI-Data-Proxy-Ajax-method-_read'>    /**
+</span>     * @protected
+     * @private
+     */
+    _read : function(params,callback){
+      var _self = this;
+
+      params = BUI.cloneObject(params);
+      _self._processParams(params);
+
+      $.ajax({
+        url: _self.get('url'),
+        type : _self.get('method'),
+        dataType: _self.get('dataType'),
+        data : params,
+        cache : _self.get('cache'),
+        success: function(data) {
+          callback(data);
+        },
+        error : function(jqXHR, textStatus, errorThrown){
+          var result = {
+            exception : {
+              status : textStatus,
+              errorThrown: errorThrown,
+              jqXHR : jqXHR
+            }
+          };
+          callback(result);
+        }
+      });
+    }
+  });
+
+<span id='BUI-Data-Proxy-Memery'>  /**
+</span>   * 读取缓存的代理
+   * @class BUI.Data.Proxy.Memery
+   * @extends BUI.Data.Proxy
+   * @mixins BUI.Data.Sortable
+   */
+  var memeryProxy = function(config){
+    memeryProxy.superclass.constructor.call(this,config);
+  };
+
+  BUI.extend(memeryProxy,proxy);
+
+  BUI.mixin(memeryProxy,[Sortable]);
+
+  BUI.augment(memeryProxy,{
+<span id='global-method-_read'>    /**
+</span>     * @protected
+     * @ignore
+     */
+    _read : function(params,callback){
+      var _self = this,
+        pageable = params.pageable,
+        start = params.start,
+        sortField = params.sortField,
+        sortDirection = params.sortDirection,
+        limit = params.limit,
+        data = _self.get('data'),
+        rows = []; 
+
+      _self.sortData(sortField,sortDirection); 
+
+      if(limit){//分页时
+        rows = data.slice(start,start + limit);
+        callback({rows:rows,results:data.length});
+      }else{//不分页时
+        rows = data.slice(start);
+        callback(rows);
+      }
+      
+    }
+
+  });
+
+  proxy.Ajax = ajaxProxy;
+  proxy.Memery = memeryProxy;
+
+  return proxy;
+
+
+});
+</pre>
+</body>
+</html>

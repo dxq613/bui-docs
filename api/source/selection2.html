@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 选择的插件
+ * @ignore
+ */
+
+define('bui/grid/plugins/selection',function(require){
+
+  var BUI = require('bui/common'),
+    PREFIX = BUI.prefix,
+    CLS_CHECKBOX = PREFIX + 'grid-checkBox',
+    CLS_RADIO = PREFIX + 'grid-radio';
+    
+<span id='BUI-Grid-Plugins-CheckSelection'>  /**
+</span>  * 选择行插件
+  * @class BUI.Grid.Plugins.CheckSelection
+  * @extends BUI.Base
+  */
+  function checkSelection(config){
+    checkSelection.superclass.constructor.call(this, config);
+  }
+
+  BUI.extend(checkSelection,BUI.Base);
+
+  checkSelection.ATTRS = 
+<span id='global-property-'>  /**
+</span>   * @lends BUI.Grid.Plugins.CheckSelection.prototype
+   * @ignore
+   */ 
+  {
+<span id='BUI-Grid-Plugins-CheckSelection-property-width'>    /**
+</span>    * column's width which contains the checkbox
+    */
+    width : {
+      value : 40
+    },
+<span id='BUI-Grid-Plugins-CheckSelection-property-column'>    /**
+</span>    * @private
+    */
+    column : {
+      
+    },
+<span id='BUI-Grid-Plugins-CheckSelection-property-cellInner'>    /**
+</span>    * @private
+    */
+    cellInner : {
+      value : '&lt;div class=&quot;'+CLS_CHECKBOX+'-container&quot;&gt;&lt;input  class=&quot;' + CLS_CHECKBOX + '&quot; type=&quot;checkbox&quot;&gt;&lt;/div&gt;'
+    }
+  };
+
+  BUI.augment(checkSelection, 
+<span id='global-property-'>  /**
+</span>   * @lends BUI.Grid.Plugins.CheckSelection.prototype
+   * @ignore
+   */ 
+  {
+    createDom : function(grid){
+      var _self = this;
+      var cfg = {
+            title : '',
+            width : _self.get('width'),
+            fixed : true,
+            resizable:false,
+            sortable : false,
+            tpl : '&lt;div class=&quot;' + PREFIX + 'grid-hd-inner&quot;&gt;' + _self.get('cellInner') + '',
+            cellTpl : _self.get('cellInner')
+        },
+        checkColumn = grid.addColumn(cfg,0);
+      grid.set('multipleSelect',true);
+      _self.set('column',checkColumn);
+    },
+<span id='BUI-Grid-Plugins-CheckSelection-method-bindUI'>    /**
+</span>    * @private
+    */
+    bindUI : function(grid){
+      var _self = this,
+        col = _self.get('column'),
+        checkBox = col.get('el').find('.' + CLS_CHECKBOX);
+      checkBox.on('click',function(){
+        //e.preventDefault();
+        var checked = checkBox.attr('checked');
+        checkBox.attr('checked',checked);
+        if(checked){
+          grid.setAllSelection();
+        }else{
+          grid.clearSelection();
+        }
+      });
+
+      grid.on('rowselected',function(e){
+        _self._setRowChecked(e.row,true);
+      });
+      
+      grid.on('rowcreated',function(){
+        checkBox.attr('checked',false);
+      });
+      grid.on('rowunselected',function(e){
+        _self._setRowChecked(e.row,false);
+        checkBox.attr('checked',false);
+      });
+      //清除纪录时取全选
+      grid.on('clear',function(){
+        checkBox.attr('checked',false);
+      });
+    },
+    _setRowChecked : function(row,checked){
+      var rowEl = $(row),
+        checkBox = rowEl.find('.' + CLS_CHECKBOX);
+      checkBox.attr('checked',checked);
+    }
+  });
+  
+<span id='BUI-Grid-Plugins-RadioSelection'>  /**
+</span>   * 表格单选插件
+   * @class BUI.Grid.Plugins.RadioSelection
+   * @extends BUI.Base
+   */
+  var radioSelection = function(config){
+    radioSelection.superclass.constructor.call(this, config);
+  };
+
+  BUI.extend(radioSelection,BUI.Base);
+
+  radioSelection.ATTRS = 
+<span id='global-property-'>  /**
+</span>   * @lends BUI.Grid.Plugins.RadioSelection#
+   * @ignore
+   */ 
+  {
+<span id='BUI-Grid-Plugins-RadioSelection-property-width'>    /**
+</span>    * column's width which contains the checkbox
+    */
+    width : {
+      value : 40
+    },
+<span id='BUI-Grid-Plugins-RadioSelection-property-column'>    /**
+</span>    * @private
+    */
+    column : {
+      
+    },
+<span id='BUI-Grid-Plugins-RadioSelection-property-cellInner'>    /**
+</span>    * @private
+    */
+    cellInner : {
+      value : '&lt;div class=&quot;' + PREFIX + 'grid-radio-container&quot;&gt;&lt;input  class=&quot;' + CLS_RADIO + '&quot; type=&quot;radio&quot;&gt;&lt;/div&gt;'
+    }
+  };
+
+  BUI.augment(radioSelection, {
+    createDom : function(grid){
+      var _self = this;
+      var cfg = {
+            title : '',
+            width : _self.get('width'),
+            resizable:false,
+            fixed : true,
+            sortable : false,
+            cellTpl : _self.get('cellInner')
+        },
+        column = grid.addColumn(cfg,0);
+      grid.set('multipleSelect',false);
+      _self.set('column',column);
+    },
+<span id='BUI-Grid-Plugins-RadioSelection-method-bindUI'>    /**
+</span>    * @private
+    */
+    bindUI : function(grid){
+      var _self = this;
+
+      grid.on('rowselected',function(e){
+        _self._setRowChecked(e.row,true);
+      });
+
+      grid.on('rowunselected',function(e){
+        _self._setRowChecked(e.row,false);
+      });
+    },
+    _setRowChecked : function(row,checked){
+      var rowEl = $(row),
+        radio = rowEl.find('.' + CLS_RADIO);
+      radio.attr('checked',checked);
+    }
+  });
+
+<span id='Selection'>  /**
+</span>  * @name BUI.Grid.Plugins
+  * @namespace 表格插件命名空间
+  * @ignore
+  */
+  var Selection  = {
+    CheckSelection : checkSelection,
+    RadioSelection : radioSelection
+  };
+
+  
+  return Selection;
+});</pre>
+</body>
+</html>

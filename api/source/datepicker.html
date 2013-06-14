@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 日期选择器
+ * @author dxq613@gmail.com
+ * @ignore
+ */
+define('bui/calendar/datepicker',function(require){
+  
+  var BUI = require('bui/common'),
+    Picker = require('bui/overlay').Picker,
+    Calendar = require('bui/calendar/calendar'),
+    DateUtil = BUI.Date;
+
+<span id='BUI-Calendar-DatePicker'>  /**
+</span>   * 日期选择器，可以由输入框等触发
+   * &lt;p&gt;
+   * &lt;img src=&quot;../assets/img/class-calendar.jpg&quot;/&gt;
+   * &lt;/p&gt;
+   * xclass : 'calendar-datepicker'
+   * @class BUI.Calendar.DatePicker
+   * @extends BUI.Overlay.Picker
+   */
+  var datepicker = Picker.extend({
+
+    initializer:function(){
+      var _self = this,
+        children = _self.get('children'),
+        calendar = new Calendar({
+          showTime : _self.get('showTime')
+        });
+
+      children.push(calendar);
+      _self.set('calendar',calendar);
+    },
+<span id='BUI-Calendar-DatePicker-method-setSelectedValue'>    /**
+</span>     * 设置选中的值
+     * @param {String} val 设置值
+     */
+    setSelectedValue : function(val){
+      var _self = this,
+        calendar = this.get('calendar'),
+        date = DateUtil.parse(val);
+      date = date || new Date(new Date().setSeconds(0));
+      calendar.set('selectedDate',DateUtil.getDate(date));
+      if(_self.get('showTime')){
+        calendar.set('hour',date.getHours());
+        calendar.set('minute',date.getMinutes());
+        calendar.set('second',date.getSeconds());
+      }
+    },
+<span id='BUI-Calendar-DatePicker-method-getSelectedValue'>    /**
+</span>     * 获取选中的值，多选状态下，值以','分割
+     * @return {String} 选中的值
+     */
+    getSelectedValue : function(){
+      var _self = this, 
+        calendar = _self.get('calendar'),
+      date =  DateUtil.getDate(calendar.get('selectedDate'));
+      if(_self.get('showTime')){
+        date = DateUtil.addHour(calendar.get('hour'),date);
+        date = DateUtil.addMinute(calendar.get('minute'),date);
+        date = DateUtil.addSecond(calendar.get('second'),date);
+      }
+      return date;
+    },
+<span id='BUI-Calendar-DatePicker-method-getSelectedText'>    /**
+</span>     * 获取选中项的文本，多选状态下，文本以','分割
+     * @return {String} 选中的文本
+     */
+    getSelectedText : function(){
+      return DateUtil.format(this.getSelectedValue(),this._getFormatType());
+    },
+    _getFormatType : function(){
+      if(this.get('showTime')){
+        return 'yyyy-mm-dd HH:MM:ss';
+      }
+      return 'yyyy-mm-dd';
+    },
+    //设置最大值
+    _uiSetMaxDate : function(v){
+      var _self = this;
+      _self.get('calendar').set('maxDate',v);
+    },
+    //设置最小值
+    _uiSetMinDate : function(v){
+      var _self = this;
+      _self.get('calendar').set('minDate',v);
+    }
+
+  },{
+    ATTRS : 
+<span id='global-property-'>    /**
+</span>     * @lends BUI.Calendar.DatePicker#
+     * @ignore
+     */
+    {
+<span id='BUI-Calendar-DatePicker-property-showTime'>      /**
+</span>       * 是否显示日期
+       * @type {Boolean}
+       */
+      showTime : {
+        value:false
+      },
+<span id='BUI-Calendar-DatePicker-property-maxDate'>      /**
+</span>       * 最大日期
+       * @type {Date}
+       */
+      maxDate : {
+
+      },
+<span id='BUI-Calendar-DatePicker-property-minDate'>      /**
+</span>       * 最小日期
+       * @type {Date}
+       */
+      minDate : {
+
+      },
+      changeEvent:{
+        value:'accept'
+      },
+      hideEvent:{
+        value:'accept'
+      },
+<span id='BUI-Calendar-DatePicker-property-calendar'>      /**
+</span>       * 日历对象,可以进行更多的操作，参看{@link BUI.Calendar.Calendar}
+       * @type {BUI.Calendar.Calendar}
+       */
+      calendar:{
+
+      }
+    }
+  },{
+    xclass : 'datepicker',
+    priority : 0
+  });
+  return datepicker;
+  
+});</pre>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview UA,jQuery的 $.browser 对象非常难使用
+ * @ignore
+ * @author dxq613@gmail.com
+ */
+define('bui/ua',function(){
+
+    function numberify(s) {
+        var c = 0;
+        // convert '1.2.3.4' to 1.234
+        return parseFloat(s.replace(/\./g, function () {
+            return (c++ === 0) ? '.' : '';
+        }));
+    };
+
+    var UA = $.UA || (function(){
+        var browser = $.browser,
+            versionNumber = numberify(browser.version),
+<span id='BUI-UA'>            /**
+</span>             * 浏览器版本检测
+             * @class BUI.UA
+                     * @singleton
+             */
+            ua = 
+            {
+<span id='BUI-UA-property-ie'>                /**
+</span>                 * ie 版本
+                 * @type {Number}
+                 */
+                ie : browser.msie &amp;&amp; versionNumber,
+
+<span id='BUI-UA-property-webkit'>                /**
+</span>                 * webkit 版本
+                 * @type {Number}
+                 */
+                webkit : browser.webkit &amp;&amp; versionNumber,
+<span id='BUI-UA-property-opera'>                /**
+</span>                 * opera 版本
+                 * @type {Number}
+                 */
+                opera : browser.opera &amp;&amp; versionNumber,
+<span id='BUI-UA-property-mozilla'>                /**
+</span>                 * mozilla 火狐版本
+                 * @type {Number}
+                 */
+                mozilla : browser.mozilla &amp;&amp; versionNumber
+            };
+        return ua;
+    })();
+
+    return UA;
+});</pre>
+</body>
+</html>

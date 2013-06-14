@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 切换标签
+ * @ignore
+ */
+
+define('bui/tab/tab',function (require) {
+  
+
+  var BUI = require('bui/common'),
+    Component = BUI.Component,
+    UIBase = Component.UIBase;
+
+<span id='BUI-Tab-Tab'>  /**
+</span>   * 列表
+   * xclass:'tab'
+   * @class BUI.Tab.Tab
+   * @extends BUI.Component.Controller
+   * @mixins BUI.Component.UIBase.ChildList
+   */
+  var tab = Component.Controller.extend([UIBase.ChildList],{
+
+  },{
+    ATTRS : {
+      elTagName:{
+        view:true,
+        value:'ul'
+      },
+<span id='BUI-Tab-Tab-property-defaultChildClass'>      /**
+</span>       * 子类的默认类名，即类的 xclass
+       * @type {String}
+       * @override
+       * @default 'tab-item'
+       */
+      defaultChildClass : {
+        value : 'tab-item'
+      }
+    }
+  },{
+    xclass : 'tab'
+  });
+
+  return tab;
+
+});</pre>
+</body>
+</html>

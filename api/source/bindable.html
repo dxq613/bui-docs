@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview bindable extension class.
+ * @author dxq613@gmail.com
+ * @ignore
+ */
+define('bui/component/uibase/bindable',function(){
+	
+<span id='BUI-Component-UIBase-Bindable'>	/**
+</span>		* bindable extension class.
+		* 使控件绑定store，处理store的事件 {@link BUI.Data.Store}
+		* @class BUI.Component.UIBase.Bindable
+		*/
+	function bindable(){
+		
+	}
+
+	bindable.ATTRS = 
+	{
+<span id='BUI-Component-UIBase-Bindable-cfg-store'>		/**
+</span>		* 绑定 {@link BUI.Data.Store}的事件
+		* @cfg {BUI.Data.Store} store
+		*/
+<span id='BUI-Component-UIBase-Bindable-property-store'>		/**
+</span>		* 绑定 {@link BUI.Data.Store}的事件
+		* @type {BUI.Data.Store}
+		*/
+		store : {
+			
+		},
+<span id='BUI-Component-UIBase-Bindable-cfg-loadMask'>		/**
+</span>		* 加载数据时，是否显示等待加载的屏蔽层
+		* @cfg {Boolean|Object} loadMask
+		*/
+<span id='BUI-Component-UIBase-Bindable-property-loadMask'>		/**
+</span>		* 加载数据时，是否显示等待加载的屏蔽层
+		* @type {Boolean|Object} 
+		*/
+		loadMask : {
+			value : false
+		}
+	};
+
+
+	BUI.augment(bindable,
+<span id='global-property-'>	/**
+</span>	* @lends BUI.Data.Bindable.prototype
+	* @ignore
+	*/	
+	{
+
+		__bindUI : function(){
+			var _self = this,
+				store = _self.get('store'),
+				loadMask = _self.get('loadMask');
+			if(!store){
+				return;
+			}
+			store.on('beforeload',function(){
+				if(loadMask &amp;&amp; loadMask.show){
+					loadMask.show();
+				}
+			});
+			store.on('load',function(e){
+				_self.onLoad(e);
+				if(loadMask &amp;&amp; loadMask.hide){
+					loadMask.hide();
+				}
+			});
+			store.on('exception',function(e){
+				_self.onException(e);
+			});
+			store.on('add',function(e){
+				_self.onAdd(e);
+			});
+			store.on('remove',function(e){
+				_self.onRemove(e);
+			});
+			store.on('update',function(e){
+				_self.onUpdate(e);
+			});
+			store.on('localsort',function(e){
+				_self.onLocalSort(e);
+			});
+		},
+		__syncUI : function(){
+			var _self = this,
+				store = _self.get('store');
+			if(!store){
+				return;
+			}
+			if(store.get('autoLoad') &amp;&amp; store.hasData()){
+				_self.onLoad();
+			}
+		},
+<span id='BUI-Component-UIBase-Bindable-method-onLoad'>		/**
+</span>		* @protected
+    * @template
+		* after store load data
+		* @param {Object} e The event object
+		* @see {@link BUI.Data.Store#event-load}
+		*/
+		onLoad : function(e){
+			
+		},
+<span id='BUI-Component-UIBase-Bindable-method-onException'>		/**
+</span>		* @protected
+    * @template
+		* occurred exception when store is loading data
+		* @param {Object} e The event object
+		* @see {@link BUI.Data.Store#event-exception}
+		*/
+		onException : function(e){
+			
+		},
+<span id='BUI-Component-UIBase-Bindable-method-onAdd'>		/**
+</span>		* @protected
+    * @template
+		* after added data to store
+		* @param {Object} e The event object
+		* @see {@link BUI.Data.Store#event-add}
+		*/
+		onAdd : function(e){
+		
+		},
+<span id='BUI-Component-UIBase-Bindable-method-onRemove'>		/**
+</span>		* @protected
+    * @template
+		* after remvoed data to store
+		* @param {Object} e The event object
+		* @see {@link BUI.Data.Store#event-remove}
+		*/
+		onRemove : function(e){
+		
+		},
+<span id='BUI-Component-UIBase-Bindable-method-onUpdate'>		/**
+</span>		* @protected
+    * @template
+		* after updated data to store
+		* @param {Object} e The event object
+		* @see {@link BUI.Data.Store#event-update}
+		*/
+		onUpdate : function(e){
+		
+		},
+<span id='BUI-Component-UIBase-Bindable-method-onLocalSort'>		/**
+</span>		* @protected
+    * @template
+		* after local sorted data to store
+		* @param {Object} e The event object
+		* @see {@link BUI.Data.Store#event-localsort}
+		*/
+		onLocalSort : function(e){
+			
+		}
+	});
+
+	return bindable;
+});</pre>
+</body>
+</html>

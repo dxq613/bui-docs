@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 创建表单
+ * @ignore
+ */
+
+define('bui/form/form',function (require) {
+  
+  var BUI = require('bui/common'),
+    Bar = require('bui/toolbar').Bar,
+    FieldContainer = require('bui/form/fieldcontainer'),
+    Component = BUI.Component;
+
+  var FormView = FieldContainer.View.extend({
+    _uiSetMethod : function(v){
+      this.get('el').attr('method',v);
+    },
+    _uiSetAction : function(v){
+      this.get('el').attr('action',v);
+    }
+  },{
+    ATTRS : {
+      method : {},
+      action : {}
+    }
+  },{
+    xclass: 'form-view'
+  });
+
+<span id='BUI-Form-Form'>  /**
+</span>   * @class BUI.Form.Form
+   * 表单控件,表单相关的类图：
+   * &lt;img src=&quot;../assets/img/class-form.jpg&quot;/&gt;
+   * @extends BUI.Form.FieldContainer
+   */
+  var Form = FieldContainer.extend({
+    renderUI : function(){
+      var _self = this,
+        buttonBar = _self.get('buttonBar'),
+        cfg;
+      if($.isPlainObject(buttonBar) &amp;&amp; _self.get('buttons')){
+        cfg = BUI.merge(_self.getDefaultButtonBarCfg(),buttonBar);
+        buttonBar = new Bar(cfg);
+        _self.set('buttonBar',buttonBar);
+      }
+    },
+    bindUI : function(){
+      var _self = this,
+        formEl = _self.get('el');
+
+      formEl.on('submit',function(ev){
+        _self.valid();
+        if(!_self.isValid() || _self.onBeforeSubmit() === false){
+          ev.preventDefault();
+        }
+      });
+    },
+<span id='BUI-Form-Form-method-getDefaultButtonBarCfg'>    /**
+</span>     * 获取按钮栏默认的配置项
+     * @protected
+     * @return {Object} 
+     */
+    getDefaultButtonBarCfg : function(){
+      var _self = this,
+        buttons = _self.get('buttons');
+      return {
+        autoRender : true,
+        elCls :'toolbar',
+        render : _self.get('el'),
+        items : buttons,
+        defaultChildClass : 'bar-item-button'
+      };
+    },
+<span id='BUI-Form-Form-method-submit'>    /**
+</span>     * 表单提交，如果未通过验证，则阻止提交
+     */
+    submit : function(options){
+      var _self = this;
+      _self.valid();
+      if(_self.isValid()){
+        if(_self.onBeforeSubmit() == false){
+          return;
+        }
+        if(!options){
+          _self.get('el')[0].submit();
+        }
+      }
+    },
+<span id='BUI-Form-Form-method-serializeToObject'>    /**
+</span>     * 序列化表单成对象
+     * @return {Object} 序列化成对象
+     */
+    serializeToObject : function(){
+      return BUI.FormHelper.serializeToObject(this.get('el')[0]);
+    },
+<span id='BUI-Form-Form-method-onBeforeSubmit'>    /**
+</span>     * 表单提交前
+     * @protected
+     * @return {Boolean} 是否取消提交
+     */
+    onBeforeSubmit : function(){
+      return this.fire('beforesubmit');
+    },
+<span id='BUI-Form-Form-method-reset'>    /**
+</span>     * 表单恢复初始值
+     */
+    reset : function(){
+      var _self = this,
+        initRecord = _self.get('initRecord');
+      _self.setRecord(initRecord);
+    },
+<span id='global-method-destructor'>    /**
+</span>     * @protected
+     * @ignore
+     */
+    destructor : function(){
+      var _self = this,
+        buttonBar = _self.get('buttonBar');
+      if(buttonBar &amp;&amp; buttonBar.destroy){
+        buttonBar.destroy();
+      }
+    },
+    //设置表单的初始数据
+    _uiSetInitRecord : function(v){
+      //if(v){
+        this.setRecord(v);
+      //}
+      
+    }
+  },{
+    ATTRS : {
+<span id='BUI-Form-Form-property-action'>      /**
+</span>       * 提交的路径
+       * @type {String}
+       */
+      action : {
+        view : true,
+        value : ''
+      },
+      allowTextSelection:{
+        value : true
+      },
+      events : {
+        value : {
+<span id='BUI-Form-Form-event-beforesubmit'>          /**
+</span>           * @event
+           * 表单提交前触发，如果返回false会阻止表单提交
+           */
+          beforesubmit : false
+        }
+      },
+<span id='BUI-Form-Form-property-method'>      /**
+</span>       * 提交的方式
+       * @type {String}
+       */
+      method : {
+        view : true,
+        value : 'get'
+      },
+      decorateCfgFields : {
+        value : {
+          'method' : true,
+          'action' : true
+        }
+      },
+<span id='BUI-Form-Form-property-defaultChildClass'>      /**
+</span>       * 默认的子控件时文本域
+       * @type {String}
+       */
+      defaultChildClass : {
+        value : 'form-field'
+      },
+<span id='BUI-Form-Form-property-elTagName'>      /**
+</span>       * 使用的标签，为form
+       * @type {String}
+       */
+      elTagName : {
+        value : 'form'
+      },
+<span id='BUI-Form-Form-property-buttons'>      /**
+</span>       * 表单按钮
+       * @type {Array}
+       */
+      buttons : {
+
+      },
+<span id='BUI-Form-Form-property-buttonBar'>      /**
+</span>       * 按钮栏
+       * @type {BUI.Toolbar.Bar}
+       */
+      buttonBar : {
+        value : {
+
+        }
+      },
+      childContainer : {
+        value : '.x-form-fields'
+      },
+<span id='BUI-Form-Form-property-initRecord'>      /**
+</span>       * 表单初始化的数据，用于初始化或者表单回滚
+       * @type {Object}
+       */
+      initRecord : {
+
+      },
+<span id='BUI-Form-Form-property-showError'>      /**
+</span>       * 表单默认不显示错误，不影响表单分组和表单字段
+       * @type {Boolean}
+       */
+      showError : {
+        value : false
+      },
+      xview : {
+        value : FormView
+      },
+      tpl : {
+        value : '&lt;div class=&quot;x-form-fields&quot;&gt;&lt;/div&gt;'
+      }
+    }
+  },{
+    xclass : 'form'
+  });
+  
+  Form.View = FormView;
+  return Form;
+});</pre>
+</body>
+</html>

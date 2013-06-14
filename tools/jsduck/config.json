@@ -1,0 +1,22 @@
+{
+"--output":"../../api",
+"--title":"BUI API",
+"--external":"window,HTMLDocument,HTMLElement,DocumentFragment,XMLHttpRequest,jQuery",
+"--":[
+        "../../../bui/src/common",
+	"../../../bui/src/bar",
+	"../../../bui/src/data",
+	"../../../bui/src/cookie",
+	"../../../bui/src/overlay",
+	"../../../bui/src/mask",
+	"../../../bui/src/calendar",
+	"../../../bui/src/list",
+	"../../../bui/src/menu",
+	"../../../bui/src/form",
+	"../../../bui/src/select",
+	"../../../bui/src/tab",
+	"../../../bui/src/grid",
+	"../../../bui/src/editor",
+	"../../../bui/src/progressbar"
+    ]
+}

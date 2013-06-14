@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview  单选框表单域
+ * @ignore
+ */
+
+define('bui/form/radiofield',function (required) {
+  
+  var CheckField = required('bui/form/checkfield');
+
+<span id='BUI-Form-Field-Radio'>  /**
+</span>   * 表单单选域
+   * @class BUI.Form.Field.Radio
+   * @extends BUI.Form.Field.Check
+   */
+  var RadioField = CheckField.extend({
+    bindUI : function(){
+      var _self = this,
+        parent = _self.get('parent'),
+        name = _self.get('name');
+
+      if(parent){
+        _self.getInnerControl().on('click',function(ev){
+          var fields = parent.getFields(name);
+          BUI.each(fields,function(field){
+            if(field != _self){
+              field.set('checked',false);
+            }
+          });
+        });
+      }
+    }
+  },{
+    ATTRS : {
+<span id='BUI-Form-Field-Radio-property-controlTpl'>      /**
+</span>       * 内部表单元素的容器
+       * @type {String}
+       */
+      controlTpl : {
+        view : true,
+        value : '&lt;input type=&quot;radio&quot;/&gt;'
+      },
+<span id='BUI-Form-Field-Radio-property-controlContainer'>      /**
+</span>       * 控件容器，如果为空直接添加在控件容器上
+       * @type {String|HTMLElement}
+       */
+      controlContainer : {
+        value : '.radio'
+      },
+      tpl : {
+        value : '&lt;label&gt;&lt;span class=&quot;radio&quot;&gt;&lt;/span&gt;{label}&lt;/label&gt;'
+      }
+    }
+  },{
+    xclass : 'form-field-radio'
+  });
+
+  return RadioField;
+});</pre>
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 消息框，警告、确认
+ * @author dxq613@gmail.com
+ * @ignore
+ */
+
+define('bui/overlay/message',function (require) {
+  var Dialog = require('bui/overlay/dialog'),
+	  PREFIX = BUI.prefix,
+    iconText ={
+        info : 'i',
+        error : '×',
+        success : '&lt;i class=&quot;icon-ok icon-white&quot;&gt;&lt;/i&gt;',
+        question : '?',
+        warning: '!'
+    };
+
+<span id='BUI-Overlay-Message'>  /**
+</span>   * 消息框类，一般不直接创建对象，而是调用其Alert和Confirm方法
+   * @class BUI.Overlay.Message
+   * @private
+   * @extends BUI.Overlay.Dialog
+   */
+  var message = Dialog.extend({
+
+<span id='global-method-renderUI'>    /**
+</span>     * @protected
+     * @ignore
+     */
+    renderUI : function(){
+      this._setContent();
+    },
+    bindUI : function(){
+      var _self = this,
+        body = _self.get('body');
+      _self.on('afterVisibleChange',function(ev){
+        if(ev.newVal){
+          if(BUI.UA.ie &lt; 8){
+<span id='global-property-'>           /**
+</span>           * fix ie6,7 bug
+           * @ignore
+           */
+            _self.get('header').width(body.outerWidth() - 20);
+            _self.get('footer').width(body.outerWidth());
+          }
+        }
+      });
+    },
+    //根据模版设置内容
+    _setContent : function(){
+      var _self = this,
+        body = _self.get('body'),
+        contentTpl = BUI.substitute(_self.get('contentTpl'),{
+          msg : _self.get('msg'),
+          iconTpl : _self.get('iconTpl')
+        });
+      body.empty();
+
+      $(contentTpl).appendTo(body);
+    },
+    //设置类型
+    _uiSetIcon : function(v){
+       if (!this.get('rendered')) {
+            return;
+        }
+        this._setContent();
+    },
+    //设置文本
+    _uiSetMsg : function(v){
+       if (!this.get('rendered')) {
+            return;
+        }
+        this._setContent();
+    }
+
+  },{
+    ATTRS : 
+    {
+<span id='BUI-Overlay-Message-property-icon'>      /**
+</span>       * 图标类型
+       * &lt;ol&gt;
+       * &lt;li&gt;提示信息，类型参数&lt;code&gt;info&lt;/code&gt;&lt;/li&gt;
+       * &lt;li&gt;成功信息，类型参数&lt;code&gt;success&lt;/code&gt;&lt;/li&gt;
+       * &lt;li&gt;警告信息，类型参数&lt;code&gt;warning&lt;/code&gt;&lt;/li&gt;
+       * &lt;li&gt;错误信息，类型参数&lt;code&gt;error&lt;/code&gt;&lt;/li&gt;
+       * &lt;li&gt;确认信息，类型参数&lt;code&gt;question&lt;/code&gt;&lt;/li&gt;
+       * &lt;/ol&gt;
+       * @type {String}
+       */
+      icon : {
+
+      },
+<span id='BUI-Overlay-Message-cfg-msg'>      /**
+</span>       * 提示消息，可以是文本或者html
+       * @cfg {String} msg
+       */
+<span id='BUI-Overlay-Message-property-msg'>      /**
+</span>       * 提示消息，可以是文本或者html
+       * @type {String}
+       */
+      msg : {
+
+      },
+<span id='BUI-Overlay-Message-property-iconTpl'>      /**
+</span>       * @private
+       */
+      iconTpl : {
+<span id='BUI-Overlay-Message-method-getter'>        /**
+</span>         * @private
+         */
+        getter:function(){
+          var _self = this,
+            type = _self.get('icon');
+          return '&lt;div class=&quot;x-icon x-icon-' + type + '&quot;&gt;' + iconText[type] + '&lt;/div&gt;';
+        }
+      },
+<span id='BUI-Overlay-Message-property-contentTpl'>      /**
+</span>       * 内容的模版
+       * @type {String}
+       * @protected
+       */
+      contentTpl : {
+        value : '{iconTpl}&lt;div class=&quot;' + PREFIX + 'message-content&quot;&gt;{msg}&lt;/div&gt;'
+      }
+    }
+  },{
+    xclass : 'message',
+    priority : 0
+  });
+  
+  var singlelon = new message({
+      icon:'info',
+      title:''
+  });
+      
+  function messageFun(buttons,defaultIcon){
+   
+    return function (msg,callback,icon){
+
+      if(BUI.isString(callback)){
+        icon = callback;
+        callback = null;
+      }
+      icon = icon || defaultIcon;
+      callback = callback || hide;
+      showMessage({
+        'buttons': buttons,
+        'icon':icon,
+        'msg':msg,
+        'success' : callback
+      });
+    };
+  }
+
+  function showMessage(config){
+    singlelon.set(config);
+      
+    singlelon.show();
+  }
+
+  function success(){
+   var _self = this,
+      success = _self.get('success');
+    if(success){
+      success.call(_self);
+      _self.hide();
+    }
+  }
+
+  function hide(){
+     this.hide();
+  }
+
+  
+  var Alert = messageFun([{
+          text:'确定',
+          elCls : 'button button-primary',
+          handler : success
+        }
+      ],'info'),
+    Confirm = messageFun([{
+          text:'确定',
+          elCls : 'button button-primary',
+          handler : success
+        },{
+            text:'取消',
+            elCls : 'button button-primary',
+            handler : hide
+          }
+      ],'question');
+
+<span id='BUI-Message'>  /**
+</span>   * 提示框静态类
+   * @class BUI.Message
+   */
+
+<span id='BUI-Message-static-method-Alert'>  /**
+</span>   * 显示提示信息框
+   * @static
+   * @method
+   * @member BUI.Message
+   * @param  {String}   msg      提示信息
+   * @param  {Function} callback 确定的回调函数
+   * @param  {String}   icon     图标，提供以下几种图标：info,error,success,question,warning
+   */
+  message.Alert = Alert;
+
+<span id='BUI-Message-static-method-Confirm'>  /**
+</span>   * 显示确认框
+   * @static
+   * @method
+   * @member BUI.Message
+   * @param  {String}   msg      提示信息
+   * @param  {Function} callback 确定的回调函数
+   * @param  {String}   icon     图标，提供以下几种图标：info,error,success,question,warning
+   */
+  message.Confirm = Confirm;
+
+<span id='BUI-Message-static-method-Show'>  /**
+</span>   * 自定义消息框，传入配置信息 {@link BUI.Overlay.Dialog} 和 {@link BUI.Overlay.Message}
+   * @static
+   * @method
+   * @member BUI.Message
+   * @param  {Object}   config  配置信息
+   */
+  message.Show = showMessage;
+
+  return message;
+});</pre>
+</body>
+</html>

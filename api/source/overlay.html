@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 悬浮层
+ * @ignore
+ */
+
+define('bui/overlay/overlay',function (require) {
+  var BUI = require('bui/common'),
+    Component =  BUI.Component,
+    CLS_ARROW = 'x-align-arrow',
+    UIBase = Component.UIBase;
+
+<span id='BUI-Overlay-OverlayView'>  /**
+</span>   * 悬浮层的视图类
+   * @class BUI.Overlay.OverlayView
+   * @extends BUI.Component.View
+   * @mixins BUI.Component.UIBase.PositionView
+   * @mixins BUI.Component.UIBase.CloseView
+   * @private
+   */
+  var overlayView = Component.View.extend([
+      UIBase.PositionView,
+      UIBase.CloseView
+    ]);
+
+<span id='BUI-Overlay-Overlay'>  /**
+</span>   * 悬浮层，显示悬浮信息，Message、Dialog的基类
+   * &lt;p&gt;
+   * &lt;img src=&quot;../assets/img/class-overlay.jpg&quot;/&gt;
+   * &lt;/p&gt;
+   * xclass : 'overlay'
+   * @class BUI.Overlay.Overlay
+   * @extends BUI.Component.Controller
+   * @mixins BUI.Component.UIBase.Position
+   * @mixins BUI.Component.UIBase.Align
+   * @mixins BUI.Component.UIBase.Close
+   * @mixins BUI.Component.UIBase.AutoShow
+   * @mixins BUI.Component.UIBase.AutoHide
+   */
+  var overlay = Component.Controller.extend([UIBase.Position,UIBase.Align,UIBase.Close,UIBase.AutoShow,UIBase.AutoHide],{
+    renderUI : function(){
+      var _self = this;
+      if(_self.get('showArrow')){
+        $(_self.get('arrowTpl')).appendTo(_self.get('el'));
+      }
+    },
+    show : function(){
+      var _self = this,
+        effectCfg = _self.get('effect'),
+        el = _self.get('el'),
+		    visibleMode = _self.get('visibleMode'),
+        effect = effectCfg.effect,
+        duration = effectCfg.duration;
+
+  	  if(visibleMode === 'visibility'){
+    		overlay.superclass.show.call(_self);
+    		if(effectCfg.callback){
+              effectCfg.callback.call(_self);
+        }
+    		return;
+  	  }
+      //如果还未渲染，则先渲染控件
+      if(!_self.get('rendered')){
+        _self.set('visible',true);
+        _self.render();
+        _self.set('visible',false);
+        el = _self.get('el');
+      }
+      
+      switch(effect){
+        case  'linear' :
+          el.show(duration,callback);
+          break;
+        case  'fade' :
+          el.fadeIn(duration,callback);
+          break;
+        case  'slide' :
+          el.slideDown(duration,callback);
+          break;
+        default:
+          callback();
+        break;
+      }
+
+      function callback(){
+        _self.set('visible',true);
+        if(effectCfg.callback){
+          effectCfg.callback.call(_self);
+        }
+      }
+
+    },
+    hide : function(){
+      var _self = this,
+        effectCfg = _self.get('effect'),
+        el = _self.get('el'),
+        effect = effectCfg.effect,
+        duration = effectCfg.duration;
+  	  if(_self.get('visibleMode') === 'visibility'){
+  		  callback();
+  		  return;
+  	  }
+      switch(effect){
+        case 'linear':
+          el.hide(duration,callback);
+          break;
+        case  'fade' :
+          el.fadeOut(duration,callback);
+          break;
+        case  'slide' :
+          el.slideUp(duration,callback);
+          break;
+        default:
+          callback();
+        break;
+      }
+      function callback(){
+        _self.set('visible',false);
+        if(effectCfg.callback){
+          effectCfg.callback.call(_self);
+        }
+      }
+
+    }
+  },{
+    ATTRS : 
+<span id='global-property-'>	/**
+</span>	* @lends BUI.Overlay.Overlay#
+  * @ignore 
+	**/	
+	{
+<span id='BUI-Overlay-Overlay-property-effect'>      /**
+</span>       * {Object} - 可选, 显示或隐藏时的特效支持, 对象包含以下配置
+       * &lt;ol&gt;
+       * &lt;li&gt;effect:特效效果，'none(默认无特效)','linear(线性)',fade(渐变)','slide(滑动出现)'&lt;/li&gt;
+       * &lt;li&gt;duration:时间间隔 &lt;/li&gt;
+       * &lt;/ol&gt;
+       * @type {Object}
+       */
+      effect:{
+        value : {
+          effect : 'none',
+          duration : 0,
+          callback : null
+        }
+      },
+<span id='BUI-Overlay-Overlay-property-closable'>      /**
+</span>       * whether this component can be closed.
+       * @default false
+       * @type {Boolean}
+       * @protected
+       */
+      closable:{
+          value:false
+      },
+<span id='BUI-Overlay-Overlay-property-showArrow'>      /**
+</span>       * 是否显示指向箭头，跟align属性的points相关,有8种对齐箭头：
+       * &lt;ul&gt;
+       * &lt;li&gt;tl,tc,tr&lt;/li&gt;
+       * &lt;li&gt;cl,cr&lt;/li&gt;
+       * &lt;li&gt;bl,bc,br&lt;/li&gt;
+       * &lt;/ul&gt;
+       * @type {Boolean}
+       */
+      showArrow : {
+        value : false
+      },
+<span id='BUI-Overlay-Overlay-property-arrowTpl'>      /**
+</span>       * 指向箭头的模板
+       * @type {Object}
+       */
+      arrowTpl : {
+        value : '&lt;s class=&quot;' + CLS_ARROW + '&quot;&gt;&lt;/s&gt;'
+      },
+      visible :{
+        value:false
+      },
+      xview : {
+        value : overlayView
+      }
+    }
+  },{
+    xclass:'overlay'
+  });
+
+  overlay.View = overlayView;
+  return overlay;
+
+});</pre>
+</body>
+</html>

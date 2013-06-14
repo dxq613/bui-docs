@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 表单文本域组，可以包含一个至多个字段
+ * @author dxq613@gmail.com
+ * @ignore
+ */
+
+define('bui/form/group/base',function (require) {
+  var BUI = require('bui/common'),
+    FieldContainer = require('bui/form/fieldcontainer');
+
+<span id='BUI-Form-Group'>  /**
+</span>   * @class BUI.Form.Group
+   * 表单字段分组
+   * @extends BUI.Form.FieldContainer
+   */
+  var Group = FieldContainer.extend({
+    
+  },{
+    ATTRS : {
+<span id='BUI-Form-Group-property-label'>      /**
+</span>       * 标题
+       * @type {String}
+       */
+      label : {
+        view : true
+      },
+      defaultChildClass : {
+        value : 'form-field'
+      }
+    }
+  },{
+    xclass:'form-group'
+  });
+
+  return Group;
+});</pre>
+</body>
+</html>

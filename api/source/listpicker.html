@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 列表项的选择器
+ * @ignore
+ */
+
+define('bui/list/listpicker',function (require) {
+
+  var Picker = require('bui/overlay').Picker,
+<span id='BUI-List-Picker'>    /**
+</span>     * 列表选择器
+     * @class BUI.List.Picker
+     * @extends BUI.Overlay.Picker
+     */
+    listPicker = Picker.extend({
+      initializer : function(){
+        var _self = this,
+          children = _self.get('children'),
+          list = _self.get('list');
+        if(!list){
+          children.push({
+
+          });
+        }
+      },
+<span id='BUI-List-Picker-method-setSelectedValue'>      /**
+</span>       * 设置选中的值
+       * @param {String} val 设置值
+       */
+      setSelectedValue : function(val){
+        val = val ? val.toString() : '';
+        var _self = this,
+          list = _self.get('list'),
+          selectedValue = _self.getSelectedValue();
+        if(val !== selectedValue){
+          if(list.get('multipleSelect')){
+            list.clearSelection();
+          }
+          list.setSelectionByField(val.split(','));
+        }   
+      },
+<span id='BUI-List-Picker-method-getSelectedValue'>      /**
+</span>       * 获取选中的值，多选状态下，值以','分割
+       * @return {String} 选中的值
+       */
+      getSelectedValue : function(){
+        return this.get('list').getSelectionValues().join(',');
+      },
+<span id='BUI-List-Picker-method-getSelectedText'>      /**
+</span>       * 获取选中项的文本，多选状态下，文本以','分割
+       * @return {String} 选中的文本
+       */
+      getSelectedText : function(){
+        return this.get('list').getSelectionText().join(',');
+      }
+    },{
+      ATTRS : {
+<span id='BUI-List-Picker-property-defaultChildClass'>        /**
+</span>         * 默认子控件的样式,默认为'simple-list'
+         * @type {String}
+         * @override
+         */
+        defaultChildClass:{
+          value : 'simple-list'
+        },
+<span id='BUI-List-Picker-property-list'>        /**
+</span>         * 选择的列表
+         * @type {BUI.List.SimpleList}
+         * @readOnly
+         */
+        list : {
+          getter:function(){
+            return this.get('children')[0];
+          }
+        }
+      }
+    },{
+      xclass : 'list-picker'
+    });
+
+  return listPicker;
+});</pre>
+</body>
+</html>

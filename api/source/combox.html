@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 组合框可用于选择输入文本
+ * @ignore
+ */
+
+define('bui/select/combox',function (require) {
+
+  var BUI = require('bui/common'),
+    Select = require('bui/select/select'),
+    CLS_INPUT = BUI.prefix + 'combox-input';
+
+  function getFunction(textField,valueField,picker){
+    var list = picker.get('list'),
+      text = picker.getSelectedText();
+    if(text){
+      $(textField).val(text);
+    }
+  }
+
+<span id='BUI-Select-Combox'>  /**
+</span>   * 组合框 用于提示输入
+   * xclass:'combox'
+   * @class BUI.Select.Combox
+   * @extends BUI.Select.Select
+   */
+  var combox = Select.extend({
+
+    renderUI : function(){
+      var _self = this,
+        picker = _self.get('picker');
+
+      picker.get('getFunction',getFunction);
+    },
+    _uiSetItems : function(v){
+      var _self = this;
+
+      for(var i = 0 ; i &lt; v.length ; i++){
+        var item = v[i];
+        if(BUI.isString(item)){
+          v[i] = {value:item,text:item};
+        }
+      }
+      combox.superclass._uiSetItems.call(_self,v);
+    }
+
+  },{
+    ATTRS : 
+<span id='global-property-'>    /**
+</span>     * @lends BUI.Select.Combox#
+     * @ignore
+     */
+    {
+<span id='BUI-Select-Combox-property-tpl'>      /**
+</span>       * 控件的模版
+       * @type {String}
+       * @default  
+       * '&amp;lt;input type=&quot;text&quot; class=&quot;'+CLS_INPUT+'&quot;/&amp;gt;'
+       */
+      tpl:{
+        view:true,
+        value:'&lt;input type=&quot;text&quot; class=&quot;'+CLS_INPUT+'&quot;/&gt;'
+      },
+<span id='BUI-Select-Combox-property-inputCls'>      /**
+</span>       * 显示选择回的文本DOM节点的样式
+       * @type {String}
+       * @protected
+       * @default 'bui-combox-input'
+       */
+      inputCls:{
+        value:CLS_INPUT
+      }
+    }
+  },{
+    xclass:'combox'
+  });
+
+  return combox;
+});</pre>
+</body>
+</html>
