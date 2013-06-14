@@ -11,8 +11,8 @@ BUI 控件库的文档
 - api : api文档
 
 ## 重新生成文档库
-### 将[bui](https://github.com/dxq613/bui)放置到跟bui-docs在同一个目录下
-### 执行 tools/jsduck/run.bat
+- 将[bui](https://github.com/dxq613/bui)放置到跟bui-docs在同一个目录下
+- 执行 tools/jsduck/run.bat
 
 ## 提交问题
 [提问](https://github.com/dxq613/bui/issues)
