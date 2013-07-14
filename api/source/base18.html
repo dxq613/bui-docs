@@ -16,19 +16,19 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='global-property-'>/**
-</span> * @fileOverview 进度条命名空间入口
+</span> * @fileOverview 选择框命名空间入口文件
  * @ignore
  */
 
-define('bui/progressbar',function (require) {
+define('bui/tree',['bui/common','bui/tree/treemixin','bui/tree/treelist'],function (require) {
   var BUI = require('bui/common'),
-    ProgressBar = BUI.namespace('ProgressBar');
-  BUI.mix(ProgressBar,{
-    Base : require('bui/progressbar/base'),
-    Load : require('bui/progressbar/load')
-  });
+    Tree = BUI.namespace('Tree');
 
-  return ProgressBar;
+  BUI.mix(Tree,{
+    TreeList : require('bui/tree/treelist'),
+    Mixin : require('bui/tree/treemixin')
+  });
+  return Tree;
 });</pre>
 </body>
 </html>

@@ -20,7 +20,7 @@
  * @ignore
  */
 
-define('bui/component/uibase/depends',function (require) {
+define('bui/component/uibase/depends',['bui/component/manage'],function (require) {
   
   var regexp = /^#(.*):(.*)$/,
     Manager = require('bui/component/manage');
@@ -88,6 +88,15 @@ define('bui/component/uibase/depends',function (require) {
 <span id='BUI-Component-UIBase-Depends'>  /**
 </span>   * @class BUI.Component.UIBase.Depends
    * 依赖事件源的扩展
+   * &lt;pre&gt;&lt;code&gt;
+   *       var control = new Control({
+   *         depends : {
+   *           '#btn:click':['toggle'],//当点击id为'btn'的按钮时，执行 control 的toggle方法
+   *           '#checkbox1:checked':['show'],//当勾选checkbox时，显示控件
+   *           '#menu:click',function(){}
+   *         }
+   *       });
+   * &lt;/code&gt;&lt;/pre&gt;
    */
   function Depends (){
 
@@ -102,6 +111,7 @@ define('bui/component/uibase/depends',function (require) {
      * &lt;li&gt;事件名：事件名是一个使用&quot;:&quot;为前缀的字符串，例如 &quot;#id:change&quot;,即监听change事件&lt;/li&gt;
      * &lt;li&gt;触发的方法：可以是一个数组，如[&quot;disable&quot;,&quot;clear&quot;],数组里面是控件的方法名，也可以是一个回调函数&lt;/li&gt;
      * &lt;/ol&gt;
+     * &lt;pre&gt;&lt;code&gt;
      *       var control = new Control({
      *         depends : {
      *           '#btn:click':['toggle'],//当点击id为'btn'的按钮时，执行 control 的toggle方法
@@ -109,7 +119,8 @@ define('bui/component/uibase/depends',function (require) {
      *           '#menu:click',function(){}
      *         }
      *       });
-     * 注意： 这些依赖项是在控件渲染（render）后进行的。         
+     * &lt;/code&gt;&lt;/pre&gt;
+     * ** 注意：** 这些依赖项是在控件渲染（render）后进行的。         
      * @type {Object}
      */
     depends : {
@@ -143,6 +154,13 @@ define('bui/component/uibase/depends',function (require) {
     },
 <span id='BUI-Component-UIBase-Depends-method-addDependence'>    /**
 </span>     * 添加依赖，如果已经有同名的事件，则移除，再添加
+     * &lt;pre&gt;&lt;code&gt;
+     *  form.addDependence('#btn:click',['toggle']); //当按钮#btn点击时，表单交替显示隐藏
+     *
+     *  form.addDependence('#btn:click',function(){//当按钮#btn点击时，表单交替显示隐藏
+     *   //TO DO
+     *  }); 
+     * &lt;/code&gt;&lt;/pre&gt;
      * @param {String} name 依赖项的名称
      * @param {Array|Function} action 依赖项的事件
      */
@@ -158,6 +176,9 @@ define('bui/component/uibase/depends',function (require) {
     },
 <span id='BUI-Component-UIBase-Depends-method-removeDependence'>    /**
 </span>     * 移除依赖
+     * &lt;pre&gt;&lt;code&gt;
+     *  form.removeDependence('#btn:click'); //当按钮#btn点击时，表单不在监听
+     * &lt;/code&gt;&lt;/pre&gt;
      * @param  {String} name 依赖名称
      */
     removeDependence : function(name){
@@ -171,6 +192,9 @@ define('bui/component/uibase/depends',function (require) {
     },
 <span id='BUI-Component-UIBase-Depends-method-clearDependences'>    /**
 </span>     * 清除所有的依赖
+     * &lt;pre&gt;&lt;code&gt;
+     *  form.clearDependences();
+     * &lt;/code&gt;&lt;/pre&gt;
      */
     clearDependences : function(){
       var _self = this,

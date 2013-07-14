@@ -29,7 +29,7 @@
  */
 
 
-define('bui/component/controller',function(require){
+define('bui/component/controller',['bui/component/uibase','bui/component/manage','bui/component/view'],function(require){
 
     var UIBase = require('bui/component/uibase'),
         Manager = require('bui/component/manage'),
@@ -167,6 +167,39 @@ define('bui/component/controller',function(require){
 <span id='BUI-Component-Controller'>    /**
 </span>     * 可以实例化的控件，作为最顶层的控件类，一切用户控件都继承此控件
      * xclass: 'controller'.
+     * ** 创建子控件 ** 
+     * &lt;pre&gt;&lt;code&gt;
+     * var Control = Controller.extend([mixin1,mixin2],{ //原型链上的函数
+     *   renderUI : function(){ //创建DOM
+     *   
+     *   }, 
+     *   bindUI : function(){  //绑定事件
+     *   
+     *   },
+     *   destructor : funciton(){ //析构函数
+     *   
+     *   }
+     * },{
+     *   ATTRS : { //默认的属性
+     *       text : {
+     *       
+     *       }
+     *   }
+     * },{
+     *     xclass : 'a' //用于把对象解析成类
+     * });
+     * &lt;/code&gt;&lt;/pre&gt;
+     *
+     * ** 创建对象 **
+     * &lt;pre&gt;&lt;code&gt;
+     * var c1 = new Control({
+     *     render : '#t1', //在t1上创建
+     *     text : 'text1',
+     *     children : [{xclass : 'a',text : 'a1'},{xclass : 'b',text : 'b1'}]
+     * });
+     *
+     * c1.render();
+     * &lt;/code&gt;&lt;/pre&gt;
      * @extends BUI.Component.UIBase
      * @mixins BUI.Component.UIBase.Tpl
      * @mixins BUI.Component.UIBase.Decorate
@@ -207,6 +240,7 @@ define('bui/component/controller',function(require){
 
 <span id='BUI-Component-Controller-method-getNextUniqueId'>        /**
 </span>         * 返回新的唯一的Id,结果是 'xclass' + number
+         * @protected
          * @return {String} 唯一id
          */
         getNextUniqueId : function(){
@@ -265,6 +299,16 @@ define('bui/component/controller',function(require){
         },
 <span id='BUI-Component-Controller-method-containsElement'>        /**
 </span>         * 控件是否包含指定的DOM元素,包括根节点
+         * &lt;pre&gt;&lt;code&gt;
+         *   var control = new Control();
+         *   $(document).on('click',function(ev){
+         *     var target = ev.target;
+         *
+         *     if(!control.containsElement(elem)){ //未点击在控件内部
+         *       control.hide();
+         *     }
+         *   });
+         * &lt;/code&gt;&lt;/pre&gt;
          * @param  {HTMLElement} elem DOM 元素
          * @return {Boolean}  是否包含
          */
@@ -325,6 +369,11 @@ define('bui/component/controller',function(require){
         },
 <span id='BUI-Component-Controller-method-toggle'>        /**
 </span>         * 交替显示或者隐藏
+         * &lt;pre&gt;&lt;code&gt;
+         *  control.show(); //显示
+         *  control.toggle(); //隐藏
+         *  control.toggle(); //显示
+         * &lt;/code&gt;&lt;/pre&gt;
          */
         toggle : function(){
             this.set('visible',!this.get('visible'));
@@ -419,7 +468,11 @@ define('bui/component/controller',function(require){
             return this;
         },
 <span id='BUI-Component-Controller-method-disable'>        /**
-</span>         * 使控件不可用
+</span>         * 使控件不可用，控件不可用时，点击等事件不会触发
+         * &lt;pre&gt;&lt;code&gt;
+         *  control.disable(); //禁用
+         *  control.enable(); //解除禁用
+         * &lt;/code&gt;&lt;/pre&gt;
          */
         disable : function(){
             this.set('disabled',true);
@@ -427,6 +480,7 @@ define('bui/component/controller',function(require){
         },
 <span id='global-method-getContentElement'>        /**
 </span>         * 子组件将要渲染到的节点，在 render 类上覆盖对应方法
+         * @protected
          * @ignore
          */
         getContentElement: function () {
@@ -435,6 +489,7 @@ define('bui/component/controller',function(require){
 
 <span id='global-method-getKeyEventTarget'>        /**
 </span>         * 焦点所在元素即键盘事件处理元素，在 render 类上覆盖对应方法
+         * @protected
          * @ignore
          */
         getKeyEventTarget: function () {
@@ -443,8 +498,12 @@ define('bui/component/controller',function(require){
 
 <span id='BUI-Component-Controller-method-addChild'>        /**
 </span>         * 添加控件的子控件，索引值为 0-based
-         * @param {BUI.Component.Controller|Object} c
-         * 子控件的实例或者配置项
+         * &lt;pre&gt;&lt;code&gt;
+         *  control.add(new Control());//添加controller对象
+         *  control.add({xclass : 'a'});//添加xclass 为a 的一个对象
+         *  control.add({xclass : 'b'},2);//插入到第三个位置
+         * &lt;/code&gt;&lt;/pre&gt;
+         * @param {BUI.Component.Controller|Object} c 子控件的实例或者配置项
          * @param {String} [c.xclass] 如果c为配置项，设置c的xclass
          * @param {Number} [index]  0-based  如果未指定索引值，则插在控件的最后
          */
@@ -485,6 +544,12 @@ define('bui/component/controller',function(require){
         },
 <span id='BUI-Component-Controller-method-remove'>        /**
 </span>         * 将自己从父控件中移除
+         * &lt;pre&gt;&lt;code&gt;
+         *  control.remove(); //将控件从父控件中移除，并未删除
+         *  parent.addChild(control); //还可以添加回父控件
+         *  
+         *  control.remove(true); //从控件中移除并调用控件的析构函数
+         * &lt;/code&gt;&lt;/pre&gt;
          * @param  {Boolean} destroy 是否删除DON节点
          * @return {BUI.Component.Controller} 删除的子对象.
          */
@@ -501,9 +566,14 @@ define('bui/component/controller',function(require){
 <span id='BUI-Component-Controller-method-removeChild'>        /**
 </span>         * 移除子控件，并返回移除的控件
          *
-         * 如果 destroy=true,调用移除控件的 {@link BUI.Component.UIBase#destroy} 方法,
-         * 同时删除对应的DOM
-         *
+         * ** 如果 destroy=true,调用移除控件的 {@link BUI.Component.UIBase#destroy} 方法,
+         * 同时删除对应的DOM **
+         * &lt;pre&gt;&lt;code&gt;
+         *  var child = control.getChild(id);
+         *  control.removeChild(child); //仅仅移除
+         *  
+         *  control.removeChild(child,true); //移除，并调用析构函数
+         * &lt;/code&gt;&lt;/pre&gt;
          * @param {BUI.Component.Controller} c 要移除的子控件.
          * @param {Boolean} [destroy=false] 如果是true,
          * 调用控件的方法 {@link BUI.Component.UIBase#destroy} .
@@ -548,6 +618,10 @@ define('bui/component/controller',function(require){
 
 <span id='BUI-Component-Controller-method-removeChildren'>        /**
 </span>         * 删除当前控件的子控件
+         * &lt;pre&gt;&lt;code&gt;
+         *   control.removeChildren();//删除所有子控件
+         *   control.removeChildren(true);//删除所有子控件，并调用子控件的析构函数
+         * &lt;/code&gt;&lt;/pre&gt;
          * @see Component.Controller#removeChild
          * @param {Boolean} [destroy] 如果设置 true,
          * 调用子控件的 {@link BUI.Component.UIBase#destroy}方法.
@@ -563,6 +637,10 @@ define('bui/component/controller',function(require){
 
 <span id='BUI-Component-Controller-method-getChildAt'>        /**
 </span>         * 根据索引获取子控件
+         * &lt;pre&gt;&lt;code&gt;
+         *  control.getChildAt(0);//获取第一个子控件
+         *  control.getChildAt(2); //获取第三个子控件
+         * &lt;/code&gt;&lt;/pre&gt;
          * @param {Number} index 0-based 索引值.
          * @return {BUI.Component.Controller} 子控件或者null 
          */
@@ -572,6 +650,10 @@ define('bui/component/controller',function(require){
         },
 <span id='BUI-Component-Controller-method-getChild'>        /**
 </span>         * 根据Id获取子控件
+         * &lt;pre&gt;&lt;code&gt;
+         *  control.getChild('id'); //从控件的直接子控件中查找
+         *  control.getChild('id',true);//递归查找所有子控件，包含子控件的子控件
+         * &lt;/code&gt;&lt;/pre&gt;
          * @param  {String} id 控件编号
          * @param  {Boolean} deep 是否继续查找在子控件中查找
          * @return {BUI.Component.Controller} 子控件或者null 
@@ -583,6 +665,15 @@ define('bui/component/controller',function(require){
         },
 <span id='BUI-Component-Controller-method-getChildBy'>        /**
 </span>         * 通过匹配函数查找子控件，返回第一个匹配的对象
+         * &lt;pre&gt;&lt;code&gt;
+         *  control.getChildBy(function(child){//从控件的直接子控件中查找
+         *    return child.get('id') = '1243';
+         *  }); 
+         *  
+         *  control.getChild(function(child){//递归查找所有子控件，包含子控件的子控件
+         *    return child.get('id') = '1243';
+         *  },true);
+         * &lt;/code&gt;&lt;/pre&gt;
          * @param  {Function} math 查找的匹配函数
          * @param  {Boolean} deep 是否继续查找在子控件中查找
          * @return {BUI.Component.Controller} 子控件或者null 
@@ -592,6 +683,7 @@ define('bui/component/controller',function(require){
         },
 <span id='BUI-Component-Controller-method-getAppendHeigtht'>        /**
 </span>         * 获取控件的附加高度 = control.get('el').outerHeight() - control.get('el').height()
+         * @protected
          * @return {Number} 附加宽度
          */
         getAppendHeigtht : function(){
@@ -600,6 +692,7 @@ define('bui/component/controller',function(require){
         },
 <span id='BUI-Component-Controller-method-getAppendWidth'>        /**
 </span>         * 获取控件的附加宽度 = control.get('el').outerWidth() - control.get('el').width()
+         * @protected
          * @return {Number} 附加宽度
          */
         getAppendWidth : function(){
@@ -608,6 +701,15 @@ define('bui/component/controller',function(require){
         },
 <span id='BUI-Component-Controller-method-getChildrenBy'>        /**
 </span>         * 查找符合条件的子控件
+         * &lt;pre&gt;&lt;code&gt;
+         *  control.getChildrenBy(function(child){//从控件的直接子控件中查找
+         *    return child.get('type') = '1';
+         *  }); 
+         *  
+         *  control.getChildrenBy(function(child){//递归查找所有子控件，包含子控件的子控件
+         *    return child.get('type') = '1';
+         *  },true);
+         * &lt;/code&gt;&lt;/pre&gt;
          * @param  {Function} math 查找的匹配函数
          * @param  {Boolean} deep 是否继续查找在子控件中查找，如果符合上面的匹配函数，则不再往下查找
          * @return {BUI.Component.Controller[]} 子控件数组 
@@ -631,6 +733,11 @@ define('bui/component/controller',function(require){
         },
 <span id='BUI-Component-Controller-method-eachChild'>        /**
 </span>         * 遍历子元素
+         * &lt;pre&gt;&lt;code&gt;
+         *  control.eachChild(function(child,index){ //遍历子控件
+         *  
+         *  });
+         * &lt;/code&gt;&lt;/pre&gt;
          * @param  {Function} func 迭代函数，函数原型function(child,index)
          */
         eachChild : function(func){
@@ -859,6 +966,12 @@ define('bui/component/controller',function(require){
         {
 <span id='BUI-Component-Controller-cfg-content'>            /**
 </span>             * 控件的Html 内容
+             * &lt;pre&gt;&lt;code&gt;
+             *  new Control({
+             *     content : '内容',
+             *     render : '#c1'
+             *  });
+             * &lt;/code&gt;&lt;/pre&gt;
              * @cfg {String|jQuery} content
              */
 <span id='BUI-Component-Controller-property-content'>            /**
@@ -868,9 +981,16 @@ define('bui/component/controller',function(require){
             content:{
                 view:1
             },
-<span id='BUI-Component-Controller-property-elTagName'>			/**
+<span id='BUI-Component-Controller-cfg-elTagName'>			/**
 </span>			 * 控件根节点使用的标签
-			 * @type {String}
+             * &lt;pre&gt;&lt;code&gt;
+             *  new Control({
+             *     elTagName : 'ul',
+             *      content : '&lt;li&gt;内容&lt;/li&gt;',  //控件的DOM &amp;lt;ul&amp;gt;&amp;lt;li&amp;gt;内容&amp;lt;/li&amp;gt;&amp;lt;/ul&amp;gt;
+             *     render : '#c1'
+             *  });  
+             * &lt;/code&gt;&lt;/pre&gt;
+			 * @cfg {String} elTagName
 			 */
 			elTagName: {
 				// 生成标签名字
@@ -887,6 +1007,21 @@ define('bui/component/controller',function(require){
 <span id='BUI-Component-Controller-property-xtype'>            /**
 </span>             * 如果控件未设置 xclass，同时父元素设置了 defaultChildClass，那么
              * xclass = defaultChildClass + '-' + xtype
+             * &lt;pre&gt;&lt;code&gt;
+             *  A.ATTRS = {
+             *    defaultChildClass : {
+             *        value : 'b'
+             *    }
+             *  }
+             *  //类B 的xclass = 'b'类 B1的xclass = 'b-1',类 B2的xclass = 'b-2',那么
+             *  var a = new A({
+             *    children : [
+             *        {content : 'b'}, //B类
+             *        {content : 'b1',xtype:'1'}, //B1类
+             *        {content : 'b2',xtype:'2'}, //B2类
+             *    ]
+             *  });
+             * &lt;/code&gt;&lt;/pre&gt;
              * @type {String}
              */
             xtype : {
@@ -905,10 +1040,20 @@ define('bui/component/controller',function(require){
             },
 <span id='BUI-Component-Controller-cfg-width'>            /**
 </span>             * 控件宽度
+             * &lt;pre&gt;&lt;code&gt;
+             * new Control({
+             *   width : 200 // 200,'200px','20%'
+             * });
+             * &lt;/code&gt;&lt;/pre&gt;
              * @cfg {Number|String} width
              */
 <span id='BUI-Component-Controller-property-width'>            /**
 </span>             * 控件宽度
+             * &lt;pre&gt;&lt;code&gt;
+             *  control.set('width',200);
+             *  control.set('width','200px');
+             *  control.set('width','20%');
+             * &lt;/code&gt;&lt;/pre&gt;
              * @type {Number|String}
              */
             width:{
@@ -916,10 +1061,20 @@ define('bui/component/controller',function(require){
             },
 <span id='BUI-Component-Controller-cfg-height'>            /**
 </span>             * 控件宽度
+             * &lt;pre&gt;&lt;code&gt;
+             * new Control({
+             *   height : 200 // 200,'200px','20%'
+             * });
+             * &lt;/code&gt;&lt;/pre&gt;
              * @cfg {Number|String} height
              */
 <span id='BUI-Component-Controller-property-height'>            /**
 </span>             * 控件宽度
+             * &lt;pre&gt;&lt;code&gt;
+             *  control.set('height',200);
+             *  control.set('height','200px');
+             *  control.set('height','20%');
+             * &lt;/code&gt;&lt;/pre&gt;
              * @type {Number|String}
              */
             height:{
@@ -927,6 +1082,13 @@ define('bui/component/controller',function(require){
             },
 <span id='BUI-Component-Controller-cfg-elCls'>            /**
 </span>             * 控件根节点应用的样式
+             * &lt;pre&gt;&lt;code&gt;
+             *  new Control({
+             *   elCls : 'test',
+             *   content : '内容',
+             *   render : '#t1'   //&amp;lt;div id='t1'&amp;gt;&amp;lt;div class=&quot;test&quot;&amp;gt;内容&amp;lt;/div&amp;gt;&amp;lt;/div&amp;gt;
+             *  });
+             * &lt;/code&gt;&lt;/pre&gt;
              * @cfg {String} elCls
              */
 <span id='BUI-Component-Controller-property-elCls'>            /**
@@ -938,41 +1100,56 @@ define('bui/component/controller',function(require){
             },
 <span id='BUI-Component-Controller-cfg-elStyle'>            /**
 </span>             * @cfg {Object} elStyle
-						 * 控件根节点应用的css属性
-             *		var cfg = {elStyle : {width:'100px', height:'200px'}};
+			 * 控件根节点应用的css属性
+             *  &lt;pre&gt;&lt;code&gt;
+             *    var cfg = {elStyle : {width:'100px', height:'200px'}};
+             *  &lt;/code&gt;&lt;/pre&gt;
              */
 <span id='BUI-Component-Controller-property-elStyle'>            /**
 </span>             * 控件根节点应用的css属性，以键值对形式
              * @type {Object}
-						 * 示例:
-             *		{
-             *			width:'100px',
-             *			height:'200px'
-             *		}
+			 *  &lt;pre&gt;&lt;code&gt;
+             *	 control.set('elStyle',	{
+             *		width:'100px',
+             *		height:'200px'
+             *   });
+             *  &lt;/code&gt;&lt;/pre&gt;
              */
             elStyle:{
                 view:1
             },
-<span id='BUI-Component-Controller-cfg-elAttrs'>            /**
+<span id='global-cfg-elAttrs'>            /**
 </span>             * @cfg {Object} elAttrs
-						 * 控件根节点应用的属性，以键值对形式:
-             *		{title : 'tips'}   
+             * @ignore
+			 * 控件根节点应用的属性，以键值对形式:
+             * &lt;pre&gt;&lt;code&gt;
+             *  new Control({
+             *    elAttrs :{title : 'tips'}   
+             *  });
+             * &lt;/code&gt;&lt;/pre&gt;
              */
-<span id='BUI-Component-Controller-property-elAttrs'>            /**
+<span id='global-property-elAttrs'>            /**
 </span>             * @type {Object}
-						 * 控件根节点应用的属性，以键值对形式:
-             *		{ title : 'tips'}
+			 * 控件根节点应用的属性，以键值对形式:
+             * { title : 'tips'}
+             * @ignore
              */
             elAttrs:{
                 view:1
             },
 <span id='BUI-Component-Controller-cfg-elBefore'>            /**
 </span>             * 将控件插入到指定元素前
+             * &lt;pre&gt;&lt;code&gt;
+             *  new Control({
+             *      elBefore : '#t1'
+             *  });
+             * &lt;/code&gt;&lt;/pre&gt;
              * @cfg {jQuery} elBefore
              */
-<span id='BUI-Component-Controller-property-elBefore'>            /**
+<span id='global-property-elBefore'>            /**
 </span>             * 将控件插入到指定元素前
              * @type {jQuery}
+             * @ignore
              */
             elBefore:{
                 // better named to renderBefore, too late !
@@ -1097,11 +1274,19 @@ define('bui/component/controller',function(require){
             },
 <span id='BUI-Component-Controller-cfg-render'>            /**
 </span>             * 指定控件的容器
+             * &lt;pre&gt;&lt;code&gt;
+             *  new Control({
+             *    render : '#t1',
+             *    elCls : 'test',
+             *    content : '&lt;span&gt;123&lt;/span&gt;'  //&amp;lt;div id=&quot;t1&quot;&amp;gt;&amp;lt;div class=&quot;test bui-xclass&quot;&amp;gt;&amp;lt;span&amp;gt;123&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;&amp;lt;/div&amp;gt;
+             *  });
+             * &lt;/code&gt;&lt;/pre&gt;
              * @cfg {jQuery} render
              */
-<span id='BUI-Component-Controller-property-render'>            /**
+<span id='global-property-render'>            /**
 </span>             * 指定控件的容器
              * @type {jQuery}
+             * @ignore
              */
             render:{
                 view:1
@@ -1122,24 +1307,45 @@ define('bui/component/controller',function(require){
 
                 }
             },
-            
 <span id='BUI-Component-Controller-cfg-visibleMode'>            /**
-</span>             * 控件的可视方式,使用 css 'display' 或者 'visibility'
-             * @cfg {String} visibleMode
+</span>             * 控件的可视方式,值为：
+             *  - 'display' 
+             *  - 'visibility'
+             *  &lt;pre&gt;&lt;code&gt;
+             *   new Control({
+             *     visibleMode: 'visibility'
+             *   });
+             *  &lt;/code&gt;&lt;/pre&gt;
+             * @cfg {String} [visibleMode = 'display']
              */
 <span id='BUI-Component-Controller-property-visibleMode'>            /**
-</span>             * 控件的可视方式,使用 css 'display' 或者 'visibility'
+</span>             * 控件的可视方式,使用 css 
+             *  - 'display' 或者 
+             *  - 'visibility'
+             * &lt;pre&gt;&lt;code&gt;
+             *  control.set('visibleMode','display')
+             * &lt;/code&gt;&lt;/pre&gt;
              * @type {String}
              */
             visibleMode:{
-                view:1
+                view:1,
+                value : 'display'
             },
 <span id='BUI-Component-Controller-cfg-visible'>            /**
 </span>             * 控件是否可见
+             * &lt;pre&gt;&lt;code&gt;
+             *  new Control({
+             *    visible : false   //隐藏
+             *  });
+             * &lt;/code&gt;&lt;/pre&gt;
              * @cfg {Boolean} [visible = true]
              */
 <span id='BUI-Component-Controller-property-visible'>            /**
 </span>             * 控件是否可见
+             * &lt;pre&gt;&lt;code&gt;
+             *  control.set('visible',true); //control.show();
+             *  control.set('visible',false); //control.hide();
+             * &lt;/code&gt;&lt;/pre&gt;
              * @type {Boolean}
              * @default true
              */
@@ -1199,6 +1405,7 @@ define('bui/component/controller',function(require){
 <span id='BUI-Component-Controller-property-focused'>            /**
 </span>             * 控件是否获取焦点
              * @type {Boolean}
+             * @readOnly
              */
             focused: {
                 view: 1
@@ -1208,17 +1415,20 @@ define('bui/component/controller',function(require){
 </span>             * 控件是否处于激活状态，按钮按下还未抬起
              * @type {Boolean}
              * @default false
+             * @protected
              */
             active: {
                 view: 1
             },
-<span id='BUI-Component-Controller-cfg-highlighted'>            /**
+<span id='global-cfg-highlighted'>            /**
 </span>             * 控件是否高亮
              * @cfg {Boolean} highlighted
+             * @ignore
              */
 <span id='BUI-Component-Controller-property-highlighted'>            /**
 </span>             * 控件是否高亮
              * @type {Boolean}
+             * @protected
              */
             highlighted: {
                 view: 1
@@ -1248,9 +1458,10 @@ define('bui/component/controller',function(require){
                 view: 1
             },
 
-<span id='BUI-Component-Controller-cfg-parent'>            /**
+<span id='global-cfg-parent'>            /**
 </span>             * 父控件
              * @cfg {BUI.Component.Controller} parent
+             * @ignore
              */
 <span id='BUI-Component-Controller-property-parent'>            /**
 </span>             * 父控件
@@ -1269,6 +1480,10 @@ define('bui/component/controller',function(require){
              */
 <span id='BUI-Component-Controller-property-disabled'>            /**
 </span>             * 禁用控件
+             * &lt;pre&gt;&lt;code&gt;
+             *  control.set('disabled',true); //==  control.disable();
+             *  control.set('disabled',false); //==  control.enable();
+             * &lt;/code&gt;&lt;/pre&gt;
              * @type {Boolean}
              * @default false
              */

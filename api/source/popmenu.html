@@ -21,7 +21,7 @@
  * @ignore
  */
 
-define('bui/menu/popmenu',function (require) {
+define('bui/menu/popmenu',['bui/common','bui/menu/menu'],function (require) {
 
   var BUI = require('bui/common'),
     UIBase = BUI.Component.UIBase,
@@ -50,6 +50,9 @@ define('bui/menu/popmenu',function (require) {
            points: ['bl','tl'], // ['tr', 'tl'] 表示 overlay 的 tl 与参考节点的 tr 对齐
            offset: [0, 0]      // 有效值为 [n, m]
         }
+      },
+      visibleMode : {
+        value : 'visibility'
       },
 <span id='BUI-Menu-PopMenu-property-autoHide'>      /**
 </span>       * 点击菜单外面，菜单隐藏

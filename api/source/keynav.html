@@ -20,7 +20,7 @@
  * @ignore
  */
 
-define('bui/component/uibase/keynav',function (require) {
+define('bui/component/uibase/keynav',['bui/keycode'],function (require) {
 
   var KeyCode = require('bui/keycode'),
       wrapBehavior = BUI.wrapBehavior,
@@ -35,23 +35,23 @@ define('bui/component/uibase/keynav',function (require) {
 
   keyNav.ATTRS = {
 
-<span id='BUI-Component-UIBase-KeyNav-property-allowKeyNav'>    /**
+<span id='BUI-Component-UIBase-KeyNav-cfg-allowKeyNav'>    /**
 </span>     * 是否允许键盘导航
-     * @type {Boolean}
+     * @cfg {Boolean} [allowKeyNav = true]
      */
     allowKeyNav : {
       value : true
     },
-<span id='BUI-Component-UIBase-KeyNav-property-navEvent'>    /**
+<span id='BUI-Component-UIBase-KeyNav-cfg-navEvent'>    /**
 </span>     * 导航使用的事件
-     * @type {String}
+     * @cfg {String} [navEvent = 'keydown']
      */
     navEvent : {
       value : 'keydown'
     },
-<span id='BUI-Component-UIBase-KeyNav-property-ignoreInputFields'>    /**
+<span id='BUI-Component-UIBase-KeyNav-cfg-ignoreInputFields'>    /**
 </span>     * 当获取事件的DOM是 input,textarea,select等时，不处理键盘导航
-     * @type {Object}
+     * @cfg {Object} [ignoreInputFields='true']
      */
     ignoreInputFields : {
       value : true

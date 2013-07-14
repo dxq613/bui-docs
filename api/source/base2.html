@@ -21,7 +21,7 @@
  * copied by dxq613@gmail.com
  * @ignore
  */
-define('bui/component/uibase/base',function(require){
+define('bui/component/uibase/base',['bui/component/manage'],function(require){
 
   var Manager = require('bui/component/manage'),
    
@@ -241,56 +241,73 @@ define('bui/component/uibase/base',function(require){
 
   UIBase.ATTRS = 
   {
-<span id='BUI-Component-UIBase-cfg-autoRender'>    /**
-</span>     * 是否自动渲染,如果不自动渲染，需要用户调用 render()方法
-     * @cfg {Boolean} autoRender
-     */
+    
     
 <span id='BUI-Component-UIBase-property-userConfig'>    /**
 </span>     * 用户传入的配置项
      * @type {Object}
      * @readOnly
+     * @protected
      */
     userConfig : {
 
     },
-<span id='BUI-Component-UIBase-property-autoRender'>    /**
+<span id='BUI-Component-UIBase-cfg-autoRender'>    /**
+</span>     * 是否自动渲染,如果不自动渲染，需要用户调用 render()方法
+     * &lt;pre&gt;&lt;code&gt;
+     *  //默认状态下创建对象，并没有进行render
+     *  var control = new Control();
+     *  control.render(); //需要调用render方法
+     *
+     *  //设置autoRender后，不需要调用render方法
+     *  var control = new Control({
+     *   autoRender : true
+     *  });
+     * &lt;/code&gt;&lt;/pre&gt;
+     * @cfg {Boolean} autoRender
+     */
+<span id='global-property-autoRender'>    /**
 </span>     * 是否自动渲染,如果不自动渲染，需要用户调用 render()方法
      * @type {Boolean}
+     * @ignore
      */
     autoRender : {
       value : false
     },
-<span id='BUI-Component-UIBase-property-listeners'>    /**
+<span id='global-property-listeners'>    /**
 </span>     * @type {Object}
      * 事件处理函数:
      *      {
      *        'click':function(e){}
      *      }
+     *  @ignore
      */
     listeners: {
-            value: {}
+        value: {}
     },
 <span id='BUI-Component-UIBase-cfg-plugins'>    /**
 </span>     * 插件集合
+     * &lt;pre&gt;&lt;code&gt;
+     *  var grid = new Grid({
+     *    columns : [{},{}],
+     *    plugins : [Grid.Plugins.RadioSelection]
+     *  });
+     * &lt;/code&gt;&lt;/pre&gt;
      * @cfg {Array} plugins
      */
 <span id='BUI-Component-UIBase-property-plugins'>    /**
 </span>     * 插件集合
      * @type {Array}
+     * @readOnly
      */
     plugins : {
       value : []
     },
-<span id='BUI-Component-UIBase-cfg-rendered'>    /**
-</span>     * 是否已经渲染完成
-     * @cfg {Boolean} rendered
-     * @default  false
-     */
 <span id='BUI-Component-UIBase-property-rendered'>    /**
 </span>     * 是否已经渲染完成
      * @type {Boolean}
      * @default  false
+     * @readOnly
      */
     rendered : {
         value : false
@@ -299,6 +316,7 @@ define('bui/component/uibase/base',function(require){
 </span>    * 获取控件的 xclass
     * @readOnly
     * @type {String}
+    * @protected
     */
     xclass: {
         valueFn: function () {
@@ -313,6 +331,7 @@ define('bui/component/uibase/base',function(require){
   {
 <span id='BUI-Component-UIBase-method-create'>    /**
 </span>     * 创建DOM结构
+     * @protected
      */
     create : function(){
       var self = this;

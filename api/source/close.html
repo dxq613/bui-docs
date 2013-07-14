@@ -87,11 +87,20 @@ define('bui/component/uibase/close',function () {
   {
 <span id='BUI-Component-UIBase-Close-cfg-closeTpl'>      /**
 </span>      * 关闭按钮的默认模版
+      * &lt;pre&gt;&lt;code&gt;
+      *   var overlay = new Overlay({
+      *     closeTpl : '&lt;a href=&quot;#&quot; title=&quot;close&quot;&gt;x&lt;/a&gt;',
+      *     closable : true,
+      *     trigger : '#t1'
+      *   });
+      *   overlay.render();
+      * &lt;/code&gt;&lt;/pre&gt;
       * @cfg {String} closeTpl
       */
 <span id='BUI-Component-UIBase-Close-property-closeTpl'>      /**
 </span>      * 关闭按钮的默认模版
       * @type {String}
+      * @protected
       */
       closeTpl:{
         view : true
@@ -117,7 +126,7 @@ define('bui/component/uibase/close',function () {
           view:1
       },
 <span id='BUI-Component-UIBase-Close-cfg-closeAction'>      /**
-</span>       * 关闭时隐藏还是移除DOM结构
+</span>       * 关闭时隐藏还是移除DOM结构&lt;br/&gt;
        * default &quot;hide&quot;. 可以设置 &quot;destroy&quot; ，当点击关闭按钮时移除（destroy)控件
        * @cfg {String} [closeAction = 'hide']
        */
@@ -125,9 +134,10 @@ define('bui/component/uibase/close',function () {
 </span>       * 关闭时隐藏还是移除DOM结构
        * default &quot;hide&quot;.可以设置 &quot;destroy&quot; ，当点击关闭按钮时移除（destroy)控件
        * @type {String}
+       * @protected
        */
       closeAction:{
-          value:HIDE
+        value:HIDE
       }
   };
 

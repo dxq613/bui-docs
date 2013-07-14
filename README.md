@@ -3,6 +3,7 @@ bui-docs
 
 BUI 控件库的文档
 - [控件库首页](http://www.builive.com/)
+- [控件库代码](https://github.com/dxq613/bui)
 - [应用代码](https://github.com/dxq613/bui-default)
 
 ## 文件结构

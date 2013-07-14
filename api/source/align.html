@@ -23,9 +23,9 @@
  */
 
 
-define('bui/component/uibase/align',function (require) {
+define('bui/component/uibase/align',['bui/ua'],function (require) {
     var UA = require('bui/ua'),
-        CLS_ALIGN_PREFIX = 'x-align-',
+        CLS_ALIGN_PREFIX ='x-align-',
         win = window;
 
     // var ieMode = document.documentMode || UA.ie;
@@ -234,6 +234,7 @@ define('bui/component/uibase/align',function (require) {
 </span>     * @class BUI.Component.UIBase.Align
      * Align extension class.
      * Align component with specified element.
+     * &lt;img src=&quot;http://images.cnitblog.com/blog/111279/201304/09180221-201343d4265c46e7987e6b1c46d5461a.jpg&quot;/&gt;
      */
     function Align() {
     }
@@ -246,28 +247,30 @@ define('bui/component/uibase/align',function (require) {
     Align.ATTRS =
     {
 <span id='BUI-Component-UIBase-Align-cfg-align'>        /**
-</span>         * Align configuration.
+</span>         * 对齐配置，详细说明请参看： &lt;a href=&quot;http://www.cnblogs.com/zaohe/archive/2013/04/09/3010651.html&quot;&gt;JS控件 对齐&lt;/a&gt;
          * @cfg {Object} align
-         * &lt;code&gt;
-         *     {
-         *        node: null,         // 参考元素, falsy 或 window 为可视区域, 'trigger' 为触发元素, 其他为指定元素
-         *        points: ['cc','cc'], // ['tr', 'tl'] 表示 overlay 的 tl 与参考节点的 tr 对齐
-         *        offset: [0, 0]      // 有效值为 [n, m]
-         *     }
-         * &lt;/code&gt;
+         * &lt;pre&gt;&lt;code&gt;
+         *  var overlay = new Overlay( {  
+         *       align :{
+         *         node: null,         // 参考元素, falsy 或 window 为可视区域, 'trigger' 为触发元素, 其他为指定元素
+         *         points: ['cc','cc'], // ['tr', 'tl'] 表示 overlay 的 tl 与参考节点的 tr 对齐
+         *         offset: [0, 0]      // 有效值为 [n, m]
+         *       }
+         *     }); 
+         * &lt;/code&gt;&lt;/pre&gt;
          */
 
 <span id='BUI-Component-UIBase-Align-property-align'>        /**
-</span>         * Align configuration.
+</span>         * 设置对齐属性
          * @type {Object}
          * @field
-         * @example
          * &lt;code&gt;
-         *     {
+         *   var align =  {
          *        node: null,         // 参考元素, falsy 或 window 为可视区域, 'trigger' 为触发元素, 其他为指定元素
          *        points: ['cc','cc'], // ['tr', 'tl'] 表示 overlay 的 tl 与参考节点的 tr 对齐
          *        offset: [0, 0]      // 有效值为 [n, m]
-         *     }
+         *     };
+         *   overlay.set('align',align);
          * &lt;/code&gt;
          */
         align:{
@@ -321,6 +324,16 @@ define('bui/component/uibase/align',function (require) {
         return { left:x, top:y };
     }
 
+    //清除对齐的css样式
+    function clearAlignCls(el){
+        var cls = el.attr('class'),
+            regex = new RegExp('\s?'+CLS_ALIGN_PREFIX+'[a-z]{2}-[a-z]{2}','ig'),
+            arr = regex.exec(cls);
+        if(arr){
+            el.removeClass(arr.join(' '));
+        }
+    }
+
     Align.prototype =
     {
         _uiSetAlign:function (v,ev) {
@@ -331,14 +344,11 @@ define('bui/component/uibase/align',function (require) {
                 this.align(v.node, v.points, v.offset, v.overflow);
                 this.set('cachePosition',null);
                 el = this.get('el');
-                if(ev &amp;&amp; ev.prevVal &amp;&amp; ev.prevVal.points){ //清理对齐样式
-                    selfAlign = ev.prevVal.points[1];
-                    alignCls = CLS_ALIGN_PREFIX + selfAlign;
-                    el.removeClass(alignCls);
-                }
-                selfAlign = v.points[1];
+                clearAlignCls(el);
+                selfAlign = v.points.join('-');
                 alignCls = CLS_ALIGN_PREFIX + selfAlign;
                 el.addClass(alignCls);
+                /**/
             }
         },
 
@@ -448,9 +458,12 @@ define('bui/component/uibase/align',function (require) {
         },
 
 <span id='BUI-Component-UIBase-Align-method-center'>        /**
-</span>         * Make current element center within node.
+</span>         * 对齐到元素的中间，查看属性 {@link BUI.Component.UIBase.Align#property-align} .
+         * &lt;pre&gt;&lt;code&gt;
+         *  control.center('#t1'); //控件处于容器#t1的中间位置
+         * &lt;/code&gt;&lt;/pre&gt;
          * @param {undefined|String|HTMLElement|jQuery} node
-         * Same as node config of {@link BUI.Component.UIBase.Align#property-align} .
+         * 
          */
         center:function (node) {
             var self = this;

@@ -33,10 +33,17 @@ define('bui/component/uibase/childcfg',function (require) {
   childCfg.ATTRS = {
 <span id='BUI-Component-UIBase-ChildCfg-cfg-defaultChildCfg'>    /**
 </span>     * 默认的子控件配置项,在初始化控件时配置
-     * &lt;ul&gt;
-     * 如果控件已经渲染过，此配置项无效，
-     * 控件生成后，修改此配置项无效。
-     * &lt;/ul&gt;
+     * 
+     *  - 如果控件已经渲染过，此配置项无效，
+     *  - 控件生成后，修改此配置项无效。
+     * &lt;pre&gt;&lt;code&gt;
+     *   var control = new Control({
+     *     defaultChildCfg : {
+     *       tpl : '&amp;lt;li&amp;gt;{text}&amp;lt;/li&amp;gt;',
+     *       xclass : 'a-b'
+     *     }
+     *   });
+     * &lt;/code&gt;&lt;/pre&gt;
      * @cfg {Object} defaultChildCfg
      */
 <span id='global-property-defaultChildCfg'>    /**

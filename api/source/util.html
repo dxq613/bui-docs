@@ -91,6 +91,20 @@ define('bui/util',function(){
     isDate: function(value) {
         return toString.call(value) === '[object Date]';
     },
+<span id='BUI-method-isObject'>    /**
+</span>     * 是否是javascript对象
+     * @param {Object} value The value to test
+     * @return {Boolean}
+     * @method
+     */
+    isObject: (toString.call(null) === '[object Object]') ?
+    function(value) {
+        // check ownerDocument here as well to exclude DOM nodes
+        return value !== null &amp;&amp; value !== undefined &amp;&amp; toString.call(value) === '[object Object]' &amp;&amp; value.ownerDocument === undefined;
+    } :
+    function(value) {
+        return toString.call(value) === '[object Object]';
+    },
 <span id='BUI-method-augment'>    /**
 </span>     * 将指定的方法或属性放到构造函数的原型链上，
      * 函数支持多于2个变量，后面的变量同s1一样将其成员复制到构造函数的原型链上。
@@ -364,7 +378,7 @@ define('bui/util',function(){
      */
     substitute: function (str, o, regexp) {
         if (!BUI.isString(str)
-            || (!$.isPlainObject(o)) &amp;&amp; !BUI.isArray(o)) {
+            || (!BUI.isObject(o)) &amp;&amp; !BUI.isArray(o)) {
             return str;
         }
 

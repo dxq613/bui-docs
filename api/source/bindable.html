@@ -24,6 +24,21 @@ define('bui/component/uibase/bindable',function(){
 	
 <span id='BUI-Component-UIBase-Bindable'>	/**
 </span>		* bindable extension class.
+		* &lt;pre&gt;&lt;code&gt;
+		*   BUI.use(['bui/list','bui/data','bui/mask'],function(List,Data,Mask){
+		*     var store = new Data.Store({
+		*       url : 'data/xx.json'
+		*     });
+		*   	var list = new List.SimpleList({
+		*  	    render : '#l1',
+		*  	    store : store,
+		*  	    loadMask : new Mask.LoadMask({el : '#t1'})
+		*     });
+		*
+		*     list.render();
+		*     store.load();
+		*   });
+		* &lt;/code&gt;&lt;/pre&gt;
 		* 使控件绑定store，处理store的事件 {@link BUI.Data.Store}
 		* @class BUI.Component.UIBase.Bindable
 		*/
@@ -35,10 +50,26 @@ define('bui/component/uibase/bindable',function(){
 	{
 <span id='BUI-Component-UIBase-Bindable-cfg-store'>		/**
 </span>		* 绑定 {@link BUI.Data.Store}的事件
+		* &lt;pre&gt;&lt;code&gt;
+		*  var store = new Data.Store({
+		*   url : 'data/xx.json',
+		*   autoLoad : true
+		*  });
+		*
+		*  var list = new List.SimpleList({
+		*  	 render : '#l1',
+		*  	 store : store
+		*  });
+		*
+		*  list.render();
+		* &lt;/code&gt;&lt;/pre&gt;
 		* @cfg {BUI.Data.Store} store
 		*/
 <span id='BUI-Component-UIBase-Bindable-property-store'>		/**
 </span>		* 绑定 {@link BUI.Data.Store}的事件
+		* &lt;pre&gt;&lt;code&gt;
+		*  var store = list.get('store');
+		* &lt;/code&gt;&lt;/pre&gt;
 		* @type {BUI.Data.Store}
 		*/
 		store : {
@@ -46,11 +77,27 @@ define('bui/component/uibase/bindable',function(){
 		},
 <span id='BUI-Component-UIBase-Bindable-cfg-loadMask'>		/**
 </span>		* 加载数据时，是否显示等待加载的屏蔽层
+		* &lt;pre&gt;&lt;code&gt;
+		*   BUI.use(['bui/list','bui/data','bui/mask'],function(List,Data,Mask){
+		*     var store = new Data.Store({
+		*       url : 'data/xx.json'
+		*     });
+		*   	var list = new List.SimpleList({
+		*  	    render : '#l1',
+		*  	    store : store,
+		*  	    loadMask : new Mask.LoadMask({el : '#t1'})
+		*     });
+		*
+		*     list.render();
+		*     store.load();
+		*   });
+		* &lt;/code&gt;&lt;/pre&gt;
 		* @cfg {Boolean|Object} loadMask
 		*/
-<span id='BUI-Component-UIBase-Bindable-property-loadMask'>		/**
+<span id='global-property-loadMask'>		/**
 </span>		* 加载数据时，是否显示等待加载的屏蔽层
 		* @type {Boolean|Object} 
+		* @ignore
 		*/
 		loadMask : {
 			value : false
@@ -72,7 +119,8 @@ define('bui/component/uibase/bindable',function(){
 			if(!store){
 				return;
 			}
-			store.on('beforeload',function(){
+			store.on('beforeload',function(e){
+				_self.onBeforeLoad(e);
 				if(loadMask &amp;&amp; loadMask.show){
 					loadMask.show();
 				}
@@ -85,6 +133,9 @@ define('bui/component/uibase/bindable',function(){
 			});
 			store.on('exception',function(e){
 				_self.onException(e);
+				if(loadMask &amp;&amp; loadMask.hide){
+					loadMask.hide();
+				}
 			});
 			store.on('add',function(e){
 				_self.onAdd(e);
@@ -105,9 +156,19 @@ define('bui/component/uibase/bindable',function(){
 			if(!store){
 				return;
 			}
-			if(store.get('autoLoad') &amp;&amp; store.hasData()){
+			if(store.hasData()){
 				_self.onLoad();
 			}
+		},
+<span id='BUI-Component-UIBase-Bindable-method-onBeforeLoad'>		/**
+</span>		* @protected
+    * @template
+		* before store load data
+		* @param {Object} e The event object
+		* @see {@link BUI.Data.Store#event-beforeload}
+		*/
+		onBeforeLoad : function(e){
+
 		},
 <span id='BUI-Component-UIBase-Bindable-method-onLoad'>		/**
 </span>		* @protected

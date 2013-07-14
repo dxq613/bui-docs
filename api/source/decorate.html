@@ -20,7 +20,7 @@
  * @ignore
  */
 
-define('bui/component/uibase/decorate',function (require) {
+define('bui/component/uibase/decorate',['bui/array','bui/json','bui/component/manage'],function (require) {
   
   var ArrayUtil = require('bui/array'),
     JSON = require('bui/json'),
@@ -150,9 +150,18 @@ define('bui/component/uibase/decorate',function (require) {
 
   decorate.ATTRS = {
 
+<span id='BUI-Component-UIBase-Decorate-cfg-srcNode'>    /**
+</span>     * 配置控件的根节点的DOM
+     * &lt;pre&gt;&lt;code&gt;
+     * new Form.Form({
+     *   srcNode : '#J_Form'
+     * }).render();
+     * &lt;/code&gt;&lt;/pre&gt;
+     * @cfg {jQuery} srcNode
+     */
 <span id='BUI-Component-UIBase-Decorate-property-srcNode'>    /**
 </span>     * 配置控件的根节点的DOM
-     * @type {jQuery}
+     * @type {jQuery} 
      */
     srcNode : {
       view : true
@@ -160,29 +169,30 @@ define('bui/component/uibase/decorate',function (require) {
 <span id='BUI-Component-UIBase-Decorate-property-isDecorateChild'>    /**
 </span>     * 是否根据DOM生成子控件
      * @type {Boolean}
+     * @protected
      */
     isDecorateChild : {
       value : false
     },
 <span id='BUI-Component-UIBase-Decorate-property-decorateCfgFields'>    /**
 </span>     * 此配置项配置使用那些srcNode上的节点作为配置项
-     * 当时用 decorate 时，取 srcNode上的节点的属性作为控件的配置信息
-     * 默认id,name,value,title 都会作为属性传入
-     * 使用 'data-cfg' 作为整体的配置属性
-     *         &lt;input type=&quot;text&quot; name=&quot;txtName&quot; id=&quot;id&quot;,data-cfg=&quot;{allowBlank:false}&quot; /&gt;
-     *         //会生成以下配置项：
-     *         {
-     *           name : 'txtName',
-     *           id : 'id',
-     *           allowBlank:false
-     *         }
-     *         new Form({
-     *           src:'#form',
-     *           validator : function(record){
-     *              
-     *           }
-     *         }).render();
+     *  - 当时用 decorate 时，取 srcNode上的节点的属性作为控件的配置信息
+     *  - 默认id,name,value,title 都会作为属性传入
+     *  - 使用 'data-cfg' 作为整体的配置属性
+     *  &lt;pre&gt;&lt;code&gt;
+     *     &lt;input id=&quot;c1&quot; type=&quot;text&quot; name=&quot;txtName&quot; id=&quot;id&quot;,data-cfg=&quot;{allowBlank:false}&quot; /&gt;
+     *     //会生成以下配置项：
+     *     {
+     *         name : 'txtName',
+     *         id : 'id',
+     *         allowBlank:false
+     *     }
+     *     new Form.Field({
+     *        src:'#c1'
+     *     }).render();
+     *  &lt;/code&gt;&lt;/pre&gt;
      * @type {Object}
+     * @protected
      */
     decorateCfgFields : {
       value : {
@@ -198,6 +208,7 @@ define('bui/component/uibase/decorate',function (require) {
 
 <span id='BUI-Component-UIBase-Decorate-method-getDecorateConfig'>    /**
 </span>     * 获取控件的配置信息
+     * @protected
      */
     getDecorateConfig : function(el){
       if(!el.length){

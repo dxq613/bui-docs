@@ -82,6 +82,9 @@ define('bui/list/simplelist',function (require) {
         itemContainer = _self.get('view').getItemContainer();
 
       itemContainer.delegate('.'+itemCls,'mouseover',function(ev){
+        if(_self.isItemDisabled(ev.item,ev.currentTarget)){ //如果禁用
+          return;
+        }
         var sender = $(ev.currentTarget);
         _self.get('view').setElementHover(sender,true);
       }).delegate('.'+itemCls,'mouseout',function(ev){
@@ -147,15 +150,36 @@ define('bui/list/simplelist',function (require) {
         view:true,
         value : []
       },
-<span id='BUI-List-SimpleList-property-itemCls'>      /**
-</span>       * 列表项应用的css
-       * @type {String}
+<span id='BUI-List-SimpleList-cfg-itemCl'>      /**
+</span>       * 选项的样式，用来获取子项
+       * &lt;pre&gt;&lt;code&gt;
+       * var list = new List.SimpleList({
+       *   render : '#t1',
+       *   itemCls : 'my-item', //自定义样式名称
+       *   items : [{id : '1',text : '1',type : '0'},{id : '2',text : '2',type : '1'}]
+       * });
+       * list.render();
+       * &lt;/code&gt;&lt;/pre&gt;
+       * @cfg {Object} [itemCl='list-item']
        */
       itemCls : {
         view:true,
         value : CLS_ITEM
       },
-      
+<span id='BUI-List-SimpleList-cfg-idField'>      /**
+</span>       * 选项的默认id字段
+       * &lt;pre&gt;&lt;code&gt;
+       * var list = new List.SimpleList({
+       *   render : '#t1',
+       *   idField : 'id', //自定义选项 id 字段
+       *   items : [{id : '1',text : '1',type : '0'},{id : '2',text : '2',type : '1'}]
+       * });
+       * list.render();
+       *
+       * list.getItem('1'); //使用idField指定的字段进行查找
+       * &lt;/code&gt;&lt;/pre&gt;
+       * @cfg {String} [idField = 'value']
+       */
       idField : {
         value : 'value'
       },
@@ -169,14 +193,19 @@ define('bui/list/simplelist',function (require) {
         value:'ul'
       },
 <span id='BUI-List-SimpleList-cfg-itemTpl'>      /**
-</span>       * 列表项的模版
-       * @cfg {String} itemTpl
+</span>       * 列表项的默认模板。
+       *&lt;pre&gt;&lt;code&gt;
+       * var list = new List.SimpleList({
+       *   itemTpl : '&amp;lt;li id=&quot;{value}&quot;&amp;gt;{text}&amp;lt;/li&amp;gt;', //列表项的模板
+       *   idField : 'value',
+       *   render : '#t1',
+       *   items : [{value : '1',text : '1'},{value : '2',text : '2'}]
+       * });
+       * list.render();
+       * &lt;/code&gt;&lt;/pre&gt;
+       * @cfg {String} [itemTpl ='&amp;lt;li role=&quot;option&quot; class=&quot;bui-list-item&quot; data-value=&quot;{value}&quot;&amp;gt;{text}&amp;lt;/li&amp;gt;']
        */
-<span id='BUI-List-SimpleList-property-itemTpl'>      /**
-</span>       * 列表项的模版
-       * @default '&amp;lt;li role=&quot;option&quot; class=&quot;bui-list-item&quot; data-value=&quot;{value}&quot;&amp;gt;{text}&amp;lt;/li&amp;gt;'
-       * @type {String}
-       */
+      
       itemTpl :{
         view : true,
         value : '&lt;li role=&quot;option&quot; class=&quot;' + CLS_ITEM + '&quot;&gt;{text}&lt;/li&gt;'

@@ -17,6 +17,8 @@
 	"../../../bui/src/tab",
 	"../../../bui/src/grid",
 	"../../../bui/src/editor",
+	"../../../bui/src/tree",
+	"../../../bui/src/tooltip",
 	"../../../bui/src/progressbar"
     ]
 }

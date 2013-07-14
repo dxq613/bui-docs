@@ -31,7 +31,8 @@ define('bui/component/uibase/selection',function () {
      *     &lt;li&gt;子控件&lt;/li&gt;
      *     &lt;li&gt;DOM元素&lt;/li&gt;
      * &lt;/ol&gt;
-     * 当选择是子控件时，element 和 item 都是指 子控件；当选择的是DOM元素时，element 指DOM元素，item 指DOM元素对应的记录
+     * ** 当选择是子控件时，element 和 item 都是指 子控件；**
+     * ** 当选择的是DOM元素时，element 指DOM元素，item 指DOM元素对应的记录 **
      * @abstract
      */
     var selection = function(){
@@ -44,9 +45,18 @@ define('bui/component/uibase/selection',function () {
      * @ignore
      */
     {
-<span id='BUI-Component-UIBase-Selection-property-selectedEvent'>        /**
+<span id='BUI-Component-UIBase-Selection-cfg-selectedEvent'>        /**
 </span>         * 选中的事件
-         * @type {String}
+         * &lt;pre&gt;&lt;code&gt;
+         * var list = new List.SimpleList({
+         *   itemTpl : '&amp;lt;li id=&quot;{value}&quot;&amp;gt;{text}&amp;lt;/li&amp;gt;',
+         *   idField : 'value',
+         *   selectedEvent : 'mouseenter',
+         *   render : '#t1',
+         *   items : [{value : '1',text : '1'},{value : '2',text : '2'}]
+         * });
+         * &lt;/code&gt;&lt;/pre&gt;
+         * @cfg {String} [selectedEvent = 'click']
          */
         selectedEvent:{
             value : 'click'
@@ -84,17 +94,35 @@ define('bui/component/uibase/selection',function () {
         },
 <span id='BUI-Component-UIBase-Selection-cfg-idField'>        /**
 </span>         * 数据的id字段名称，通过此字段查找对应的数据
+         * &lt;pre&gt;&lt;code&gt;
+         * var list = new List.SimpleList({
+         *   itemTpl : '&amp;lt;li id=&quot;{value}&quot;&amp;gt;{text}&amp;lt;/li&amp;gt;',
+         *   idField : 'value',
+         *   render : '#t1',
+         *   items : [{value : '1',text : '1'},{value : '2',text : '2'}]
+         * });
+         * &lt;/code&gt;&lt;/pre&gt;
          * @cfg {String} [idField = 'id']
          */
-<span id='BUI-Component-UIBase-Selection-property-idField'>        /**
+<span id='global-property-idField'>        /**
 </span>         * 数据的id字段名称，通过此字段查找对应的数据
          * @type {String}
+         * @ignore
          */
         idField : {
             value : 'id'
         },
 <span id='BUI-Component-UIBase-Selection-cfg-multipleSelect'>        /**
 </span>         * 是否多选
+         * &lt;pre&gt;&lt;code&gt;
+         * var list = new List.SimpleList({
+         *   itemTpl : '&amp;lt;li id=&quot;{value}&quot;&amp;gt;{text}&amp;lt;/li&amp;gt;',
+         *   idField : 'value',
+         *   render : '#t1',
+         *   multipleSelect : true,
+         *   items : [{value : '1',text : '1'},{value : '2',text : '2'}]
+         * });
+         * &lt;/code&gt;&lt;/pre&gt;
          * @cfg {Boolean} [multipleSelect=false]
          */
 <span id='BUI-Component-UIBase-Selection-property-multipleSelect'>        /**
@@ -116,6 +144,10 @@ define('bui/component/uibase/selection',function () {
     {
 <span id='BUI-Component-UIBase-Selection-method-clearSelection'>        /**
 </span>         * 清理选中的项
+         * &lt;pre&gt;&lt;code&gt;
+         *  list.clearSelection();
+         * &lt;/code&gt;&lt;/pre&gt;
+         *
          */
         clearSelection : function(){
             var _self = this,
@@ -134,6 +166,9 @@ define('bui/component/uibase/selection',function () {
         },
 <span id='BUI-Component-UIBase-Selection-method-getSelected'>        /**
 </span>         * 获取选中的第一项
+         * &lt;pre&gt;&lt;code&gt;
+         * var item = list.getSelected(); //多选模式下第一条
+         * &lt;/code&gt;&lt;/pre&gt;
          * @return {Object} 选中的第一项或者为undefined
          */
         getSelected : function(){
@@ -141,7 +176,7 @@ define('bui/component/uibase/selection',function () {
         },
 <span id='BUI-Component-UIBase-Selection-method-getSelectedValue'>        /**
 </span>         * 根据 idField 获取到的值
-         * @private
+         * @protected
          * @return {Object} 选中的值
          */
         getSelectedValue : function(){
@@ -153,7 +188,7 @@ define('bui/component/uibase/selection',function () {
         },
 <span id='BUI-Component-UIBase-Selection-method-getSelectionValues'>        /**
 </span>         * 获取选中的值集合
-         * @private
+         * @protected
          * @return {Array} 选中值得集合
          */
         getSelectionValues:function(){
@@ -166,7 +201,7 @@ define('bui/component/uibase/selection',function () {
         },
 <span id='BUI-Component-UIBase-Selection-method-getSelectionText'>        /**
 </span>         * 获取选中的文本
-         * @private
+         * @protected
          * @return {Array} 选中的文本集合
          */
         getSelectionText:function(){
@@ -177,7 +212,14 @@ define('bui/component/uibase/selection',function () {
             });
         },
 <span id='BUI-Component-UIBase-Selection-method-clearSelected'>        /**
-</span>         * 移除选中，
+</span>         * 移除选中
+         * &lt;pre&gt;&lt;code&gt;
+         *    var item = list.getItem('id'); //通过id 获取选项
+         *    list.setSelected(item); //选中
+         *
+         *    list.clearSelected();//单选模式下清除所选，多选模式下清除选中的第一项
+         *    list.clearSelected(item); //清除选项的选中状态
+         * &lt;/code&gt;&lt;/pre&gt;
          * @param {Object} [item] 清除选项的选中状态，如果未指定则清除选中的第一个选项的选中状态
          */
         clearSelected : function(item){
@@ -189,7 +231,7 @@ define('bui/component/uibase/selection',function () {
         },
 <span id='BUI-Component-UIBase-Selection-method-getSelectedText'>        /**
 </span>         * 获取选项显示的文本
-         * @private
+         * @protected
          */
         getSelectedText : function(){
             var _self = this,
@@ -198,6 +240,10 @@ define('bui/component/uibase/selection',function () {
         },
 <span id='BUI-Component-UIBase-Selection-method-setSelection'>        /**
 </span>         * 设置选中的项
+         * &lt;pre&gt;&lt;code&gt;
+         *  var items = list.getItemsByStatus('active'); //获取某种状态的选项
+         *  list.setSelection(items);
+         * &lt;/code&gt;&lt;/pre&gt;
          * @param {Array} items 项的集合
          */
         setSelection: function(items){
@@ -211,6 +257,10 @@ define('bui/component/uibase/selection',function () {
         },
 <span id='BUI-Component-UIBase-Selection-method-setSelected'>        /**
 </span>         * 设置选中的项
+         * &lt;pre&gt;&lt;code&gt;
+         *   var item = list.getItem('id');
+         *   list.setSelected(item);
+         * &lt;/code&gt;&lt;/pre&gt;
          * @param {Object} item 记录或者子控件
          * @param {BUI.Component.Controller|Object} element 子控件或者DOM结构
          */
@@ -240,9 +290,9 @@ define('bui/component/uibase/selection',function () {
         },
 <span id='BUI-Component-UIBase-Selection-method-setItemSelected'>        /**
 </span>         * 设置选项的选中状态
-         * @template
          * @param {*} item 选项
          * @param {Boolean} selected 选中或者取消选中
+         * @protected
          */
         setItemSelected : function(item,selected){
             var _self = this,
@@ -262,12 +312,16 @@ define('bui/component/uibase/selection',function () {
          * @template
          * @param {*} item 选项
          * @param {Boolean} selected 选中或者取消选中
+         * @protected
          */
         setItemSelectedStatus : function(item,selected){
 
         },
 <span id='BUI-Component-UIBase-Selection-method-setAllSelection'>        /**
 </span>         * 设置所有选项选中
+         * &lt;pre&gt;&lt;code&gt;
+         *  list.setAllSelection(); //选中全部，多选状态下有效
+         * &lt;/code&gt;&lt;/pre&gt;
          * @template
          */
         setAllSelection : function(){
@@ -278,9 +332,20 @@ define('bui/component/uibase/selection',function () {
          * @param {String} field 字段名,默认为配置项'idField',所以此字段可以不填写，仅填写值
          * @param {Object} value 值
          * @example
-         * list.setSelectedByField('123');
-         * //或者
-         * list.setSelectedByField('id','123');
+         * &lt;pre&gt;&lt;code&gt;
+         * var list = new List.SimpleList({
+         *   itemTpl : '&amp;lt;li id=&quot;{id}&quot;&amp;gt;{text}&amp;lt;/li&amp;gt;',
+         *   idField : 'id', //id 字段作为key
+         *   render : '#t1',
+         *   items : [{id : '1',text : '1'},{id : '2',text : '2'}]
+         * });
+         *
+         *   list.setSelectedByField('123'); //默认按照id字段查找
+         *   //或者
+         *   list.setSelectedByField('id','123');
+         *
+         *   list.setSelectedByField('value','123');
+         * &lt;/code&gt;&lt;/pre&gt;
          */
         setSelectedByField:function(field,value){
             if(!value){
@@ -293,7 +358,21 @@ define('bui/component/uibase/selection',function () {
         },
 <span id='BUI-Component-UIBase-Selection-method-setSelectionByField'>        /**
 </span>         * 设置多个选中，根据字段和值
-         * @param {String} field  默认为idField
+         * &lt;pre&gt;&lt;code&gt;
+         * var list = new List.SimpleList({
+         *   itemTpl : '&amp;lt;li id=&quot;{value}&quot;&amp;gt;{text}&amp;lt;/li&amp;gt;',
+         *   idField : 'value', //value 字段作为key
+         *   render : '#t1',
+         *   multipleSelect : true,
+         *   items : [{value : '1',text : '1'},{value : '2',text : '2'}]
+         * });
+         *   var values = ['1','2','3'];
+         *   list.setSelectionByField(values);//
+         *
+         *   //等于
+         *   list.setSelectionByField('value',values);
+         * &lt;/code&gt;&lt;/pre&gt;
+         * @param {String} field 默认为idField
          * @param {Array} values 值得集合
          */
         setSelectionByField:function(field,values){

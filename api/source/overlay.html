@@ -20,7 +20,7 @@
  * @ignore
  */
 
-define('bui/overlay/overlay',function (require) {
+define('bui/overlay/overlay',['bui/common'],function (require) {
   var BUI = require('bui/common'),
     Component =  BUI.Component,
     CLS_ARROW = 'x-align-arrow',
@@ -55,9 +55,12 @@ define('bui/overlay/overlay',function (require) {
    */
   var overlay = Component.Controller.extend([UIBase.Position,UIBase.Align,UIBase.Close,UIBase.AutoShow,UIBase.AutoHide],{
     renderUI : function(){
-      var _self = this;
+      var _self = this,
+        el = _self.get('el'),
+        arrowContainer = _self.get('arrowContainer'),
+        container = arrowContainer ? el.one(arrowContainer) : el;
       if(_self.get('showArrow')){
-        $(_self.get('arrowTpl')).appendTo(_self.get('el'));
+        $(_self.get('arrowTpl')).appendTo(container);
       }
     },
     show : function(){
@@ -170,23 +173,33 @@ define('bui/overlay/overlay',function (require) {
           value:false
       },
 <span id='BUI-Overlay-Overlay-property-showArrow'>      /**
-</span>       * 是否显示指向箭头，跟align属性的points相关,有8种对齐箭头：
-       * &lt;ul&gt;
-       * &lt;li&gt;tl,tc,tr&lt;/li&gt;
-       * &lt;li&gt;cl,cr&lt;/li&gt;
-       * &lt;li&gt;bl,bc,br&lt;/li&gt;
-       * &lt;/ul&gt;
+</span>       * 是否显示指向箭头，跟align属性的points相关
        * @type {Boolean}
        */
       showArrow : {
         value : false
+      },
+<span id='BUI-Overlay-Overlay-property-arrowContainer'>      /**
+</span>       * 箭头放置在的位置，是一个选择器，例如 .arrow-wraper
+       *     new Tip({ //可以设置整个控件的模板
+       *       arrowContainer : '.arrow-wraper',
+       *       tpl : '&lt;div class=&quot;arrow-wraper&quot;&gt;&lt;/div&gt;'
+       *     });
+       *     
+       * @type {String}
+       */
+      arrowContainer : {
+        view : true
       },
 <span id='BUI-Overlay-Overlay-property-arrowTpl'>      /**
 </span>       * 指向箭头的模板
        * @type {Object}
        */
       arrowTpl : {
-        value : '&lt;s class=&quot;' + CLS_ARROW + '&quot;&gt;&lt;/s&gt;'
+        value : '&lt;s class=&quot;' + CLS_ARROW + '&quot;&gt;&lt;s class=&quot;' + CLS_ARROW + '-inner&quot;&gt;&lt;/s&gt;&lt;/s&gt;'
+      },
+      visibleMode : {
+        value : 'visibility'
       },
       visible :{
         value:false

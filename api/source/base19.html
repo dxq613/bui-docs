@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 提示的入口文件
+ * @ignore
+ */
+
+define('bui/tooltip',['bui/common','bui/tooltip/tip','bui/tooltip/tips'],function (require) {
+  var BUI = require('bui/common'),
+    Tooltip = BUI.namespace('Tooltip'),
+    Tip = require('bui/tooltip/tip'),
+    Tips = require('bui/tooltip/tips');
+
+  BUI.mix(Tooltip,{
+    Tip : Tip,
+    Tips : Tips
+  });
+  return Tooltip;
+});</pre>
+</body>
+</html>
