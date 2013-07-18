@@ -32,6 +32,22 @@ define('bui/tooltip/tips',['bui/common','bui/tooltip/tip'],function(require) {
 <span id='BUI-Tooltip-Tips'>    /**
 </span>     * @class BUI.Tooltip.Tips
      * 批量显示提示信息
+     *  &lt;pre&gt;&lt;code&gt;
+     * BUI.use('bui/tooltip',function(){
+     *   var tips = new Tooltip.Tips({
+     *     tip : {
+     *       trigger : '#t1 a', //出现此样式的元素显示tip
+     *       alignType : 'top', //默认方向
+     *       elCls : 'tips tips-no-icon tip1',
+     *       titleTpl : '&amp;lt;span class=&quot;x-icon x-icon-small x-icon-success&quot;&amp;gt;&amp;lt;i class=&quot;icon icon-white icon-question&quot;&amp;gt;&amp;lt;/i&amp;gt;&amp;lt;/span&amp;gt;\
+   *           &amp;lt;div class=&quot;tips-content&quot;&amp;gt;{title}&amp;lt;/div&amp;gt;',
+     *       offset : 10 //距离左边的距离
+     *     }
+     *   });
+     *   tips.render();
+     * })
+     * 
+     * &lt;/code&gt;&lt;/pre&gt;
      */
     Tips = function(config){
       Tips.superclass.constructor.call(this,config);
@@ -39,20 +55,48 @@ define('bui/tooltip/tips',['bui/common','bui/tooltip/tip'],function(require) {
 
   Tips.ATTRS = {
 
-<span id='BUI-Tooltip-Tips-cfg-'>    /**
+<span id='BUI-Tooltip-Tips-cfg-tip'>    /**
 </span>     * 使用的提示控件或者配置信息 @see {BUI.Tooltip.Tip}
-     * @cfg {BUI.Tooltip.Tip|Object}
+     * &lt;pre&gt;&lt;code&gt;
+     *    //不使用模板的，左侧显示
+     * var tips = new Tooltip.Tips({
+     *   tip : {
+     *     trigger : '#t1 a', //出现此样式的元素显示tip
+     *     alignType : 'top', //默认方向
+     *     elCls : 'tips tips-no-icon tip1',
+     *     offset : 10 //距离左边的距离
+     *   }
+     * });
+     * tips.render();
+     * &lt;/code&gt;&lt;/pre&gt;
+     * @cfg {BUI.Tooltip.Tip|Object} tip
      */
 <span id='BUI-Tooltip-Tips-property-tip'>    /**
 </span>     * 使用的提示控件 @see {BUI.Tooltip.Tip}
+     * &lt;pre&gt;&lt;code&gt;
+     *    var tip = tips.get('tip');
+     * &lt;/code&gt;&lt;/pre&gt;
      * @type {BUI.Tooltip.Tip}
+     * @readOnly
      */
     tip : {
 
     },
-<span id='BUI-Tooltip-Tips-property-defaultAlignType'>    /**
-</span>     * 默认的对齐方式
-     * @type {Object}
+<span id='BUI-Tooltip-Tips-cfg-defaultAlignType'>    /**
+</span>     * 默认的对齐方式,如果不指定tip的对齐方式，那么使用此属性
+     * &lt;pre&gt;&lt;code&gt;
+     * //不使用模板的，左侧显示
+     * var tips = new Tooltip.Tips({
+     *   tip : {
+     *     trigger : '#t1 a', //出现此样式的元素显示tip
+     *     defaultAlignType : 'top', //默认方向
+     *     elCls : 'tips tips-no-icon tip1',
+     *     offset : 10 //距离左边的距离
+     *   }
+     * });
+     * tips.render();
+     * &lt;/code&gt;&lt;/pre&gt;
+     * @cfg {Object} defaultAlignType
      */
     defaultAlignType : {
 

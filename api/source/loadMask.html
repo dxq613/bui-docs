@@ -26,6 +26,22 @@ define('bui/mask/loadmask',['bui/mask/mask'],function (require) {
 
 <span id='BUI-Mask-LoadMask'>   /**
 </span>     * 屏蔽指定元素，并显示加载信息
+     * &lt;pre&gt;&lt;/code&gt;
+     * BUI.use('bui/mask',function(Mask){
+     *    var loadMask = new Mask.LoadMask({
+     *        el : '#domId',
+     *        msg : 'loading ....'
+     *    });
+     *
+     *    $('#btn').on('click',function(){
+     *        loadMask.show();
+     *    });
+     *
+     *    $('#btn1').on('click',function(){
+     *        loadMask.hide();
+     *    });
+     * });
+     * &lt;/code&gt;&lt;/pre&gt;
      * @class BUI.Mask.LoadMask
      * @extends BUI.Base
      */
@@ -37,34 +53,50 @@ define('bui/mask/loadmask',['bui/mask/mask'],function (require) {
     BUI.extend(LoadMask, BUI.Base);
 
     LoadMask.ATTRS = {
-<span id='BUI-Mask-LoadMask-property-el'>        /**
+<span id='BUI-Mask-LoadMask-cfg-el'>        /**
 </span>         * 屏蔽的元素
-         * @type {jQuery}
+         * &lt;pre&gt;&lt;/code&gt;
+         *    var loadMask = new Mask.LoadMask({
+         *        el : '#domId'
+         *    });
+         * &lt;/code&gt;&lt;/pre&gt;
+         * @cfg {jQuery} el
          */
         el : {
 
         },
-<span id='BUI-Mask-LoadMask-property-msg'>        /**
+<span id='BUI-Mask-LoadMask-cfg-msg'>        /**
 </span>         * 加载时显示的加载信息
-         * @field
-         * @default Loading...
+         * &lt;pre&gt;&lt;/code&gt;
+         *    var loadMask = new Mask.LoadMask({
+         *        el : '#domId',
+         *        msg : '正在加载，请稍后。。。'
+         *    });
+         * &lt;/code&gt;&lt;/pre&gt;
+         * @cfg {String} msg [msg = 'Loading...']
          */
         msg:{
             value : 'Loading...'
         },
-<span id='BUI-Mask-LoadMask-property-msgCls'>        /**
+<span id='BUI-Mask-LoadMask-cfg-msgCls'>        /**
 </span>         * 加载时显示的加载信息的样式
-         * @field
-         * @default x-mask-loading
+         * &lt;pre&gt;&lt;/code&gt;
+         *    var loadMask = new Mask.LoadMask({
+         *        el : '#domId',
+         *        msgCls : 'custom-cls'
+         *    });
+         * &lt;/code&gt;&lt;/pre&gt;
+         * @cfg {String} [msgCls = 'x-mask-loading']
          */
         msgCls:{
             value : 'x-mask-loading'
         },
-<span id='BUI-Mask-LoadMask-property-disabled'>        /**
+<span id='global-property-disabled'>        /**
 </span>         * 加载控件是否禁用
          * @type {Boolean}
          * @field
          * @default false
+         * @ignore
          */
         disabled:{
            value : false

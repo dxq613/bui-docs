@@ -53,12 +53,16 @@ define('bui/overlay/message',['bui/overlay/dialog'],function (require) {
       _self.on('afterVisibleChange',function(ev){
         if(ev.newVal){
           if(BUI.UA.ie &lt; 8){
-<span id='global-property-'>           /**
+<span id='global-property-outerWidth'>           /**
 </span>           * fix ie6,7 bug
            * @ignore
            */
-            _self.get('header').width(body.outerWidth() - 20);
-            _self.get('footer').width(body.outerWidth());
+            var outerWidth = body.outerWidth();
+            if(BUI.UA.ie == 6){
+              outerWidth = outerWidth &gt; 350 ? 350 : outerWidth;
+            }
+            _self.get('header').width(outerWidth - 20);
+            _self.get('footer').width(outerWidth);
           }
         }
       });
