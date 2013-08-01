@@ -11,6 +11,7 @@
 	"../../../bui/src/mask",
 	"../../../bui/src/calendar",
 	"../../../bui/src/list",
+	"../../../bui/src/picker",
 	"../../../bui/src/menu",
 	"../../../bui/src/form",
 	"../../../bui/src/select",
