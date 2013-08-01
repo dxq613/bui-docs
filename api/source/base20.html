@@ -16,19 +16,21 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='global-property-'>/**
-</span> * @fileOverview 进度条命名空间入口
+</span> * @fileOverview 提示的入口文件
  * @ignore
  */
 
-define('bui/progressbar',['bui/common','bui/progressbar/base','bui/progressbar/load'],function (require) {
+define('bui/tooltip',['bui/common','bui/tooltip/tip','bui/tooltip/tips'],function (require) {
   var BUI = require('bui/common'),
-    ProgressBar = BUI.namespace('ProgressBar');
-  BUI.mix(ProgressBar,{
-    Base : require('bui/progressbar/base'),
-    Load : require('bui/progressbar/load')
-  });
+    Tooltip = BUI.namespace('Tooltip'),
+    Tip = require('bui/tooltip/tip'),
+    Tips = require('bui/tooltip/tips');
 
-  return ProgressBar;
+  BUI.mix(Tooltip,{
+    Tip : Tip,
+    Tips : Tips
+  });
+  return Tooltip;
 });</pre>
 </body>
 </html>

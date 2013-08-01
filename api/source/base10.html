@@ -16,31 +16,24 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='global-property-'>/**
-</span> * @fileOverview form 命名空间入口
+</span> * @fileOverview 菜单命名空间入口文件
  * @ignore
  */
-;(function(){
-var BASE = 'bui/form/';
-define('bui/form',['bui/common',BASE + 'fieldcontainer',BASE + 'form',BASE + 'row',BASE + 'fieldgroup',BASE + 'horizontal',BASE + 'rules',BASE + 'field',BASE + 'fieldgroup'],function (r) {
-  var BUI = r('bui/common'),
-    Form = BUI.namespace('Form'),
-    Tips = r(BASE + 'tips');
 
-  BUI.mix(Form,{
-    Tips : Tips,
-    TipItem : Tips.Item,
-    FieldContainer : r(BASE + 'fieldcontainer'),
-    Form : r(BASE + 'form'),
-    Row : r(BASE + 'row'),
-    Group : r(BASE + 'fieldgroup'),
-    HForm : r(BASE + 'horizontal'),
-    Rules : r(BASE + 'rules'),
-    Field : r(BASE + 'field'),
-    FieldGroup : r(BASE + 'fieldgroup')
+define('bui/menu',['bui/common','bui/menu/menu','bui/menu/menuitem','bui/memu/contextmenu','bui/menu/popmenu','bui/menu/sidemenu'],function (require) {
+  
+  var BUI = require('bui/common'),
+    Menu = BUI.namespace('Menu');
+  BUI.mix(Menu,{
+    Menu : require('bui/menu/menu'),
+    MenuItem : require('bui/menu/menuitem'),
+    ContextMenu : require('bui/memu/contextmenu'),
+    PopMenu : require('bui/menu/popmenu'),
+    SideMenu : require('bui/menu/sidemenu')
   });
-  return Form;
-});
-})();
-</pre>
+
+  Menu.ContextMenuItem = Menu.ContextMenu.Item;
+  return Menu;
+});</pre>
 </body>
 </html>

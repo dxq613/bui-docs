@@ -21,7 +21,7 @@
  * @ignore
  */
 
-define('bui/calendar/calendar',['bui/list','bui/calendar/monthpicker','bui/calendar/header','bui/calendar/panel','bui/toolbar'],function(require){
+define('bui/calendar/calendar',['bui/picker','bui/calendar/monthpicker','bui/calendar/header','bui/calendar/panel','bui/toolbar'],function(require){
   
   var BUI = require('bui/common'),
     PREFIX = BUI.prefix,
@@ -30,7 +30,7 @@ define('bui/calendar/calendar',['bui/list','bui/calendar/monthpicker','bui/calen
     CLS_PICKER_MINUTE = 'x-datepicker-minute',
     CLS_PICKER_SECOND = 'x-datepicker-second',
     CLS_TIME_PICKER = 'x-timepicker',
-    List = require('bui/list'),
+    Picker = require('bui/picker').ListPicker,
     MonthPicker = require('bui/calendar/monthpicker'),
     Header = require('bui/calendar/header'),
     Panel = require('bui/calendar/panel'),
@@ -79,6 +79,17 @@ define('bui/calendar/calendar',['bui/list','bui/calendar/monthpicker','bui/calen
    * &lt;img src=&quot;../assets/img/class-calendar.jpg&quot;/&gt;
    * &lt;/p&gt;
    * xclass:'calendar'
+   * &lt;pre&gt;&lt;code&gt;
+   *  BUI.use('bui/calendar',function(Calendar){
+   *    var calendar = new Calendar.Calendar({
+   *      render:'#calendar'
+   *    });
+   *    calendar.render();
+   *    calendar.on('selectedchange',function (ev) {
+   *      alert(ev.date);
+   *    });
+   * });
+   * &lt;/code&gt;&lt;/pre&gt;
    * @class BUI.Calendar.Calendar
    * @extends BUI.Component.Controller
    */
@@ -149,7 +160,7 @@ define('bui/calendar/calendar',['bui/list','bui/calendar/monthpicker','bui/calen
     },
     _initTimePicker : function(){
       var _self = this,
-        picker = new List.Picker({
+        picker = new Picker({
           elCls : CLS_TIME_PICKER,
           children:[{
             itemTpl : '&lt;li&gt;&lt;a href=&quot;#&quot;&gt;{text}&lt;/a&gt;&lt;/li&gt;'
@@ -323,6 +334,9 @@ define('bui/calendar/calendar',['bui/list','bui/calendar/monthpicker','bui/calen
       },
 <span id='BUI-Calendar-Calendar-property-maxDate'>      /**
 </span>       * 最大日期
+       * &lt;pre&gt;&lt;code&gt;
+       *   calendar.set('maxDate','2013-07-29');
+       * &lt;/code&gt;&lt;/pre&gt;
        * @type {Date}
        */
       maxDate : {
@@ -330,6 +344,9 @@ define('bui/calendar/calendar',['bui/list','bui/calendar/monthpicker','bui/calen
       },
 <span id='BUI-Calendar-Calendar-property-minDate'>      /**
 </span>       * 最小日期
+       * &lt;pre&gt;&lt;code&gt;
+       *   calendar.set('minDate','2013-07-29');
+       * &lt;/code&gt;&lt;/pre&gt;
        * @type {Date}
        */
       minDate : {
@@ -387,11 +404,8 @@ define('bui/calendar/calendar',['bui/list','bui/calendar/monthpicker','bui/calen
       },
 <span id='BUI-Calendar-Calendar-cfg-showTime'>      /**
 </span>       * 是否选择时间,此选项决定是否可以选择时间
+       * 
        * @cfg {Boolean} showTime
-       */
-<span id='BUI-Calendar-Calendar-property-showTime'>      /**
-</span>       * 是否选择时间
-       * @type {Boolean}
        */
       showTime : {
         value : false
@@ -401,20 +415,25 @@ define('bui/calendar/calendar',['bui/list','bui/calendar/monthpicker','bui/calen
       },
 <span id='BUI-Calendar-Calendar-cfg-selectedDate'>      /**
 </span>       * 选择的日期,默认为当天
+       * &lt;pre&gt;&lt;code&gt;
+       *  var calendar = new Calendar.Calendar({
+       *  render:'#calendar',
+       *   selectedDate : new Date('2013/07/01') //不能使用字符串
+       * });
+       * &lt;/code&gt;&lt;/pre&gt;
        * @cfg {Date} selectedDate
        */
 <span id='BUI-Calendar-Calendar-property-selectedDate'>      /**
 </span>       * 选择的日期
+       * &lt;pre&gt;&lt;code&gt;
+       *   calendar.set('selectedDate',new Date('2013-9-01'));
+       * &lt;/code&gt;&lt;/pre&gt;
        * @type {Date}
        * @default today
        */
       selectedDate : {
         value : today()
       },
-<span id='BUI-Calendar-Calendar-cfg-hour'>      /**
-</span>       * 小时,默认为当前小时
-       * @cfg {Number} hour
-       */
 <span id='BUI-Calendar-Calendar-property-hour'>      /**
 </span>       * 小时,默认为当前小时
        * @type {Number}
@@ -423,10 +442,6 @@ define('bui/calendar/calendar',['bui/list','bui/calendar/monthpicker','bui/calen
         value : new Date().getHours()
   
       },
-<span id='BUI-Calendar-Calendar-cfg-minute'>      /**
-</span>       * 分,默认为当前分
-       * @cfg {Number} minute
-       */
 <span id='BUI-Calendar-Calendar-property-minute'>      /**
 </span>       * 分,默认为当前分
        * @type {Number}
@@ -434,10 +449,6 @@ define('bui/calendar/calendar',['bui/list','bui/calendar/monthpicker','bui/calen
       minute:{
         value : new Date().getMinutes()
       },
-<span id='BUI-Calendar-Calendar-cfg-second'>      /**
-</span>       * 秒,默认为当前秒
-       * @cfg {Number} second
-       */
 <span id='BUI-Calendar-Calendar-property-second'>      /**
 </span>       * 秒,默认为当前秒
        * @type {Number}

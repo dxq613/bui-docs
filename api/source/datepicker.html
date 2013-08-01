@@ -20,10 +20,10 @@
  * @author dxq613@gmail.com
  * @ignore
  */
-define('bui/calendar/datepicker',['bui/common','bui/overlay','bui/calendar/calendar'],function(require){
+define('bui/calendar/datepicker',['bui/common','bui/picker','bui/calendar/calendar'],function(require){
   
   var BUI = require('bui/common'),
-    Picker = require('bui/overlay').Picker,
+    Picker = require('bui/picker').Picker,
     Calendar = require('bui/calendar/calendar'),
     DateUtil = BUI.Date;
 
@@ -33,8 +33,17 @@ define('bui/calendar/datepicker',['bui/common','bui/overlay','bui/calendar/calen
    * &lt;img src=&quot;../assets/img/class-calendar.jpg&quot;/&gt;
    * &lt;/p&gt;
    * xclass : 'calendar-datepicker'
+   * &lt;pre&gt;&lt;code&gt;
+   *   BUI.use('bui/calendar',function(Calendar){
+   *      var datepicker = new Calendar.DatePicker({
+   *        trigger:'.calendar',
+   *        //delegateTigger : true, //如果设置此参数，那么新增加的.calendar元素也会支持日历选择
+   *        autoRender : true
+   *      });
+   *    });
+   * &lt;/code&gt;&lt;/pre&gt;
    * @class BUI.Calendar.DatePicker
-   * @extends BUI.Overlay.Picker
+   * @extends BUI.Picker.Picker
    */
   var datepicker = Picker.extend({
 
@@ -50,7 +59,11 @@ define('bui/calendar/datepicker',['bui/common','bui/overlay','bui/calendar/calen
     },
 <span id='BUI-Calendar-DatePicker-method-setSelectedValue'>    /**
 </span>     * 设置选中的值
+     * &lt;pre&gt;&lt;code&gt;
+     *   datePicker.setSelectedValue('2012-01-1');
+     * &lt;/code&gt;&lt;/pre&gt;
      * @param {String} val 设置值
+     * @protected
      */
     setSelectedValue : function(val){
       var _self = this,
@@ -65,7 +78,8 @@ define('bui/calendar/datepicker',['bui/common','bui/overlay','bui/calendar/calen
       }
     },
 <span id='BUI-Calendar-DatePicker-method-getSelectedValue'>    /**
-</span>     * 获取选中的值，多选状态下，值以','分割
+</span>     * 获取选中的值
+     * @protected
      * @return {String} 选中的值
      */
     getSelectedValue : function(){
@@ -81,6 +95,7 @@ define('bui/calendar/datepicker',['bui/common','bui/overlay','bui/calendar/calen
     },
 <span id='BUI-Calendar-DatePicker-method-getSelectedText'>    /**
 </span>     * 获取选中项的文本，多选状态下，文本以','分割
+     * @protected
      * @return {String} 选中的文本
      */
     getSelectedText : function(){
@@ -112,6 +127,13 @@ define('bui/calendar/datepicker',['bui/common','bui/overlay','bui/calendar/calen
     {
 <span id='BUI-Calendar-DatePicker-property-showTime'>      /**
 </span>       * 是否显示日期
+       * &lt;pre&gt;&lt;code&gt;
+       *  var datepicker = new Calendar.DatePicker({
+       *    trigger:'.calendar',
+       *    showTime : true, //可以选择日期
+       *    autoRender : true
+       *  });
+       * &lt;/code&gt;&lt;/pre&gt;
        * @type {Boolean}
        */
       showTime : {
@@ -119,6 +141,14 @@ define('bui/calendar/datepicker',['bui/common','bui/overlay','bui/calendar/calen
       },
 <span id='BUI-Calendar-DatePicker-property-maxDate'>      /**
 </span>       * 最大日期
+       * &lt;pre&gt;&lt;code&gt;
+       *   var datepicker = new Calendar.DatePicker({
+       *     trigger:'.calendar',
+       *     maxDate : '2014-01-01',
+       *     minDate : '2013-7-25',
+       *     autoRender : true
+       *   });
+       * &lt;/code&gt;&lt;/pre&gt;
        * @type {Date}
        */
       maxDate : {
@@ -126,6 +156,14 @@ define('bui/calendar/datepicker',['bui/common','bui/overlay','bui/calendar/calen
       },
 <span id='BUI-Calendar-DatePicker-property-minDate'>      /**
 </span>       * 最小日期
+       * &lt;pre&gt;&lt;code&gt;
+       *   var datepicker = new Calendar.DatePicker({
+       *     trigger:'.calendar',
+       *     maxDate : '2014-01-01',
+       *     minDate : '2013-7-25',
+       *     autoRender : true
+       *   });
+       * &lt;/code&gt;&lt;/pre&gt;
        * @type {Date}
        */
       minDate : {

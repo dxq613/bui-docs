@@ -122,14 +122,11 @@ define('bui/menu/sidemenu',['bui/common','bui/menu/menu'],function(require){
     _initSubMenuCfg : function(subItem){
       var _self = this,
         cfg = {
-          id : subItem.id,
           xclass : 'menu-item',
           elCls : 'menu-leaf',
-          tpl : '&lt;a href=&quot;{href}&quot;&gt;&lt;em&gt;{text}&lt;/em&gt;&lt;/a&gt;',
-          href : subItem.href,
-          text : subItem.text
+          tpl : '&lt;a href=&quot;{href}&quot;&gt;&lt;em&gt;{text}&lt;/em&gt;&lt;/a&gt;'
         };
-      return cfg;
+      return BUI.mix(cfg,subItem);
     }
   },{
 

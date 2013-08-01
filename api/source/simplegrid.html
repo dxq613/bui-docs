@@ -158,6 +158,35 @@ define('bui/grid/simplegrid',['bui/common','bui/list'],function(require) {
 <span id='BUI-Grid-SimpleGrid'>  /**
 </span>   * 简单表格
    * xclass:'simple-grid'
+   * &lt;pre&gt;&lt;code&gt;
+   *  BUI.use('bui/grid',function(Grid){
+   *     
+   *    var columns = [{
+   *             title : '表头1(10%)',
+   *             dataIndex :'a',
+   *             width:'10%'
+   *           },{
+   *             id: '123',
+   *             title : '表头2(20%)',
+   *             dataIndex :'b',
+   *             width:'20%'
+   *           },{
+   *             title : '表头3(70%)',
+   *             dataIndex : 'c',
+   *             width:'70%'
+   *         }],
+   *         data = [{a:'123'},{a:'cdd',b:'edd'},{a:'1333',c:'eee',d:2}];
+   *
+   *     var grid = new Grid.SimpleGrid({
+   *       render:'#grid',
+   *       columns : columns,
+   *       items : data,
+   *       idField : 'a'
+   *     });
+   *
+   *     grid.render();
+   *   });
+   * &lt;/code&gt;&lt;/pre&gt;
    * @class BUI.Grid.SimpleGrid
    * @extends BUI.List.SimpleList
    */
@@ -190,6 +219,13 @@ define('bui/grid/simplegrid',['bui/common','bui/list'],function(require) {
     },
 <span id='BUI-Grid-SimpleGrid-method-showData'>    /**
 </span>     * 显示数据
+     * &lt;pre&gt;&lt;code&gt;
+     *   var data = [{},{}];
+     *   grid.showData(data);
+     *
+     *   //等同
+     *   grid.set('items',data);
+     * &lt;/code&gt;&lt;/pre&gt;
      * @param  {Array} data 要显示的数据
      */
     showData : function(data){
@@ -228,6 +264,15 @@ define('bui/grid/simplegrid',['bui/common','bui/list'],function(require) {
       },
 <span id='BUI-Grid-SimpleGrid-property-tableCls'>      /**
 </span>       * 表格应用的样式，更改此值，则不应用默认表格样式
+       * &lt;pre&gt;&lt;code&gt;
+       * grid = new Grid.SimpleGrid({
+       *   render:'#grid',
+       *   columns : columns,
+       *   innerBorder : false,
+       *   tableCls:'table table-bordered table-striped', 
+       *   store : store 
+       * }); 
+       * &lt;/code&gt;&lt;/pre&gt;
        * @type {Object}
        */
       tableCls : {
@@ -265,6 +310,16 @@ define('bui/grid/simplegrid',['bui/common','bui/list'],function(require) {
       },
 <span id='BUI-Grid-SimpleGrid-cfg-innerBorder'>      /**
 </span>       * 单元格左右之间是否出现边框
+       * &lt;pre&gt;&lt;code&gt;
+       * &lt;pre&gt;&lt;code&gt;
+       * grid = new Grid.SimpleGrid({
+       *   render:'#grid',
+       *   columns : columns,
+       *   innerBorder : false,
+       *   store : store 
+       * }); 
+       * &lt;/code&gt;&lt;/pre&gt;
+       * &lt;/code&gt;&lt;/pre&gt;
        * @cfg {Boolean} [innerBorder=true]
        */
 <span id='BUI-Grid-SimpleGrid-property-innerBorder'>      /**

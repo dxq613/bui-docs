@@ -16,24 +16,21 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='global-property-'>/**
-</span> * @fileOverview 菜单命名空间入口文件
+</span> * @fileOverview Picker的入口
+ * @author dxq613@gmail.com
  * @ignore
  */
 
-define('bui/menu',['bui/common','bui/menu/menu','bui/menu/menuitem','bui/memu/contextmenu','bui/menu/popmenu','bui/menu/sidemenu'],function (require) {
-  
+define('bui/picker',['bui/common','bui/picker/picker','bui/picker/listpicker'],function (require) {
   var BUI = require('bui/common'),
-    Menu = BUI.namespace('Menu');
-  BUI.mix(Menu,{
-    Menu : require('bui/menu/menu'),
-    MenuItem : require('bui/menu/menuitem'),
-    ContextMenu : require('bui/memu/contextmenu'),
-    PopMenu : require('bui/menu/popmenu'),
-    SideMenu : require('bui/menu/sidemenu')
+    Picker = BUI.namespace('Picker');
+
+  BUI.mix(Picker,{
+    Picker : require('bui/picker/picker'),
+    ListPicker : require('bui/picker/listpicker')
   });
 
-  Menu.ContextMenuItem = Menu.ContextMenu.Item;
-  return Menu;
+  return Picker;
 });</pre>
 </body>
 </html>

@@ -149,8 +149,24 @@ define('bui/grid/column',['bui/common'],function (require) {
     });
 
 <span id='BUI-Grid-Column'>    /**
-</span>     * 表格的列对象，存储列信息
+</span>     * 表格的列对象，存储列信息，此对象不会由用户创建，而是配置在Grid中
      * xclass:'grid-column'
+     * &lt;pre&gt;&lt;code&gt;
+     * columns = [{
+     *        title : '表头1',
+     *        dataIndex :'a',
+     *        width:100
+     *      },{
+     *        title : '表头2',
+     *        dataIndex :'b',
+     *        visible : false, //隐藏
+     *        width:200
+     *      },{
+     *        title : '表头3',
+     *        dataIndex : 'c',
+     *        width:200
+     *    }];
+     * &lt;/code&gt;&lt;/pre&gt;
      * @class BUI.Grid.Column
      * @extends BUI.Component.Controller
      */
@@ -205,6 +221,7 @@ define('bui/grid/column',['bui/common'],function (require) {
 <span id='BUI-Grid-Column-property-open'>                /**
 </span>                 * 表头展开显示菜单，
                  * @type {Boolean}
+                 * @protected
                  */
                 open : {
                     view : true,
@@ -212,6 +229,13 @@ define('bui/grid/column',['bui/common'],function (require) {
                 },
 <span id='BUI-Grid-Column-cfg-dataIndex'>                /**
 </span>                 * 此列对应显示数据的字段名称
+                 * &lt;pre&gt;&lt;code&gt;
+                 * {
+                 *     title : '表头1',
+                 *     dataIndex :'a', //对应的数据的字段名称，如 ： {a:'123',b:'456'}
+                 *     width:100
+                 * }
+                 * &lt;/code&gt;&lt;/pre&gt;
                  * @cfg {String} dataIndex
                  */
 <span id='BUI-Grid-Column-property-dataIndex'>                /**
@@ -235,8 +259,21 @@ define('bui/grid/column',['bui/common'],function (require) {
                     value:true
                 },
 <span id='BUI-Grid-Column-property-editor'>                /**
-</span>                 * 编辑器，暂时为支持
-                 * @private
+</span>                 * 编辑器,用于可编辑表格中&lt;br&gt;
+                 * ** 常用编辑器 **
+                 *  - xtype 指的是表单字段的类型 {@link BUI.Form.Field}
+                 *  - 其他的配置项对应于表单字段的配置项
+                 * &lt;pre&gt;&lt;code&gt;
+                 * columns = [
+                 *   {title : '文本',dataIndex :'a',editor : {xtype : 'text'}}, 
+                 *   {title : '数字', dataIndex :'b',editor : {xtype : 'number',rules : {required : true}}},
+                 *   {title : '日期',dataIndex :'c', editor : {xtype : 'date'},renderer : Grid.Format.dateRenderer},
+                 *   {title : '单选',dataIndex : 'd', editor : {xtype :'select',items : enumObj},renderer : Grid.Format.enumRenderer(enumObj)},
+                 *   {title : '多选',dataIndex : 'e', editor : {xtype :'select',select:{multipleSelect : true},items : enumObj},
+                 *       renderer : Grid.Format.multipleItemsRenderer(enumObj)
+                 *   }
+                 * ]
+                 * &lt;/code&gt;&lt;/pre&gt;
                  * @type {Object}
                  */
                 editor:{
@@ -253,10 +290,6 @@ define('bui/grid/column',['bui/common'],function (require) {
 </span>                 * 固定列,主要用于在首行显示一些特殊内容，如单选框，复选框，序号等。插件不能对此列进行特殊操作，如：移动位置，隐藏等
                  * @cfg {Boolean} fixed
                  */
-<span id='BUI-Grid-Column-property-fixed'>                /**
-</span>                 * 固定列,主要用于在首行显示一些特殊内容，如单选框，复选框，序号等。插件不能对此列进行特殊操作，如：移动位置，隐藏等
-                 * @type {Boolean}
-                 */
                 fixed : {
                     value : false
                 },
@@ -264,24 +297,18 @@ define('bui/grid/column',['bui/common'],function (require) {
 </span>                 * 控件的编号
                  * @cfg {String} id
                  */
-<span id='BUI-Grid-Column-property-id'>                /**
-</span>                 * 控件的编号
-                 * @type {String}
-                 * @default null
-                 */
                 id:{
 
                 },
 <span id='BUI-Grid-Column-cfg-renderer'>                /**
 </span>                 * 渲染表格单元格的格式化函数
                  * &quot;function(value,obj,index){return value;}&quot;
+                 * &lt;pre&gt;&lt;code&gt;
+                 * {title : '操作',renderer : function(){
+                 *     return '&lt;span class=&quot;grid-command btn-edit&quot;&gt;编辑&lt;/span&gt;'
+                 *   }}
+                 * &lt;/code&gt;&lt;/pre&gt;
                  * @cfg {Function} renderer
-                 */
-<span id='BUI-Grid-Column-property-renderer'>                /**
-</span>                 * 渲染表格单元格的格式化函数
-                 * &quot;function(value,obj,index){return value;}&quot;
-                 * @type {Function}
-                 * @default
                  */
                 renderer:{
 
@@ -289,17 +316,17 @@ define('bui/grid/column',['bui/common'],function (require) {
 <span id='BUI-Grid-Column-property-resizable'>                /**
 </span>                 * 是否可以调整宽度，应用于拖拽或者自适应宽度时
                  * @type {Boolean}
+                 * @protected
                  * @default true
                  */
                 resizable:{
                     value:true
                 },
                 /* 是否可以按照此列排序，如果设置true,那么点击列头时
+                 * &lt;pre&gt;&lt;code&gt;
+                 *     {title : '数字', dataIndex :'b',sortable : false},
+                 * &lt;/code&gt;&lt;/pre&gt;
                  * @cfg {Boolean} [sortable=true]
-                 */
-                /* 是否可以按照此列排序，如果设置true,那么点击列头时
-                 * @type {Boolean}
-                 * @default true.
                  */
                 sortable:{
 					sync:false,
@@ -309,6 +336,7 @@ define('bui/grid/column',['bui/common'],function (require) {
 <span id='BUI-Grid-Column-property-sortState'>                /**
 </span>                 * 排序状态，当前排序是按照升序、降序。有3种值 null, 'ASC','DESC'
                  * @type {String}
+                 * @protected
                  * @default null
                  */
                 sortState:{
@@ -321,6 +349,10 @@ define('bui/grid/column',['bui/common'],function (require) {
                  */
 <span id='BUI-Grid-Column-property-title'>                /**
 </span>                 * 列标题
+                 * &lt;pre&gt;&lt;code&gt;
+                 * var column = grid.findColumn('id');
+                 * column.get('title');
+                 * &lt;/code&gt;&lt;/pre&gt;
                  * Note: to have a clickable header with no text displayed you can use the default of &amp;#160; aka &amp;nbsp;.
                  * @type {String}
                  * @default {String} &amp;#160;
@@ -330,10 +362,24 @@ define('bui/grid/column',['bui/common'],function (require) {
                     view:true,
                     value:'&amp;#160;'
                 },
-<span id='BUI-Grid-Column-property-width'>                /**
-</span>                 * 列的宽度,可以使数字或者百分比
+<span id='BUI-Grid-Column-property-'>                /**
+</span>                 * 列的宽度,可以使数字或者百分比,不要使用 width : '100'或者width : '100px'
+                 * &lt;pre&gt;&lt;code&gt;
+                 *  {title : '文本',width:100,dataIndex :'a',editor : {xtype : 'text'}}
+                 *  
+                 *  {title : '文本',width:'10%',dataIndex :'a',editor : {xtype : 'text'}}
+                 * &lt;/code&gt;&lt;/pre&gt;
                  * @type {Number|String}
-                 * @default {Number} 80
+                 * @cfg {Number} [width = 80]
+                 */
+                
+<span id='BUI-Grid-Column-property-width'>                /**
+</span>                 * 列宽度
+                 * &lt;pre&gt;&lt;code&gt;
+                 *  grid.findColumn(id).set('width',200);
+                 * &lt;/code&gt;&lt;/pre&gt;
+                 * 
+                 * @type {Object}
                  */
                 width:{
                     value:100

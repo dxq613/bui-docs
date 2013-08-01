@@ -262,6 +262,13 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
         checked : 'checked'
       }  
     },
+<span id='BUI-Tree-Mixin-cfg-dirSelectable'>    /**
+</span>     * 文件夹是否可选，用于选择节点时，避免选中非叶子节点
+     * @cfg {Boolean} [dirSelectable = true]
+     */
+    dirSelectable : {
+      value : true
+    },
 <span id='BUI-Tree-Mixin-property-showRoot'>    /**
 </span>     * 是否显示根节点
      * &lt;pre&gt;&lt;code&gt;
@@ -554,7 +561,6 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
       element = _self.findElement(node);
       _self._toggleExpand(node,element);
     },
-
 <span id='BUI-Tree-Mixin-method-setNodeChecked'>    /**
 </span>     * 设置节点勾选状态
      * &lt;pre&gt;&lt;code&gt;
@@ -717,10 +723,29 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
           element = ev.element,
           node = ev.item;
         if(sender.hasClass(CLS_EXPANDER)){
-          _self._toggleExpand(node,element);
+          _self._toggleExpand(node,element); //点击展开收缩节点，不触发选中事件
+          return false;
         }else if(sender.hasClass(CLS_CHECKBOX)){
           var checked = _self.isChecked(node);
           _self.setNodeChecked(node,!checked);
+        }
+        
+      });
+
+      _self.on('itemdblclick',function(ev){
+        var sender = $(ev.domTarget),
+          element = ev.element,
+          node = ev.item;
+        if(!sender.hasClass(CLS_EXPANDER)){
+          _self._toggleExpand(node,element);
+        }
+      });
+
+      _self.on('beforeselectedchange',function(ev){
+        var dirSelectable = _self.get('dirSelectable'),
+          node = ev.item;
+        if(!dirSelectable &amp;&amp; !node.leaf){ //如果阻止非叶子节点选中
+          return false;
         }
       });
 

@@ -16,21 +16,32 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='global-property-'>/**
-</span> * @fileOverview 编辑器命名空间入口
+</span> * @fileOverview 表格插件的入口
+ * @author dxq613@gmail.com, yiminghe@gmail.com
  * @ignore
  */
+;(function(){
+var BASE = 'bui/grid/plugins/';
+define('bui/grid/plugins',['bui/common',BASE + 'selection',BASE + 'cascade',BASE + 'cellediting',BASE + 'rowediting',BASE + 'dialogediting',BASE + 'menu',BASE + 'summary'],function (r) {
+	var BUI = r('bui/common'),
+		Selection = r(BASE + 'selection'),
 
-define('bui/editor',['bui/common','bui/form','bui/editor/editor','bui/editor/record','bui/editor/dialog'],function (require) {
-  var BUI = require('bui/common'),
-    Form = require('bui/form'),
-    Editor = BUI.namespace('Editor');
+		Plugins = {};
 
-  BUI.mix(Editor,{
-    Editor : require('bui/editor/editor'),
-    RecordEditor : require('bui/editor/record'),
-    DialogEditor : require('bui/editor/dialog')
-  });
-  return Editor;
-});</pre>
+		BUI.mix(Plugins,{
+			CheckSelection : Selection.CheckSelection,
+			RadioSelection : Selection.RadioSelection,
+			Cascade : r(BASE + 'cascade'),
+			CellEditing : r(BASE + 'cellediting'),
+			RowEditing : r(BASE + 'rowediting'),
+			DialogEditing : r(BASE + 'dialogediting'),
+			GridMenu : r(BASE + 'menu'),
+			Summary : r(BASE + 'summary')
+		});
+		
+	return Plugins;
+});
+})();
+</pre>
 </body>
 </html>

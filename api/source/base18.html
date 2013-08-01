@@ -16,19 +16,21 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='global-property-'>/**
-</span> * @fileOverview 选择框命名空间入口文件
+</span> * @fileOverview 编辑器命名空间入口
  * @ignore
  */
 
-define('bui/tree',['bui/common','bui/tree/treemixin','bui/tree/treelist'],function (require) {
+define('bui/editor',['bui/common','bui/form','bui/editor/editor','bui/editor/record','bui/editor/dialog'],function (require) {
   var BUI = require('bui/common'),
-    Tree = BUI.namespace('Tree');
+    Form = require('bui/form'),
+    Editor = BUI.namespace('Editor');
 
-  BUI.mix(Tree,{
-    TreeList : require('bui/tree/treelist'),
-    Mixin : require('bui/tree/treemixin')
+  BUI.mix(Editor,{
+    Editor : require('bui/editor/editor'),
+    RecordEditor : require('bui/editor/record'),
+    DialogEditor : require('bui/editor/dialog')
   });
-  return Tree;
+  return Editor;
 });</pre>
 </body>
 </html>

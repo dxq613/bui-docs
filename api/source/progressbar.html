@@ -44,9 +44,22 @@ define('bui/progressbar/base',['bui/common'],function(require){
 		}
 	});
 <span id='BUI-ProgressBar-Base'>	/**
-</span>   	* 基础进度条，用于显示进度
-   	* xclass:'progress-bar'
-   	* @class BUI.ProgressBar.Base
+</span> 	* 基础进度条，用于显示进度
+ 	* xclass:'progress-bar'
+ 	* &lt;pre&gt;&lt;code&gt;
+ 	*  BUI.use('bui/progressbar',function(ProgressBar){
+  *   
+  *     var Progressbar = ProgressBar.Base,
+  *       progressbar = new Progressbar({
+  *         elCls : 'progress progress-striped active',
+  *         render : '#progressbar',
+  *         tpl : '&lt;div class=&quot;bar&quot;&gt;&lt;/div&gt;',
+  *         percent:10
+  *       });
+  *     progressbar.render();
+  *  });
+  * &lt;/code&gt;&lt;/pre&gt;
+ 	* @class BUI.ProgressBar.Base
 	* @extends BUI.Component.Controller
 	*/
 	var progressBar = BUI.Component.Controller.extend({

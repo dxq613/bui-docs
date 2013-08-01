@@ -16,24 +16,20 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='global-property-'>/**
-</span> * @fileOverview 切换标签入口
+</span> * @fileOverview 选择框命名空间入口文件
  * @ignore
  */
 
-define('bui/tab',['bui/common','bui/tab/tab','bui/tab/tabitem','bui/tab/navtabitem','bui/tab/navtab','bui/tab/tabpanel','bui/tab/tabpanelitem'],function (require) {
+define('bui/select',['bui/common','bui/select/select','bui/select/combox','bui/select/suggest'],function (require) {
   var BUI = require('bui/common'),
-    Tab = BUI.namespace('Tab');
+    Select = BUI.namespace('Select');
 
-  BUI.mix(Tab,{
-    Tab : require('bui/tab/tab'),
-    TabItem : require('bui/tab/tabitem'),
-    NavTabItem : require('bui/tab/navtabitem'),
-    NavTab : require('bui/tab/navtab'),
-    TabPanel : require('bui/tab/tabpanel'),
-    TabPanelItem : require('bui/tab/tabpanelitem')
+  BUI.mix(Select,{
+    Select : require('bui/select/select'),
+    Combox : require('bui/select/combox'),
+    Suggest: require('bui/select/suggest')
   });
-
-  return Tab;
+  return Select;
 });</pre>
 </body>
 </html>

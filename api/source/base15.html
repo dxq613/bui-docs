@@ -16,26 +16,24 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='global-property-'>/**
-</span> * @fileOverview 表格命名空间入口
+</span> * @fileOverview 切换标签入口
  * @ignore
  */
 
-define('bui/grid',['bui/common','bui/grid/simplegrid','bui/grid/grid','bui/grid/column','bui/grid/header','bui/grid/format','bui/grid/plugins'],function (require) {
-
+define('bui/tab',['bui/common','bui/tab/tab','bui/tab/tabitem','bui/tab/navtabitem','bui/tab/navtab','bui/tab/tabpanel','bui/tab/tabpanelitem'],function (require) {
   var BUI = require('bui/common'),
-    Grid = BUI.namespace('Grid');
+    Tab = BUI.namespace('Tab');
 
-  BUI.mix(Grid,{
-    SimpleGrid : require('bui/grid/simplegrid'),
-    Grid : require('bui/grid/grid'),
-    Column : require('bui/grid/column'),
-    Header : require('bui/grid/header'),
-    Format : require('bui/grid/format'),
-    Plugins : require('bui/grid/plugins')
+  BUI.mix(Tab,{
+    Tab : require('bui/tab/tab'),
+    TabItem : require('bui/tab/tabitem'),
+    NavTabItem : require('bui/tab/navtabitem'),
+    NavTab : require('bui/tab/navtab'),
+    TabPanel : require('bui/tab/tabpanel'),
+    TabPanelItem : require('bui/tab/tabpanelitem')
   });
 
-  return Grid;
-
+  return Tab;
 });</pre>
 </body>
 </html>

@@ -20,13 +20,34 @@
  * @ignore
  */
 
-define('bui/list/listpicker',['bui/overlay'],function (require) {
+define('bui/picker/listpicker',['bui/picker/picker','bui/list'],function (require) {
 
-  var Picker = require('bui/overlay').Picker,
-<span id='BUI-List-Picker'>    /**
-</span>     * 列表选择器
-     * @class BUI.List.Picker
-     * @extends BUI.Overlay.Picker
+  var List = require('bui/list'),
+    Picker = require('bui/picker/picker'),
+<span id='BUI-Picker-ListPicker'>    /**
+</span>     * 列表选择器,xclass = 'list-picker'
+     * &lt;pre&gt;&lt;code&gt;
+     * BUI.use(['bui/picker'],function(Picker){
+     *
+     * var items = [
+     *       {text:'选项1',value:'a'},
+     *       {text:'选项2',value:'b'},
+     *      {text:'选项3',value:'c'}
+     *     ],
+     *   picker = new Picker.ListPicker({
+     *     trigger : '#show',  
+     *     valueField : '#hide', //如果需要列表返回的value，放在隐藏域，那么指定隐藏域
+     *     width:100,  //指定宽度
+     *     children : [{
+     *        elCls:'bui-select-list',
+     *        items : items
+     *     }] //配置picker内的列表
+     *   });
+     * picker.render();
+     * });
+     * &lt;/code&gt;&lt;/pre&gt;
+     * @class BUI.Picker.ListPicker
+     * @extends BUI.Picker.Picker
      */
     listPicker = Picker.extend({
       initializer : function(){
@@ -39,8 +60,10 @@ define('bui/list/listpicker',['bui/overlay'],function (require) {
           });
         }
       },
-<span id='BUI-List-Picker-method-setSelectedValue'>      /**
+<span id='BUI-Picker-ListPicker-method-setSelectedValue'>      /**
 </span>       * 设置选中的值
+       * @override
+       * @protected
        * @param {String} val 设置值
        */
       setSelectedValue : function(val){
@@ -55,15 +78,26 @@ define('bui/list/listpicker',['bui/overlay'],function (require) {
           list.setSelectionByField(val.split(','));
         }   
       },
-<span id='BUI-List-Picker-method-getSelectedValue'>      /**
+<span id='global-method-onChange'>      /**
+</span>       * @protected
+       * @ignore
+       */
+      onChange : function(selText,selValue,ev){
+        var _self = this,
+          curTrigger = _self.get('curTrigger');
+        _self.fire('selectedchange',{value : selValue,text : selText,curTrigger : curTrigger,item : ev.item});
+      },
+<span id='BUI-Picker-ListPicker-method-getSelectedValue'>      /**
 </span>       * 获取选中的值，多选状态下，值以','分割
+       * @protected
        * @return {String} 选中的值
        */
       getSelectedValue : function(){
         return this.get('list').getSelectionValues().join(',');
       },
-<span id='BUI-List-Picker-method-getSelectedText'>      /**
+<span id='BUI-Picker-ListPicker-method-getSelectedText'>      /**
 </span>       * 获取选中项的文本，多选状态下，文本以','分割
+       * @protected
        * @return {String} 选中的文本
        */
       getSelectedText : function(){
@@ -71,7 +105,7 @@ define('bui/list/listpicker',['bui/overlay'],function (require) {
       }
     },{
       ATTRS : {
-<span id='BUI-List-Picker-property-defaultChildClass'>        /**
+<span id='BUI-Picker-ListPicker-property-defaultChildClass'>        /**
 </span>         * 默认子控件的样式,默认为'simple-list'
          * @type {String}
          * @override
@@ -79,8 +113,12 @@ define('bui/list/listpicker',['bui/overlay'],function (require) {
         defaultChildClass:{
           value : 'simple-list'
         },
-<span id='BUI-List-Picker-property-list'>        /**
+<span id='BUI-Picker-ListPicker-property-list'>        /**
 </span>         * 选择的列表
+         * &lt;pre&gt;&lt;code&gt;
+         *  var list = picker.get('list');
+         *  list.getSelected();
+         * &lt;/code&gt;&lt;/pre&gt;
          * @type {BUI.List.SimpleList}
          * @readOnly
          */
@@ -89,6 +127,15 @@ define('bui/list/listpicker',['bui/overlay'],function (require) {
             return this.get('children')[0];
           }
         }
+<span id='BUI-Picker-ListPicker-event-selectedchange'>        /**
+</span>         * @event selectedchange
+         * 选择发生改变事件
+         * @param {Object} e 事件对象
+         * @param {String} e.text 选中的文本
+         * @param {string} e.value 选中的值
+         * @param {Object} e.item 发生改变的选项
+         * @param {jQuery} e.curTrigger 当前触发picker的元素
+         */
       }
     },{
       xclass : 'list-picker'
