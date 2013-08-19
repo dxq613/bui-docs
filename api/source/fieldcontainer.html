@@ -231,6 +231,9 @@ define('bui/form/fieldcontainer',['bui/common','bui/form/field','bui/form/groupv
             field.set('checked',false);
           }
         }else{
+          if(value == null){
+            value = '';
+          }
           field.set('value',value);
         }
       },
@@ -346,6 +349,22 @@ define('bui/form/fieldcontainer',['bui/common','bui/form/field','bui/form/groupv
         validators : {
           value : {
 
+          }
+        },
+<span id='BUI-Form-FieldContainer-property-defaultLoaderCfg'>        /**
+</span>         * 默认的加载控件内容的配置,默认值：
+         * &lt;pre&gt;
+         *  {
+         *   property : 'children',
+         *   dataType : 'json'
+         * }
+         * &lt;/pre&gt;
+         * @type {Object}
+         */
+        defaultLoaderCfg  : {
+          value : {
+            property : 'children',
+            dataType : 'json'
           }
         },
         disabled : {

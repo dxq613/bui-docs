@@ -362,14 +362,14 @@ define('bui/grid/column',['bui/common'],function (require) {
                     view:true,
                     value:'&amp;#160;'
                 },
-<span id='BUI-Grid-Column-property-'>                /**
+
+<span id='BUI-Grid-Column-cfg-width'>                /**
 </span>                 * 列的宽度,可以使数字或者百分比,不要使用 width : '100'或者width : '100px'
                  * &lt;pre&gt;&lt;code&gt;
                  *  {title : '文本',width:100,dataIndex :'a',editor : {xtype : 'text'}}
                  *  
                  *  {title : '文本',width:'10%',dataIndex :'a',editor : {xtype : 'text'}}
                  * &lt;/code&gt;&lt;/pre&gt;
-                 * @type {Number|String}
                  * @cfg {Number} [width = 80]
                  */
                 
@@ -379,7 +379,7 @@ define('bui/grid/column',['bui/common'],function (require) {
                  *  grid.findColumn(id).set('width',200);
                  * &lt;/code&gt;&lt;/pre&gt;
                  * 
-                 * @type {Object}
+                 * @type {Number}
                  */
                 width:{
                     value:100

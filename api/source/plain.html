@@ -56,23 +56,23 @@ define('bui/form/plainfield',['bui/form/basefield'],function (require) {
     xclass : 'form-field-plain-view'
   });
 
-<span id='BUI-Form-Field-PlainField'>  /**
+<span id='BUI-Form-Field-Plain'>  /**
 </span>   * 表单文本域，不能编辑
-   * @class BUI.Form.Field.PlainField
+   * @class BUI.Form.Field.Plain
    * @extends BUI.Form.Field
    */
   var PlainField = Field.extend({
  
   },{
     ATTRS : {
-<span id='BUI-Form-Field-PlainField-property-controlTpl'>      /**
+<span id='BUI-Form-Field-Plain-property-controlTpl'>      /**
 </span>       * 内部表单元素的容器
        * @type {String}
        */
       controlTpl : {
         value : '&lt;input type=&quot;hidden&quot;/&gt;'
       },
-<span id='BUI-Form-Field-PlainField-property-textTpl'>      /**
+<span id='BUI-Form-Field-Plain-property-textTpl'>      /**
 </span>       * 显示文本的模板
        * @type {String}
        */
@@ -80,7 +80,7 @@ define('bui/form/plainfield',['bui/form/basefield'],function (require) {
         view : true,
         value : '&lt;span class=&quot;x-form-text&quot;&gt;{text}&lt;/span&gt;'
       },
-<span id='BUI-Form-Field-PlainField-property-renderer'>      /**
+<span id='BUI-Form-Field-Plain-property-renderer'>      /**
 </span>       * 将字段的值格式化输出
        * @type {Function}
        */

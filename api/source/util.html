@@ -16,26 +16,23 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js">
-<span id='BUI'>/**
-</span> * 定义命名空间
- * &lt;p&gt;
- * &lt;img src=&quot;../assets/img/class-bui.jpg&quot;/&gt;
- * &lt;/p&gt;
- * @class  BUI
+<span id='BUI-Util'>/**
+</span> * @class BUI.Util
+ * 控件库的工具方法，这些工具方法直接绑定到BUI对象上
+ * &lt;pre&gt;&lt;code&gt;
+ *     BUI.isString(str);
+ *
+ *     BUI.extend(A,B);
+ *
+ *     BUI.mix(A,{a:'a'});
+ * &lt;/code&gt;&lt;/pre&gt;
  * @singleton
  */  
 var BUI = BUI || {};
 
-<span id='global-property-'>/**
-</span> * BUI 的静态函数
- * @ignore
- */
 define('bui/util',function(){
   
-<span id='global-property-'>    /**
-</span>     * 兼容 jquery 1.6
-     * @ignore
-     */
+    //兼容jquery 1.6以下
     (function($){
       if($.fn){
         $.fn.on = $.fn.on || $.fn.bind;
@@ -54,19 +51,20 @@ define('bui/util',function(){
 
   $.extend(BUI,
   {
-<span id='BUI-property-version'>    /**
+<span id='BUI-Util-property-version'>    /**
 </span>     * 版本号
+     * @memberOf BUI
      * @type {Number}
      */
     version:1.0,
 
-<span id='BUI-property-subVersion'>    /**
+<span id='BUI-Util-property-subVersion'>    /**
 </span>     * 子版本号
      * @type {String}
      */
-    subVersion : 1,
+    subVersion : 2,
 
-<span id='BUI-method-isFunction'>    /**
+<span id='BUI-Util-method-isFunction'>    /**
 </span>     * 是否为函数
      * @param  {*} fn 对象
      * @return {Boolean}  是否函数
@@ -74,7 +72,7 @@ define('bui/util',function(){
     isFunction : function(fn){
       return typeof(fn) === 'function';
     },
-<span id='BUI-method-isArray'>    /**
+<span id='BUI-Util-method-isArray'>    /**
 </span>     * 是否数组
      * @method 
      * @param  {*}  obj 是否数组
@@ -83,7 +81,7 @@ define('bui/util',function(){
     isArray : ('isArray' in Array) ? Array.isArray : function(value) {
         return toString.call(value) === '[object Array]';
     },
-<span id='BUI-method-isDate'>    /**
+<span id='BUI-Util-method-isDate'>    /**
 </span>     * 是否日期
      * @param  {*}  value 对象
      * @return {Boolean}  是否日期
@@ -91,7 +89,7 @@ define('bui/util',function(){
     isDate: function(value) {
         return toString.call(value) === '[object Date]';
     },
-<span id='BUI-method-isObject'>    /**
+<span id='BUI-Util-method-isObject'>    /**
 </span>     * 是否是javascript对象
      * @param {Object} value The value to test
      * @return {Boolean}
@@ -105,7 +103,7 @@ define('bui/util',function(){
     function(value) {
         return toString.call(value) === '[object Object]';
     },
-<span id='BUI-method-augment'>    /**
+<span id='BUI-Util-method-augment'>    /**
 </span>     * 将指定的方法或属性放到构造函数的原型链上，
      * 函数支持多于2个变量，后面的变量同s1一样将其成员复制到构造函数的原型链上。
      * @param  {Function} r  构造函数
@@ -127,7 +125,7 @@ define('bui/util',function(){
       };
       return r;
     },
-<span id='BUI-method-cloneObject'>    /**
+<span id='BUI-Util-method-cloneObject'>    /**
 </span>     * 拷贝对象
      * @param  {Object} obj 要拷贝的对象
      * @return {Object} 拷贝生成的对象
@@ -137,7 +135,7 @@ define('bui/util',function(){
             
       return BUI.mix(true,result,obj);
     },
-<span id='BUI-method-error'>    /**
+<span id='BUI-Util-method-error'>    /**
 </span>    * 抛出错误
     */
     error : function(msg){
@@ -145,7 +143,7 @@ define('bui/util',function(){
             throw msg;
         }
     },
-<span id='BUI-method-extend'>    /**
+<span id='BUI-Util-method-extend'>    /**
 </span>     * 实现类的继承，通过父类生成子类
      * @param  {Function} subclass
      * @param  {Function} superclass 父类构造函数
@@ -206,7 +204,7 @@ define('bui/util',function(){
       BUI.mix(subclass,staticOverrides);
       return subclass;
     },
-<span id='BUI-method-guid'>    /**
+<span id='BUI-Util-method-guid'>    /**
 </span>     * 生成唯一的Id
      * @method
      * @param {String} prefix 前缀
@@ -225,21 +223,21 @@ define('bui/util',function(){
             return prefix + map[prefix];
         };
     })(),
-<span id='BUI-method-isString'>    /**
+<span id='BUI-Util-method-isString'>    /**
 </span>     * 判断是否是字符串
      * @return {Boolean} 是否是字符串
      */
     isString : function(value){
       return typeof value === 'string';
     },
-<span id='BUI-method-isNumber'>    /**
+<span id='BUI-Util-method-isNumber'>    /**
 </span>     * 判断是否数字，由于$.isNumberic方法会把 '123'认为数字
      * @return {Boolean} 是否数字
      */
     isNumber : function(value){
       return typeof value === 'number';
     },
-<span id='BUI-method-log'>    /**
+<span id='BUI-Util-method-log'>    /**
 </span>     * 控制台输出日志
      * @param  {Object} obj 输出的数据
      */
@@ -248,7 +246,7 @@ define('bui/util',function(){
         win.console.log(obj);
       }
     },
-<span id='BUI-method-merge'>    /**
+<span id='BUI-Util-method-merge'>    /**
 </span>    * 将多个对象的属性复制到一个新的对象
     */
     merge : function(){
@@ -257,14 +255,14 @@ define('bui/util',function(){
       return BUI.mix.apply(null,args);
 
     },
-<span id='BUI-method-mix'>    /**
+<span id='BUI-Util-method-mix'>    /**
 </span>     * 封装 jQuery.extend 方法，将多个对象的属性merge到第一个对象中
      * @return {Object} 
      */
     mix : function(){
       return $.extend.apply(null,arguments);
     },
-<span id='BUI-method-app'>    /**
+<span id='BUI-Util-method-app'>    /**
 </span>    * 创造顶层的命名空间，附加到window对象上,
     * 包含namespace方法
     */
@@ -278,7 +276,7 @@ define('bui/util',function(){
       }
       return window[name];
     },
-<span id='BUI-method-mixin'>    /**
+<span id='BUI-Util-method-mixin'>    /**
 </span>     * 将其他类作为mixin集成到指定类上面
      * @param {Function} c 构造函数
      * @param {Array} mixins 扩展类
@@ -339,7 +337,7 @@ define('bui/util',function(){
         }
         return c;
     },
-<span id='BUI-method-namespace'>    /**
+<span id='BUI-Util-method-namespace'>    /**
 </span>     * 生成命名空间
      * @param  {String} name 命名空间的名称
      * @param  {Object} baseNS 在已有的命名空间上创建命名空间，默认“BUI”
@@ -365,12 +363,12 @@ define('bui/util',function(){
       };    
       return curNS;
     },
-<span id='BUI-property-prefix'>    /**
+<span id='BUI-Util-property-prefix'>    /**
 </span>     * BUI 控件的公用前缀
      * @type {String}
      */
     prefix : 'bui-',
-<span id='BUI-method-substitute'>    /**
+<span id='BUI-Util-method-substitute'>    /**
 </span>     * 替换字符串中的字段.
      * @param {String} str 模版字符串
      * @param {Object} o json data
@@ -389,7 +387,7 @@ define('bui/util',function(){
             return (o[name] === undefined) ? '' : o[name];
         });
     },
-<span id='BUI-method-ucfirst'>    /**
+<span id='BUI-Util-method-ucfirst'>    /**
 </span>     * 使第一个字母变成大写
      * @param  {String} s 字符串
      * @return {String} 首字母大写后的字符串
@@ -398,7 +396,7 @@ define('bui/util',function(){
       s += '';
             return s.charAt(0).toUpperCase() + s.substring(1);
     },
-<span id='BUI-method-isInView'>    /**
+<span id='BUI-Util-method-isInView'>    /**
 </span>     * 页面上的一点是否在用户的视图内
      * @param {Object} offset 坐标，left,top
      * @return {Boolean} 是否在视图内
@@ -420,7 +418,7 @@ define('bui/util',function(){
       }
       return true;
     },
-<span id='BUI-method-isInVerticalView'>    /**
+<span id='BUI-Util-method-isInVerticalView'>    /**
 </span>     * 页面上的一点纵向坐标是否在用户的视图内
      * @param {Object} top  纵坐标
      * @return {Boolean} 是否在视图内
@@ -435,7 +433,7 @@ define('bui/util',function(){
       }
       return true;
     },
-<span id='BUI-method-isInHorizontalView'>    /**
+<span id='BUI-Util-method-isInHorizontalView'>    /**
 </span>     * 页面上的一点横向坐标是否在用户的视图内
      * @param {Object} left 横坐标
      * @return {Boolean} 是否在视图内
@@ -449,33 +447,33 @@ define('bui/util',function(){
       }
       return true;
     },
-<span id='BUI-method-viewportWidth'>    /**
+<span id='BUI-Util-method-viewportWidth'>    /**
 </span>     * 获取窗口可视范围宽度
      * @return {Number} 可视区宽度
      */
     viewportWidth : function(){
         return $(window).width();
     },
-<span id='BUI-method-viewportHeight'>    /**
+<span id='BUI-Util-method-viewportHeight'>    /**
 </span>     * 获取窗口可视范围高度
      * @return {Number} 可视区高度
      */
     viewportHeight:function(){
          return $(window).height();
     },
-<span id='BUI-method-scrollLeft'>    /**
+<span id='BUI-Util-method-scrollLeft'>    /**
 </span>     * 滚动到窗口的left位置
      */
     scrollLeft : function(){
         return $(window).scrollLeft();
     },
-<span id='BUI-method-scrollTop'>    /**
+<span id='BUI-Util-method-scrollTop'>    /**
 </span>     * 滚动到横向位置
      */
     scrollTop : function(){
         return $(window).scrollTop();
     },
-<span id='BUI-method-docWidth'>    /**
+<span id='BUI-Util-method-docWidth'>    /**
 </span>     * 窗口宽度
      * @return {Number} 窗口宽度
      */
@@ -483,7 +481,7 @@ define('bui/util',function(){
         var body = document.documentElement || document.body;
         return $(body).width();
     },
-<span id='BUI-method-docHeight'>    /**
+<span id='BUI-Util-method-docHeight'>    /**
 </span>     * 窗口高度
      * @return {Number} 窗口高度
      */
@@ -491,7 +489,7 @@ define('bui/util',function(){
         var body = document.documentElement || document.body;
         return $(body).height();
     },
-<span id='BUI-method-each'>    /**
+<span id='BUI-Util-method-each'>    /**
 </span>     * 遍历数组或者对象
      * @param {Object|Array} element/Object 数组中的元素或者对象的值 
      * @param {Function} func 遍历的函数 function(elememt,index){} 或者 function(value,key){}
@@ -504,7 +502,7 @@ define('bui/util',function(){
         return func(v,k);
       });
     },
-<span id='BUI-method-wrapBehavior'>    /**
+<span id='BUI-Util-method-wrapBehavior'>    /**
 </span>     * 封装事件，便于使用上下文this,和便于解除事件时使用
      * @protected
      * @param  {Object} self   对象
@@ -517,7 +515,7 @@ define('bui/util',function(){
         }
       };
     },
-<span id='BUI-method-getWrapBehavior'>    /**
+<span id='BUI-Util-method-getWrapBehavior'>    /**
 </span>     * 获取封装的事件
      * @protected
      * @param  {Object} self   对象
@@ -549,12 +547,12 @@ define('bui/util',function(){
       });
       return result;
     },
-<span id='BUI-FormHelper-method-setValues'>    /**
+<span id='BUI-FormHelper-method-setFields'>    /**
 </span>     * 设置表单的值
      * @param {HTMLElement} form 表单
      * @param {Object} obj  键值对
      */
-    setValues : function(form,obj){
+    setFields : function(form,obj){
       for(var name in obj){
         if(obj.hasOwnProperty(name)){
           BUI.FormHelper.setField(form,name,obj[name]);

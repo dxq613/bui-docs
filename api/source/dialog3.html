@@ -61,6 +61,16 @@ define('bui/editor/dialog',['bui/overlay','bui/editor/mixin'],function (require)
         this.accept();
       }
     },
+<span id='BUI-Editor-DialogEditor-method-cancel'>    /**
+</span>     * 取消编辑
+     */
+    cancel : function(){
+      if(this.onCancel()!== false){
+        this.fire('cancel');
+        this.clearValue();
+        this.close();
+      } 
+    },
 <span id='BUI-Editor-DialogEditor-method-updateSource'>    /**
 </span>     * @protected
      * 更新文本

@@ -3,6 +3,7 @@
 "--title":"BUI API",
 "--external":"window,HTMLDocument,HTMLElement,DocumentFragment,XMLHttpRequest,jQuery",
 "--":[
+	//"../../../bui/src/common/util.js",
         "../../../bui/src/common",
 	"../../../bui/src/bar",
 	"../../../bui/src/data",
