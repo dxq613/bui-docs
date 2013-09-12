@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 自动适应表格宽度的扩展
+ * @ignore
+ */
+
+define('bui/grid/plugins/autofit',['bui/common'],function (require) {
+  var BUI = require('bui/common');
+
+<span id='BUI-Grid-Plugins-AutoFit'>  /**
+</span>   * 表格自适应宽度
+   * @class BUI.Grid.Plugins.AutoFit
+   * @extends BUI.Base
+   */
+  var AutoFit = function(cfg){
+    AutoFit.superclass.constructor.call(this,cfg);
+  };
+
+  BUI.extend(AutoFit,BUI.Base);
+
+  AutoFit.ATTRS = {
+
+  };
+
+  BUI.augment(AutoFit,{
+    //绑定事件
+    bindUI : function(grid){
+      var _self = this,
+        handler;
+      $(window).on('resize',function(){
+
+        function autoFit(){
+          clearTimeout(handler); //防止resize短时间内反复调用
+          handler = setTimeout(function(){
+            _self._autoFit(grid);
+          },100);
+        }
+        autoFit();
+      });
+    },
+    //自适应宽度
+    _autoFit : function(grid){
+      var render = grid.get('render'),
+          width;
+        grid.set('visible',false);
+        width = $(render).width();
+
+        grid.set('visible',true);
+        grid.set('width',width);
+    }
+
+  });
+
+  return AutoFit;
+});</pre>
+</body>
+</html>

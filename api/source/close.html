@@ -50,7 +50,7 @@ define('bui/component/uibase/close',function () {
             '&quot;&gt;关闭&lt;' + '/span&gt;' +
             '&lt;' + '/a&gt;'
     },
-    closable:{
+    closeable:{
         value:true
     },
     closeBtn:{
@@ -58,7 +58,7 @@ define('bui/component/uibase/close',function () {
   };
 
   CloseView.prototype = {
-      _uiSetClosable:function (v) {
+      _uiSetCloseable:function (v) {
           var self = this,
               btn = self.get('closeBtn');
           if (v) {
@@ -90,7 +90,7 @@ define('bui/component/uibase/close',function () {
       * &lt;pre&gt;&lt;code&gt;
       *   var overlay = new Overlay({
       *     closeTpl : '&lt;a href=&quot;#&quot; title=&quot;close&quot;&gt;x&lt;/a&gt;',
-      *     closable : true,
+      *     closeable : true,
       *     trigger : '#t1'
       *   });
       *   overlay.render();
@@ -105,15 +105,15 @@ define('bui/component/uibase/close',function () {
       closeTpl:{
         view : true
       },
-<span id='BUI-Component-UIBase-Close-cfg-closable'>      /**
+<span id='BUI-Component-UIBase-Close-cfg-closeable'>      /**
 </span>       * 是否出现关闭按钮
-       * @cfg {Boolean} [closable = false]
+       * @cfg {Boolean} [closeable = false]
        */
-<span id='BUI-Component-UIBase-Close-property-closable'>      /**
+<span id='BUI-Component-UIBase-Close-property-closeable'>      /**
 </span>       * 是否出现关闭按钮
        * @type {Boolean}
        */
-      closable:{
+      closeable:{
           view:1
       },
 
@@ -168,7 +168,7 @@ define('bui/component/uibase/close',function () {
   };
 
   Close.prototype = {
-      _uiSetClosable:function (v) {
+      _uiSetCloseable:function (v) {
           var self = this;
           if (v &amp;&amp; !self.__bindCloseEvent) {
               self.__bindCloseEvent = 1;

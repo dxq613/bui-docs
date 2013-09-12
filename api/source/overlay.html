@@ -53,13 +53,16 @@ define('bui/overlay/overlay',['bui/common'],function (require) {
    *     var overlay = new Overlay.Overlay({
    *       trigger : '#btn',
    *       content : '这是内容',
-   *       elCls : '外层应用的样式',
+   *       align : {
+   *         points : ['bl','tl']
+   *       }, //对齐方式
+   *       elCls : 'custom-cls', //自定义样式
    *       autoHide : true //点击overlay外面，overlay 会自动隐藏
    *     });
    *
    *     overlay.render();
    *   });
-   * &lt;code&gt;&lt;pre&gt;
+   * &lt;/code&gt;&lt;/pre&gt;
    *
    * 
    * @class BUI.Overlay.Overlay
@@ -88,19 +91,18 @@ define('bui/overlay/overlay',['bui/common'],function (require) {
         effect = effectCfg.effect,
         duration = effectCfg.duration;
 
-  	  if(visibleMode === 'visibility'){
-    		overlay.superclass.show.call(_self);
-    		if(effectCfg.callback){
-              effectCfg.callback.call(_self);
-        }
-    		return;
-  	  }
+  	  
       //如果还未渲染，则先渲染控件
       if(!_self.get('rendered')){
         _self.set('visible',true);
         _self.render();
         _self.set('visible',false);
         el = _self.get('el');
+      }
+
+      if(visibleMode === 'visibility'){
+        _self.set('visible',true);
+        el.css({display : 'none'});
       }
       
       switch(effect){
@@ -119,7 +121,11 @@ define('bui/overlay/overlay',['bui/common'],function (require) {
       }
 
       function callback(){
-        _self.set('visible',true);
+        if(visibleMode === 'visibility'){
+          el.css({display : 'block'});
+        }else{
+          _self.set('visible',true);
+        }
         if(effectCfg.callback){
           effectCfg.callback.call(_self);
         }
@@ -132,10 +138,7 @@ define('bui/overlay/overlay',['bui/common'],function (require) {
         el = _self.get('el'),
         effect = effectCfg.effect,
         duration = effectCfg.duration;
-  	  if(_self.get('visibleMode') === 'visibility'){
-  		  callback();
-  		  return;
-  	  }
+  	  
       switch(effect){
         case 'linear':
           el.hide(duration,callback);
@@ -151,6 +154,9 @@ define('bui/overlay/overlay',['bui/common'],function (require) {
         break;
       }
       function callback(){
+        if(_self.get('visibleMode') === 'visibility'){
+          el.css({display : 'block'});
+        }
         _self.set('visible',false);
         if(effectCfg.callback){
           effectCfg.callback.call(_self);
@@ -180,40 +186,37 @@ define('bui/overlay/overlay',['bui/common'],function (require) {
           callback : null
         }
       },
-<span id='BUI-Overlay-Overlay-property-closable'>      /**
+<span id='BUI-Overlay-Overlay-property-closeable'>      /**
 </span>       * whether this component can be closed.
        * @default false
        * @type {Boolean}
        * @protected
        */
-      closable:{
+      closeable:{
           value:false
       },
-<span id='BUI-Overlay-Overlay-property-showArrow'>      /**
+<span id='BUI-Overlay-Overlay-cfg-showArrow'>      /**
 </span>       * 是否显示指向箭头，跟align属性的points相关
-       * @type {Boolean}
-       * @protected
+       * @cfg {Boolean} [showArrow = false]
        */
       showArrow : {
         value : false
       },
-<span id='BUI-Overlay-Overlay-property-arrowContainer'>      /**
+<span id='BUI-Overlay-Overlay-cfg-arrowContainer'>      /**
 </span>       * 箭头放置在的位置，是一个选择器，例如 .arrow-wraper
        *     new Tip({ //可以设置整个控件的模板
        *       arrowContainer : '.arrow-wraper',
        *       tpl : '&lt;div class=&quot;arrow-wraper&quot;&gt;&lt;/div&gt;'
        *     });
        *     
-       * @type {String}
-       * @protected
+       * @cfg {String} arrowContainer
        */
       arrowContainer : {
         view : true
       },
-<span id='BUI-Overlay-Overlay-property-arrowTpl'>      /**
+<span id='BUI-Overlay-Overlay-cfg-arrowTpl'>      /**
 </span>       * 指向箭头的模板
-       * @type {Object}
-       * @protected
+       * @cfg {Object} arrowTpl
        */
       arrowTpl : {
         value : '&lt;s class=&quot;' + CLS_ARROW + '&quot;&gt;&lt;s class=&quot;' + CLS_ARROW + '-inner&quot;&gt;&lt;/s&gt;&lt;/s&gt;'

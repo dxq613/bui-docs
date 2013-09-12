@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 树形菜单
+ * @ignore
+ */
+
+define('bui/tree/treemenu',['bui/common','bui/list','bui/tree/treemixin'],function (require) {
+  var BUI = require('bui/common'),
+    List = require('bui/list'),
+    Mixin = require('bui/tree/treemixin');
+
+  var TreeMenuView = List.SimpleList.View.extend({
+    //覆写获取模板方法
+    getItemTpl : function  (item,index) {
+      var _self = this,
+        render = _self.get('itemTplRender'),
+        itemTpl = item.leaf ? _self.get('leafTpl') : _self.get('dirTpl');  
+      if(render){
+        return render(item,index);
+      }
+      
+      return BUI.substitute(itemTpl,item);
+    }
+  },{
+    xclass : 'tree-menu-view'
+  });
+
+<span id='BUI-Tree-Menu'>  /**
+</span>   * @class BUI.Tree.Menu
+   * 树形列表控件
+   * ** 你可以简单的使用配置数据 **
+   * &lt;pre&gt;&lt;code&gt;
+   *  BUI.use('bui/tree',function(Tree){
+   *    var tree = new Tree.Menu({
+   *      render : '#t1',
+   *      nodes : [
+   *        {id : '1',text : '1',children : [{id : '11',text : '11'}]},
+   *        {id : '2',text : '2'}
+   *      ]
+   *    });
+   *    tree.render();
+   *  });
+   * &lt;/code&gt;&lt;/pre&gt;
+   *
+   * ** 你还可以替换icon ** 
+   * &lt;pre&gt;&lt;code&gt;
+   *  BUI.use('bui/tree',function(Tree){
+   *    var tree = new Tree.Menu({
+   *      render : '#t1',
+   *      dirCls : 'folder', //替换树节点的样式
+   *      leafCls : 'file', //叶子节点的样式
+   *      nodes : [ //数据中存在cls 会替换节点的图标样式
+   *        {id : '1',text : '1'cls:'task-folder',children : [{id : '11',text : '11',cls:'task'}]},
+   *        {id : '2',text : '2'}
+   *      ]
+   *    });
+   *    tree.render();
+   *  });
+   * @mixin BUI.Tree.Mixin
+   * @extends BUI.List.SimpleList
+   */
+  var TreeMenu = List.SimpleList.extend([Mixin],{
+    
+  },{
+    ATTRS : {
+      itemCls : {
+        value : BUI.prefix + 'tree-item'
+      },
+<span id='BUI-Tree-Menu-cfg-dirSelectable'>      /**
+</span>       * 文件夹是否可选，用于选择节点时，避免选中非叶子节点
+       * @cfg {Boolean} [dirSelectable = false]
+       */
+      dirSelectable  : {
+        value : false
+      },
+<span id='BUI-Tree-Menu-property-expandEvent'>      /**
+</span>       * 节点展开的事件
+       * @type {String}
+       */
+      expandEvent : {
+        value : 'itemclick'
+      },
+
+      itemStatusFields  : {
+        value : {
+          selected : 'selected'
+        }
+      },
+<span id='BUI-Tree-Menu-property-collapseEvent'>      /**
+</span>       * 节点折叠的事件
+       * @type {String}
+       */
+      collapseEvent : {
+        value : 'itemclick'
+      },
+      /**/xview : {
+        value : TreeMenuView
+      },
+<span id='BUI-Tree-Menu-property-dirTpl'>      /**
+</span>       * 非叶子节点的模板
+       * @type {String}
+       */
+      dirTpl : {
+        view : true,
+        value : '&lt;li class=&quot;{cls}&quot;&gt;&lt;a href=&quot;#&quot;&gt;{text}&lt;/a&gt;&lt;/li&gt;'
+      },
+<span id='BUI-Tree-Menu-property-leafTpl'>      /**
+</span>       * 叶子节点的模板
+       * @type {String}
+       */
+      leafTpl : {
+        view : true,
+        value : '&lt;li class=&quot;{cls}&quot;&gt;&lt;a href=&quot;{href}&quot;&gt;{text}&lt;/a&gt;&lt;/li&gt;'
+      },
+      idField : {
+        value : 'id'
+      }
+    }
+  },{
+    xclass : 'tree-menu'
+  });
+
+  TreeMenu.View = TreeMenuView;
+  return TreeMenu;
+});</pre>
+</body>
+</html>
