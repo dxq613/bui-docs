@@ -248,6 +248,13 @@ define('bui/list/simplelist',['bui/common','bui/list/domlist','bui/list/keynav']
         view : true,
         value : '&lt;li role=&quot;option&quot; class=&quot;' + CLS_ITEM + '&quot;&gt;{text}&lt;/li&gt;'
       },
+<span id='BUI-List-SimpleList-property-focusable'>      /**
+</span>       * 是否可以获取焦点，此属性设置为true会触发键盘事件
+       * @type {Boolean}
+       */
+      focusable : {
+        value : true
+      },
       tpl : {
         value:'&lt;ul&gt;&lt;/ul&gt;'
       },

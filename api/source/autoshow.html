@@ -85,6 +85,13 @@ define('bui/component/uibase/autoshow',function () {
     autoAlign :{
       value : true
     },
+<span id='BUI-Component-UIBase-AutoShow-property-autoFocused'>    /**
+</span>     * 显示时是否默认获取焦点
+     * @type {Boolean}
+     */
+    autoFocused : {
+      value : true
+    },
 <span id='BUI-Component-UIBase-AutoShow-property-curTrigger'>    /**
 </span>     * 控件显示时由此trigger触发，当配置项 trigger 选择器代表多个DOM 对象时，
      * 控件可由多个DOM对象触发显示。
@@ -203,6 +210,15 @@ define('bui/component/uibase/autoshow',function () {
         }
         _self.set('align',align);
         _self.show();
+        /*if(_self.get('autoFocused')){
+          try{ //元素隐藏的时候，ie下经常会报错
+            _self.focus();
+          }catch(ev){
+            BUI.log(ev);
+          }
+        }*/
+        
+        
         triggerCallback &amp;&amp; triggerCallback(ev);
       }
 

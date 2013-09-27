@@ -21,6 +21,7 @@
 	"../../../bui/src/editor",
 	"../../../bui/src/tree",
 	"../../../bui/src/tooltip",
+	"../../../bui/src/slider",
 	"../../../bui/src/extensions",
 	"../../../bui/src/progressbar"
     ]

@@ -51,7 +51,8 @@ define('bui/calendar/datepicker',['bui/common','bui/picker','bui/calendar/calend
       var _self = this,
         children = _self.get('children'),
         calendar = new Calendar({
-          showTime : _self.get('showTime')
+          showTime : _self.get('showTime'),
+          lockTime : _self.get('lockTime')
         });
 	
 	  if (!_self.get('dateMask')) {
@@ -79,9 +80,13 @@ define('bui/calendar/datepicker',['bui/common','bui/picker','bui/calendar/calend
       date = date || new Date(new Date().setSeconds(0));
       calendar.set('selectedDate',DateUtil.getDate(date));
       if(_self.get('showTime')){
-        calendar.set('hour',date.getHours());
-        calendar.set('minute',date.getMinutes());
-        calendar.set('second',date.getSeconds());
+          var lockTime = this.get(&quot;lockTime&quot;),
+              hour = lockTime&amp;&amp;lockTime['hour']?lockTime['hour']:date.getHours(),
+              minute = lockTime&amp;&amp;lockTime['minute']?lockTime['minute']:date.getMinutes(),
+              second = lockTime&amp;&amp;lockTime['second']?lockTime['second']:date.getSeconds();
+        calendar.set('hour',hour);
+        calendar.set('minute',minute);
+        calendar.set('second',second);
       }
     },
 <span id='BUI-Calendar-DatePicker-method-getSelectedValue'>    /**
@@ -142,6 +147,19 @@ define('bui/calendar/datepicker',['bui/common','bui/picker','bui/calendar/calend
        */
       showTime : {
         value:false
+      },
+<span id='BUI-Calendar-DatePicker-property-lockTime'>       /**
+</span>       * 锁定时间选择
+       *&lt;pre&gt;&lt;code&gt;
+       *  var calendar = new Calendar.Calendar({
+       *  render:'#calendar',
+       *  lockTime : {hour:00,minute:30} //表示锁定时为00,分为30分,秒无锁用户可选择
+       * });
+       * &lt;/code&gt;&lt;/pre&gt;
+       *
+       * @type {Object}
+       */
+      lockTime :{
       },
 <span id='BUI-Calendar-DatePicker-property-maxDate'>      /**
 </span>       * 最大日期

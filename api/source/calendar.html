@@ -22,7 +22,7 @@
  */
 
 define('bui/calendar/calendar',['bui/picker','bui/calendar/monthpicker','bui/calendar/header','bui/calendar/panel','bui/toolbar'],function(require){
-  
+
   var BUI = require('bui/common'),
     PREFIX = BUI.prefix,
     CLS_PICKER_TIME = 'x-datepicker-time',
@@ -103,7 +103,7 @@ define('bui/calendar/calendar',['bui/picker','bui/calendar/monthpicker','bui/cal
         panel = new Panel(),
         footer = _self.get('footer') || _self._createFooter(),
         monthPicker = _self.get('monthPicker') || _self._createMonthPicker();
-        
+
 
       //添加头
       children.push(header);
@@ -116,7 +116,6 @@ define('bui/calendar/calendar',['bui/picker','bui/calendar/monthpicker','bui/cal
       _self.set('panel',panel);
       _self.set('footer',footer);
       _self.set('monthPicker',monthPicker);
-
     },
     renderUI : function(){
       var _self = this,
@@ -146,7 +145,7 @@ define('bui/calendar/calendar',['bui/picker','bui/calendar/monthpicker','bui/cal
       }else{
         _self._initTimePickerEvent();
       }
-    
+
       header.on('monthchange',function(e){
         _self._setYearMonth(e.year,e.month);
       });
@@ -160,7 +159,16 @@ define('bui/calendar/calendar',['bui/picker','bui/calendar/monthpicker','bui/cal
     },
     _initTimePicker : function(){
       var _self = this,
-        picker = new Picker({
+        lockTime = _self.get('lockTime'),
+        _timePickerEnum={hour:CLS_PICKER_HOUR,minute:CLS_PICKER_MINUTE,second:CLS_PICKER_SECOND};
+      if(lockTime){
+          for(var key in lockTime){
+              var noCls = _timePickerEnum[key.toLowerCase()];
+              _self.set(key,lockTime[key]);
+              _self.get('el').find(&quot;.&quot;+noCls).attr(&quot;disabled&quot;,&quot;&quot;);
+          }
+      }
+      var  picker = new Picker({
           elCls : CLS_TIME_PICKER,
           children:[{
             itemTpl : '&lt;li&gt;&lt;a href=&quot;#&quot;&gt;{text}&lt;/a&gt;&lt;/li&gt;'
@@ -171,7 +179,7 @@ define('bui/calendar/calendar',['bui/picker','bui/calendar/monthpicker','bui/cal
             points:['bl','bl'],
             offset:[0,-30]
           },
-          trigger : _self.get('el').find('.' + CLS_PICKER_TIME)
+          trigger : _self.get('el').find('.' +CLS_PICKER_TIME)
         });
       picker.render();
       _self._initTimePickerEvent(picker);
@@ -253,10 +261,10 @@ define('bui/calendar/calendar',['bui/picker','bui/calendar/monthpicker','bui/cal
           text:'确定',
           btnCls: 'button button-small button-primary',
           listeners:{
-            click:function(){            
+            click:function(){
               _self.fire('accept');
             }
-          }  
+          }
         });
       }else{
         items.push({
@@ -269,10 +277,10 @@ define('bui/calendar/calendar',['bui/picker','bui/calendar/monthpicker','bui/cal
               _self.set('selectedDate',day);
               _self.fire('accept');
             }
-          }  
+          }
         });
       }
-      
+
       return new Toolbar.Bar({
           elCls : PREFIX + 'calendar-footer',
           children:items
@@ -309,7 +317,7 @@ define('bui/calendar/calendar',['bui/picker','bui/calendar/monthpicker','bui/cal
     }
 
   },{
-    ATTRS : 
+    ATTRS :
 <span id='global-property-'>    /**
 </span>     * @lends BUI.Calendar.Calendar#
      * @ignore
@@ -404,11 +412,24 @@ define('bui/calendar/calendar',['bui/picker','bui/calendar/monthpicker','bui/cal
       },
 <span id='BUI-Calendar-Calendar-cfg-showTime'>      /**
 </span>       * 是否选择时间,此选项决定是否可以选择时间
-       * 
+       *
        * @cfg {Boolean} showTime
        */
       showTime : {
         value : false
+      },
+<span id='BUI-Calendar-Calendar-property-lockTime'>      /**
+</span>      * 锁定时间选择
+      *&lt;pre&gt;&lt;code&gt;
+      *  var calendar = new Calendar.Calendar({
+      *  render:'#calendar',
+      *  lockTime : {hour:00,minute:30} //表示锁定时为00,分为30分,秒无锁用户可选择
+      * });
+      * &lt;/code&gt;&lt;/pre&gt;
+       *
+       * @type {Object}
+      */
+      lockTime :{
       },
       timeTpl : {
         value : '&lt;input type=&quot;text&quot; readonly class=&quot;' + CLS_PICKER_TIME + ' ' + CLS_PICKER_HOUR + '&quot; /&gt;:&lt;input type=&quot;text&quot; readonly class=&quot;' + CLS_PICKER_TIME + ' ' + CLS_PICKER_MINUTE + '&quot; /&gt;:&lt;input type=&quot;text&quot; readonly class=&quot;' + CLS_PICKER_TIME + ' ' + CLS_PICKER_SECOND + '&quot; /&gt;'
@@ -440,7 +461,6 @@ define('bui/calendar/calendar',['bui/picker','bui/calendar/monthpicker','bui/cal
        */
       hour : {
         value : new Date().getHours()
-  
       },
 <span id='BUI-Calendar-Calendar-property-minute'>      /**
 </span>       * 分,默认为当前分

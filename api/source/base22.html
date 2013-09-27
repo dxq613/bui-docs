@@ -15,14 +15,20 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">define('bui/slider',['bui/slider/slider'],function (require) {
-  var Slider = BUI.namespace('Slider');
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 进度条命名空间入口
+ * @ignore
+ */
 
-  BUI.mix(Slider,{
-    Slider : require('bui/slider/slider')
+define('bui/progressbar',['bui/common','bui/progressbar/base','bui/progressbar/load'],function (require) {
+  var BUI = require('bui/common'),
+    ProgressBar = BUI.namespace('ProgressBar');
+  BUI.mix(ProgressBar,{
+    Base : require('bui/progressbar/base'),
+    Load : require('bui/progressbar/load')
   });
 
-  return Slider;
+  return ProgressBar;
 });</pre>
 </body>
 </html>

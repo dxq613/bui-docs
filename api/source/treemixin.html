@@ -744,7 +744,8 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
         if(parent &amp;&amp; _self.isChecked(parent)){ //如果父节点选中，当前节点必须勾选
           _self.setStatusValue(node,'checked',true);
         }
-        if(_self._isAllChildrenChecked(node)){
+        //节点为非叶子节点，同时叶子节点不为空时根据叶子节点控制
+        if(node.children &amp;&amp; node.children.length &amp;&amp; _self._isAllChildrenChecked(node)){
           _self.setStatusValue(node,'checked',true);
         }
       }
@@ -1041,6 +1042,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
     //加载完节点
     _loadNode : function(node){
       var _self = this;
+      _self._initChecked(node,true);
       _self.expandNode(node);
       _self._updateIcons(node);
       _self.setItemStatus(node,LOADING,false);
