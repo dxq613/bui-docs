@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 边框布局选项
+ * @ignore
+ */
+
+define('bui/layout/borderitem',function (require) {
+	var BUI = require('bui/common'),
+		Base = require('bui/layout/baseitem'),
+		CLS_COLLAPSED = 'x-collapsed',
+		REGINS = {
+			NORTH : 'north',
+			EAST : 'east',
+			SOUTH : 'south',
+			WEST : 'west',
+			CENTER : 'center'
+		};
+		
+
+<span id='BUI-Layout-Item-Border'>	/**
+</span>	 * 边框布局选项
+	 * @class BUI.Layout.Item.Border
+	 * @extends BUI.Layout.Item
+	 */
+	var Border = function(config){
+		Border.superclass.constructor.call(this,config);
+	};
+
+	Border.ATTRS = {
+
+<span id='BUI-Layout-Item-Border-property-region'>		/**
+</span>		 * 位置
+		 * @type {String}
+		 */
+		region : {
+
+		},
+<span id='BUI-Layout-Item-Border-property-titleTpl'>		/**
+</span>		 * 标题的模板
+		 * @type {Object}
+		 */
+		titleTpl : {
+			value : '&lt;div class=&quot;x-border-title x-border-title-{region}&quot;&gt;{title}&lt;/div&gt;'
+		},
+<span id='BUI-Layout-Item-Border-property-collapseTpl'>		/**
+</span>		 * 附加元素
+		 * @type {Object}
+		 */
+		collapseTpl : {
+			value : '&lt;s class=&quot;x-collapsed-btn x-collapsed-{region}&quot;&gt;&lt;/s&gt;'
+		},
+<span id='BUI-Layout-Item-Border-property-collapsable'>		/**
+</span>		 * 是否可以折叠
+		 * @type {String}
+		 */
+		collapsable : {
+			value : false
+		},
+<span id='BUI-Layout-Item-Border-property-collapsed'>		/**
+</span>		 * 是否折叠
+		 * @type {String}
+		 */
+		collapsed : {
+			value : false
+		},
+<span id='BUI-Layout-Item-Border-property-leftRange'>		/**
+</span>		 * 收缩后剩余的宽度或者高度，如果存在title，则以title的高度为准
+		 * @type {Object}
+		 */
+		leftRange : {
+			value : 28
+		},
+<span id='BUI-Layout-Item-Border-property-tplProperties'>		/**
+</span>		 * 附加模板
+		 * @type {Object}
+		 */
+		tplProperties : {
+			value : [
+				{name : 'title',value : 'titleTpl',prev : true},
+				{name : 'collapsable',value : 'collapseTpl',prev : true}
+			]
+		},
+		statusProperties : {
+			value : ['collapsed']
+		}
+	};
+
+	Border.REGINS = REGINS;
+
+	BUI.extend(Border,Base);
+
+	BUI.augment(Border,{
+<span id='BUI-Layout-Item-Border-method-syncElements'>		/**
+</span>		 * 根据属性附加一些元素
+		 * @protected
+		 */
+		syncElements : function(el,attrs){
+			Border.superclass.syncElements.call(this,el,attrs);
+			var _self = this,
+				el = _self.get('el'),
+				property = _self.getCollapseProperty();
+			if(_self.get('collapsed') &amp;&amp; _self.get(property) == el[property]()){
+				_self.collapse(0);
+			}
+		},
+<span id='BUI-Layout-Item-Border-method-expand'>		/**
+</span>		 * 展开
+		 */
+		expand : function(range,duration,callback){
+			var _self = this,
+				property = _self.getCollapseProperty(),
+				el = _self.get('el'),
+				toRange = _self.get(property),
+				css = {};
+			css[property] = toRange;
+
+			el.animate(css,duration,function(){
+				_self.set('collapsed',false);
+				el.removeClass(CLS_COLLAPSED);
+				callback &amp;&amp; callback();
+			});
+		},
+		//获取折叠的属性，width,length
+		getCollapseProperty : function(){
+			var _self = this,
+				region = _self.get('region');
+			if(region == REGINS.SOUTH || region == REGINS.NORTH){
+				return 'height';
+			}
+			return 'width';
+		},
+		//获取剩余的宽度或者高度
+		_getLeftRange : function(){
+			var _self = this,
+				el = _self.get('el'),
+				left = _self.get('leftRange'),
+				titleEl = _self.get('_titleEl');
+			return left;
+		},
+<span id='global-method-getCollapsedRange'>		/**
+</span>		 * @protected
+		 * @ignore
+		 */
+		getCollapsedRange : function(){
+			var _self = this,
+				property = _self.getCollapseProperty(),
+				el = _self.get('el');
+			return _self.get(property) - _self._getLeftRange(property);
+		},
+<span id='BUI-Layout-Item-Border-method-collapse'>		/**
+</span>		 * 折叠
+		 */
+		collapse : function(duration,callback){
+			var _self = this,
+				property = _self.getCollapseProperty(),
+				el = _self.get('el'),
+				left = _self._getLeftRange(property),
+				css = {};
+			css[property] = left;
+			el.animate(css,duration,function(){
+				_self.set('collapsed',true);
+				el.addClass(CLS_COLLAPSED);
+			  if(callback){
+			  	callback();
+			  }
+			});
+		}
+	});
+
+
+
+	return Border;
+});</pre>
+</body>
+</html>

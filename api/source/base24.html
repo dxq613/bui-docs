@@ -16,32 +16,19 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='global-property-'>/**
-</span> * @fileOverview 布局模块的入口文件
+</span> * @fileOverview 进度条命名空间入口
  * @ignore
  */
-(function(){
-	var BASE = 'bui/layout/';
-	define('bui/layout',['bui/common',BASE + 'abstract',BASE + 'absolute',BASE + 'anchor', BASE + 'flow',BASE + 'columns',BASE + 'table',
-		BASE + 'border', BASE + 'accordion',BASE + 'viewport'],function (r) {
 
-		var BUI = r('bui/common');
+define('bui/progressbar',['bui/common','bui/progressbar/base','bui/progressbar/load'],function (require) {
+  var BUI = require('bui/common'),
+    ProgressBar = BUI.namespace('ProgressBar');
+  BUI.mix(ProgressBar,{
+    Base : require('bui/progressbar/base'),
+    Load : require('bui/progressbar/load')
+  });
 
-		var Layout = BUI.namespace('Layout');
-
-		BUI.mix(Layout,{
-			Abstract : r(BASE + 'abstract'),
-			Anchor : r(BASE + 'anchor'),
-			Flow : r(BASE + 'flow'),
-			Columns : r(BASE + 'columns'),
-			Table : r(BASE + 'table'),
-			Border :r(BASE + 'border'), 
-			Accordion : r(BASE + 'accordion'),
-			Viewport : r(BASE + 'viewport')
-		});
-
-		return Layout;
-	});
-
-})();</pre>
+  return ProgressBar;
+});</pre>
 </body>
 </html>

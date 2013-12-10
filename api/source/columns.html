@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 列模式布局
+ * @ignore
+ */
+
+define('bui/layout/columns',['bui/layout/abstract'],function (require) {
+	
+	var BUI = require('bui/common'),
+		Abstract = require('bui/layout/abstract');
+
+	function formatPercent(num){
+		return (num * 100) + '%';
+	}
+
+<span id='BUI-Layout-Columns'>	/**
+</span>	 * @class BUI.Layout.Columns
+	 * 列模式布局
+	 * @extends BUI.Layout.Abstract
+	 */
+	var Columns = function(config){
+		Columns.superclass.constructor.call(this,config);
+	};
+
+	Columns.ATTRS = {
+<span id='BUI-Layout-Columns-property-columns'>		/**
+</span>		 * 列的数目,每列的宽度平均计算
+		 * @type {Number}
+		 */
+		columns : {
+			value : 1
+		},
+<span id='BUI-Layout-Columns-property-columnTpl'>		/**
+</span>		 * 列的模板
+		 * @type {String}
+		 */
+		columnTpl : {
+			value : '&lt;div class=&quot;x-layout-column&quot;&gt;&lt;/div&gt;'
+		},
+		tpl : {
+			value : '&lt;div class=&quot;x-layout-columns&quot;&gt;&lt;/div&gt;'
+		},
+		itemTpl : {
+			value : '&lt;div class=&quot;x-layout-item-column&quot;&gt;&lt;/div&gt;'
+		}
+	};
+
+	BUI.extend(Columns,Abstract);
+
+	BUI.augment(Columns,{
+
+<span id='BUI-Layout-Columns-method-resetLayout'>		/**
+</span>		 * @protected
+		 * 覆写重新布局方法
+		 */
+		resetLayout : function(){
+			var _self = this;
+			_self._setColumnsWidth();
+			Columns.superclass.resetLayout.call(_self);
+		},
+<span id='BUI-Layout-Columns-method-moveItem'>		/**
+</span>		 * 移动选项到位置
+		 * @param  {Number} to 位置,位置从0开始
+		 */
+		moveItem : function(item,to){
+			var _self = this,
+				itemContainer;
+			if(to &gt;= _self.get('columns') || to &lt; 0){
+				return;
+			}
+
+			item.set('col',to);
+			itemContainer = _self.getItemContainer({col : to});
+			item.set('container',itemContainer);
+			item.get('el').appendTo(itemContainer);
+		},
+<span id='BUI-Layout-Columns-method-afterWraper'>		/**
+</span>		 * @protected
+		 * 容器初始化完毕开始渲染布局子项
+		 */
+		afterWraper : function(){
+			var _self = this,
+				columns = _self.get('columns'),
+				container = _self.get('container'),
+				arr = [];
+			for (var i = 0; i &lt; columns; i++) {
+				arr.push(_self.get('columnTpl'));
+			};
+			container.html(arr.join(''));
+
+			_self._setColumnsWidth();
+		},
+		//获取平均宽度
+		_setColumnsWidth : function(){
+			var _self = this,
+				container = _self.get('container'),
+				children = container.children(),
+				containerWidth = container.width(),
+				avgWidth = parseInt(containerWidth / children.length,10),
+				left = 0;
+
+			BUI.each(children,function(item){
+				var node = $(item),
+					appendWidth = node.outerWidth() - node.width();
+				node.width(avgWidth - appendWidth);
+			});
+		},
+<span id='BUI-Layout-Columns-method-getItemContainer'>		/**
+</span>		 * @protected
+		 * 获取布局选项的容器
+		 */
+		getItemContainer : function(itemAttrs){
+			var _self = this,
+				items = _self.get('items'),
+				columns = _self.get('columns'),
+				container = this.get('container');
+			if(itemAttrs.col === undefined){
+				itemAttrs.col = items.length % columns;
+			}
+			return $(container.find('.x-layout-column')[itemAttrs.col]);
+		}
+	});
+
+	return Columns;
+});</pre>
+</body>
+</html>

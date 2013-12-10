@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 锚定容器的布局项
+ * @ignore
+ */
+
+define('bui/layout/anchoritem',['bui/layout/baseitem'],function (require) {
+
+	var BUI = require('bui/common'),
+		Base = require('bui/layout/baseitem');
+
+	//转换anchor的值
+	function parseValue(value,type){
+		if(BUI.isNumber(value)){
+			if(value &gt; 0){ //大于0的正数，返回
+				return value;
+			}else{
+				return '{' + type + '}' + value;
+			}
+		}
+		if(BUI.isString(value) &amp;&amp; value.indexOf('-') == 0){
+			return '{' + type + '}' + value;
+		}
+		return value;
+	}
+<span id='BUI-Layout-Item-Anchor'>	/**
+</span>	 * @class BUI.Layout.Item.Anchor
+	 * 锚定布局项
+	 */
+	var Anchor = function(config){
+		Anchor.superclass.constructor.call(this,config);
+	};
+
+	Anchor.ATTRS = {
+<span id='BUI-Layout-Item-Anchor-property-anchor'>		/**
+</span>		 * 锚定容器的方式，有以下几种方式：
+		 *
+		 *  - 默认方式： ['100%'] 宽度100%,高度auto
+		 *  - 指定宽高： ['100%','50%'] 宽100%, 高 100%
+		 *  - 指定数值:  [100,100] 宽高都是100
+		 *  - 指定负数:  [-100,-50] 容器宽度减去100,宽度高度减去 50
+		 * @type {Array}
+		 */
+		anchor : {
+			value : ['100%']
+		}
+	};
+
+	BUI.extend(Anchor,Base);
+
+	BUI.augment(Anchor,{
+
+<span id='global-method-getLayoutAttrs'>		/**
+</span>		 * @protected
+		 * @override
+		 * @ignore
+		 * 覆盖返回的布局相关的属性
+		 */
+		getLayoutAttrs : function(){
+			var _self = this,
+				anchor = _self.get('anchor'),
+				attrs = BUI.mix({},_self.getAttrVals()),
+				width = anchor[0],
+				height = anchor[1];
+
+			attrs.width = parseValue(width,'width');
+			attrs.height = parseValue(height,'height');
+
+			return attrs;
+		}
+	});
+
+	return Anchor;
+});</pre>
+</body>
+</html>

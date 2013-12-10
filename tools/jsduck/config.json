@@ -23,6 +23,7 @@
 	"../../../bui/src/tooltip",
 	"../../../bui/src/slider",
 	"../../../bui/src/extensions",
+	"../../../bui/src/layout",
 	"../../../bui/src/progressbar"
     ]
 }

@@ -16,32 +16,36 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='global-property-'>/**
-</span> * @fileOverview 布局模块的入口文件
+</span> * @fileOverview 浮动布局，所有的元素float:left
  * @ignore
  */
-(function(){
-	var BASE = 'bui/layout/';
-	define('bui/layout',['bui/common',BASE + 'abstract',BASE + 'absolute',BASE + 'anchor', BASE + 'flow',BASE + 'columns',BASE + 'table',
-		BASE + 'border', BASE + 'accordion',BASE + 'viewport'],function (r) {
 
-		var BUI = r('bui/common');
+define('bui/layout/flow',['bui/layout/abstract','bui/layout/baseitem'],function (require) {
+	var BUI = require('bui/common'),
+		Abstract = require('bui/layout/abstract'),
+		Item = require('bui/layout/baseitem');
+	
+<span id='BUI-Layout-Flow'>	/**
+</span>	 * @class BUI.Layout.Flow
+	 * 流布局控件
+	 * @extends BUI.Layout.Abstract
+	 */
+	var Flow = function(config){
+		Flow.superclass.constructor.call(this,config)
+	};
 
-		var Layout = BUI.namespace('Layout');
+	Flow.ATTRS = {
+		itemConstructor : {
+			value : Item
+		},
+		itemTpl : {
+			value : '&lt;div class=&quot;x-layout-item-flow pull-left&quot;&gt;&lt;/div&gt;'
+		}
+	};
 
-		BUI.mix(Layout,{
-			Abstract : r(BASE + 'abstract'),
-			Anchor : r(BASE + 'anchor'),
-			Flow : r(BASE + 'flow'),
-			Columns : r(BASE + 'columns'),
-			Table : r(BASE + 'table'),
-			Border :r(BASE + 'border'), 
-			Accordion : r(BASE + 'accordion'),
-			Viewport : r(BASE + 'viewport')
-		});
+	BUI.extend(Flow,Abstract);
 
-		return Layout;
-	});
-
-})();</pre>
+	return Flow;
+});</pre>
 </body>
 </html>

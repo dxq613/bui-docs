@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 可折叠的布局，只能展开一个选项内容
+ * @ignore
+ */
+
+define('bui/layout/accordion',['bui/layout/abstract','bui/layout/tabitem','bui/layout/collapsable'],function (require) {
+	
+	var CLS_ITEM = 'x-layout-item-accordion',
+		BUI = require('bui/common'),
+		Abstract = require('bui/layout/abstract'),
+		Item = require('bui/layout/tabitem'),
+		Collapsable = require('bui/layout/collapsable');
+
+<span id='BUI-Layout-Accordion'>	/**
+</span>	 * @class BUI.Layout.Accordion
+	 * 可折叠的布局
+	 * @extends BUI.Layout.Abstract
+	 * @mixins BUI.Layout.Collapsable
+	 */
+	var Accordion = function(config){
+		Accordion.superclass.constructor.call(this,config);
+	};
+
+	Accordion.ATTRS = {
+
+<span id='BUI-Layout-Accordion-property-itemConstructor'>		/**
+</span>		 * 子项对应的构造函数
+		 * @type {Function}
+		 */
+		itemConstructor : {
+			value : Item
+		},
+<span id='BUI-Layout-Accordion-property-wraperCls'>		/**
+</span>		 * 放置内容的样式
+		 * @type {String}
+		 */
+		wraperCls : {
+			value : 'x-accordion-body'
+		},
+<span id='BUI-Layout-Accordion-property-titleCls'>		/**
+</span>		 * 放置title内容的class样式
+		 * @type {String}
+		 */
+		titleCls : {
+			value : 'x-accordion-title'
+		},
+<span id='BUI-Layout-Accordion-property-triggerCls'>		/**
+</span>		 * 触发展开折叠的样式
+		 * @type {String}
+		 */
+		triggerCls : {
+			value : 'x-accordion-title'
+		},
+<span id='BUI-Layout-Accordion-property-layoutEvents'>		/**
+</span>		 * 控件的的那些事件会引起重新布局
+		 * @type {Array}
+		 */
+		layoutEvents : {
+			value : ['afterAddChild','afterRemoveChild']
+		},
+<span id='BUI-Layout-Accordion-property-duration'>		/**
+</span>		 * 动画的持续时间
+		 * @type {Number}
+		 */
+		duration : {
+			value : 400
+		},
+<span id='BUI-Layout-Accordion-property-accordion'>		/**
+</span>		 * 是否只能展开一个
+		 * @type {String}
+		 */
+		accordion : {
+			value : true
+		},
+		itemTpl : {
+			value : '&lt;div class=&quot;' + CLS_ITEM + '&quot;&gt;&lt;div class=&quot;x-accordion-title&quot;&gt;{title}&lt;s class=&quot;x-expand-button&quot;&gt;&lt;/s&gt;&lt;/div&gt;&lt;div class=&quot;x-accordion-body&quot;&gt;&lt;/div&gt;&lt;/div&gt;'
+		}
+
+	};
+
+	BUI.extend(Accordion,Abstract);
+
+	//使用可收缩的扩展
+	BUI.mixin(Accordion,[Collapsable]);
+
+	BUI.augment(Accordion,{
+<span id='BUI-Layout-Accordion-method-appendEvent'>		/**
+</span>		 * @protected
+		 * 附加事件
+		 * @param  {Object} control 使用layout的控件
+		 */
+		appendEvent : function(control){
+			this.bindCollapseEvent(); //绑定收缩事件
+		},
+<span id='BUI-Layout-Accordion-method-getActivedItem'>		/**
+</span>		 * 获取展开的选项
+		 * @return {BUI.Layout.Item} 选项
+		 */
+		getActivedItem : function(){
+			return this.getExpandedItem();
+		},
+<span id='global-method-afterInitItems'>		/**
+</span>		 * @protected
+		 * @ignore
+		 */
+		afterInitItems : function(){
+			this._resetActiveItem();
+		},
+		//重置展开项的高度
+		_resetActiveItem : function(){
+			var _self = this,
+				activeItem = _self.getActivedItem() || _self.getItems()[0];
+			activeItem.expand(_self.getCollapsedRange(),0);
+		},
+<span id='BUI-Layout-Accordion-method-resetLayout'>		/**
+</span>		 * @protected
+		 * 覆写重新布局方法
+		 */
+		resetLayout : function(){
+			var _self = this;
+			Accordion.superclass.resetLayout.call(_self);
+			_self._resetActiveItem();
+		},
+<span id='BUI-Layout-Accordion-method-getCollapsedRange'>		/**
+</span>		 * 获取展开选项内容区域的高度，容器高度减去 
+		 * @return {Number} 容器高度	
+		 */
+		getCollapsedRange : function(){
+			var _self = this,
+				container = _self.get('container'),
+				outerHeight = container.height(),
+				titleEls = container.find('.' + _self.get('titleCls')),
+				bodyHeight = outerHeight;
+			BUI.each(titleEls,function(element){
+				bodyHeight -= $(element).outerHeight();
+			});
+			return bodyHeight;
+		}
+	});
+
+	return Accordion;
+
+});</pre>
+</body>
+</html>

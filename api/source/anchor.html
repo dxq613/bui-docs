@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 锚定布局，根据容器的边缘自动计算宽高
+ * @ignore
+ */
+
+define('bui/layout/anchor',['bui/layout/abstract','bui/layout/anchoritem'],function (require) {
+	var BUI = require('bui/common'),
+		Abstract = require('bui/layout/abstract'),
+		Item = require('bui/layout/anchoritem');
+	
+<span id='BUI-Layout-Anchor'>	/**
+</span>	 * @class BUI.Layout.Anchor
+	 * 锚定布局控件
+	 * @extends BUI.Layout.Abstract
+	 */
+	var Anchor = function(config){
+		Anchor.superclass.constructor.call(this,config)
+	};
+
+	Anchor.ATTRS = {
+		itemConstructor : {
+			value : Item
+		},
+		itemTpl : {
+			value : '&lt;div class=&quot;x-layout-item&quot;&gt;&lt;/div&gt;'
+		}
+	};
+
+	BUI.extend(Anchor,Abstract);
+
+	return Anchor;
+});</pre>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 表格布局
+ * @ignore
+ */
+
+define('bui/layout/table',['bui/layout/abstract','bui/layout/cellitem'],function (require) {
+
+	var BUI = require('bui/common'),
+		Abstract = require('bui/layout/abstract'),
+		Item = require('bui/layout/cellitem');
+
+<span id='BUI-Layout-Table'>	/**
+</span>	 * @class BUI.Layout.Table
+	 * 表格布局
+	 * @extends BUI.Layout.Abstract
+	 */
+	var Table = function(config){
+		Table.superclass.constructor.call(this,config);
+	};
+
+	Table.ATTRS = {
+		itemConstructor : {
+			value : Item
+		},
+<span id='global-property-lastRow'>		/**
+</span>		 * @private
+		 * @ignore
+		 * lastRow 当前最后一行的值
+		 */
+		lastRow : {
+			value : 0
+		},
+<span id='BUI-Layout-Table-property-tpl'>		/**
+</span>		 * 布局的模板
+		 * @type {String}
+		 */
+		tpl : {
+			value : '&lt;table class=&quot;x-layout-table&quot;&gt;&lt;tbody&gt;&lt;/tbody&gt;&lt;/table&gt;'
+		},
+<span id='BUI-Layout-Table-property-columns'>		/**
+</span>		 * 列的数目
+		 * @type {Number}
+		 */
+		columns : {
+
+		},
+<span id='BUI-Layout-Table-property-rows'>		/**
+</span>		 * Number
+		 * @type {Object}
+		 */
+		rows : {
+
+		},
+<span id='BUI-Layout-Table-property-itemTpl'>		/**
+</span>		 * 单元格的模板
+		 * @type {String}
+		 */
+		itemTpl : {
+			value : '&lt;td class=&quot;x-layout-item-cell&quot;&gt;&lt;/td&gt;'
+		}
+	};
+
+	BUI.extend(Table,Abstract);
+
+	BUI.augment(Table,{
+		
+<span id='BUI-Layout-Table-method-afterWraper'>		/**
+</span>		 * @protected
+		 * 容器初始化完毕开始渲染布局子项
+		 */
+		afterWraper : function(){
+			var _self = this,
+				rows = _self.get('rows'),
+				container = _self.get('container'),
+				arr = [];
+			for (var i = 0; i &lt; rows; i++) {
+				arr.push('&lt;tr&gt;&lt;/tr&gt;');
+			};
+			container.find('tbody').html(arr.join(''));
+		},
+<span id='BUI-Layout-Table-method-getItemContainer'>		/**
+</span>		 * @protected
+		 * 获取布局选项的容器
+		 */
+		getItemContainer : function(itemAttrs){
+			var _self = this,
+				container = this.get('container');
+			return $(container.find('tr')[itemAttrs.row]);
+		}
+	});
+
+	return Table;
+
+});</pre>
+</body>
+</html>

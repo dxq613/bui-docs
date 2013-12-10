@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 绝对位置布局
+ * @ignore
+ */
+
+define('bui/layout/absolute',['bui/layout/abstract','bui/layout/absoluteitem'],function (require) {
+
+	var CLS_RELATIVE = 'x-layout-relative',
+		BUI = require('bui/common'),
+		Abstract = require('bui/layout/abstract'),
+		AbsoluteItem = require('bui/layout/absoluteitem');
+
+<span id='BUI-Layout-Absolute'>	/**
+</span>	 * @class BUI.Layout.Absolute
+	 * 绝对位置布局控件
+	 * @extends BUI.Layout.Abstract
+	 */
+	var Absolute = function(config){
+		Absolute.superclass.constructor.call(this,config);
+	};
+
+	Absolute.ATTRS = {
+		itemConstructor : {
+			value : AbsoluteItem
+		},
+<span id='BUI-Layout-Absolute-property-elCls'>		/**
+</span>		 * 标示布局的控件
+		 * @type {String}
+		 */
+		elCls : {
+			value : CLS_RELATIVE
+		},
+<span id='BUI-Layout-Absolute-property-tpl'>		/**
+</span>		 * 布局相关的模板,将所有的子控件放置其中
+		 * @type {String}
+		 */
+		tpl : {
+
+		},
+		itemTpl : {
+			value : '&lt;div class=&quot;x-layout-item-absolute&quot;&gt;&lt;/div&gt;'
+		}
+	};
+
+	BUI.extend(Absolute,Abstract);
+
+	return Absolute;
+});</pre>
+</body>
+</html>
