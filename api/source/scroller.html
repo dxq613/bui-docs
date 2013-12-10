@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 滚动条
+ * @ignore
+ */
+
+define('bui/slider/scroller',['bui/common','bui/slider/slider'],function (require){
+
+  var BUI = require('bui/common'),
+    Slider = require('bui/slider/slider');
+
+<span id='BUI-Slider-Scroller'>  /**
+</span>   * @class BUI.Slider.Scroller
+   * 模拟滚动条
+   * @extends BUI.Slider.Slider
+   */
+  var Scroller = Slider.extend({
+
+  },{
+    ATTRS : {
+
+<span id='BUI-Slider-Scroller-property-panel'>      /**
+</span>       * 绑定的容器
+       * @type {jQuery|String}
+       */
+      panel : {
+
+      },
+<span id='BUI-Slider-Scroller-property-handlerLength'>      /**
+</span>       * 滑块的长度，水平滑块使用宽度，垂直滑块使用长度
+       * @type {Object}
+       */
+      handlerLength : {
+
+      },
+<span id='BUI-Slider-Scroller-property-fitLength'>      /**
+</span>       * 是否根据宽度/长度自动计算滑块的长度
+       * @type {Object}
+       */
+      fitLength : {
+
+      }
+    }
+  },{
+    xclass : 'scroller'
+  });
+
+  return Scroller;
+
+});</pre>
+</body>
+</html>

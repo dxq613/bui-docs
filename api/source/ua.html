@@ -20,7 +20,7 @@
  * @ignore
  * @author dxq613@gmail.com
  */
-define('bui/ua',function(){
+define('bui/ua', function () {
 
     function numberify(s) {
         var c = 0;
@@ -30,37 +30,50 @@ define('bui/ua',function(){
         }));
     };
 
-    var UA = $.UA || (function(){
-        var browser = $.browser,
+    function uaMatch(s) {
+        s = s.toLowerCase();
+        var r = /(chrome)[ \/]([\w.]+)/.exec(s) || /(webkit)[ \/]([\w.]+)/.exec(s) || /(opera)(?:.*version|)[ \/]([\w.]+)/.exec(s) || /(msie) ([\w.]+)/.exec(s) || s.indexOf(&quot;compatible&quot;) &lt; 0 &amp;&amp; /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(s) || [],
+            a = {
+                browser: r[1] || &quot;&quot;,
+                version: r[2] || &quot;0&quot;
+            },
+            b = {};
+        a.browser &amp;&amp; (b[a.browser] = !0, b.version = a.version),
+            b.chrome ? b.webkit = !0 : b.webkit &amp;&amp; (b.safari = !0);
+        return b;
+    }
+
+    var UA = $.UA || (function () {
+        var browser = $.browser || uaMatch(navigator.userAgent),
             versionNumber = numberify(browser.version),
 <span id='BUI-UA'>            /**
 </span>             * 浏览器版本检测
              * @class BUI.UA
-                     * @singleton
+             * @singleton
              */
-            ua = 
+                ua =
             {
 <span id='BUI-UA-property-ie'>                /**
 </span>                 * ie 版本
                  * @type {Number}
                  */
-                ie : browser.msie &amp;&amp; versionNumber,
+                ie: browser.msie &amp;&amp; versionNumber,
 
 <span id='BUI-UA-property-webkit'>                /**
 </span>                 * webkit 版本
                  * @type {Number}
                  */
-                webkit : browser.webkit &amp;&amp; versionNumber,
+                webkit: browser.webkit &amp;&amp; versionNumber,
 <span id='BUI-UA-property-opera'>                /**
 </span>                 * opera 版本
                  * @type {Number}
                  */
-                opera : browser.opera &amp;&amp; versionNumber,
+                opera: browser.opera &amp;&amp; versionNumber,
 <span id='BUI-UA-property-mozilla'>                /**
 </span>                 * mozilla 火狐版本
                  * @type {Number}
                  */
-                mozilla : browser.mozilla &amp;&amp; versionNumber
+                mozilla: browser.mozilla &amp;&amp; versionNumber
             };
         return ua;
     })();

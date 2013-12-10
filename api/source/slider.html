@@ -171,7 +171,7 @@ define('bui/slider/slider',['bui/common'],function (require) {
         var sender = $(ev.target),
           offset = el.offset();
         if(sender.hasClass('x-slider-handle')){
-          //ev.preventDefault();
+          ev.preventDefault();
           _self._handleDrag(ev);
         }else{
           offset = {
@@ -314,8 +314,10 @@ define('bui/slider/slider',['bui/common'],function (require) {
         total = max - min,
         start,
         end;
-
-      if(BUI.isNumber(value)){
+      if(min == max){
+        start = 0;
+        end = 100;
+      }else if(BUI.isNumber(value)){
         start = 0;
         end = parsePercet(value - min,total);
       }else if(BUI.isArray(value)){

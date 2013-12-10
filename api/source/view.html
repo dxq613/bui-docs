@@ -207,6 +207,12 @@ define('bui/component/view',['bui/component/manage','bui/component/uibase'],func
         _uiSetElStyle: function (style) {
             this.get('el').css(style);
         },
+        //设置role
+        _uiSetRole : function(role){
+            if(role){
+                this.get('el').attr('role',role);
+            } 
+        },
 <span id='BUI-Component-View-method-_uiSetWidth'>        /**
 </span>         * 设置应用到控件宽度
          * @protected
@@ -255,6 +261,37 @@ define('bui/component/view',['bui/component/manage','bui/component/uibase'],func
                 el.css('display', isVisible ? '' : 'none');
             }
         },
+        set : function(name,value){
+             var _self = this,
+                attr = _self.__attrs[name],
+                ev,
+                ucName,
+                m;
+
+            if(!attr || !_self.get('binded')){ //未初始化view或者没用定义属性
+                View.superclass.set.call(this,name,value);
+                return _self;
+            }
+
+            var prevVal = View.superclass.get.call(this,name);
+
+            //如果未改变值不进行修改
+            if(!$.isPlainObject(value) &amp;&amp; !BUI.isArray(value) &amp;&amp; prevVal === value){
+                return _self;
+            }
+            View.superclass.set.call(this,name,value);
+
+            value = _self.__attrVals[name];
+            ev = {attrName: name,prevVal: prevVal,newVal: value};
+            ucName = BUI.ucfirst(name);
+            m = '_uiSet' + ucName;
+            if(_self[m]){
+                _self[m](value,ev);
+            }
+
+            return _self;
+
+        },
 <span id='BUI-Component-View-method-destructor'>        /**
 </span>         * 析构函数
          * @protected
@@ -298,6 +335,13 @@ define('bui/component/view',['bui/component/manage','bui/component/uibase'],func
          * see {@link BUI.Component.Controller#property-elStyle}
          */
         elStyle: {
+        },
+<span id='BUI-Component-View-property-role'>        /**
+</span>         * ARIA 标准中的role
+         * @type {String}
+         */
+        role : {
+            
         },
 <span id='BUI-Component-View-property-width'>        /**
 </span>         * 控件宽度

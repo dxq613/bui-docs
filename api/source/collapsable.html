@@ -20,22 +20,22 @@
  * @ignore
  */
 
-define('bui/component/uibase/collapseable',function () {
+define('bui/component/uibase/collapsable',function () {
 
-<span id='BUI-Component-UIBase-CollapseableView'>  /**
+<span id='BUI-Component-UIBase-CollapsableView'>  /**
 </span>  * 控件展开折叠的视图类
-  * @class BUI.Component.UIBase.CollapseableView
+  * @class BUI.Component.UIBase.CollapsableView
   * @private
   */
-  var collapseableView = function(){
+  var collapsableView = function(){
   
   };
 
-  collapseableView.ATTRS = {
+  collapsableView.ATTRS = {
     collapsed : {}
   }
 
-  collapseableView.prototype = {
+  collapsableView.prototype = {
     //设置收缩样式
     _uiSetCollapsed : function(v){
       var _self = this,
@@ -48,27 +48,27 @@ define('bui/component/uibase/collapseable',function () {
       }
     }
   }
-<span id='BUI-Component-UIBase-Collapseable'>  /**
+<span id='BUI-Component-UIBase-Collapsable'>  /**
 </span>   * 控件展开折叠的扩展
-   * @class BUI.Component.UIBase.Collapseable
+   * @class BUI.Component.UIBase.Collapsable
    */
-  var collapseable = function(){
+  var collapsable = function(){
     
   };
 
-  collapseable.ATTRS = {
-<span id='BUI-Component-UIBase-Collapseable-property-collapseable'>    /**
+  collapsable.ATTRS = {
+<span id='BUI-Component-UIBase-Collapsable-property-collapsable'>    /**
 </span>     * 是否可折叠
      * @type {Boolean}
      */
-    collapseable: {
+    collapsable: {
       value : false
     },
-<span id='BUI-Component-UIBase-Collapseable-cfg-collapsed'>    /**
+<span id='BUI-Component-UIBase-Collapsable-cfg-collapsed'>    /**
 </span>     * 是否已经折叠 collapsed
      * @cfg {Boolean} collapsed
      */
-<span id='BUI-Component-UIBase-Collapseable-property-collapsed'>    /**
+<span id='BUI-Component-UIBase-Collapsable-property-collapsed'>    /**
 </span>     * 是否已经折叠
      * @type {Boolean}
      */
@@ -78,14 +78,14 @@ define('bui/component/uibase/collapseable',function () {
     },
     events : {
       value : {
-<span id='BUI-Component-UIBase-Collapseable-event-expanded'>        /**
+<span id='BUI-Component-UIBase-Collapsable-event-expanded'>        /**
 </span>         * 控件展开
          * @event
          * @param {Object} e 事件对象
          * @param {BUI.Component.Controller} target 控件
          */
         'expanded' : true,
-<span id='BUI-Component-UIBase-Collapseable-event-collapsed'>        /**
+<span id='BUI-Component-UIBase-Collapsable-event-collapsed'>        /**
 </span>         * 控件折叠
          * @event
          * @param {Object} e 事件对象
@@ -96,7 +96,7 @@ define('bui/component/uibase/collapseable',function () {
     }
   };
 
-  collapseable.prototype = {
+  collapsable.prototype = {
     _uiSetCollapsed : function(v){
       var _self = this;
       if(v){
@@ -107,9 +107,9 @@ define('bui/component/uibase/collapseable',function () {
     }
   };
 
-  collapseable.View = collapseableView;
+  collapsable.View = collapsableView;
   
-  return collapseable;
+  return collapsable;
 });</pre>
 </body>
 </html>

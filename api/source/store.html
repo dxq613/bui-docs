@@ -109,6 +109,7 @@ define('bui/data/store',['bui/data/proxy','bui/data/abstractstore','bui/data/sor
      * @type {Array}
      */
     deletedRecords : {
+      shared : false,
       value:[]
     },
 <span id='BUI-Data-Store-cfg-errorProperty'>    /**
@@ -184,6 +185,7 @@ define('bui/data/store',['bui/data/proxy','bui/data/abstractstore','bui/data/sor
      * @readOnly
      */
     modifiedRecords : {
+      shared : false,
       value:[]
     },
 <span id='BUI-Data-Store-property-newRecords'>    /**
@@ -193,6 +195,7 @@ define('bui/data/store',['bui/data/proxy','bui/data/abstractstore','bui/data/sor
      * @readOnly
      */
     newRecords : {
+      shared : false,
       value : []
     },
 <span id='BUI-Data-Store-cfg-remoteSort'>    /**
@@ -216,6 +219,7 @@ define('bui/data/store',['bui/data/proxy','bui/data/abstractstore','bui/data/sor
      * @readOnly
      */
     resultMap : {
+      shared : false,
       value : {}
     },
 <span id='BUI-Data-Store-cfg-root'>    /**
@@ -501,7 +505,7 @@ define('bui/data/store',['bui/data/proxy','bui/data/abstractstore','bui/data/sor
       var _self = this,
         resultMap = _self.get('resultMap'),
         total = _self.get('totalProperty');
-      return resultMap[total] || 0;
+      return parseInt(resultMap[total],10) || 0;
     },
 <span id='BUI-Data-Store-method-getResult'>    /**
 </span>     * 获取当前缓存的纪录
@@ -646,14 +650,15 @@ define('bui/data/store',['bui/data/proxy','bui/data/abstractstore','bui/data/sor
     * &lt;/code&gt;&lt;/pre&gt;
     * @param {Object} obj 修改的记录
     * @param {Boolean} [isMatch = false] 是否需要进行匹配，检测指定的记录是否在集合中
+    * @param {Function} [match = matchFunction] 匹配函数
     */
-    update : function(obj,isMatch){
+    update : function(obj,isMatch,match){
       var record = obj,
         _self = this,
         match = null,
         index = null;
       if(isMatch){
-        match = _self._getDefaultMatch();
+        match = match || _self._getDefaultMatch();
         index = _self.findIndexBy(obj,match);
         if(index &gt;=0){
           record = _self.getResult()[index];
@@ -751,7 +756,7 @@ define('bui/data/store',['bui/data/proxy','bui/data/abstractstore','bui/data/sor
 
       _self._sortData(field,direction);
 
-      _self.fire('localsort');
+      _self.fire('localsort',{field:field,direction:direction});
     },
     _sortData : function(field,direction,data){
       var _self = this;

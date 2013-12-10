@@ -507,18 +507,24 @@ define('bui/list/domlist',['bui/common'],function (require) {
         itemContainer = _self.get('view').getItemContainer();
 
       itemContainer.delegate('.'+itemCls,'click',function(ev){
+        if(_self.get('disabled')){ //控件禁用后，阻止事件
+          return;
+        }
         var itemEl = $(ev.currentTarget),
           item = _self.getItemByElement(itemEl);
         if(_self.isItemDisabled(item,itemEl)){ //禁用状态下阻止选中
           return;
         }
-        var rst = _self.fire('itemclick',{item:item,element : itemEl[0],domTarget:ev.target});
+        var rst = _self.fire('itemclick',{item:item,element : itemEl[0],domTarget:ev.target,domEvent : ev});
         if(rst !== false &amp;&amp; selectedEvent == 'click' &amp;&amp; _self.isItemSelectable(item)){
           setItemSelectedStatus(item,itemEl); 
         }
       });
       if(selectedEvent !== 'click'){ //如果选中事件不等于click，则进行监听选中
         itemContainer.delegate('.'+itemCls,selectedEvent,function(ev){
+          if(_self.get('disabled')){ //控件禁用后，阻止事件
+            return;
+          }
           var itemEl = $(ev.currentTarget),
             item = _self.getItemByElement(itemEl);
           if(_self.isItemDisabled(item,itemEl)){ //禁用状态下阻止选中
@@ -532,6 +538,9 @@ define('bui/list/domlist',['bui/common'],function (require) {
       }
 
       itemContainer.delegate('.' + itemCls,'dblclick',function(ev){
+        if(_self.get('disabled')){ //控件禁用后，阻止事件
+          return;
+        }
         var itemEl = $(ev.currentTarget),
           item = _self.getItemByElement(itemEl);
         if(_self.isItemDisabled(item,itemEl)){ //禁用状态下阻止选中
@@ -789,7 +798,7 @@ define('bui/list/domlist',['bui/common'],function (require) {
         items = _self.get('items'),
         result = null;
       BUI.each(items,function(item){
-        if(item[field] === value){
+        if(item[field] != null &amp;&amp; item[field] == value){//会出现false == '','0' == false的情况
             result = item;
             return false;
         }

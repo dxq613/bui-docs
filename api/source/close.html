@@ -127,7 +127,10 @@ define('bui/component/uibase/close',function () {
       },
 <span id='BUI-Component-UIBase-Close-cfg-closeAction'>      /**
 </span>       * 关闭时隐藏还是移除DOM结构&lt;br/&gt;
-       * default &quot;hide&quot;. 可以设置 &quot;destroy&quot; ，当点击关闭按钮时移除（destroy)控件
+       * 
+       *  - &quot;hide&quot; : default 隐藏. 
+       *  - &quot;destroy&quot;：当点击关闭按钮时移除（destroy)控件
+       *  - 'remove' : 当存在父控件时使用remove，同时从父元素中删除
        * @cfg {String} [closeAction = 'hide']
        */
 <span id='BUI-Component-UIBase-Close-property-closeAction'>      /**
@@ -144,14 +147,21 @@ define('bui/component/uibase/close',function () {
 </span>       * @event closing
        * 正在关闭，可以通过return false 阻止关闭事件
        * @param {Object} e 关闭事件
-       * @param {String} e.action 关闭执行的行为，hide,destroy
+       * @param {String} e.action 关闭执行的行为，hide,destroy,remove
+       */
+      
+<span id='BUI-Component-UIBase-Close-event-beforeclosed'>      /**
+</span>       * @event beforeclosed
+       * 关闭前，发生在closing后，closed前，用于处理关闭前的一些工作
+       * @param {Object} e 关闭事件
+       * @param {String} e.action 关闭执行的行为，hide,destroy,remove
        */
 
 <span id='BUI-Component-UIBase-Close-event-closed'>      /**
 </span>       * @event closed
        * 已经关闭
        * @param {Object} e 关闭事件
-       * @param {String} e.action 关闭执行的行为，hide,destroy
+       * @param {String} e.action 关闭执行的行为，hide,destroy,remove
        */
       
 <span id='BUI-Component-UIBase-Close-event-closeclick'>      /**
@@ -164,7 +174,8 @@ define('bui/component/uibase/close',function () {
 
   var actions = {
       hide:HIDE,
-      destroy:'destroy'
+      destroy:'destroy',
+      remove : 'remove'
   };
 
   Close.prototype = {
@@ -185,13 +196,18 @@ define('bui/component/uibase/close',function () {
           btn &amp;&amp; btn.detach();
       },
 <span id='BUI-Component-UIBase-Close-method-close'>      /**
-</span>       * 关闭弹出框，如果closeAction = 'hide'那么就是隐藏，如果 closeAction = 'destroy'那么就是释放
+</span>       * 关闭弹出框，如果closeAction = 'hide'那么就是隐藏，如果 closeAction = 'destroy'那么就是释放,'remove'从父控件中删除，并释放
        */
       close : function(){
         var self = this,
           action = actions[self.get('closeAction') || HIDE];
         if(self.fire('closing',{action : action}) !== false){
-          self[action]();
+          self.fire('beforeclosed',{action : action});
+          if(action == 'remove'){ //移除时同时destroy
+            self[action](true);
+          }else{
+            self[action]();
+          }
           self.fire('closed',{action : action});
         }
       }
