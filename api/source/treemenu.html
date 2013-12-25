@@ -20,10 +20,11 @@
  * @ignore
  */
 
-define('bui/tree/treemenu',['bui/common','bui/list','bui/tree/treemixin'],function (require) {
+define('bui/tree/treemenu',['bui/common','bui/list','bui/tree/treemixin','bui/tree/selection'],function (require) {
   var BUI = require('bui/common'),
     List = require('bui/list'),
-    Mixin = require('bui/tree/treemixin');
+    Mixin = require('bui/tree/treemixin'),
+    Selection = require('bui/tree/selection');
 
   var TreeMenuView = List.SimpleList.View.extend({
     //覆写获取模板方法
@@ -41,13 +42,13 @@ define('bui/tree/treemenu',['bui/common','bui/list','bui/tree/treemixin'],functi
     xclass : 'tree-menu-view'
   });
 
-<span id='BUI-Tree-Menu'>  /**
-</span>   * @class BUI.Tree.Menu
+<span id='BUI-Tree-TreeMenu'>  /**
+</span>   * @class BUI.Tree.TreeMenu
    * 树形列表控件
    * ** 你可以简单的使用配置数据 **
    * &lt;pre&gt;&lt;code&gt;
    *  BUI.use('bui/tree',function(Tree){
-   *    var tree = new Tree.Menu({
+   *    var tree = new Tree.TreeMenu({
    *      render : '#t1',
    *      nodes : [
    *        {id : '1',text : '1',children : [{id : '11',text : '11'}]},
@@ -61,7 +62,7 @@ define('bui/tree/treemenu',['bui/common','bui/list','bui/tree/treemixin'],functi
    * ** 你还可以替换icon ** 
    * &lt;pre&gt;&lt;code&gt;
    *  BUI.use('bui/tree',function(Tree){
-   *    var tree = new Tree.Menu({
+   *    var tree = new Tree.TreeMenu({
    *      render : '#t1',
    *      dirCls : 'folder', //替换树节点的样式
    *      leafCls : 'file', //叶子节点的样式
@@ -75,21 +76,21 @@ define('bui/tree/treemenu',['bui/common','bui/list','bui/tree/treemixin'],functi
    * @mixin BUI.Tree.Mixin
    * @extends BUI.List.SimpleList
    */
-  var TreeMenu = List.SimpleList.extend([Mixin],{
+  var TreeMenu = List.SimpleList.extend([Mixin,Selection],{
     
   },{
     ATTRS : {
       itemCls : {
         value : BUI.prefix + 'tree-item'
       },
-<span id='BUI-Tree-Menu-cfg-dirSelectable'>      /**
+<span id='BUI-Tree-TreeMenu-cfg-dirSelectable'>      /**
 </span>       * 文件夹是否可选，用于选择节点时，避免选中非叶子节点
        * @cfg {Boolean} [dirSelectable = false]
        */
       dirSelectable  : {
         value : false
       },
-<span id='BUI-Tree-Menu-property-expandEvent'>      /**
+<span id='BUI-Tree-TreeMenu-property-expandEvent'>      /**
 </span>       * 节点展开的事件
        * @type {String}
        */
@@ -98,11 +99,12 @@ define('bui/tree/treemenu',['bui/common','bui/list','bui/tree/treemixin'],functi
       },
 
       itemStatusFields  : {
+        /**/
         value : {
           selected : 'selected'
         }
       },
-<span id='BUI-Tree-Menu-property-collapseEvent'>      /**
+<span id='BUI-Tree-TreeMenu-property-collapseEvent'>      /**
 </span>       * 节点折叠的事件
        * @type {String}
        */
@@ -112,7 +114,7 @@ define('bui/tree/treemenu',['bui/common','bui/list','bui/tree/treemixin'],functi
       /**/xview : {
         value : TreeMenuView
       },
-<span id='BUI-Tree-Menu-property-dirTpl'>      /**
+<span id='BUI-Tree-TreeMenu-property-dirTpl'>      /**
 </span>       * 非叶子节点的模板
        * @type {String}
        */
@@ -120,7 +122,7 @@ define('bui/tree/treemenu',['bui/common','bui/list','bui/tree/treemixin'],functi
         view : true,
         value : '&lt;li class=&quot;{cls}&quot;&gt;&lt;a href=&quot;#&quot;&gt;{text}&lt;/a&gt;&lt;/li&gt;'
       },
-<span id='BUI-Tree-Menu-property-leafTpl'>      /**
+<span id='BUI-Tree-TreeMenu-property-leafTpl'>      /**
 </span>       * 叶子节点的模板
        * @type {String}
        */

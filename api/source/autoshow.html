@@ -51,25 +51,34 @@ define('bui/component/uibase/autoshow',function () {
     trigger : {
 
     },
-<span id='BUI-Component-UIBase-AutoShow-cfg-delegateTigger'>    /**
+    delegateTigger : {
+      getter : function(){
+        this.get('delegateTrigger');//兼容之前的版本
+      },
+      setter : function(v){
+        this.set('delegateTrigger',v);
+      }
+      
+    },
+<span id='BUI-Component-UIBase-AutoShow-cfg-delegateTrigger'>    /**
 </span>     * 是否使用代理的方式触发显示控件,如果tigger不是字符串，此属性无效
      * &lt;pre&gt;&lt;code&gt;
      *  var overlay = new Overlay({ //点击.t1(无论创建控件时.t1是否存在)时显示，点击.t1,overlay之外的元素隐藏
      *    trigger : '.t1',
      *    autoHide : true,
-     *    delegateTigger : true, //使用委托的方式触发显示控件
+     *    delegateTrigger : true, //使用委托的方式触发显示控件
      *    content : '悬浮内容'
      *  });
      *  overlay.render();
      * &lt;/code&gt;&lt;/pre&gt;
-     * @cfg {Boolean} [delegateTigger = false]
+     * @cfg {Boolean} [delegateTrigger = false]
      */
-<span id='global-property-delegateTigger'>    /**
+<span id='global-property-delegateTrigger'>    /**
 </span>     * 是否使用代理的方式触发显示控件,如果tigger不是字符串，此属性无效
      * @type {Boolean}
      * @ignore
      */
-    delegateTigger : {
+    delegateTrigger : {
       value : false
     },
 <span id='global-cfg-autoAlign'>    /**

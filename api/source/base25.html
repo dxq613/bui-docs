@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @ignore
+ * @fileoverview 文件上传按钮的基类
+ * @author: 索丘 zengyue.yezy@alibaba-inc.com
+ **/
+
+define('bui/uploader/button/base', ['bui/common', './filter'], function(require) {
+
+  var BUI = require('bui/common'),
+    Component = BUI.Component,
+    Filter = require('bui/uploader/button/filter'),
+    PREFIX = BUI.prefix,
+    CLS_UPLOADER = PREFIX + 'uploader',
+    CLS_UPLOADER_BUTTON = CLS_UPLOADER + '-button',
+    CLS_UPLOADER_BUTTON_TEXT = CLS_UPLOADER_BUTTON + '-text';
+
+<span id='global-method-getFileName'>  /**
+</span>   * 获取文件名称
+   * @param {String} path 文件路径
+   * @return {String}
+   * @ignore
+   */
+  function getFileName (path) {
+    return path.replace(/.*(\/|\\)/, &quot;&quot;);
+  }
+
+<span id='global-method-getFileExtName'>  /**
+</span>   * 获取文件扩展名
+   * @param {String} filename 文件名
+   * @return {String}
+   * @private
+   * @ignore
+   */
+  function getFileExtName(filename){
+    var result = /\.[^\.]+/.exec(filename) || [];
+    return result.join('').toLowerCase();
+  }
+
+<span id='global-method-convertByteSize'>  /**
+</span>   * 转换文件大小字节数
+   * @param {Number} bytes 文件大小字节数
+   * @return {String} 文件大小
+   * @private
+   * @ignore
+   */
+  function convertByteSize(bytes) {
+    var i = -1;
+    do {
+      bytes = bytes / 1024;
+      i++;
+    } while (bytes &gt; 99);
+    return Math.max(bytes, 0.1).toFixed(1) + ['KB', 'MB', 'GB', 'TB', 'PB', 'EB'][i];
+  }
+
+  function getFileId (file) {
+    return file.id || BUI.guid('bui-uploader-file');
+  }
+
+
+  function baseView() {
+  }
+
+  baseView.ATTRS = {
+  }
+
+  baseView.prototype = {
+    _uiSetText: function (v) {
+      var _self = this,
+        text = _self.get('text'),
+        textCls = _self.get('textCls'),
+        textEl = _self.get('el').find('.' + textCls);
+      textEl.text(text);
+    }
+  }
+
+<span id='BUI-Uploader-Button'>  /**
+</span>   * 上传组件按钮的基类
+   * @class BUI.Uploader.Button
+   */
+  function base(){
+
+  }
+
+  base.ATTRS = {
+<span id='BUI-Uploader-Button-property-buttonCls'>    /**
+</span>     * 按钮的样式
+     * @type {String}
+     */
+    buttonCls: {
+      value: CLS_UPLOADER_BUTTON + '-wrap',
+      view: true
+    },
+<span id='BUI-Uploader-Button-property-textCls'>    /**
+</span>     * 文本的样式
+     * @type {String}
+     */
+    textCls: {
+      value: CLS_UPLOADER_BUTTON_TEXT,
+      view: true
+    },
+<span id='BUI-Uploader-Button-property-text'>    /**
+</span>     * 显示的文本
+     * @type {String}
+     */
+    text: {
+      view: true,
+      value: '上传文件'
+    },
+    tpl: {
+      view: true,
+      value: '&lt;a href=&quot;javascript:void(0);&quot; class=&quot;' + CLS_UPLOADER_BUTTON + '-wrap' + '&quot;&gt;&lt;span class=&quot;' + CLS_UPLOADER_BUTTON_TEXT + '&quot;&gt;{text}&lt;/span&gt;&lt;/a&gt;'
+    },
+<span id='BUI-Uploader-Button-property-disabled'>    /**
+</span>     * 是否可用,false为可用
+     * @type Boolean
+     * @default false
+     */
+    disabled : {
+      value : false
+    },
+<span id='BUI-Uploader-Button-property-multiple'>    /**
+</span>     * 是否开启多选支持
+     * @type Boolean
+     * @default true
+     */
+    multiple : {
+      value : true
+    },
+<span id='BUI-Uploader-Button-property-filter'>    /**
+</span>     * 文件过滤
+     * @type Array
+     * @default []
+     */
+    filter : {
+      shared : false,
+      value : []
+    }
+  };
+
+  base.prototype = {
+<span id='BUI-Uploader-Button-method-getExtFileData'>    /**
+</span>     * 获取文件的扩展信息
+     * @param  {Object} file 文件对象
+     * @return {Object} 返回文件扩展信息
+     */
+    getExtFileData: function(file){
+      var filename = getFileName(file.name),
+        textSize = convertByteSize(file.size || 0),
+        extName = getFileExtName(file.name),
+        fileAttrs = {
+          name: filename,
+          size: file.size,
+          type: file.type,
+          textSize: textSize,
+          ext: extName,
+          id: getFileId(file)
+        };
+      return fileAttrs;
+    },
+<span id='global-method-_getFile'>    /**
+</span>     * @protected
+     * 不知道含义，貌似是给file附加信息，命名有问题，无法见到名字想到含义
+     * formatFile或许更合适
+     * @ignore
+     */
+    _getFile: function(file){
+      var _self = this,
+        fileAttrs = _self.getExtFileData(file);
+      BUI.mix(file, fileAttrs);
+
+      //因为在结果模板构建的时候很有可能会使用文件本身的属性，如name，size之类的
+      //所以将这些属性放到一个变量里，在渲染模板的时候和result mix一下
+      file.attr = fileAttrs;
+      return file;
+    },
+    //设置多选
+    _uiSetMultiple : function (v) {
+      this.setMultiple(v);
+    },
+<span id='BUI-Uploader-Button-method-setMultiple'>    /**
+</span>     * @template
+     * @protected
+     * 设置是否多选，但是从函数含义上来看使用
+     * 更合适
+     * 模板函数，用于子类扩展，参考 模板模式
+     */
+    setMultiple: function(v){
+    },
+    //设置禁用
+    _uiSetDisabled : function (v) {
+      this.setDisabled(v);
+    },
+<span id='BUI-Uploader-Button-method-setDisabled'>    /**
+</span>     * @protected
+     * @template
+     * 设置禁用，其实直接替换成_uiSetDisabled更好
+     * 
+     */
+    setDisabled: function(v){
+    },
+    getFilter: function(v){
+      if(v){
+        var desc = [],
+          ext = [],
+          type = [];
+        if(v.desc){
+          desc.push(v.desc);
+          ext.push(Filter.getExtByDesc(v.desc));
+          type.push(Filter.getTypeByDesc(v.desc));
+        }
+        if(v.ext){
+          ext.push(v.ext);
+          type.push(Filter.getTypeByExt(v.ext));
+        }
+        if(v.type){
+
+        }
+        return {
+          desc: desc.join(','),
+          ext: ext.join(','),
+          type: type.join(',')
+        }
+      }
+    },
+    //设置过滤
+    _uiSetFilter : function (v) {
+      this.setFilter(v);
+    },
+<span id='BUI-Uploader-Button-method-setFilter'>    /**
+</span>     * @protected
+     * @template
+     * 设置过滤
+     */
+    setFilter: function(v){
+    }
+  }
+
+  base.View = baseView
+
+  return base;
+
+});
+</pre>
+</body>
+</html>

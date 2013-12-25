@@ -20,7 +20,7 @@
  * @ignore
  */
 
-define('bui/layout/accordion',['bui/layout/abstract','bui/layout/tabitem','bui/layout/collapsable'],function (require) {
+define('bui/layout/accordion',['bui/common','bui/layout/abstract','bui/layout/tabitem','bui/layout/collapsable'],function (require) {
 	
 	var CLS_ITEM = 'x-layout-item-accordion',
 		BUI = require('bui/common'),
@@ -33,6 +33,43 @@ define('bui/layout/accordion',['bui/layout/abstract','bui/layout/tabitem','bui/l
 	 * 可折叠的布局
 	 * @extends BUI.Layout.Abstract
 	 * @mixins BUI.Layout.Collapsable
+	 * &lt;pre&gt;&lt;code&gt;
+	 * 	var layout = new Accordion(),
+				control = new BUI.Component.Controller({
+				width:600,
+				height:500,
+				render : '#J_Layout',
+				elCls : 'layout-test',
+				children : [{
+					layout : {
+						title : '标签一'
+					},
+					xclass : 'controller',
+					content : &quot;一&quot;
+				},{
+					xclass : 'controller',
+					layout : {
+						title : '标签二'
+					},
+					content : '二'
+				},{
+					xclass : 'controller',
+					layout : {
+						title : '标签三'
+					},
+					content : &quot;三&quot;
+				},{
+					xclass : 'controller',
+					layout : {
+						title : '标签四'
+					},
+					content : &quot;四&quot;
+				}],
+				plugins : [layout]
+			});
+
+			control.render();
+	 * &lt;/code&gt;&lt;/pre&gt;
 	 */
 	var Accordion = function(config){
 		Accordion.superclass.constructor.call(this,config);

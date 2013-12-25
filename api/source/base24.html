@@ -16,19 +16,24 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='global-property-'>/**
-</span> * @fileOverview 进度条命名空间入口
+</span> * @fileoverview 异步文件上传组件入口文件
+ * @author 索丘 zengyue.yezy@alibaba-inc.com
  * @ignore
- */
+ **/
+define('bui/uploader', ['bui/common', 'bui/uploader/uploader', 'bui/uploader/queue', 'bui/uploader/theme', 'bui/uploader/factory'], function (require) {
 
-define('bui/progressbar',['bui/common','bui/progressbar/base','bui/progressbar/load'],function (require) {
   var BUI = require('bui/common'),
-    ProgressBar = BUI.namespace('ProgressBar');
-  BUI.mix(ProgressBar,{
-    Base : require('bui/progressbar/base'),
-    Load : require('bui/progressbar/load')
+    Uploader = BUI.namespace('Uploader');
+
+  BUI.mix(Uploader, {
+    Uploader: require('bui/uploader/uploader'),
+    Queue: require('bui/uploader/queue'),
+    Theme: require('bui/uploader/theme'),
+    Factory: require('bui/uploader/factory')
   });
 
-  return ProgressBar;
+  return Uploader;
+
 });</pre>
 </body>
 </html>

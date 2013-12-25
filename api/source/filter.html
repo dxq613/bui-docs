@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">define('bui/uploader/button/filter',['bui/common'], function(require){
+
+  var BUI = require('bui/common');
+
+  var filter =  {
+    msexcel: {
+      type: &quot;application/msexcel&quot;,
+      ext: '.xls,.xlsx'
+    },
+    msword: {
+      type: &quot;application/msword&quot;,
+      ext: '.doc,.docx'
+    },
+    // {type: &quot;application/pdf&quot;},
+    // {type: &quot;application/poscript&quot;},
+    // {type: &quot;application/rtf&quot;},
+    // {type: &quot;application/x-zip-compressed&quot;},
+    // {type: &quot;audio/basic&quot;},
+    // {type: &quot;audio/x-aiff&quot;},
+    // {type: &quot;audio/x-mpeg&quot;},
+    // {type: &quot;audio/x-pn/},realaudio&quot;
+    // {type: &quot;audio/x-waw&quot;},
+    // image: {
+    //   type: &quot;image/*&quot;,
+    //   ext: '.gif,.jpg,.png,.bmp'
+    // },
+    gif: {
+      type: &quot;image/gif&quot;,
+      ext: '.gif'
+    },
+    jpeg: {
+      type: &quot;image/jpeg&quot;,
+      ext: '.jpg'
+    },
+    // {type: &quot;image/tiff&quot;},
+    bmp: {
+      type: &quot;image/x-ms-bmp&quot;,
+      ext: '.bmp'
+    },
+    //{type: &quot;image/x-photo-cd&quot;},
+    png: {
+      type: &quot;image/png&quot;,
+      ext: '.png'
+    }
+    // {type: &quot;image/x-portablebitmap&quot;},
+    // {type: &quot;image/x-portable-greymap&quot;},
+    // {type: &quot;image/x-portable-pixmap&quot;},
+    // {type: &quot;image/x-rgb&quot;},
+    // {type: &quot;text/html&quot;},
+    // {type: &quot;text/plain&quot;},
+    // {type: &quot;video/quicktime&quot;},
+    // {type: &quot;video/x-mpeg2&quot;},
+    // {type: &quot;video/x-msvideo&quot;}
+  }
+
+  return {
+    _getValueByDesc: function(desc, key){
+      var value = [];
+      if(BUI.isString(desc)){
+        desc = desc.split(',');
+      }
+      if(BUI.isArray(desc)){
+        BUI.each(desc, function(v, k){
+          var item = filter[v];
+          item &amp;&amp; item[key] &amp;&amp; value.push(item[key]);
+        });
+      }
+      return value.join(',');
+    },
+    getTypeByDesc: function(desc){
+      return this._getValueByDesc(desc, 'type');
+    },
+    getExtByDesc: function(desc){
+      return this._getValueByDesc(desc, 'ext');
+    },
+    getTypeByExt: function(ext){
+      var type = [];
+      if(BUI.isString(ext)){
+        ext = ext.split(',');
+      };
+      if(BUI.isArray(ext)){
+        BUI.each(ext, function(e){
+          BUI.each(filter, function(item, desc){
+            if(BUI.Array.indexOf(e, item.ext.split(',')) &gt; -1){
+              type.push(item.type);
+            }
+          });
+        });
+      };
+      return type.join(',');
+    }
+  }
+});</pre>
+</body>
+</html>

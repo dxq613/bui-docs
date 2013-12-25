@@ -29,12 +29,25 @@ define('bui/grid/plugins/rowediting',['bui/common','bui/grid/plugins/editing'],f
 </span>   * @class BUI.Grid.Plugins.RowEditing
    * @extends BUI.Grid.Plugins.Editing
    * 单元格编辑插件
+   *
+   *  ** 注意 **
+   *
+   *  - 编辑器的定义在columns中，editor属性
+   *  - editor里面的定义对应form-field的定义，xtype代表 form-field + xtype
+   *  - validator 函数的函数原型 function(value,newRecord,originRecord){} //编辑的当前值，正在编辑的记录，原始记录
    */
   var RowEditing = function(config){
     RowEditing.superclass.constructor.call(this, config);
   };
 
   RowEditing.ATTRS = {
+<span id='BUI-Grid-Plugins-RowEditing-cfg-autoSave'>     /**
+</span>     * 是否自动保存数据到数据源，通过store的save方法实现
+     * @cfg {Object} [autoSave=false]
+     */
+    autoSave : {
+      value : false
+    },
 <span id='BUI-Grid-Plugins-RowEditing-property-align'>     /**
 </span>     * @protected
      * 编辑器的对齐设置
@@ -86,9 +99,10 @@ define('bui/grid/plugins/rowediting',['bui/common','bui/grid/plugins/editing'],f
       var _self = this;
       return function(value){
         var editor = _self.get('curEditor'),
-          record = editor ? editor.getValue() : _self.get('record');
+          origin = _self.get('record'),
+          record = editor ? editor.getValue() : origin;
         if(record){
-          return validator(value,record);
+          return validator(value,record,origin);
         }
       };
     },
@@ -141,9 +155,12 @@ define('bui/grid/plugins/rowediting',['bui/common','bui/grid/plugins/editing'],f
         BUI.mix(record,value);
         
         store.update(record);
+        if(_self.get('autoSave')){
+          store.save(record);
+        }
     },
 <span id='BUI-Grid-Plugins-RowEditing-method-getEditor'>     /**
-</span>     * 获取编辑此单元格的编辑器
+</span>     * 获取编辑此行的编辑器
      * @protected
      * @param  {String} field 点击单元格的字段
      * @return {BUI.Editor.Editor}  编辑器
@@ -181,11 +198,12 @@ define('bui/grid/plugins/rowediting',['bui/common','bui/grid/plugins/editing'],f
         row = $(options.row);
       editor.set('width',row.width());
       BUI.each(columns,function(column){
+        var fieldName = column.get('dataIndex'),
+          field = form.getField(fieldName)
         if(!column.get('visible')){
-          field.set('visible',false);
+          field &amp;&amp; field.set('visible',false);
         }else{
-          var fieldName = column.get('dataIndex'),
-            field = form.getField(fieldName),
+          var 
             width = column.get('el').outerWidth() - field.getAppendWidth();
           field.set('width',width);
         }

@@ -73,7 +73,7 @@ define('bui/list/sortable',['bui/common','bui/data'],function (require) {
      * @return {Array} 排序集合
      */
     getSortData : function(){
-      return this.get('view').getAllElements();
+      return $.makeArray(this.get('view').getAllElements());
     },
 <span id='BUI-List-Sortable-method-sort'>    /**
 </span>     * 列表排序

@@ -20,7 +20,7 @@
  * @ignore
  */
 
-define('bui/layout/anchor',['bui/layout/abstract','bui/layout/anchoritem'],function (require) {
+define('bui/layout/anchor',['bui/common','bui/layout/abstract','bui/layout/anchoritem'],function (require) {
 	var BUI = require('bui/common'),
 		Abstract = require('bui/layout/abstract'),
 		Item = require('bui/layout/anchoritem');
@@ -29,6 +29,43 @@ define('bui/layout/anchor',['bui/layout/abstract','bui/layout/anchoritem'],funct
 </span>	 * @class BUI.Layout.Anchor
 	 * 锚定布局控件
 	 * @extends BUI.Layout.Abstract
+	 * &lt;pre&gt;&lt;code&gt;
+	 * var layout = new Anchor(),
+			control = new BUI.Component.Controller({
+				width:800,
+				height:500,
+				render : '#J_Layout',
+				elCls : 'layout-test',
+				children : [{
+					layout : {
+						anchor : ['100%',50]
+					},
+					xclass : 'controller',
+					content : &quot;一 ['100%',50]&quot;
+				},{
+					xclass : 'controller',
+					layout : {
+						anchor : [-100,50]
+					},
+					content : '二 [-100,50]'
+				},{
+					xclass : 'controller',
+					layout : {
+						anchor : ['60%','20%']
+					},
+					content : &quot;三 ['60%','20%']&quot;
+				},{
+					xclass : 'controller',
+					layout : {
+						anchor : ['50%',-300]
+					},
+					content : &quot;四 ['50%',-300]&quot;
+				}],
+				plugins : [layout]
+			});
+
+		control.render();
+	 * &lt;/code&gt;&lt;/pre&gt;
 	 */
 	var Anchor = function(config){
 		Anchor.superclass.constructor.call(this,config)

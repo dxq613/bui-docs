@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @ignore
+ * @fileoverview 文件上传主题的处理
+ * @author 索丘 &lt;zengyue.yezy@alibaba-inc.com&gt;
+ **/
+define('bui/uploader/theme',['bui/common'], function (require) {
+
+  var BUI = require('bui/common');
+
+  var themes = {};
+
+<span id='BUI-Uploader-Theme'>  /**
+</span>   * 文件上传的主题设置
+   * @class BUI.Uploader.Theme
+   * @static
+   */
+  var Theme = {
+<span id='BUI-Uploader-Theme-method-addTheme'>    /**
+</span>     * 添加一个主题
+     * @param {String} name   主题名称
+     * @param {Object} 主题的配置
+     */
+    addTheme: function(name, config){
+      themes[name] = config;
+    },
+<span id='BUI-Uploader-Theme-method-getTheme'>    /**
+</span>     * 获取一个主题
+     * @param  {String} name [description]
+     * @return {BUI.Uploader.Theme} 主题的配置
+     */
+    getTheme: function(name){
+      //不能覆盖主题设置的
+      return BUI.cloneObject(themes[name]);
+    }
+  };
+
+  //这个默认的主题
+  Theme.addTheme('default', {
+    elCls: 'defaultTheme'
+  });
+
+
+  //带图片预览的主题
+  Theme.addTheme('imageView', {
+    elCls: 'imageViewTheme',
+    queue:{
+      resultTpl: {
+        'success': '&lt;div class=&quot;success&quot;&gt;&lt;img src=&quot;{url}&quot; /&gt;&lt;/div&gt;'
+      }
+    }
+  });
+
+  return Theme;
+
+});</pre>
+</body>
+</html>

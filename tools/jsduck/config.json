@@ -24,6 +24,8 @@
 	"../../../bui/src/slider",
 	"../../../bui/src/extensions",
 	"../../../bui/src/layout",
+	"../../../bui/src/module",
+        "../../../bui/src/uploader/",
 	"../../../bui/src/progressbar"
     ]
 }

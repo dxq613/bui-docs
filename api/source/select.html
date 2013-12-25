@@ -66,9 +66,7 @@ define('bui/form/selectfield',['bui/common','bui/form/basefield'],function (requ
         select.render = _self.getControlContainer();
         select.valueField = _self.getInnerControl();
         select.autoRender = true;
-       /* if(items){
-          select.items = items;
-        }*/
+       
         select = new Select.Select(select);
         _self.set('select',select);
         _self.set('isCreate',true);
@@ -206,7 +204,16 @@ define('bui/form/selectfield',['bui/common','bui/form/basefield'],function (requ
       emptyText : {
         value : '请选择'
       },
+<span id='BUI-Form-Field-Select-cfg-select'>      /**
+</span>       * 内部的Select控件的配置项
+       * @cfg {Object} select
+       */
+<span id='BUI-Form-Field-Select-property-select'>      /**
+</span>       * 内部的Select控件
+       * @type {BUI.Select.Select}
+       */
       select : {
+        shared : false,
         value : {}
       }
     },

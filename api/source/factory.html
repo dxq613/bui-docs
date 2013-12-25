@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileoverview 文件上传的工厂类
+ * @author 索丘 &lt;zengyue.yezy@alibaba-inc.com&gt;
+ * @ignore
+ **/
+define('bui/uploader/factory',['bui/common', './queue', './button/htmlButton', './button/swfButton', './type/ajax', './type/flash', './type/iframe'], function (require) {
+
+  var BUI = require('bui/common'),
+    Queue = require('bui/uploader/queue'),
+    HtmlButton = require('bui/uploader/button/htmlButton'),
+    SwfButton = require('bui/uploader/button/swfButton'),
+    Ajax = require('bui/uploader/type/ajax'),
+    Flash = require('bui/uploader/type/flash'),
+    Iframe = require('bui/uploader/type/iframe');
+
+<span id='Factory'>  /**
+</span>   * @BUI.Uploader.Factory
+   * 创建上传控件的工厂类
+   */
+  function Factory(){
+
+  }
+  Factory.prototype = {
+    createUploadType: function(type, config){
+      if (type === 'ajax') {
+        return new Ajax(config);
+      }
+      else if(type === 'flash'){
+        return new Flash(config);
+      }
+      else{
+        return new Iframe(config);
+      }
+    },
+    createButton: function(type, config){
+      if(type === 'ajax' || type === 'iframe'){
+        return new HtmlButton(config);
+      }
+      else{
+        return new SwfButton(config);
+      }
+    },
+    createQueue: function(config){
+      return new Queue(config);
+    }
+  }
+
+  return new Factory();
+
+});</pre>
+</body>
+</html>
