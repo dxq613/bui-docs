@@ -20,7 +20,7 @@
  * @ignore
  */
 
-define('bui/tab/panels',function (require) {
+define(&#39;bui/tab/panels&#39;,function (require) {
   
 <span id='BUI-Tab-Panels'>  /**
 </span>   * @class BUI.Tab.Panels
@@ -41,8 +41,8 @@ define('bui/tab/panels',function (require) {
     },
 <span id='BUI-Tab-Panels-property-panelContainer'>    /**
 </span>     * 面板的容器，如果是id直接通过id查找，如果是非id，那么从el开始查找,例如：
-     *   -#id ： 通过$('#id')查找
-     *   -.cls : 通过 this.get('el').find('.cls') 查找
+     *   -#id ： 通过$(&#39;#id&#39;)查找
+     *   -.cls : 通过 this.get(&#39;el&#39;).find(&#39;.cls&#39;) 查找
      *   -DOM/jQuery ：不需要查找
      * @type {String|HTMLElement|jQuery}
      */
@@ -63,10 +63,10 @@ define('bui/tab/panels',function (require) {
 
     __renderUI : function(){
       var _self = this,
-        children = _self.get('children'),
+        children = _self.get(&#39;children&#39;),
         panelContainer = _self._initPanelContainer(),
-        panelCls = _self.get('panelCls'),
-        panels = panelCls ? panelContainer.find('.' + panels) : panelContainer.children();
+        panelCls = _self.get(&#39;panelCls&#39;),
+        panels = panelCls ? panelContainer.find(&#39;.&#39; + panels) : panelContainer.children();
 
       BUI.each(children,function(item,index){
         var panel = panels[index];
@@ -76,7 +76,7 @@ define('bui/tab/panels',function (require) {
 
     __bindUI : function(){
       var _self = this;
-      _self.on('beforeAddChild',function(ev){
+      _self.on(&#39;beforeAddChild&#39;,function(ev){
         var item = ev.child;
         _self._initPanelItem(item);
       });
@@ -84,14 +84,14 @@ define('bui/tab/panels',function (require) {
     //初始化容器
     _initPanelContainer : function(){
       var _self = this,
-        panelContainer = _self.get('panelContainer');
+        panelContainer = _self.get(&#39;panelContainer&#39;);
       if(panelContainer &amp;&amp; BUI.isString(panelContainer)){
-        if(panelContainer.indexOf('#') == 0){ //如果是id
+        if(panelContainer.indexOf(&#39;#&#39;) == 0){ //如果是id
           panelContainer = $(panelContainer);
         }else{
-          panelContainer = _self.get('el').find(panelContainer);
+          panelContainer = _self.get(&#39;el&#39;).find(panelContainer);
         }
-        _self.setInternal('panelContainer',panelContainer);
+        _self.setInternal(&#39;panelContainer&#39;,panelContainer);
       }
       return panelContainer;
     },
@@ -100,9 +100,9 @@ define('bui/tab/panels',function (require) {
       var _self = this;
 
       if(item.set){
-        if(!item.get('panel')){
-          panel = panel || _self._getPanel(item.get('userConfig'));
-          item.set('panel',panel);
+        if(!item.get(&#39;panel&#39;)){
+          panel = panel || _self._getPanel(item.get(&#39;userConfig&#39;));
+          item.set(&#39;panel&#39;,panel);
         }
       }else{
         if(!item.panel){
@@ -114,8 +114,8 @@ define('bui/tab/panels',function (require) {
     //获取面板
     _getPanel : function(item){
       var _self = this,
-        panelContainer = _self.get('panelContainer'),
-        panelTpl = BUI.substitute(_self.get('panelTpl'),item);
+        panelContainer = _self.get(&#39;panelContainer&#39;),
+        panelTpl = BUI.substitute(_self.get(&#39;panelTpl&#39;),item);
       
       return $(panelTpl).appendTo(panelContainer);
     }

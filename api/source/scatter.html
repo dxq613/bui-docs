@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 散列图,用于标示点的分步
+ * @ignore
+ */
+
+define(&#39;bui/chart/scatterseries&#39;,[&#39;bui/chart/cartesianseries&#39;,&#39;bui/chart/activedgroup&#39;],function (require) {
+  
+  var BUI = require(&#39;bui/common&#39;),
+    Cartesian = require(&#39;bui/chart/cartesianseries&#39;),
+    ActiveGroup = require(&#39;bui/chart/activedgroup&#39;);
+
+  function trySet(obj,name,value){
+    if(obj &amp;&amp; !obj[name]){
+      obj[name] = value;
+    }
+  }
+<span id='BUI-Chart-Series-Scatter'>  /**
+</span>   * @class BUI.Chart.Series.Scatter
+   * 散点图序列
+   * @extends BUI.Chart.Series.Cartesian
+   */
+  var Scatter = function(cfg){
+    Scatter.superclass.constructor.call(this,cfg);
+
+  };
+
+  Scatter.ATTRS = {
+    elCls : {
+      value : &#39;x-chart-scatter&#39;
+    },
+    stickyTracking : {
+      value : false
+    },
+<span id='BUI-Chart-Series-Scatter-property-animate'>    /**
+</span>     * 生成时不执行动画
+     * @type {Object}
+     */
+    animate : {
+      value : false
+    }
+  };
+
+  BUI.extend(Scatter,Cartesian);
+
+  BUI.augment(Scatter,{
+
+<span id='BUI-Chart-Series-Scatter-method-processColor'>    /**
+</span>     * @protected
+     * 处理颜色
+     */
+    processColor : function(){
+      var _self = this,
+        color = _self.get(&#39;color&#39;);
+      if(color){
+        var  markers = _self.get(&#39;markers&#39;);
+        if(markers){
+          trySet(markers.marker,&#39;stroke&#39;,color);
+          trySet(markers.marker,&#39;fill&#39;,color);
+        }
+      }
+    },
+    //绘制点
+    draw : function(points){
+      var _self = this
+
+      BUI.each(points,function(point){
+        _self.addMarker(point);
+      });
+    },
+    //鼠标hover
+    onMouseOver : function(){
+      var _self = this,
+        markersGroup = _self.get(&#39;markersGroup&#39;);
+
+      if(markersGroup){
+        markersGroup.on(&#39;mouseover&#39;,function(ev){
+          var target = ev.target,
+            shape = target.shape;
+          if(shape){
+            markersGroup.setActivedItem(shape);
+          }
+        });
+      }
+    },
+    //获取当前定位的点
+    getTrackingInfo : function(){
+      var _self = this,
+        markersGroup = _self.get(&#39;markersGroup&#39;),
+        activeMarker,
+        rst,
+        point;
+      if(markersGroup){
+        activeMarker = markersGroup.getActived();
+        if(activeMarker){
+          rst = activeMarker.get(&#39;point&#39;);
+        }
+      }
+      return rst;
+    },
+    //鼠标移出
+    onMouseOut : function(){
+      var _self = this,
+        markersGroup = _self.get(&#39;markersGroup&#39;);
+
+      if(markersGroup){
+        markersGroup.on(&#39;mouseout&#39;,function(ev){
+          var target = ev.target,
+            shape = target.shape;
+          if(shape){
+            markersGroup.clearActivedItem(shape);
+          }
+        });
+      }
+    }
+
+  });
+
+  return Scatter;
+});</pre>
+</body>
+</html>

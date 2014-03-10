@@ -20,12 +20,12 @@
  * @author 剑平（明河）&lt;minghe36@126.com&gt;,紫英&lt;daxingplay@gmail.com&gt;
  * @ignore
  **/
-define('bui/uploader/type/iframe',['./base'], function(require) {
-    var ID_PREFIX = 'bui-uploader-iframe-';
+define(&#39;bui/uploader/type/iframe&#39;,[&#39;./base&#39;], function(require) {
+    var ID_PREFIX = &#39;bui-uploader-iframe-&#39;;
 
-    var UploadType = require('bui/uploader/type/base');
-<span id='BUI-Uploader-IframeType'>    /**
-</span>     * @class BUI.Uploader.IframeType
+    var UploadType = require(&#39;bui/uploader/type/base&#39;);
+<span id='BUI-Uploader-UploadType-Iframe'>    /**
+</span>     * @class BUI.Uploader.UploadType.Iframe
      * iframe方案上传，全浏览器支持
      * @extends BUI.Uploader.UploadType
      *
@@ -36,31 +36,9 @@ define('bui/uploader/type/iframe',['./base'], function(require) {
         IframeType.superclass.constructor.call(_self, config);
     }
 
-    BUI.mix(IframeType,  {
-<span id='global-property-tpl'>        /**
-</span>         * 会用到的html模板
-         * @ignore
-         */
-        tpl : {
-            IFRAME : '&lt;iframe src=&quot;javascript:false;&quot; name=&quot;{id}&quot; id=&quot;{id}&quot; border=&quot;no&quot; width=&quot;1&quot; height=&quot;1&quot; style=&quot;display: none;&quot; /&gt;',
-            FORM : '&lt;form method=&quot;post&quot; enctype=&quot;multipart/form-data&quot; action=&quot;{action}&quot; target=&quot;{target}&quot; style=&quot;visibility: hidden;&quot;&gt;{hiddenInputs}&lt;/form&gt;',
-            HIDDEN_INPUT : '&lt;input type=&quot;hidden&quot; name=&quot;{name}&quot; value=&quot;{value}&quot; /&gt;'
-        },
-<span id='global-property-event'>        /**
-</span>         * 事件列表
-         * @ignore
-         */
-        event : BUI.mix(UploadType.event,{
-            //创建iframe和form后触发
-            CREATE : 'create',
-            //删除form后触发
-            REMOVE : 'remove'
-        })
-    });
-
     //继承于Base，属性getter和setter委托于Base处理
     BUI.extend(IframeType, UploadType,{
-<span id='BUI-Uploader-IframeType-method-upload'>        /**
+<span id='BUI-Uploader-UploadType-Iframe-method-upload'>        /**
 </span>         * 上传文件
          * @param {HTMLElement} fileInput 文件input
          */
@@ -71,46 +49,46 @@ define('bui/uploader/type/iframe',['./base'], function(require) {
             if (!file){
                 return false
             };
-            _self.fire(IframeType.event.START, {file: file});
-            _self.set('file', file);
-            _self.set('fileInput', input);
+            _self.fire(&#39;start&#39;, {file: file});
+            _self.set(&#39;file&#39;, file);
+            _self.set(&#39;fileInput&#39;, input);
             //创建iframe和form
             _self._create();
-            form = _self.get('form');
+            form = _self.get(&#39;form&#39;);
             //提交表单到iframe内
             form &amp;&amp; form[0].submit();
         },
-<span id='BUI-Uploader-IframeType-method-stop'>        /**
-</span>         * 停止上传
-         * @return {BUI.Uploader.IframeType}
-         * @chainable
+<span id='BUI-Uploader-UploadType-Iframe-method-cancel'>        /**
+</span>         * 取消上传
+         * @return {BUI.Uploader.UploadType.Iframe}
          */
-        stop : function() {
-            var self = this,iframe = self.get('iframe');
-            iframe.attr('src', 'javascript:&quot;&lt;html&gt;&lt;/html&gt;&quot;;');
+        cancel : function() {
+            var self = this,iframe = self.get(&#39;iframe&#39;);
+            //iframe.attr(&#39;src&#39;, &#39;javascript:&quot;&lt;html&gt;&lt;/html&gt;&quot;;&#39;);
             self.reset();
-            self.fire(IframeType.event.STOP);
-            self.fire(IframeType.event.ERROR, {status : 'abort',msg : '上传失败，原因：abort'});
+            self.fire(&#39;cancel&#39;);
+            // self.fire(&#39;error&#39;, {status : &#39;abort&#39;,msg : &#39;上传失败，原因：abort&#39;});
             return self;
         },
-<span id='BUI-Uploader-IframeType-method-dataToHidden'>        /**
+<span id='BUI-Uploader-UploadType-Iframe-method-dataToHidden'>        /**
 </span>         * 将参数数据转换成hidden元素
          * @param {Object} data 对象数据
          * @return {String} hiddenInputHtml hidden元素html片段
          */
         dataToHidden : function(data) {
-            if (!$.isPlainObject(data) || $.isEmptyObject(data)) return '';
+            if (!$.isPlainObject(data) || $.isEmptyObject(data)) return &#39;&#39;;
             var self = this,
                 hiddenInputHtml = [],
                 //hidden元素模板
-                tpl = self.get('tpl'),hiddenTpl = tpl.HIDDEN_INPUT;
-            if (!BUI.isString(hiddenTpl)) return '';
+                tpl = self.get(&#39;tpl&#39;),
+                hiddenTpl = tpl.HIDDEN_INPUT;
+            if (!BUI.isString(hiddenTpl)) return &#39;&#39;;
             for (var k in data) {
-                hiddenInputHtml.push(BUI.substitute(hiddenTpl, {'name' : k,'value' : data[k]}));
+                hiddenInputHtml.push(BUI.substitute(hiddenTpl, {&#39;name&#39; : k,&#39;value&#39; : data[k]}));
             }
             return hiddenInputHtml.join();
         },
-<span id='BUI-Uploader-IframeType-method-_createIframe'>        /**
+<span id='BUI-Uploader-UploadType-Iframe-method-_createIframe'>        /**
 </span>         * 创建一个空的iframe，用于文件上传表单提交后返回服务器端数据
          * @return {NodeList}
          */
@@ -119,62 +97,61 @@ define('bui/uploader/type/iframe',['./base'], function(require) {
                 //iframe的id
                 id = ID_PREFIX + BUI.guid(),
                 //iframe模板
-                tpl = self.get('tpl'),
+                tpl = self.get(&#39;tpl&#39;),
                 iframeTpl = tpl.IFRAME,
-                existIframe = self.get('iframe'),
+                existIframe = self.get(&#39;iframe&#39;),
                 iframe;
             //先判断是否已经存在iframe，存在直接返回iframe
             if (!$.isEmptyObject(existIframe)) return existIframe;
 
             //创建处理上传的iframe
-            iframe = $(BUI.substitute(tpl.IFRAME, { 'id' : id }));
+            iframe = $(BUI.substitute(tpl.IFRAME, { &#39;id&#39; : id }));
             //监听iframe的load事件
-            $('body').append(iframe);
-            iframe.on('load', function(ev){
+            $(&#39;body&#39;).append(iframe);
+            iframe.on(&#39;load&#39;, function(ev){
                 self._iframeLoadHandler(ev);
             });
-            self.set('id',id);
-            self.set('iframe', iframe);
+            self.set(&#39;id&#39;,id);
+            self.set(&#39;iframe&#39;, iframe);
             return iframe;
         },
-<span id='BUI-Uploader-IframeType-method-_iframeLoadHandler'>        /**
+<span id='BUI-Uploader-UploadType-Iframe-method-_iframeLoadHandler'>        /**
 </span>         * iframe加载完成后触发（文件上传结束后）
          */
         _iframeLoadHandler : function(ev) {
             var self = this,iframe = ev.target,
-                errorEvent = IframeType.event.ERROR,
                 doc = iframe.contentDocument || window.frames[iframe.id].document,
                 result;
             if (!doc || !doc.body) {
-                self.fire(errorEvent, {msg : '服务器端返回数据有问题！'});
+                self.fire(&#39;error&#39;, {msg : &#39;服务器端返回数据有问题！&#39;});
                 return false;
             }
             var response = doc.body.innerHTML;
             //输出为直接退出
-            if(response == ''){
-                self.fire('error');
+            if(response == &#39;&#39;){
+                self.fire(&#39;error&#39;);
                 return;
             };
             result = self._processResponse(response);
 
-            self.fire('complete', {result: result, file: self.get('file')});
+            self.fire(&#39;complete&#39;, {result: result, file: self.get(&#39;file&#39;)});
             self.reset();
         },
-<span id='BUI-Uploader-IframeType-method-_createForm'>        /**
+<span id='BUI-Uploader-UploadType-Iframe-method-_createForm'>        /**
 </span>         * 创建文件上传表单
          * @return {NodeList}
          */
         _createForm : function() {
             var self = this,
                 //iframe的id
-                id = self.get('id'),
+                id = self.get(&#39;id&#39;),
                 //form模板
-                tpl = self.get('tpl'),formTpl = tpl.FORM,
+                tpl = self.get(&#39;tpl&#39;),formTpl = tpl.FORM,
                 //想要传送给服务器端的数据
-                data = self.get('data'),
+                data = self.get(&#39;data&#39;),
                 //服务器端处理文件上传的路径
-                action = self.get('url'),
-                fileInput = self.get('fileInput'),
+                action = self.get(&#39;url&#39;),
+                fileInput = self.get(&#39;fileInput&#39;),
                 hiddens,
                 form;
             if (!BUI.isString(formTpl)) {
@@ -185,14 +162,14 @@ define('bui/uploader/type/iframe',['./base'], function(require) {
             }
             hiddens = self.dataToHidden(data);
             hiddens += self.dataToHidden({&quot;type&quot;:&quot;iframe&quot;});
-            form = BUI.substitute(formTpl, {'action' : action,'target' : id,'hiddenInputs' : hiddens});
+            form = BUI.substitute(formTpl, {&#39;action&#39; : action,&#39;target&#39; : id,&#39;hiddenInputs&#39; : hiddens});
             //克隆文件域，并添加到form中
             form = $(form).append(fileInput);
-            $('body').append(form);
-            self.set('form', form);
+            $(&#39;body&#39;).append(form);
+            self.set(&#39;form&#39;, form);
             return form;
         },
-<span id='BUI-Uploader-IframeType-method-_create'>        /**
+<span id='BUI-Uploader-UploadType-Iframe-method-_create'>        /**
 </span>         * 创建iframe和form
          */
         _create : function() {
@@ -200,49 +177,71 @@ define('bui/uploader/type/iframe',['./base'], function(require) {
                 iframe = _self._createIframe(),
                 form = _self._createForm();
 
-            _self.fire(IframeType.event.CREATE, {iframe : iframe,form : form});
+            _self.fire(&#39;create&#39;, {iframe : iframe,form : form});
         },
-<span id='BUI-Uploader-IframeType-method-_remove'>        /**
+<span id='BUI-Uploader-UploadType-Iframe-method-_remove'>        /**
 </span>         * 移除表单
          */
         _remove : function() {
-            var self = this,form = self.get('form');
+            var self = this,form = self.get(&#39;form&#39;);
             if(!form)return false;
             //移除表单
             form.remove();
             //重置form属性
-            self.set('form', null);
-            self.fire(IframeType.event.REMOVE, {form : form});
+            self.set(&#39;form&#39;, null);
+            self.fire(&#39;remove&#39;, {form : form});
         },
         reset: function(){
             var _self = this;
             _self._remove();
-            _self.set('file', null);
+            _self.set(&#39;file&#39;, null);
         }
     }, {ATTRS : {
-<span id='BUI-Uploader-IframeType-property-tpl'>        /**
+<span id='BUI-Uploader-UploadType-Iframe-property-tpl'>        /**
 </span>         * iframe方案会用到的html模板，一般不需要修改
          * @type {String}
          * @default
          * {
-         IFRAME : '&lt;iframe src=&quot;javascript:false;&quot; name=&quot;{id}&quot; id=&quot;{id}&quot; border=&quot;no&quot; width=&quot;1&quot; height=&quot;1&quot; style=&quot;display: none;&quot; /&gt;',
-         FORM : '&lt;form method=&quot;post&quot; enctype=&quot;multipart/form-data&quot; action=&quot;{action}&quot; target=&quot;{target}&quot;&gt;{hiddenInputs}&lt;/form&gt;',
-         HIDDEN_INPUT : '&lt;input type=&quot;hidden&quot; name=&quot;{name}&quot; value=&quot;{value}&quot; /&gt;'
-         }
+         *   IFRAME : &#39;&lt;iframe src=&quot;javascript:false;&quot; name=&quot;{id}&quot; id=&quot;{id}&quot; border=&quot;no&quot; width=&quot;1&quot; height=&quot;1&quot; style=&quot;display: none;&quot; /&gt;&#39;,
+         *   FORM : &#39;&lt;form method=&quot;post&quot; enctype=&quot;multipart/form-data&quot; action=&quot;{action}&quot; target=&quot;{target}&quot;&gt;{hiddenInputs}&lt;/form&gt;&#39;,
+         *   HIDDEN_INPUT : &#39;&lt;input type=&quot;hidden&quot; name=&quot;{name}&quot; value=&quot;{value}&quot; /&gt;&#39;
+         * }
          */
-        tpl : {value : IframeType.tpl},
-<span id='BUI-Uploader-IframeType-property-id'>        /**
+        tpl: {
+            value: {
+                IFRAME : &#39;&lt;iframe src=&quot;javascript:false;&quot; name=&quot;{id}&quot; id=&quot;{id}&quot; border=&quot;no&quot; width=&quot;1&quot; height=&quot;1&quot; style=&quot;display: none;&quot; /&gt;&#39;,
+                FORM : &#39;&lt;form method=&quot;post&quot; enctype=&quot;multipart/form-data&quot; action=&quot;{action}&quot; target=&quot;{target}&quot; style=&quot;visibility: hidden;&quot;&gt;{hiddenInputs}&lt;/form&gt;&#39;,
+                HIDDEN_INPUT : &#39;&lt;input type=&quot;hidden&quot; name=&quot;{name}&quot; value=&quot;{value}&quot; /&gt;&#39;
+            }
+        },
+<span id='BUI-Uploader-UploadType-Iframe-property-id'>        /**
 </span>         * 只读，创建的iframeid,id为组件自动创建
          * @type {String}
-         * @default  'ks-uploader-iframe-' +随机id
+         * @default  &#39;ks-uploader-iframe-&#39; +随机id
          */
-        id : {value : ID_PREFIX + BUI.guid()},
-<span id='BUI-Uploader-IframeType-property-iframe'>        /**
+        id: {value : ID_PREFIX + BUI.guid()},
+<span id='BUI-Uploader-UploadType-Iframe-property-iframe'>        /**
 </span>         * iframe
          */
-        iframe : {value : {}},
-        form : {},
-        fileInput : {}
+        iframe: {value : {}},
+        form: {},
+        fileInput: {},
+        events: {
+            value: {
+<span id='BUI-Uploader-UploadType-Iframe-event-create'>                /**
+</span>                 * 创建iframe和form后触发
+                 * @event
+                 * @param {Object} e 事件对象
+                 */
+                create: false,
+<span id='BUI-Uploader-UploadType-Iframe-event-remove'>                /**
+</span>                 * 删除form后触发
+                 * @event
+                 * @param {Object} e 事件对象
+                 */
+                remove: false
+            }
+        }
     }});
 
     return IframeType;

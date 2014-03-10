@@ -20,9 +20,9 @@
  * @ignore
  */
 
-define('bui/form/checkboxfield',['bui/form/checkfield'],function (required) {
+define(&#39;bui/form/checkboxfield&#39;,[&#39;bui/form/checkfield&#39;],function (required) {
   
-  var CheckField = required('bui/form/checkfield');
+  var CheckField = required(&#39;bui/form/checkfield&#39;);
 
 <span id='BUI-Form-Field-Checkbox'>   /**
 </span>   * 表单复选域
@@ -39,21 +39,21 @@ define('bui/form/checkboxfield',['bui/form/checkfield'],function (required) {
        */
       controlTpl : {
         view : true,
-        value : '&lt;input type=&quot;checkbox&quot;/&gt;'
+        value : &#39;&lt;input type=&quot;checkbox&quot;/&gt;&#39;
       },
 <span id='BUI-Form-Field-Checkbox-property-controlContainer'>       /**
 </span>       * 控件容器，如果为空直接添加在控件容器上
        * @type {String|HTMLElement}
        */
       controlContainer : {
-        value : '.checkbox'
+        value : &#39;.checkbox&#39;
       },
       tpl : {
-        value : '&lt;label&gt;&lt;span class=&quot;checkbox&quot;&gt;&lt;/span&gt;{label}&lt;/label&gt;'
+        value : &#39;&lt;label&gt;&lt;span class=&quot;checkbox&quot;&gt;&lt;/span&gt;{label}&lt;/label&gt;&#39;
       }
     }
   },{
-    xclass : 'form-field-checkbox'
+    xclass : &#39;form-field-checkbox&#39;
   });
 
   return CheckBoxField;

@@ -20,9 +20,9 @@
  * @ignore
  */
 
-define('bui/component/uibase/keynav',['bui/keycode'],function (require) {
+define(&#39;bui/component/uibase/keynav&#39;,[&#39;bui/keycode&#39;],function (require) {
 
-  var KeyCode = require('bui/keycode'),
+  var KeyCode = require(&#39;bui/keycode&#39;),
       wrapBehavior = BUI.wrapBehavior,
       getWrapBehavior = BUI.getWrapBehavior;
 <span id='BUI-Component-UIBase-KeyNav'>  /**
@@ -44,14 +44,14 @@ define('bui/component/uibase/keynav',['bui/keycode'],function (require) {
     },
 <span id='BUI-Component-UIBase-KeyNav-cfg-navEvent'>    /**
 </span>     * 导航使用的事件
-     * @cfg {String} [navEvent = 'keydown']
+     * @cfg {String} [navEvent = &#39;keydown&#39;]
      */
     navEvent : {
-      value : 'keydown'
+      value : &#39;keydown&#39;
     },
 <span id='BUI-Component-UIBase-KeyNav-cfg-ignoreInputFields'>    /**
 </span>     * 当获取事件的DOM是 input,textarea,select等时，不处理键盘导航
-     * @cfg {Object} [ignoreInputFields='true']
+     * @cfg {Object} [ignoreInputFields=&#39;true&#39;]
      */
     ignoreInputFields : {
       value : true
@@ -66,12 +66,12 @@ define('bui/component/uibase/keynav',['bui/keycode'],function (require) {
     },
     _uiSetAllowKeyNav : function(v){
       var _self = this,
-        eventName = _self.get('navEvent'),
-        el = _self.get('el');
+        eventName = _self.get(&#39;navEvent&#39;),
+        el = _self.get(&#39;el&#39;);
       if(v){
-        el.on(eventName,wrapBehavior(_self,'_handleKeyDown'));
+        el.on(eventName,wrapBehavior(_self,&#39;_handleKeyDown&#39;));
       }else{
-        el.off(eventName,getWrapBehavior(_self,'_handleKeyDown'));
+        el.off(eventName,getWrapBehavior(_self,&#39;_handleKeyDown&#39;));
       }
     },
 <span id='BUI-Component-UIBase-KeyNav-method-_handleKeyDown'>    /**
@@ -80,9 +80,9 @@ define('bui/component/uibase/keynav',['bui/keycode'],function (require) {
      */
     _handleKeyDown : function(ev){
       var _self = this,
-        ignoreInputFields = _self.get('ignoreInputFields'),
+        ignoreInputFields = _self.get(&#39;ignoreInputFields&#39;),
         code = ev.which;
-      if(ignoreInputFields &amp;&amp; $(ev.target).is('input,select,textarea')){
+      if(ignoreInputFields &amp;&amp; $(ev.target).is(&#39;input,select,textarea&#39;)){
         return;
       }
       

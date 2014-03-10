@@ -21,108 +21,108 @@
  * @ignore
  */
 
-define('bui/form/tips',['bui/common','bui/overlay'],function (require) {
+define(&#39;bui/form/tips&#39;,[&#39;bui/common&#39;,&#39;bui/overlay&#39;],function (require) {
 
-  var BUI = require('bui/common'),
+  var BUI = require(&#39;bui/common&#39;),
     prefix = BUI.prefix,
-    Overlay = require('bui/overlay').Overlay,
-    FIELD_TIP = 'data-tip',
-    CLS_TIP_CONTAINER = prefix + 'form-tip-container';
+    Overlay = require(&#39;bui/overlay&#39;).Overlay,
+    FIELD_TIP = &#39;data-tip&#39;,
+    CLS_TIP_CONTAINER = prefix + &#39;form-tip-container&#39;;
 
 <span id='BUI-Form-TipItem'>  /**
 </span>   * 表单提示信息类
-   * xclass:'form-tip'
+   * xclass:&#39;form-tip&#39;
    * @class BUI.Form.TipItem
    * @extends BUI.Overlay.Overlay
    */
   var tipItem = Overlay.extend(
-<span id='global-property-'>  /**
+<span id=''>  /**
 </span>   * @lends BUI.Form.TipItem.prototype
    * @ignore
    */
   {
-    initializer : function(){
-      var _self = this,
-        render = _self.get('render');
+<span id='-method-initializer'>    initializer : function(){
+</span>      var _self = this,
+        render = _self.get(&#39;render&#39;);
       if(!render){
-        var parent = $(_self.get('trigger')).parent();
-        _self.set('render',parent);
+        var parent = $(_self.get(&#39;trigger&#39;)).parent();
+        _self.set(&#39;render&#39;,parent);
       }
     },
-    renderUI : function(){
-      var _self = this;
+<span id='-method-renderUI'>    renderUI : function(){
+</span>      var _self = this;
 
       _self.resetVisible();
       
     },
-<span id='BUI-Form-TipItem-method-resetVisible'>    /**
+<span id='-method-resetVisible'>    /**
 </span>     * 重置是否显示
      */
     resetVisible : function(){
       var _self = this,
-        triggerEl = $(_self.get('trigger'));
+        triggerEl = $(_self.get(&#39;trigger&#39;));
 
       if(triggerEl.val()){//如果默认有文本则不显示，否则显示
-        _self.set('visible',false);
+        _self.set(&#39;visible&#39;,false);
       }else{
-        _self.set('align',{
-          node:$(_self.get('trigger')),
-          points: ['cl','cl']
+        _self.set(&#39;align&#39;,{
+          node:$(_self.get(&#39;trigger&#39;)),
+          points: [&#39;cl&#39;,&#39;cl&#39;]
         });
-        _self.set('visible',true);
+        _self.set(&#39;visible&#39;,true);
       }
     },
-    bindUI : function(){
-      var _self = this,
-        triggerEl = $(_self.get('trigger'));
+<span id='-method-bindUI'>    bindUI : function(){
+</span>      var _self = this,
+        triggerEl = $(_self.get(&#39;trigger&#39;));
 
-      _self.get('el').on('click',function(){
+      _self.get(&#39;el&#39;).on(&#39;click&#39;,function(){
         _self.hide();
         triggerEl.focus();
       });
-      triggerEl.on('click focus',function(){
+      triggerEl.on(&#39;click focus&#39;,function(){
         _self.hide();
       });
 
-      triggerEl.on('blur',function(){
+      triggerEl.on(&#39;blur&#39;,function(){
         _self.resetVisible();
       });
     }
   },{
     ATTRS : 
-<span id='global-property-'>    /**
+<span id=''>    /**
 </span>     * @lends BUI.Form.TipItem#
      * @ignore
      */
     {
-<span id='BUI-Form-TipItem-cfg-trigger'>      /**
+<span id='-cfg-trigger'>      /**
 </span>       * 提示的输入框 
        * @cfg {String|HTMLElement|jQuery} trigger
        */
-<span id='BUI-Form-TipItem-property-trigger'>      /**
+<span id='-property-trigger'>      /**
 </span>       * 提示的输入框
        * @type {String|HTMLElement|jQuery}
        */
       trigger:{
 
       },
-<span id='BUI-Form-TipItem-cfg-text'>      /**
+<span id='-cfg-text'>      /**
 </span>       * 提示文本
        * @cfg {String} text
        */
-<span id='BUI-Form-TipItem-property-text'>      /**
+<span id='-property-text'>      /**
 </span>       * 提示文本
        * @type {String}
        */
       text : {
 
       },
-<span id='BUI-Form-TipItem-cfg-iconCls'>      /**
+<span id='-cfg-iconCls'>      /**
 </span>       * 提示文本上显示的icon样式
        * @cfg {String} iconCls
        *     iconCls : icon-ok
        */
-<span id='BUI-Form-TipItem-property-iconCls'>      /**
+<span id='-property-iconCls'>      /**
 </span>       * 提示文本上显示的icon样式
        * @type {String}
        *     iconCls : icon-ok
@@ -130,17 +130,17 @@ define('bui/form/tips',['bui/common','bui/overlay'],function (require) {
       iconCls:{
 
       },
-<span id='BUI-Form-TipItem-property-tpl'>      /**
+<span id='-property-tpl'>      /**
 </span>       * 默认的模版
        * @type {String}
-       * @default '&lt;span class=&quot;{iconCls}&quot;&gt;&lt;/span&gt;&lt;span class=&quot;tip-text&quot;&gt;{text}&lt;/span&gt;'
+       * @default &#39;&lt;span class=&quot;{iconCls}&quot;&gt;&lt;/span&gt;&lt;span class=&quot;tip-text&quot;&gt;{text}&lt;/span&gt;&#39;
        */
       tpl:{
-        value:'&lt;span class=&quot;{iconCls}&quot;&gt;&lt;/span&gt;&lt;span class=&quot;tip-text&quot;&gt;{text}&lt;/span&gt;'
+        value:&#39;&lt;span class=&quot;{iconCls}&quot;&gt;&lt;/span&gt;&lt;span class=&quot;tip-text&quot;&gt;{text}&lt;/span&gt;&#39;
       }
     }
   },{
-    xclass : 'form-tip'
+    xclass : &#39;form-tip&#39;
   });
 
 <span id='BUI-Form-Tips'>  /**
@@ -158,24 +158,24 @@ define('bui/form/tips',['bui/common','bui/overlay'],function (require) {
   };
 
   Tips.ATTRS = 
-<span id='global-property-'>  /**
+<span id=''>  /**
 </span>   * @lends BUI.Form.Tips
    * @ignore
    */
   {
 
-<span id='BUI-Form-Tips-cfg-form'>    /**
+<span id='-cfg-form'>    /**
 </span>     * 表单的选择器
      * @cfg {String|HTMLElement|jQuery} form
      */
-<span id='BUI-Form-Tips-property-form'>    /**
+<span id='-property-form'>    /**
 </span>     * 表单的选择器
      * @type {String|HTMLElement|jQuery}
      */
     form : {
 
     },
-<span id='BUI-Form-Tips-property-items'>    /**
+<span id='-property-items'>    /**
 </span>     * 表单提示项对象 {@link BUI.Form.TipItem}
      * @readOnly
      * @type {Array} 
@@ -192,7 +192,7 @@ define('bui/form/tips',['bui/common','bui/overlay'],function (require) {
   BUI.augment(Tips,{
     _init : function(){
       var _self = this,
-        form = $(_self.get('form'));
+        form = $(_self.get(&#39;form&#39;));
       if(form.length){
         BUI.each($.makeArray(form[0].elements),function(elem){
           var tipConfig = $(elem).attr(FIELD_TIP);
@@ -206,25 +206,25 @@ define('bui/form/tips',['bui/common','bui/overlay'],function (require) {
     _initFormElement : function(element,config){
       if(config){
         config.trigger = element;
-        //config.render = this.get('form');
+        //config.render = this.get(&#39;form&#39;);
       }
       var _self = this,
-        items = _self.get('items'),
+        items = _self.get(&#39;items&#39;),
         item = new tipItem(config);
       items.push(item);
     },
-<span id='BUI-Form-Tips-method-getItem'>    /**
+<span id='-method-getItem'>    /**
 </span>     * 获取提示项
      * @param {String} name 字段的名称
      * @return {BUI.Form.TipItem} 提示项
      */
     getItem : function(name){
       var _self = this,
-        items = _self.get('items'),
+        items = _self.get(&#39;items&#39;),
         result = null;
       BUI.each(items,function(item){
 
-        if($(item.get('trigger')).attr('name') === name){
+        if($(item.get(&#39;trigger&#39;)).attr(&#39;name&#39;) === name){
           result = item;
           return false;
         }
@@ -233,28 +233,28 @@ define('bui/form/tips',['bui/common','bui/overlay'],function (require) {
 
       return result;
     },
-<span id='BUI-Form-Tips-method-resetVisible'>    /**
+<span id='-method-resetVisible'>    /**
 </span>     * 重置所有提示的可视状态
      */
     resetVisible : function(){
       var _self = this,
-        items = _self.get('items');
+        items = _self.get(&#39;items&#39;);
 
       BUI.each(items,function(item){
         item.resetVisible();
       });
     },
-<span id='BUI-Form-Tips-method-render'>    /**
+<span id='-method-render'>    /**
 </span>     * 生成 表单提示
      */
     render:function(){
        var _self = this,
-        items = _self.get('items');
+        items = _self.get(&#39;items&#39;);
       BUI.each(items,function(item){
         item.render();
       });
     },
-<span id='BUI-Form-Tips-method-destroy'>    /**
+<span id='-method-destroy'>    /**
 </span>     * 删除所有提示
      */
     destroy:function(){

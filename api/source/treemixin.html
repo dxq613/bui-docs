@@ -20,7 +20,7 @@
  * @ignore
  */
 
-define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
+define(&#39;bui/tree/treemixin&#39;,[&#39;bui/common&#39;,&#39;bui/data&#39;],function (require) {
 
   //将id 转换成node
   function makeSureNode(self,node){
@@ -36,30 +36,30 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
     }, timeout/count);
   }
 
-  var BUI = require('bui/common'),
-    Data = require('bui/data'),
-    EXPAND = 'expanded',
-    LOADING = 'loading',
-    CHECKED = 'checked',
-    PARTIAL_CHECKED = 'partial-checked',
+  var BUI = require(&#39;bui/common&#39;),
+    Data = require(&#39;bui/data&#39;),
+    EXPAND = &#39;expanded&#39;,
+    LOADING = &#39;loading&#39;,
+    CHECKED = &#39;checked&#39;,
+    PARTIAL_CHECKED = &#39;partial-checked&#39;,
     MAP_TYPES = {
-      NONE : 'none',
-      ALL : 'all',
-      CUSTOM : 'custom',
-      ONLY_LEAF : 'onlyLeaf'
+      NONE : &#39;none&#39;,
+      ALL : &#39;all&#39;,
+      CUSTOM : &#39;custom&#39;,
+      ONLY_LEAF : &#39;onlyLeaf&#39;
     },
-    CLS_ICON = 'x-tree-icon',
-    CLS_ELBOW = 'x-tree-elbow',
-    CLS_SHOW_LINE = 'x-tree-show-line',
-    CLS_ICON_PREFIX = CLS_ELBOW + '-',
-    CLS_ICON_WRAPER = CLS_ICON + '-wraper',
-    CLS_LINE = CLS_ICON_PREFIX + 'line',
-    CLS_END = CLS_ICON_PREFIX + 'end',
-    CLS_EMPTY = CLS_ICON_PREFIX + 'empty',
-    CLS_EXPANDER = CLS_ICON_PREFIX + 'expander',
-    CLS_CHECKBOX = CLS_ICON + '-checkbox',
-    CLS_RADIO = CLS_ICON + '-radio', 
-    CLS_EXPANDER_END = CLS_EXPANDER + '-end',
+    CLS_ICON = &#39;x-tree-icon&#39;,
+    CLS_ELBOW = &#39;x-tree-elbow&#39;,
+    CLS_SHOW_LINE = &#39;x-tree-show-line&#39;,
+    CLS_ICON_PREFIX = CLS_ELBOW + &#39;-&#39;,
+    CLS_ICON_WRAPER = CLS_ICON + &#39;-wraper&#39;,
+    CLS_LINE = CLS_ICON_PREFIX + &#39;line&#39;,
+    CLS_END = CLS_ICON_PREFIX + &#39;end&#39;,
+    CLS_EMPTY = CLS_ICON_PREFIX + &#39;empty&#39;,
+    CLS_EXPANDER = CLS_ICON_PREFIX + &#39;expander&#39;,
+    CLS_CHECKBOX = CLS_ICON + &#39;-checkbox&#39;,
+    CLS_RADIO = CLS_ICON + &#39;-radio&#39;, 
+    CLS_EXPANDER_END = CLS_EXPANDER + &#39;-end&#39;,
     Mixin = function(){
 
     };
@@ -77,14 +77,14 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
      * //数据缓冲类
      * var store = new Data.TreeStore({
      *     root : {
-     *       id : '0',
-     *      text : '0'
+     *       id : &#39;0&#39;,
+     *      text : &#39;0&#39;
      *     },
-     *     url : 'data/nodes.php'
+     *     url : &#39;data/nodes.php&#39;
      *   });
      *   
      * var tree = new Tree.TreeList({
-     *   render : '#t1',
+     *   render : &#39;#t1&#39;,
      *   showLine : true,
      *   height:300,
      *   store : store,
@@ -98,7 +98,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
 <span id='BUI-Tree-Mixin-property-store'>    /**
 </span>     * 树的数据缓冲类对象,默认都会生成对应的缓冲对象
      * &lt;pre&gt;&lt;code&gt;
-     * var store = tree.get('store');
+     * var store = tree.get(&#39;store&#39;);
      * &lt;/code&gt;&lt;/pre&gt;
      * @type {BUI.Data.TreeStore}
      */
@@ -107,10 +107,10 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
         if(!v){
           var _self = this,
             store = new Data.TreeStore({
-            root : _self.get('root'),
-            data : _self.get('nodes')
+            root : _self.get(&#39;root&#39;),
+            data : _self.get(&#39;nodes&#39;)
           });
-          _self.setInternal('store',store);
+          _self.setInternal(&#39;store&#39;,store);
           return store;
         }
         return v;
@@ -121,12 +121,12 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
      * &lt;pre&gt;&lt;code&gt;
      *   //如果数据存在根节点，则配置根节点，以便于显示
      *   var tree = new TreeList({
-     *     root : {id: '0',text : '0',children:[{},{}]},
+     *     root : {id: &#39;0&#39;,text : &#39;0&#39;,children:[{},{}]},
      *     showRoot : true
      *   });
      *   //如果配置store，则不需要配置此属性
      *   var store = new Data.TreeStore({
-     *     root : {id: '0',text : '0',children:[{},{}]}
+     *     root : {id: &#39;0&#39;,text : &#39;0&#39;,children:[{},{}]}
      *   });
      *   
      *   var tree = new TreeList({
@@ -166,7 +166,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
      * @type {String}
      */
     iconWraperTpl : {
-      value : '&lt;span class=&quot;' + CLS_ICON_WRAPER + '&quot;&gt;{icons}&lt;/span&gt;'
+      value : &#39;&lt;span class=&quot;&#39; + CLS_ICON_WRAPER + &#39;&quot;&gt;{icons}&lt;/span&gt;&#39;
     },
 <span id='BUI-Tree-Mixin-cfg-showLine'>    /**
 </span>     * 是否显示连接线
@@ -198,29 +198,29 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
      * @type {Object}
      */
     iconTpl : {
-      value : '&lt;span class=&quot;x-tree-icon {cls}&quot;&gt;&lt;/span&gt;'
+      value : &#39;&lt;span class=&quot;x-tree-icon {cls}&quot;&gt;&lt;/span&gt;&#39;
     },
 <span id='BUI-Tree-Mixin-cfg-leafCls'>    /**
 </span>     * 叶子节点应用的样式
      * &lt;pre&gt;&lt;code&gt;
      *  var tree = new TreeList({
      *    nodes : [{},{}],
-     *    leafCls : 'file',
-     *    dirCls : 'folder' 
+     *    leafCls : &#39;file&#39;,
+     *    dirCls : &#39;folder&#39; 
      *  });
      * &lt;/code&gt;&lt;/pre&gt;
-     * @cfg {String} [leafCls = 'x-tree-elbow-leaf']
+     * @cfg {String} [leafCls = &#39;x-tree-elbow-leaf&#39;]
      */
     leafCls : {
-      value : CLS_ICON_PREFIX + 'leaf'
+      value : CLS_ICON_PREFIX + &#39;leaf&#39;
     },
 
 <span id='BUI-Tree-Mixin-cfg-dirCls'>    /**
 </span>     * 非叶子节点应用的样式
-     * @cfg {String} [dirCls = 'x-tree-elbow-dir']
+     * @cfg {String} [dirCls = &#39;x-tree-elbow-dir&#39;]
      */
     dirCls : {
-      value : CLS_ICON_PREFIX + 'dir'
+      value : CLS_ICON_PREFIX + &#39;dir&#39;
     },
 <span id='BUI-Tree-Mixin-cfg-checkType'>    /**
 </span>     * 勾选类型，目前提供一下几种勾选方式:
@@ -230,10 +230,10 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
      *  &lt;li&gt;custom : 自定义勾选，只有节点数据上有checked字段才允许勾选&lt;/li&gt;
      *  &lt;li&gt;none : 全部节点不可勾选&lt;/li&gt;
      * &lt;/ol&gt;
-     * @cfg {Object} [checkType = 'custom']
+     * @cfg {Object} [checkType = &#39;custom&#39;]
      */
     checkType : {
-      value : 'custom'
+      value : &#39;custom&#39;
     },
 <span id='BUI-Tree-Mixin-property-accordion'>    /**
 </span>     * 是否只允许一个节点展开
@@ -256,7 +256,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
      */
     checkedField : {
       valueFn : function(){
-        return this.getStatusField('checked');
+        return this.getStatusField(&#39;checked&#39;);
       }
     },
 <span id='BUI-Tree-Mixin-property-checkableField'>    /**
@@ -264,26 +264,26 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
      * @type {String}
      */
     checkableField : {
-      value : 'checkable'
+      value : &#39;checkable&#39;
     },
 <span id='BUI-Tree-Mixin-cfg-itemStatusFields'>    /**
 </span>     * 选项对象中属性会直接影响相应的状态,默认：
      * &lt;pre&gt;&lt;code&gt;
      * //默认值
      * {
-     *   expanded : 'expanded',
-     *   disabled : 'disabled',
-     *   checked : 'checked'
+     *   expanded : &#39;expanded&#39;,
+     *   disabled : &#39;disabled&#39;,
+     *   checked : &#39;checked&#39;
      * }
      * //对象
-     * var node = {id : '1',text : '1',checked : true,expanded : true};
+     * var node = {id : &#39;1&#39;,text : &#39;1&#39;,checked : true,expanded : true};
      * 
      * //如果你的数据源中的字段名跟这些状态名不一致，你可以自己修改
      * var tree = new TreeList({
      *   nodes : [],
      *   itemStatusFields : {
-     *     disabled : 'hasDisabled', 
-     *     custom : 'custom'  //添加自定义属性，此时节点生成后会自动添加对应的样式 bui + xclass + 'custom'
+     *     disabled : &#39;hasDisabled&#39;, 
+     *     custom : &#39;custom&#39;  //添加自定义属性，此时节点生成后会自动添加对应的样式 bui + xclass + &#39;custom&#39;
      *   }
      * });
      * &lt;/code&gt;&lt;/pre&gt;
@@ -292,9 +292,9 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
      */
     itemStatusFields  : {
       value : {
-        expanded : 'expanded',
-        disabled : 'disabled',
-        checked : 'checked'
+        expanded : &#39;expanded&#39;,
+        disabled : &#39;disabled&#39;,
+        checked : &#39;checked&#39;
       }  
     },
 <span id='BUI-Tree-Mixin-cfg-dirSelectable'>    /**
@@ -309,7 +309,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
      * &lt;pre&gt;&lt;code&gt;
      *
      *  var tree = new TreeList({
-     *    root : {id : '0',text : '0',childrent : []},
+     *    root : {id : &#39;0&#39;,text : &#39;0&#39;,childrent : []},
      *    showRoot : true
      *  });
      *   
@@ -353,7 +353,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
      * @type {String}
      */
     expandEvent : {
-      value : 'itemdblclick'
+      value : &#39;itemdblclick&#39;
     },
 <span id='BUI-Tree-Mixin-property-expandAnimate'>    /**
 </span>     * 展开收缩时是否使用动画
@@ -367,7 +367,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
      * @type {String}
      */
     collapseEvent : {
-      value : 'itemdblclick'
+      value : &#39;itemdblclick&#39;
     },
 <span id='BUI-Tree-Mixin-property-startLevel'>    /**
 </span>     * 开始的层级，如果显示根节点，从0开始，不显示根节点从1开始
@@ -389,7 +389,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
      */
     collapseAll: function(){
       var _self = this,
-        elements = _self.get('view').getAllElements();
+        elements = _self.get(&#39;view&#39;).getAllElements();
 
       BUI.each(elements,function(element){
         var item = _self.getItemByElement(element);
@@ -402,10 +402,10 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
 </span>     * 折叠节点
      * &lt;pre&gt;&lt;code&gt;
      *  //获取节点后，折叠
-     *  var node = tree.findNode('id');
+     *  var node = tree.findNode(&#39;id&#39;);
      *  tree.collapseNode(node);
      *  //直接通过id 折叠
-     *  tree.collapseNode('id');
+     *  tree.collapseNode(&#39;id&#39;);
      * &lt;/code&gt;&lt;/pre&gt;
      * @param {String|Object|BUI.Data.Node} node 节点
      */
@@ -430,7 +430,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
      */
     expandAll : function(){
       var _self = this,
-        elements = _self.get('view').getAllElements();
+        elements = _self.get(&#39;view&#39;).getAllElements();
 
       BUI.each(elements,function(element){
         var item = _self.getItemByElement(element);
@@ -441,16 +441,16 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
 </span>     * 展开节点
      * &lt;pre&gt;&lt;code&gt;
      *  //获取节点后展开
-     *  var node = tree.findNode('id');
+     *  var node = tree.findNode(&#39;id&#39;);
      *  tree.expandNode(node);
      *  //使用store时，获取节点，然后展开
-     *  var node = store.findNode('id');
+     *  var node = store.findNode(&#39;id&#39;);
      *  tree.expandNode(node);
      *  //直接使用id 展开
-     *  tree.expandNode('id');
+     *  tree.expandNode(&#39;id&#39;);
      * &lt;/code&gt;&lt;/pre&gt;
      * ** Notes **
-     * 由于树控件其实是一个列表，所以未展开节点的子节点其实不在列表中，所以这些节点通过tree.getItem('id'),此时查找不到对应的节点
+     * 由于树控件其实是一个列表，所以未展开节点的子节点其实不在列表中，所以这些节点通过tree.getItem(&#39;id&#39;),此时查找不到对应的节点
      * @param  {String|Object|BUI.Data.Node} node 节点或者 节点id
      */
     expandNode : function(node,deep){
@@ -487,12 +487,12 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
       }
       startIndex = startIndex || 0;
       var _self = this,
-        store = _self.get('store'),
+        store = _self.get(&#39;store&#39;),
         preNode,
         node,
         i,
         id,
-        arr = path.split(',');
+        arr = path.split(&#39;,&#39;);
 
       preNode = _self.findNode(arr[startIndex]);
       for(i = startIndex + 1; i &lt; arr.length ; i++){
@@ -515,16 +515,16 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
 <span id='BUI-Tree-Mixin-method-findNode'>    /**
 </span>     * 查找节点
      * &lt;pre&gt;&lt;code&gt;
-     *  var node = tree.findNode('1');//从根节点开始查找节点
+     *  var node = tree.findNode(&#39;1&#39;);//从根节点开始查找节点
      *  
-     *  var subNode = tree.findNode('123',node); //从指定节点开始查找
+     *  var subNode = tree.findNode(&#39;123&#39;,node); //从指定节点开始查找
      * &lt;/code&gt;&lt;/pre&gt;
      * @param  {String} id 节点Id
      * @param  {BUI.Data.Node} [parent] 父节点
      * @return {BUI.Data.Node} 节点
      */
     findNode : function(id,parent){
-      return this.get('store').findNode(id,parent);
+      return this.get(&#39;store&#39;).findNode(id,parent);
     },  
 <span id='BUI-Tree-Mixin-method-getCheckedLeaf'>    /**
 </span>     * 获取所有勾选的子节点
@@ -533,7 +533,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
      *  var nodes = tree.getCheckedLeaf();
      *  
      *  //获取指定节点选中的叶子节点
-     *  var node = tree.findNode('1'),
+     *  var node = tree.findNode(&#39;1&#39;),
      *    nodes = tree.getCheckedLeaf(node);
      *  
      * &lt;/code&gt;&lt;/pre&gt;
@@ -542,7 +542,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
      */
     getCheckedLeaf : function(parent){
       var _self = this,
-        store = _self.get('store');
+        store = _self.get(&#39;store&#39;);
 
       return store.findNodesBy(function(node){
         return node.leaf &amp;&amp; _self.isChecked(node);
@@ -555,7 +555,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
      *  var nodes = tree.getCheckedNodes();
      *  
      *  //获取指定节点选中的节点
-     *  var node = tree.findNode('1'),
+     *  var node = tree.findNode(&#39;1&#39;),
      *    nodes = tree.getCheckedNodes(node);
      *  
      * &lt;/code&gt;&lt;/pre&gt;
@@ -564,7 +564,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
      */
     getCheckedNodes : function(parent){
       var _self = this,
-        store = _self.get('store');
+        store = _self.get(&#39;store&#39;);
 
       return store.findNodesBy(function(node){
         return _self.isChecked(node);
@@ -573,7 +573,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
     //节点是否可以被选中
     isItemSelectable : function(item){
       var _self = this,
-        dirSelectable = _self.get('dirSelectable'),
+        dirSelectable = _self.get(&#39;dirSelectable&#39;),
         node = item;
       if(node &amp;&amp; !dirSelectable &amp;&amp; !node.leaf){ //如果阻止非叶子节点选中
         return false;
@@ -593,7 +593,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
       }
       var _self = this,
         element;
-      if(_self._isRoot(node) &amp;&amp; !_self.get('showRoot')){ //根节点，切不显示根节点时，认为根节点时展开的
+      if(_self._isRoot(node) &amp;&amp; !_self.get(&#39;showRoot&#39;)){ //根节点，切不显示根节点时，认为根节点时展开的
         return true;
       }
       if(BUI.isString(node)){
@@ -613,12 +613,12 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
       if(!node){
         return false;
       }
-      return  !!node[this.get('checkedField')];//this.getStatusValue(node,'checked');
+      return  !!node[this.get(&#39;checkedField&#39;)];//this.getStatusValue(node,&#39;checked&#39;);
     },
 <span id='BUI-Tree-Mixin-method-toggleExpand'>    /**
 </span>     * 切换显示隐藏
      * &lt;pre&gt;&lt;code&gt;
-     *  var node = tree.getItem('id');
+     *  var node = tree.getItem(&#39;id&#39;);
      *  tree.collapseNode(node); //节点收缩
      *  tree.toggleExpand(node); //节点展开
      *  tree.toggleExpand(node); //节点收缩
@@ -637,7 +637,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
 <span id='BUI-Tree-Mixin-method-setNodeChecked'>    /**
 </span>     * 设置节点勾选状态
      * &lt;pre&gt;&lt;code&gt;
-     *  var node = tree.findNode('1');
+     *  var node = tree.findNode(&#39;1&#39;);
      *  tree.setNodeChecked(node,true); //勾选
      *  tree.setNodeChecked(node,false); //取消勾选
      * &lt;/code&gt;&lt;/pre&gt;
@@ -652,7 +652,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
       }
       var _self = this,
         parent,
-        multipleCheck = _self.get('multipleCheck'),
+        multipleCheck = _self.get(&#39;multipleCheck&#39;),
         element;
       node = makeSureNode(this,node);
       if(!node){
@@ -663,7 +663,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
         return;
       }
 
-      if(_self.isChecked(node) !== checked || _self.hasStatus(node,'checked') !== checked){
+      if(_self.isChecked(node) !== checked || _self.hasStatus(node,&#39;checked&#39;) !== checked){
 
         
         element =  _self.findElement(node);
@@ -677,7 +677,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
             }
           }/**/
         }else if(!_self.isItemDisabled(node)){
-          _self.setStatusValue(node,'checked',checked);
+          _self.setStatusValue(node,&#39;checked&#39;,checked);
         }
 
         if(parent){ //设置父元素选中
@@ -689,7 +689,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
         }
 
         //如果是单选则，清除兄弟元素的选中
-        if(checked &amp;&amp; !multipleCheck &amp;&amp; (_self.isChecked(parent) || parent == _self.get('root'))){
+        if(checked &amp;&amp; !multipleCheck &amp;&amp; (_self.isChecked(parent) || parent == _self.get(&#39;root&#39;))){
           var nodes = parent.children;
           BUI.each(nodes,function(slibNode){
             if(slibNode !== node &amp;&amp; _self.isChecked(slibNode)){
@@ -697,7 +697,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
             } 
           });
         }
-        _self.fire('checkedchange',{node : node,element: element,checked : checked});
+        _self.fire(&#39;checkedchange&#39;,{node : node,element: element,checked : checked});
         
       }
       if(!node.leaf &amp;&amp; deep){ //树节点，勾选所有子节点
@@ -729,13 +729,13 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
     //初始化根节点
     _initRoot : function(){
       var _self = this,
-        store = _self.get('store'),
+        store = _self.get(&#39;store&#39;),
         root,
-        showRoot = _self.get('showRoot'),
+        showRoot = _self.get(&#39;showRoot&#39;),
         nodes;
       if(store){
-        root = store.get('root');
-        _self.setInternal('root',root);
+        root = store.get(&#39;root&#39;);
+        _self.setInternal(&#39;root&#39;,root);
         if(showRoot){
           nodes = [root];
         }else{
@@ -747,17 +747,17 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
         });
         _self.clearItems();
         _self.addItems(nodes);
-        //_self.set('nodes',nodes);
+        //_self.set(&#39;nodes&#39;,nodes);
       }
 
     },
     //初始化节点的勾选
     _initChecked : function(node,deep){
       var _self = this,
-        checkType = _self.get('checkType'),
-        checkedField = _self.get('checkedField'),
-        multipleCheck = _self.get('multipleCheck'),
-        checkableField = _self.get('checkableField'),
+        checkType = _self.get(&#39;checkType&#39;),
+        checkedField = _self.get(&#39;checkedField&#39;),
+        multipleCheck = _self.get(&#39;multipleCheck&#39;),
+        checkableField = _self.get(&#39;checkableField&#39;),
         parent; 
       if(checkType === MAP_TYPES.NONE){ //不允许选中
         node[checkableField] = false;
@@ -800,12 +800,12 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
 
         if(parent &amp;&amp; _self.isChecked(parent)){ //如果父节点选中，当前节点必须勾选
           if(multipleCheck || !_self._hasChildChecked(parent)){ //多选或者兄弟节点没有被选中
-            _self.setStatusValue(node,'checked',true);
+            _self.setStatusValue(node,&#39;checked&#39;,true);
           }
         }
         //节点为非叶子节点，同时叶子节点不为空时根据叶子节点控制
         if((node.children &amp;&amp; node.children.length &amp;&amp; _self._isAllChildrenChecked(node)) ||(!multipleCheck &amp;&amp; _self._hasChildChecked(node))){
-          _self.setStatusValue(node,'checked',true);
+          _self.setStatusValue(node,&#39;checked&#39;,true);
         }
       }
       if(deep){
@@ -841,9 +841,9 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
         return;
       }
       var _self = this,
-        multipleCheck = _self.get('multipleCheck'),
+        multipleCheck = _self.get(&#39;multipleCheck&#39;),
         allChecked = multipleCheck ? _self._isAllChildrenChecked(parentNode) : _self._hasChildChecked(parentNode);
-      _self.setStatusValue(parentNode,'checked',allChecked);
+      _self.setStatusValue(parentNode,&#39;checked&#39;,allChecked);
       _self.setNodeChecked(parentNode,allChecked,false);
 
       multipleCheck &amp;&amp; _self._resetPatialChecked(parentNode,allChecked,null,null);
@@ -851,11 +851,11 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
     //绑定事件
     __bindUI : function(){
       var _self = this,
-        el = _self.get('el'),
-        multipleCheck = _self.get('multipleCheck');
+        el = _self.get(&#39;el&#39;),
+        multipleCheck = _self.get(&#39;multipleCheck&#39;);
 
       //点击选项
-      _self.on('itemclick',function(ev){
+      _self.on(&#39;itemclick&#39;,function(ev){
         var sender = $(ev.domTarget),
           element = ev.element,
           node = ev.item;
@@ -871,7 +871,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
         
       });
 
-      _self.on('itemrendered',function(ev){
+      _self.on(&#39;itemrendered&#39;,function(ev){
         var node = ev.item,
           element = ev.domTarget;
         _self._resetIcons(node,element);
@@ -888,9 +888,9 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
     //初始化展开收缩事件
     _initExpandEvent : function(){
       var _self = this,
-        el = _self.get('el'),
-        expandEvent = _self.get('expandEvent'),
-        collapseEvent = _self.get('collapseEvent');
+        el = _self.get(&#39;el&#39;),
+        expandEvent = _self.get(&#39;expandEvent&#39;),
+        collapseEvent = _self.get(&#39;collapseEvent&#39;);
 
       function createCallback(methodName){
         return function(ev){
@@ -903,13 +903,13 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
         }
       }
       if(expandEvent == collapseEvent){
-        _self.on(expandEvent,createCallback('_toggleExpand'));
+        _self.on(expandEvent,createCallback(&#39;_toggleExpand&#39;));
       }else{
         if(expandEvent){
-          _self.on(expandEvent,createCallback('_expandNode'));
+          _self.on(expandEvent,createCallback(&#39;_expandNode&#39;));
         }
         if(collapseEvent){
-          _self.on(collapseEvent,createCallback('_collapseNode'));
+          _self.on(collapseEvent,createCallback(&#39;_collapseNode&#39;));
         }
       }
       
@@ -917,7 +917,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
     //是否根据子节点选中
     _isForceChecked : function(node){
       var _self = this,
-        multipleCheck = _self.get('multipleCheck');
+        multipleCheck = _self.get(&#39;multipleCheck&#39;);
       return multipleCheck ? _self._isAllChildrenChecked() : _isForceChecked();
     },
     //是否所有子节点被选中
@@ -948,8 +948,8 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
     //是否是根节点
     _isRoot : function(node){
       var _self = this,
-        store = _self.get('store');
-      if(store &amp;&amp; store.get('root') == node){
+        store = _self.get(&#39;store&#39;);
+      if(store &amp;&amp; store.get(&#39;root&#39;) == node){
         return true;
       }
       return false;
@@ -989,7 +989,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
       var _self = this,
         params = e.params,
         id = params.id,
-        node = _self.findNode(id) || _self.get('root');
+        node = _self.findNode(id) || _self.get(&#39;root&#39;);
       _self._beforeLoadNode(node);
     },
     //添加节点
@@ -1016,7 +1016,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
       }else{ //没有父节点，则添加到跟节点下
         cIndex = _self._getInsetIndex(node);
         _self.addItemAt(node,cIndex);
-        prevNode = _self.get('nodes')[index - 1];
+        prevNode = _self.get(&#39;nodes&#39;)[index - 1];
         _self._updateIcons(prevNode);
       }
     },
@@ -1117,8 +1117,8 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
     },
     __syncUI : function(){
       var _self = this,
-        store = _self.get('store'),
-        showRoot = _self.get('showRoot');
+        store = _self.get(&#39;store&#39;),
+        showRoot = _self.get(&#39;showRoot&#39;);
       if(showRoot &amp;&amp; !store.hasData()){ //树节点没有数据，但是需要显示根节点时
         _self._initRoot();
       }
@@ -1131,8 +1131,8 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
      */
     onLoad : function(e){
       var _self = this,
-        store = _self.get('store'),
-        root = store.get('root'),
+        store = _self.get(&#39;store&#39;),
+        root = store.get(&#39;root&#39;),
         node;
 
       if(!e || e.node == root){ //初始化加载时,或者加载根节点
@@ -1149,8 +1149,8 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
     _getIconsTpl : function(node){
       var _self = this,
         level = node.level,
-        start = _self.get('startLevel'),
-        iconWraperTpl = _self.get('iconWraperTpl'),
+        start = _self.get(&#39;startLevel&#39;),
+        iconWraperTpl = _self.get(&#39;iconWraperTpl&#39;),
         icons = [],
         i;
       for(i = start ; i &lt; level ; i = i + 1){
@@ -1159,7 +1159,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
       icons.push(_self._getExpandIcon(node));
       icons.push(_self._getCheckedIcon(node));
       icons.push(_self._getNodeTypeIcon(node));
-      return BUI.substitute(iconWraperTpl,{icons : icons.join('')});
+      return BUI.substitute(iconWraperTpl,{icons : icons.join(&#39;&#39;)});
     },
     //获取勾选icon
     _getCheckedIcon : function(node){
@@ -1167,10 +1167,10 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
         checkable = _self.isCheckable(node),
         cls;
       if(checkable){
-        cls = _self.get('multipleCheck') ? CLS_CHECKBOX : CLS_RADIO;
+        cls = _self.get(&#39;multipleCheck&#39;) ? CLS_CHECKBOX : CLS_RADIO;
         return _self._getIcon(cls);
       }
-      return '';
+      return &#39;&#39;;
     },
 <span id='BUI-Tree-Mixin-method-isCheckable'>    /**
 </span>     * 是否可以勾选
@@ -1179,7 +1179,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
      * @return {Boolean}  是否可以勾选
      */
     isCheckable : function(node){
-      return node[this.get('checkableField')];
+      return node[this.get(&#39;checkableField&#39;)];
     },
     //获取展开折叠的icon
     _getExpandIcon : function(node){
@@ -1189,20 +1189,20 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
         return _self._getLevelIcon(node);
       }
       if(_self._isLastNode(node)){
-        cls = cls + ' ' + CLS_EXPANDER_END;
+        cls = cls + &#39; &#39; + CLS_EXPANDER_END;
       }
       return _self._getIcon(cls);
     },
     //叶子节点和树节点有不同的icon
     _getNodeTypeIcon : function(node){
       var _self = this,
-        cls = node.cls ? node.cls :(node.leaf ? _self.get('leafCls') : _self.get('dirCls'));
+        cls = node.cls ? node.cls :(node.leaf ? _self.get(&#39;leafCls&#39;) : _self.get(&#39;dirCls&#39;));
       return _self._getIcon(cls);
     },
     //获取对应Level的icon
     _getLevelIcon : function(node,level){
       var _self = this,
-        showLine = _self.get('showLine'),
+        showLine = _self.get(&#39;showLine&#39;),
         cls = CLS_EMPTY,
         levelNode;
       if(showLine){ //如果显示连接线
@@ -1232,7 +1232,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
     //获取icon
     _getIcon : function(cls){
        var _self = this,
-        iconTpl = _self.get('iconTpl');
+        iconTpl = _self.get(&#39;iconTpl&#39;);
       return BUI.substitute(iconTpl,{cls : cls});
     },
     //是否是父节点的最后一个节点
@@ -1241,13 +1241,13 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
       if(!node){
         return false;
       }
-      if(node == this.get('root')){
+      if(node == this.get(&#39;root&#39;)){
         return true;
       }
 
       var _self = this,
         parent = node.parent,
-        siblings = parent ? parent.children : _self.get('nodes'),
+        siblings = parent ? parent.children : _self.get(&#39;nodes&#39;),
         count;
 
       count = siblings.length;
@@ -1285,7 +1285,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
         }else{
           _self._hideChildrenNodes(node);
         }
-        _self.fire('collapsed',{node : node ,element : element});
+        _self.fire(&#39;collapsed&#39;,{node : node ,element : element});
       }
     },
     //隐藏子节点
@@ -1301,7 +1301,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
           _self._hideChildrenNodes(subNode);
         }
       });
-      if(_self.get('expandAnimate')){
+      if(_self.get(&#39;expandAnimate&#39;)){
         elements = $(elements);
         elements.animate({height : 0},function(){
           _self.removeItems(children);
@@ -1322,8 +1322,8 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
     //展开选项
     _expandNode : function(node,element,deep){
       var _self = this,
-        accordion = _self.get('accordion'),
-        store = _self.get('store');
+        accordion = _self.get(&#39;accordion&#39;),
+        store = _self.get(&#39;store&#39;);
       if(node.leaf){ //子节点不展开
         return;
       }
@@ -1343,7 +1343,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
         }else if(element){
           _self.setItemStatus(node,EXPAND,true,element);
           _self._showChildren(node);
-          _self.fire('expanded',{node : node ,element : element});
+          _self.fire(&#39;expanded&#39;,{node : node ,element : element});
         }
 
       }
@@ -1368,7 +1368,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
       for (i = length - 1; i &gt;= 0; i--) {
         subNode = node.children[i];
         if(!_self.getItem(subNode)){
-          if(_self.get('expandAnimate')){
+          if(_self.get(&#39;expandAnimate&#39;)){
             el = _self._addNodeAt(subNode,index + 1);
             el.hide();
             el.slideDown();
@@ -1380,7 +1380,7 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
     },
     _addNodeAt : function(item,index){
        var _self = this,
-        items = _self.get('items');
+        items = _self.get(&#39;items&#39;);
       if(index === undefined) {
           index = items.length;
       }
@@ -1394,14 +1394,14 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
     },
     //重置选项的图标
     _resetIcons :function(node,element){
-      if(!this.get('showIcons')){ //如果不显示图标，则不重置
+      if(!this.get(&#39;showIcons&#39;)){ //如果不显示图标，则不重置
         return;
       }
       var _self = this,
-        iconContainer = _self.get('iconContainer'),
+        iconContainer = _self.get(&#39;iconContainer&#39;),
         containerEl,
         iconsTpl = _self._getIconsTpl(node);
-      $(element).find('.' + CLS_ICON_WRAPER).remove(); //移除掉以前的图标
+      $(element).find(&#39;.&#39; + CLS_ICON_WRAPER).remove(); //移除掉以前的图标
       containerEl = $(element).find(iconContainer).first();
       if(iconContainer &amp;&amp; containerEl.length){
         $(iconsTpl).prependTo(containerEl);
@@ -1434,17 +1434,17 @@ define('bui/tree/treemixin',['bui/common','bui/data'],function (require) {
     //设置显示根节点
     _uiSetShowRoot : function(v){
       var _self = this,
-        start = this.get('showRoot') ? 0 : 1;
-      _self.set('startLevel',start);
+        start = this.get(&#39;showRoot&#39;) ? 0 : 1;
+      _self.set(&#39;startLevel&#39;,start);
     },
     _uiSetNodes : function(v){
       var _self = this,
-        store = _self.get('store');
+        store = _self.get(&#39;store&#39;);
       store.setResult(v);
     },
     _uiSetShowLine : function(v){
       var _self = this,
-        el = _self.get('el');
+        el = _self.get(&#39;el&#39;);
       if(v){
         el.addClass(CLS_SHOW_LINE);
       }else{

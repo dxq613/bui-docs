@@ -20,9 +20,9 @@
  * @ignore
  */
 
-define('bui/form/group/select',['bui/form/group/base','bui/data'],function (require) {
-  var Group = require('bui/form/group/base'),
-    Data = require('bui/data'),
+define(&#39;bui/form/group/select&#39;,[&#39;bui/form/group/base&#39;,&#39;bui/data&#39;],function (require) {
+  var Group = require(&#39;bui/form/group/base&#39;),
+    Data = require(&#39;bui/data&#39;),
     Bindable = BUI.Component.UIBase.Bindable;
   
   function getItems(nodes){
@@ -45,24 +45,24 @@ define('bui/form/group/select',['bui/form/group/base','bui/data'],function (requ
   var Select = Group.extend([Bindable],{
     initializer : function(){
       var _self = this,
-        url = _self.get('url'),
-        store = _self.get('store') || _self._getStore();
+        url = _self.get(&#39;url&#39;),
+        store = _self.get(&#39;store&#39;) || _self._getStore();
       if(!store.isStore){
         store.autoLoad = true;
         if(url){
           store.url = url;
         }
         store = new Data.TreeStore(store);
-        _self.set('store',store);
+        _self.set(&#39;store&#39;,store);
       }
     },
     bindUI : function  () {
       var _self = this;
-      _self.on('change',function (ev) {
+      _self.on(&#39;change&#39;,function (ev) {
         var target = ev.target;
         if(target != _self){
           var field = target,
-            value = field.get('value'),
+            value = field.get(&#39;value&#39;),
             level = _self._getFieldIndex(field) + 1;
           _self._valueChange(value,level);
         }
@@ -70,13 +70,13 @@ define('bui/form/group/select',['bui/form/group/base','bui/data'],function (requ
     },
     onLoad : function(e){
       var _self = this,
-        node = e ? e.node : _self.get('store').get('root');
+        node = e ? e.node : _self.get(&#39;store&#39;).get(&#39;root&#39;);
       _self._setFieldItems(node.level,node.children); 
     },
     //获取store的配置项
     _getStore : function(){
       var _self = this,
-        type = _self.get('type');
+        type = _self.get(&#39;type&#39;);
       if(type &amp;&amp; TypeMap[type]){
         return TypeMap[type];
       }
@@ -84,7 +84,7 @@ define('bui/form/group/select',['bui/form/group/base','bui/data'],function (requ
     },
     _valueChange : function(value,level){
       var _self = this,
-        store = _self.get('store');
+        store = _self.get(&#39;store&#39;);
       if(value){
         var node = store.findNode(value);
         if(!node){
@@ -105,7 +105,7 @@ define('bui/form/group/select',['bui/form/group/base','bui/data'],function (requ
         items = getItems(nodes);
       if(field){
         field.setItems(items);
-        _self._valueChange(field.get('value'),level + 1);
+        _self._valueChange(field.get(&#39;value&#39;),level + 1);
       }
     },
     //获取字段的索引位置
@@ -117,16 +117,16 @@ define('bui/form/group/select',['bui/form/group/base','bui/data'],function (requ
   },{
     ATTRS : {
 <span id='BUI-Form-Group-Select-property-type'>      /**
-</span>       * 级联选择框的类型,目前仅内置了 'city'一个类型，用于选择省、市、县,
+</span>       * 级联选择框的类型,目前仅内置了 &#39;city&#39;一个类型，用于选择省、市、县,
        * 可以自定义添加类型
-       *         Select.addType('city',{
+       *         Select.addType(&#39;city&#39;,{
        *           proxy : {
-       *             url : 'http://lp.taobao.com/go/rgn/citydistrictdata.php',
-       *             dataType : 'jsonp'
+       *             url : &#39;http://lp.taobao.com/go/rgn/citydistrictdata.php&#39;,
+       *             dataType : &#39;jsonp&#39;
        *           },
        *           map : {
-       *             isleaf : 'leaf',
-       *             value : 'text'
+       *             isleaf : &#39;leaf&#39;,
+       *             value : &#39;text&#39;
        *           }
        *         });
        * @type {String}
@@ -139,13 +139,13 @@ define('bui/form/group/select',['bui/form/group/base','bui/data'],function (requ
       }
     }
   },{
-    xclass : 'form-group-select'
+    xclass : &#39;form-group-select&#39;
   });
 
   var TypeMap = {};
 
 <span id='BUI-Form-Group-Select-static-method-addType'>  /**
-</span>   * 添加一个类型的级联选择框，目前仅内置了 'city'一个类型，用于选择省、市、县
+</span>   * 添加一个类型的级联选择框，目前仅内置了 &#39;city&#39;一个类型，用于选择省、市、县
    * @static
    * @param {String} name 类型名称
    * @param {Object} cfg  配置项，详细信息请参看： @see{BUI.Data.TreeStore}
@@ -154,14 +154,14 @@ define('bui/form/group/select',['bui/form/group/base','bui/data'],function (requ
     TypeMap[name] = cfg;
   };
 
-  Select.addType('city',{
+  Select.addType(&#39;city&#39;,{
     proxy : {
-      url : 'http://lp.taobao.com/go/rgn/citydistrictdata.php',
-      dataType : 'jsonp'
+      url : &#39;http://lp.taobao.com/go/rgn/citydistrictdata.php&#39;,
+      dataType : &#39;jsonp&#39;
     },
     map : {
-      isleaf : 'leaf',
-      value : 'text'
+      isleaf : &#39;leaf&#39;,
+      value : &#39;text&#39;
     }
   });
 

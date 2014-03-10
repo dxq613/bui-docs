@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 线形式的数据图序列
+ * @ignore
+ */
+
+define(&#39;bui/chart/lineseries&#39;,[&#39;bui/chart/cartesianseries&#39;,&#39;bui/graphic&#39;],function (require) {
+  
+  var BUI = require(&#39;bui/common&#39;),
+    Cartesian = require(&#39;bui/chart/cartesianseries&#39;),
+    Util = require(&#39;bui/graphic&#39;).Util;
+
+  function trySet(obj,name,value){
+    if(obj &amp;&amp; !obj[name]){
+      obj[name] = value;
+    }
+  }
+
+ 
+
+<span id='BUI-Chart-Series-Line'>  /**
+</span>   * @class BUI.Chart.Series.Line
+   * 使用线连接数据的数据图序列
+   * @extends BUI.Chart.Series.Cartesian
+   */
+  function Line(cfg){
+    Line.superclass.constructor.call(this,cfg);
+  }
+
+  BUI.extend(Line,Cartesian);
+
+  
+
+  Line.ATTRS = {
+
+    type : {
+      value : &#39;line&#39;
+    },
+    elCls : {
+      value : &#39;x-chart-line-series&#39;
+    },
+<span id='BUI-Chart-Series-Line-property-connectNulls'>    /**
+</span>     * 是否忽略null的值，连接null2边的值
+     * @type {Boolean}
+     */
+    connectNulls : {
+      value : false
+    },  
+<span id='BUI-Chart-Series-Line-property-line'>    /**
+</span>     * 线的配置
+     * @type {Object}
+     */
+    line : {
+
+    },
+<span id='BUI-Chart-Series-Line-property-lineActived'>    /**
+</span>     * 处于触发状态的线的配置项
+     * @type {Object}
+     */
+    lineActived : {
+
+    },
+<span id='BUI-Chart-Series-Line-property-pointInterval'>    /**
+</span>     * 如果横坐标是数字类型，则通过点的间距来决定点
+     * @type {Number}
+     */
+    pointInterval : {
+      value : 1
+    },
+<span id='BUI-Chart-Series-Line-property-pointStart'>    /**
+</span>     * 如果横坐标是数字类型,点的起始值
+     * @type {Number}
+     */
+    pointStart : {
+      value : 0
+    },
+<span id='BUI-Chart-Series-Line-property-tolerance'>    /**
+</span>     * 增大线的触发范围
+     * @type {Number}
+     */
+    tolerance : {
+      value : 20
+    },
+<span id='BUI-Chart-Series-Line-property-smooth'>    /**
+</span>     * 是否平滑的线
+     * @type {Boolean}
+     */
+    smooth : {
+      value : false
+    }
+  };
+
+  BUI.augment(Line,{
+
+<span id='BUI-Chart-Series-Line-method-processColor'>    /**
+</span>     * @protected
+     * 处理颜色
+     */
+    processColor : function(){
+      var _self = this,
+        color = _self.get(&#39;color&#39;);
+      if(color){
+        var line = _self.get(&#39;line&#39;),
+          markers = _self.get(&#39;markers&#39;);
+        trySet(line,&#39;stroke&#39;,color);
+        if(markers){
+          trySet(markers.marker,&#39;stroke&#39;,color);
+          trySet(markers.marker,&#39;fill&#39;,color);
+        }
+      }
+    },
+   
+<span id='BUI-Chart-Series-Line-method-onStickyTracking'>    /**
+</span>     * @protected
+     * 鼠标在画布上移动
+     */
+    onStickyTracking : function(ev){
+      var _self = this,
+        point = ev.point,
+        markersGroup = _self.get(&#39;markersGroup&#39;),
+        marker = _self.getSnapMarker(point);
+      markersGroup &amp;&amp; markersGroup.setActivedItem(marker);
+    },
+<span id='BUI-Chart-Series-Line-method-changeShapes'>    /**
+</span>     * @protected
+     * 内部图形发生改变
+     */
+    changeShapes : function(){
+      var _self = this,
+        points = _self.getPoints(),
+        lineShape = _self.get(&#39;lineShape&#39;),
+        path = _self.points2path(points);
+      if(lineShape){
+        if(Util.svg &amp;&amp; _self.get(&#39;smooth&#39;)){ //曲线图，先获取到达的path
+          var prePath = lineShape.getPath();
+          lineShape.attr(&#39;path&#39;,path);
+          path = lineShape.attr(&#39;path&#39;);
+          lineShape.attr(&#39;path&#39;,prePath);
+        }
+        Util.animPath(lineShape,path);
+      }
+    },
+<span id='global-method-draw'>    /**
+</span>     * @protected
+     * @ignore
+     */
+    draw : function(points,callback){
+
+      var _self = this,
+        animate = _self.get(&#39;animate&#39;),
+        duration = _self.get(&#39;duration&#39;),
+        lineShape,
+        path = &#39;&#39;;
+
+      if(!animate){
+        path = _self.points2path(points);
+        lineShape = _self._createLine(path);
+        BUI.each(points,function(point){
+          _self._drawPoint(point);
+        });
+
+        _self.drawInner(points);
+        after();
+      }else{
+        lineShape = _self._createLine(path);
+        if(_self.isInCircle()){
+          _self.circleAnimate(points,lineShape);
+        }else{
+          var cur = 0,
+            sub = [],
+            count = points.length;
+
+          //动画生成线和对应的点
+          Util.animStep(duration,function(factor){
+            var pre = cur;
+            cur = parseInt((factor) * count,10);
+            if(cur &gt; count - 1){
+              cur = count - 1;
+            }
+            
+            if(cur != pre){
+              sub = points.slice(0,cur + 1);
+              path = _self.points2path(sub);
+              lineShape.attr(&#39;path&#39;,path);
+              _self.drawInner(sub);
+              for(var i = pre; i&lt; cur; i++){
+                _self._drawPoint(points[i]);
+              }
+              
+            }
+            if(factor == 1){
+              _self._drawPoint(points[cur]);
+            }
+          },after);
+        }
+        
+      }
+      //_self.set(&#39;lineShape&#39;,lineShape);
+<span id='BUI-Chart-Series-Line-method-after'>      /**
+</span>       * @private
+       */
+      function after(){
+        
+        _self.drawTracker(points);
+        callback &amp;&amp; callback();
+      }
+      
+    },
+<span id='BUI-Chart-Series-Line-method-circleAnimate'>    /**
+</span>     * 在圆中时的动画
+     */
+    circleAnimate : function(points,lineShape){
+      var _self = this,
+        circle = _self.getCircle(),
+        center = circle.getCenter(),
+        initPoints = [],
+        baseValue = _self.getBaseValue(),
+        path;
+      BUI.each(points,function(point){
+        var item = BUI.mix({
+          value : baseValue
+        },center);
+        initPoints.push(item);
+        _self._drawPoint(item);
+      });
+      path = _self.points2path(initPoints);
+      lineShape.attr(&#39;path&#39;,path);
+      _self.drawInner(initPoints);
+
+      _self.repaint();
+
+    },
+<span id='BUI-Chart-Series-Line-method-drawInner'>    /**
+</span>     * @protected
+     * 绘制内部内容
+     */
+    drawInner : function(points){
+
+    },
+    //绘制节点相关的label,marker
+    _drawPoint : function(point){
+      var _self = this;
+      if(_self.get(&#39;markers&#39;) &amp;&amp; !_self.get(&#39;markersGroup&#39;).get(&#39;single&#39;)){ //如果只有一个marker暂时不生成
+        _self.addMarker(point);
+      }
+      if(_self.get(&#39;labels&#39;)){
+        _self.addLabel(point.value,point);
+      }
+    },
+    //创建折线
+    _createLine : function(path){
+      var _self = this,
+        lineAttrs = _self.get(&#39;line&#39;),
+        cfg = BUI.mix({},lineAttrs);
+      cfg.path = path;
+      lineShape = _self.addShape(&#39;path&#39;,cfg);
+      _self.set(&#39;lineShape&#39;,lineShape);
+      return lineShape;
+    },
+    //绘制触发事件的path
+    drawTracker : function(points){
+      var _self = this,
+        lineAttrs = _self.get(&#39;line&#39;),
+        tolerance = _self.get(&#39;tolerance&#39;),
+        path = _self.points2tracker(points),
+        cfg = BUI.mix({},lineAttrs),
+        preWidth = Number(lineAttrs[&#39;stroke-width&#39;]),
+        shape;
+
+      cfg[&#39;stroke-width&#39;] = preWidth + tolerance;
+      cfg[&#39;stroke-opacity&#39;] = 0.001;
+      cfg.path = path;
+      shape = _self.addShape(&#39;path&#39;,cfg);
+      _self.set(&#39;trackerShape&#39;,shape);
+    },
+    //将点转换成Path
+    points2path : function(points){
+      var _self = this,
+        smooth = _self.get(&#39;smooth&#39;),
+        connectNulls = _self.get(&#39;connectNulls&#39;),
+        path = &#39;&#39;,
+        preItem,
+        str;
+      if(points.length &lt;= 2){ //少于3个点不能使用smooth
+        smooth = false;
+      }
+
+      BUI.each(points,function(item,index){
+        if(item.value == null){
+          if(connectNulls){
+            return;
+          }
+          str = &#39;&#39;;
+        }else{
+          str = (preItem == null || preItem.value == null) ? (smooth ? &#39;M{x} {y} R&#39; : &#39;M{x} {y}&#39;) : (smooth ? &#39; {x} {y}&#39; : &#39;L{x} {y}&#39;);
+          
+        }
+        
+        path += BUI.substitute(str,item);
+        
+        preItem = item;
+        
+      });
+      if(_self.isInCircle()){
+        path += &#39;z&#39;;
+      }
+      return path;
+    },
+    //获取tracker的路径，增加触发事件的范围
+    points2tracker : function(points){
+      var _self = this,
+        tolerance = _self.get(&#39;tolerance&#39;),
+        first = points[0],
+        path = &#39;M&#39; + (points[0].x - tolerance) + &#39; &#39; + points[0].y;
+      BUI.each(points,function(item,index){
+        var str = &#39;L{x} {y}&#39;;
+        path += BUI.substitute(str,item);
+      });
+      if(_self.isInCircle()){
+        path += &#39;z&#39;;
+      }
+      return path;
+    },
+<span id='BUI-Chart-Series-Line-method-setActiveStatus'>    /**
+</span>     * @protected
+     * 设置图形的激活状态
+     * @param {Boolean} actived 是否激活
+     */
+    setActiveStatus : function(actived){
+      var _self = this,
+        line = _self.get(&#39;line&#39;),
+        lineShape = _self.get(&#39;lineShape&#39;),
+        lineActived = _self.get(&#39;lineActived&#39;);
+      if(actived){
+        lineActived &amp;&amp; lineShape.attr(lineActived);
+        //_self.toFront();
+      }else{
+        line &amp;&amp; lineShape.attr(line);
+        var markersGroup = _self.get(&#39;markersGroup&#39;);
+        markersGroup &amp;&amp; markersGroup.clearActivedItem();
+      }
+    },
+    
+<span id='BUI-Chart-Series-Line-method-getSnapMarker'>    /**
+</span>     * 获取逼近的marker
+     * @return {BUI.Graphic.Shape} 逼近的marker
+     */
+    getSnapMarker : function(point){
+      var _self = this,
+        markersGroup = _self.get(&#39;markersGroup&#39;),
+        rst = null;
+      if(markersGroup){
+        if(_self.isInCircle()){
+          var info = _self.getTrackingInfo(point);
+          rst = markersGroup.getSnapMarker(info);
+        }else{
+          rst = markersGroup.getSnapMarker(point.x);
+        }
+      }
+      return rst;
+    }
+  });
+
+  return Line;
+});</pre>
+</body>
+</html>

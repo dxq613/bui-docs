@@ -20,10 +20,10 @@
  * @ignore
  */
 
-define('bui/form/radiolistfield',['bui/common','bui/form/listfield'],function (require) {
-  'use strict';
-  var BUI = require('bui/common'),
-    ListField = require('bui/form/listfield');
+define(&#39;bui/form/radiolistfield&#39;,[&#39;bui/common&#39;,&#39;bui/form/listfield&#39;],function (require) {
+  &#39;use strict&#39;;
+  var BUI = require(&#39;bui/common&#39;),
+    ListField = require(&#39;bui/form/listfield&#39;);
 
 <span id='BUI-Form-Field-RadioList'>  /**
 </span>   * @class BUI.Form.Field.RadioList
@@ -41,13 +41,13 @@ define('bui/form/radiolistfield',['bui/common','bui/form/listfield'],function (r
        */
       defaultListCfg : {
         value : {
-          itemTpl : '&lt;li&gt;&lt;span class=&quot;x-radio&quot;&gt;&lt;/span&gt;{text}&lt;/li&gt;',
+          itemTpl : &#39;&lt;li&gt;&lt;span class=&quot;x-radio&quot;&gt;&lt;/span&gt;{text}&lt;/li&gt;&#39;,
           allowTextSelection : false
         }
       }
     }
   },{
-    xclass : 'form-field-radiolist'
+    xclass : &#39;form-field-radiolist&#39;
   });
 
   return RadioList;

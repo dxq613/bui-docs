@@ -20,10 +20,10 @@
  * @ignore
  */
 
-define('bui/form/listfield',['bui/common','bui/form/basefield','bui/list'],function (require) {
-  var BUI = require('bui/common'),
-    List = require('bui/list'),
-    Field = require('bui/form/basefield');
+define(&#39;bui/form/listfield&#39;,[&#39;bui/common&#39;,&#39;bui/form/basefield&#39;,&#39;bui/list&#39;],function (require) {
+  var BUI = require(&#39;bui/common&#39;),
+    List = require(&#39;bui/list&#39;),
+    Field = require(&#39;bui/form/basefield&#39;);
 
   function parseItems(items){
     var rst = items;
@@ -45,22 +45,22 @@ define('bui/form/listfield',['bui/common','bui/form/basefield','bui/list'],funct
 
     initializer : function(){
       var _self = this;
-      //if(!_self.get('srcNode')){
+      //if(!_self.get(&#39;srcNode&#39;)){
         _self._initList();
       //}
     },
     _getList : function(){
       var _self = this,
-        children = _self.get('children');
+        children = _self.get(&#39;children&#39;);
       return children[0];
     },
     bindUI : function(){
       var _self = this,
         list = _self._getList();
       if(list){
-        list.on('selectedchange',function(){
+        list.on(&#39;selectedchange&#39;,function(){
           var value = _self._getListValue(list);
-          _self.set('value',value);
+          _self.set(&#39;value&#39;,value);
         });
       }
     },
@@ -68,7 +68,7 @@ define('bui/form/listfield',['bui/common','bui/form/basefield','bui/list'],funct
     _getListValue : function(list){
       var _self = this;
       list = list || _self._getList();
-      return list.getSelectionValues().join(',');
+      return list.getSelectionValues().join(&#39;,&#39;);
     },
 <span id='BUI-Form-Field-List-method-setControlValue'>    /**
 </span>     * 设置字段的值
@@ -81,22 +81,22 @@ define('bui/form/listfield',['bui/common','bui/form/basefield','bui/list'],funct
         list = _self._getList();
       innerControl.val(value);
       if(_self._getListValue(list) !== value &amp;&amp; list.getCount()){
-        if(list.get('multipleSelect')){
+        if(list.get(&#39;multipleSelect&#39;)){
           list.clearSelection();
         }
-        list.setSelectionByField(value.split(','));
+        list.setSelectionByField(value.split(&#39;,&#39;));
       }
     },
     //同步数据
     syncUI : function(){
-       this.set('list',this._getList());
+       this.set(&#39;list&#39;,this._getList());
     },
     //初始化列表
     _initList : function(){
       var _self = this,
-        defaultListCfg = _self.get('defaultListCfg'),
-        children = _self.get('children'),
-        list = _self.get('list') || {};
+        defaultListCfg = _self.get(&#39;defaultListCfg&#39;),
+        children = _self.get(&#39;children&#39;),
+        list = _self.get(&#39;list&#39;) || {};
       if(children[0]){
         return;
       }
@@ -111,10 +111,10 @@ define('bui/form/listfield',['bui/common','bui/form/basefield','bui/list'],funct
      */
     setItems : function(items){
       var _self = this,
-        value = _self.get('value'),
+        value = _self.get(&#39;value&#39;),
         list = _self._getList();
-      list.set('items',parseItems(items));
-      list.setSelectionByField(value.split(','));
+      list.set(&#39;items&#39;,parseItems(items));
+      list.setSelectionByField(value.split(&#39;,&#39;));
     },
     //设置选项集合
     _uiSetItems : function(v){
@@ -129,7 +129,7 @@ define('bui/form/listfield',['bui/common','bui/form/basefield','bui/list'],funct
        * @type {String}
        */
       controlTpl : {
-        value : '&lt;input type=&quot;hidden&quot;/&gt;'
+        value : &#39;&lt;input type=&quot;hidden&quot;/&gt;&#39;
       },
 <span id='BUI-Form-Field-List-property-defaultListCfg'>      /**
 </span>       * @protected
@@ -138,7 +138,7 @@ define('bui/form/listfield',['bui/common','bui/form/basefield','bui/list'],funct
        */
       defaultListCfg : {
         value : {
-          xclass : 'simple-list'
+          xclass : &#39;simple-list&#39;
         }
       },
 <span id='BUI-Form-Field-List-property-items'>      /**
@@ -167,7 +167,7 @@ define('bui/form/listfield',['bui/common','bui/form/basefield','bui/list'],funct
     },
     PARSER : {
       list : function(el){
-        var listEl = el.find('.bui-simple-list');
+        var listEl = el.find(&#39;.bui-simple-list&#39;);
         if(listEl.length){
           return {
             srcNode : listEl
@@ -176,7 +176,7 @@ define('bui/form/listfield',['bui/common','bui/form/basefield','bui/list'],funct
       }
     }
   },{
-    xclass : 'form-field-list'
+    xclass : &#39;form-field-list&#39;
   });
 
   return List;

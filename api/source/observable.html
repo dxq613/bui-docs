@@ -20,9 +20,9 @@
  * @ignore
  */
 
-define('bui/observable',['bui/util'],function (r) {
+define(&#39;bui/observable&#39;,[&#39;bui/util&#39;],function (r) {
   
-  var BUI = r('bui/util');
+  var BUI = r(&#39;bui/util&#39;);
 <span id='BUI-Observable-Callbacks'>  /**
 </span>   * @private
    * @class BUI.Observable.Callbacks
@@ -94,7 +94,7 @@ define('bui/observable',['bui/util'],function (r) {
    *
    * &lt;pre&gt;&lt;code&gt;
    *   var control = new Control();
-   *   control.on('click',function(ev){
+   *   control.on(&#39;click&#39;,function(ev){
    *   
    *   });
    *
@@ -235,11 +235,11 @@ define('bui/observable',['bui/util'],function (r) {
 </span>     * 触发事件
      * &lt;pre&gt;&lt;code&gt;
      *   //绑定事件
-     *   list.on('itemclick',function(ev){
-     *     alert('21');
+     *   list.on(&#39;itemclick&#39;,function(ev){
+     *     alert(&#39;21&#39;);
      *   });
      *   //触发事件
-     *   list.fire('itemclick');
+     *   list.fire(&#39;itemclick&#39;);
      * &lt;/code&gt;&lt;/pre&gt;
      * @param  {String} eventType 事件类型
      * @param  {Object} eventData 事件触发时传递的数据
@@ -272,11 +272,11 @@ define('bui/observable',['bui/util'],function (r) {
 </span>     * 添加绑定事件
      * &lt;pre&gt;&lt;code&gt;
      *   //绑定单个事件
-     *   list.on('itemclick',function(ev){
-     *     alert('21');
+     *   list.on(&#39;itemclick&#39;,function(ev){
+     *     alert(&#39;21&#39;);
      *   });
      *   //绑定多个事件
-     *   list.on('itemrendered itemupdated',function(){
+     *   list.on(&#39;itemrendered itemupdated&#39;,function(){
      *     //列表项创建、更新时触发操作
      *   });
      * &lt;/code&gt;&lt;/pre&gt;
@@ -285,7 +285,7 @@ define('bui/observable',['bui/util'],function (r) {
      */
     on : function(eventType,fn){
       //一次监听多个事件
-      var arr = eventType.split(' '),
+      var arr = eventType.split(&#39; &#39;),
         _self = this,
         callbacks =null;
       if(arr.length &gt; 1){
@@ -311,9 +311,9 @@ define('bui/observable',['bui/util'],function (r) {
      *  
      *  //移除特定事件
      *  function callback(ev){}
-     *  list.on('click',callback);
+     *  list.on(&#39;click&#39;,callback);
      *
-     *  list.off('click',callback);//需要保存回调函数的引用
+     *  list.off(&#39;click&#39;,callback);//需要保存回调函数的引用
      * 
      * &lt;/code&gt;&lt;/pre&gt;
      * @param  {String}   eventType 事件类型

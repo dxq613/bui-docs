@@ -20,26 +20,26 @@
  * @ignore
  */
 
-define('bui/tab/tabpanel',['bui/common','bui/tab/tab','bui/tab/panels'],function (require) {
+define(&#39;bui/tab/tabpanel&#39;,[&#39;bui/common&#39;,&#39;bui/tab/tab&#39;,&#39;bui/tab/panels&#39;],function (require) {
   
-  var BUI = require('bui/common'),
-    Tab = require('bui/tab/tab'),
-    Panels = require('bui/tab/panels');
+  var BUI = require(&#39;bui/common&#39;),
+    Tab = require(&#39;bui/tab/tab&#39;),
+    Panels = require(&#39;bui/tab/panels&#39;);
 
 <span id='BUI-Tab-TabPanel'>  /**
 </span>   * 带有面板的切换标签
    * &lt;pre&gt;&lt;code&gt;
-   * BUI.use('bui/tab',function(Tab){
+   * BUI.use(&#39;bui/tab&#39;,function(Tab){
    *   
    *     var tab = new Tab.TabPanel({
-   *       render : '#tab',
-   *       elCls : 'nav-tabs',
-   *       panelContainer : '#panel',
+   *       render : &#39;#tab&#39;,
+   *       elCls : &#39;nav-tabs&#39;,
+   *       panelContainer : &#39;#panel&#39;,
    *       autoRender: true,
    *       children:[
-   *         {text:'源代码',value:'1'},
-   *         {text:'HTML',value:'2'},
-   *         {text:'JS',value:'3'}
+   *         {text:&#39;源代码&#39;,value:&#39;1&#39;},
+   *         {text:&#39;HTML&#39;,value:&#39;2&#39;},
+   *         {text:&#39;JS&#39;,value:&#39;3&#39;}
    *       ]
    *     });
    *     tab.setSelected(tab.getItemAt(0));
@@ -54,14 +54,14 @@ define('bui/tab/tabpanel',['bui/common','bui/tab/tab','bui/tab/panels'],function
     bindUI : function(){
       var _self = this;
       //关闭标签
-      _self.on('beforeclosed',function(ev){
+      _self.on(&#39;beforeclosed&#39;,function(ev){
         var item = ev.target;
         _self._beforeClosedItem(item);
       });
     },
     //关闭标签选项前
     _beforeClosedItem : function(item){
-      if(!item.get('selected')){ //如果未选中不执行下面的选中操作
+      if(!item.get(&#39;selected&#39;)){ //如果未选中不执行下面的选中操作
         return;
       }
 
@@ -82,34 +82,34 @@ define('bui/tab/tabpanel',['bui/common','bui/tab/tab','bui/tab/panels'],function
   },{
     ATTRS : {
       elTagName : {
-        value : 'div'
+        value : &#39;div&#39;
       },
       childContainer : {
-        value : 'ul'
+        value : &#39;ul&#39;
       },
       tpl : {
-        value : '&lt;div class=&quot;tab-panel-inner&quot;&gt;&lt;ul&gt;&lt;/ul&gt;&lt;div class=&quot;tab-panels&quot;&gt;&lt;/div&gt;&lt;/div&gt;'
+        value : &#39;&lt;div class=&quot;tab-panel-inner&quot;&gt;&lt;ul&gt;&lt;/ul&gt;&lt;div class=&quot;tab-panels&quot;&gt;&lt;/div&gt;&lt;/div&gt;&#39;
       },
       panelTpl : {
-        value : '&lt;div&gt;&lt;/div&gt;'
+        value : &#39;&lt;div&gt;&lt;/div&gt;&#39;
       },
 <span id='BUI-Tab-TabPanel-cfg-panelContainer'>      /**
 </span>       * 默认的面板容器
-       * @cfg {String} [panelContainer='.tab-panels']
+       * @cfg {String} [panelContainer=&#39;.tab-panels&#39;]
        */
       panelContainer : {
-        value : '.tab-panels'
+        value : &#39;.tab-panels&#39;
       },
 <span id='BUI-Tab-TabPanel-property-defaultChildClass'>      /**
 </span>       * 默认子控件的xclass
        * @type {String}
        */
       defaultChildClass:{
-        value : 'tab-panel-item'
+        value : &#39;tab-panel-item&#39;
       }
     }
   },{
-    xclass : 'tab-panel'
+    xclass : &#39;tab-panel&#39;
   });
 
   return tabPanel;

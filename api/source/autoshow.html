@@ -20,7 +20,7 @@
  * @ignore
  */
 
-define('bui/component/uibase/autoshow',function () {
+define(&#39;bui/component/uibase/autoshow&#39;,function () {
 
 <span id='BUI-Component-UIBase-AutoShow'>  /**
 </span>   * 处理自动显示控件的扩展，一般用于显示menu,picker,tip等
@@ -36,9 +36,9 @@ define('bui/component/uibase/autoshow',function () {
 </span>     * 触发显示控件的DOM选择器
      * &lt;pre&gt;&lt;code&gt;
      *  var overlay = new Overlay({ //点击#t1时显示，点击#t1,overlay之外的元素隐藏
-     *    trigger : '#t1',
+     *    trigger : &#39;#t1&#39;,
      *    autoHide : true,
-     *    content : '悬浮内容'
+     *    content : &#39;悬浮内容&#39;
      *  });
      *  overlay.render();
      * &lt;/code&gt;&lt;/pre&gt;
@@ -53,10 +53,10 @@ define('bui/component/uibase/autoshow',function () {
     },
     delegateTigger : {
       getter : function(){
-        this.get('delegateTrigger');//兼容之前的版本
+        this.get(&#39;delegateTrigger&#39;);//兼容之前的版本
       },
       setter : function(v){
-        this.set('delegateTrigger',v);
+        this.set(&#39;delegateTrigger&#39;,v);
       }
       
     },
@@ -64,10 +64,10 @@ define('bui/component/uibase/autoshow',function () {
 </span>     * 是否使用代理的方式触发显示控件,如果tigger不是字符串，此属性无效
      * &lt;pre&gt;&lt;code&gt;
      *  var overlay = new Overlay({ //点击.t1(无论创建控件时.t1是否存在)时显示，点击.t1,overlay之外的元素隐藏
-     *    trigger : '.t1',
+     *    trigger : &#39;.t1&#39;,
      *    autoHide : true,
      *    delegateTrigger : true, //使用委托的方式触发显示控件
-     *    content : '悬浮内容'
+     *    content : &#39;悬浮内容&#39;
      *  });
      *  overlay.render();
      * &lt;/code&gt;&lt;/pre&gt;
@@ -101,12 +101,19 @@ define('bui/component/uibase/autoshow',function () {
     autoFocused : {
       value : true
     },
+<span id='BUI-Component-UIBase-AutoShow-property-triggerActiveCls'>    /**
+</span>     * 如果设置了这个样式，那么触发显示（overlay）时trigger会添加此样式
+     * @type {Object}
+     */
+    triggerActiveCls : {
+
+    },
 <span id='BUI-Component-UIBase-AutoShow-property-curTrigger'>    /**
 </span>     * 控件显示时由此trigger触发，当配置项 trigger 选择器代表多个DOM 对象时，
      * 控件可由多个DOM对象触发显示。
      * &lt;pre&gt;&lt;code&gt;
-     *  overlay.on('show',function(){
-     *    var curTrigger = overlay.get('curTrigger');
+     *  overlay.on(&#39;show&#39;,function(){
+     *    var curTrigger = overlay.get(&#39;curTrigger&#39;);
      *    //TO DO
      *  });
      * &lt;/code&gt;&lt;/pre&gt;
@@ -133,26 +140,26 @@ define('bui/component/uibase/autoshow',function () {
 </span>     * 显示菜单的事件
      *  &lt;pre&gt;&lt;code&gt;
      *    var overlay = new Overlay({ //移动到#t1时显示，移动出#t1,overlay之外控件隐藏
-     *      trigger : '#t1',
+     *      trigger : &#39;#t1&#39;,
      *      autoHide : true,
-     *      triggerEvent :'mouseover',
-     *      autoHideType : 'leave',
-     *      content : '悬浮内容'
+     *      triggerEvent :&#39;mouseover&#39;,
+     *      autoHideType : &#39;leave&#39;,
+     *      content : &#39;悬浮内容&#39;
      *    });
      *    overlay.render();
      * 
      *  &lt;/code&gt;&lt;/pre&gt;
-     * @cfg {String} [triggerEvent='click']
-     * @default 'click'
+     * @cfg {String} [triggerEvent=&#39;click&#39;]
+     * @default &#39;click&#39;
      */
 <span id='global-property-triggerEvent'>    /**
 </span>     * 显示菜单的事件
      * @type {String}
-     * @default 'click'
+     * @default &#39;click&#39;
      * @ignore
      */
     triggerEvent : {
-      value:'click'
+      value:&#39;click&#39;
     },
 <span id='global-cfg-triggerHideEvent'>    /**
 </span>     * 因为触发元素发生改变而导致控件隐藏
@@ -172,9 +179,9 @@ define('bui/component/uibase/autoshow',function () {
 <span id='BUI-Component-UIBase-AutoShow-event-triggerchange'>        /**
 </span>         * 当触发器（触发选择器出现）发生改变时，经常用于一个选择器对应多个触发器的情况
          * &lt;pre&gt;&lt;code&gt;
-         *  overlay.on('triggerchange',function(ev){
+         *  overlay.on(&#39;triggerchange&#39;,function(ev){
          *    var curTrigger = ev.curTrigger;
-         *    overlay.set('content',curTrigger.html());
+         *    overlay.set(&#39;content&#39;,curTrigger.html());
          *  });
          * &lt;/code&gt;&lt;/pre&gt;
          * @event
@@ -182,7 +189,7 @@ define('bui/component/uibase/autoshow',function () {
          * @param {jQuery} e.prevTrigger 之前触发器，可能为null
          * @param {jQuery} e.curTrigger 当前的触发器
          */
-        'triggerchange':false
+        &#39;triggerchange&#39;:false
       }
     }
   };
@@ -192,30 +199,47 @@ define('bui/component/uibase/autoshow',function () {
     __createDom : function () {
       this._setTrigger();
     },
+    __bindUI : function(){
+      var _self = this,
+        triggerActiveCls = _self.get(&#39;triggerActiveCls&#39;);
+      if(triggerActiveCls){
+        _self.on(&#39;hide&#39;,function(){
+          var curTrigger = _self.get(&#39;curTrigger&#39;);
+          if(curTrigger){
+            curTrigger.removeClass(triggerActiveCls);
+          }
+        });
+      }
+     
+    },
     _setTrigger : function () {
       var _self = this,
-        triggerEvent = _self.get('triggerEvent'),
-        triggerHideEvent = _self.get('triggerHideEvent'),
-        triggerCallback = _self.get('triggerCallback'),
-        trigger = _self.get('trigger'),
-        isDelegate = _self.get('delegateTigger'),
+        triggerEvent = _self.get(&#39;triggerEvent&#39;),
+        triggerHideEvent = _self.get(&#39;triggerHideEvent&#39;),
+        triggerCallback = _self.get(&#39;triggerCallback&#39;),
+        triggerActiveCls = _self.get(&#39;triggerActiveCls&#39;) || &#39;&#39;,
+        trigger = _self.get(&#39;trigger&#39;),
+        isDelegate = _self.get(&#39;delegateTrigger&#39;),
         triggerEl = $(trigger);
 
       //触发显示
       function tiggerShow (ev) {
-        var prevTrigger = _self.get('curTrigger'),
+        var prevTrigger = _self.get(&#39;curTrigger&#39;),
           curTrigger = isDelegate ?$(ev.currentTarget) : $(this),
-          align = _self.get('align');
+          align = _self.get(&#39;align&#39;);
         if(!prevTrigger || prevTrigger[0] != curTrigger[0]){
-
-          _self.set('curTrigger',curTrigger);
-          _self.fire('triggerchange',{prevTrigger : prevTrigger,curTrigger : curTrigger});
+          if(prevTrigger){
+            prevTrigger.removeClass(triggerActiveCls);
+          }
+          _self.set(&#39;curTrigger&#39;,curTrigger);
+          _self.fire(&#39;triggerchange&#39;,{prevTrigger : prevTrigger,curTrigger : curTrigger});
         }
-        if(_self.get('autoAlign')){
+        curTrigger.addClass(triggerActiveCls);
+        if(_self.get(&#39;autoAlign&#39;)){
           align.node = curTrigger;
           
         }
-        _self.set('align',align);
+        _self.set(&#39;align&#39;,align);
         _self.show();
         
         
@@ -249,10 +273,10 @@ define('bui/component/uibase/autoshow',function () {
     },
     __renderUI : function () {
       var _self = this,
-        align = _self.get('align');
+        align = _self.get(&#39;align&#39;);
       //如果控件显示时不是由trigger触发，则同父元素对齐
       if(align &amp;&amp; !align.node){
-        align.node = _self.get('render') || _self.get('trigger');
+        align.node = _self.get(&#39;render&#39;) || _self.get(&#39;trigger&#39;);
       }
     }
   };

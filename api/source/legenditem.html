@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 图例项
+ * @ignore
+ */
+
+define(&#39;bui/chart/legenditem&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plotitem&#39;],function (require) {
+
+	var BUI = require(&#39;bui/common&#39;),
+		PlotItem = require(&#39;bui/chart/plotitem&#39;),
+		MARKER_WIDTH = 20;
+
+<span id='BUI-Chart-LegendItem'>	/**
+</span>	 * @class BUI.Chart.LegendItem
+	 * 图例的子项，用于标示其中一个数据序列
+	 * @extends BUI.Chart.PlotItem
+	 * @mixins BUI.Chart.ActivedGroup
+	 */
+	var LegendItem = function(cfg){
+		LegendItem.superclass.constructor.call(this,cfg);
+	};
+
+	LegendItem.ATTRS = {
+
+		elCls : {
+			value : &#39;x-chart-legend-item&#39;
+		},
+<span id='BUI-Chart-LegendItem-property-label'>		/**
+</span>		 * 文本的配置信息，不包括文本内容，文本内容由series决定
+		 * @type {Object}
+		 */
+		label : {
+
+		},
+<span id='BUI-Chart-LegendItem-property-legend'>		/**
+</span>		 * 所属的图例
+		 * @type {Object}
+		 */
+		legend : {
+
+		},
+<span id='BUI-Chart-LegendItem-property-series'>		/**
+</span>		 * 标示的数据序列
+		 * @type {BUI.Chart.Series}
+		 */
+		series : {
+
+		},
+<span id='BUI-Chart-LegendItem-property-x'>		/**
+</span>		 * x轴的位置
+		 * @type {Number}
+		 */
+		x : {
+
+		},
+<span id='BUI-Chart-LegendItem-property-y'>		/**
+</span>		 * y轴的位置
+		 * @type {Number}
+		 */
+		y : {
+
+		},
+		
+		hideColor : {
+			value : &#39;#CCC&#39;
+		}
+		
+	}
+
+	BUI.extend(LegendItem,PlotItem);
+
+	BUI.augment(LegendItem,{
+
+		renderUI : function(){
+			var _self = this
+			LegendItem.superclass.renderUI.call(_self);
+			_self._createShape();
+			_self._createMarker();
+			_self._createLabel();      
+    },
+    
+    bindUI : function(){
+    	var _self = this;
+    		
+    	LegendItem.superclass.bindUI.call(_self);
+    	_self.bindMouseEvent();
+    	_self.bindClick();
+    },
+    //鼠标事件
+    bindMouseEvent : function(){
+    	var _self = this,
+    		series = _self.get(&#39;series&#39;);
+
+    	_self.on(&#39;mouseover&#39;,function(){
+    		series.setActived &amp;&amp; series.setActived();
+    	}).on(&#39;mouseout&#39;,function(){
+    		series.clearActived &amp;&amp; series.clearActived();
+    	});
+
+    	_self.on(&#39;mousemove&#39;,function(ev){
+    		ev.stopPropagation();
+    	});
+
+    },
+    //点击事件
+    bindClick : function(){
+    	var _self = this,
+    		series = _self.get(&#39;series&#39;);
+
+    	_self.on(&#39;click&#39;,function(){
+    		_self._setVisible(!series.get(&#39;visible&#39;));
+    	});
+    },
+    //设置是否可见
+		_setVisible : function(visible){
+			var _self = this,
+				series = _self.get(&#39;series&#39;),
+				shape = _self.get(&#39;shape&#39;),
+				marker = _self.get(&#39;marker&#39;),
+				color = visible ? series.get(&#39;color&#39;) : _self.get(&#39;hideColor&#39;) ;
+			if(visible){
+				series.get(&#39;parent&#39;).showSeries(series);
+			}else{
+				series.get(&#39;parent&#39;).hideSeries(series);
+			}
+			shape &amp;&amp; shape.attr({
+				stroke : color,
+				fill : color
+			});
+			marker &amp;&amp; marker.attr({
+				stroke : color,
+				fill : color
+			});
+		},
+		//通过数据序列获取属性信息
+		_getBySeries : function(name){
+			var _self = this,
+				series = _self.get(&#39;series&#39;);
+			return series.get(name);
+		},
+<span id='BUI-Chart-LegendItem-method-getWidth'>		/**
+</span>		 * 获取legend item的宽度
+		 * @return {[type]} [description]
+		 */
+		getWidth : function(){
+			var _self = this,
+				label = _self.get(&#39;label&#39;);
+			return label.getBBox().width + MARKER_WIDTH;
+		},
+		_createLabel : function(){
+			var _self = this,
+				text = _self._getBySeries(&#39;name&#39;),
+				labelShape = _self.addShape(&#39;label&#39;,{
+					x : MARKER_WIDTH,
+					&#39;text-anchor&#39;: &#39;start&#39;,
+					y : 7,
+					cursor : &#39;pointer&#39;,
+					text : text
+				});
+
+			_self.set(&#39;label&#39;,labelShape);
+		},
+		//创建跟序列相关的图形
+		_createShape : function(){
+			var _self = this,
+				type = _self._getBySeries(&#39;type&#39;),
+				color = _self._getBySeries(&#39;color&#39;),
+				shape;
+			switch(type){
+				case &#39;line&#39; : 
+					shape =	_self.addShape(&#39;line&#39;,{
+							x1 : 3,
+							y1 : 7,
+							x2 : 17,
+							y2 : 7,
+							stroke : color,
+							&quot;stroke-width&quot; : 2
+						});
+					break;
+				case  &#39;scatter&#39;:
+					shape = null;
+					break;
+				case &#39;bubble&#39; : 
+					shape = _self.addShape(&#39;circle&#39;,{
+						cx : 10,
+						cy : 7,
+						r : 5,
+						fill : color,
+						stroke : color,
+						&#39;fill-opacity&#39; : .5
+					});
+					break;
+				default : 
+					shape = _self.addShape(&#39;rect&#39;,{
+						x : 2,
+						y : 2,
+						width : 15,
+						height : 10,
+						fill : color,
+						stroke : color
+					});
+					break;
+			}
+			_self.set(&#39;shape&#39;,shape);
+		},
+		_createMarker : function(){
+			var _self = this,
+				markers = _self._getBySeries(&#39;markers&#39;),
+				marker;
+
+			if(markers){
+				marker = BUI.mix({},markers.marker);
+				marker.radius = 3;
+				marker.x = 10;
+				marker.y = 7;
+				marker = _self.addShape(&#39;marker&#39;,marker);
+			}
+			_self.set(&#39;marker&#39;,marker);
+		}
+	});
+
+	return LegendItem;
+});</pre>
+</body>
+</html>

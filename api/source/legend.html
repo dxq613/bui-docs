@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 图例，用于标志具体的数据序列，并跟数据序列进行交互
+ * @ignore
+ */
+
+define(&#39;bui/chart/legend&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plotitem&#39;,&#39;bui/chart/legenditem&#39;],function (require) {
+
+  var BUI = require(&#39;bui/common&#39;),
+    PlotItem = require(&#39;bui/chart/plotitem&#39;),
+    Item = require(&#39;bui/chart/legenditem&#39;),
+    LINE_HEIGHT = 15,
+    PADDING = 5;
+
+  function min(x,y){
+    return x &gt; y ? y : x;
+  }
+  function max(x,y){
+    return x &gt; y ? x : y;
+  }
+
+<span id='BUI-Chart-Legend'>  /**
+</span>   * @class BUI.Chart.Legend
+   * 图例
+   * @extends BUI.Chart.PlotItem
+   * @mixins BUI.Chart.ActivedGroup
+   */
+  var Legend = function(cfg){
+    Legend.superclass.constructor.call(this,cfg);
+  };
+
+  Legend.ATTRS = {
+    zIndex : {
+      value : 8
+    },
+    elCls : {
+      value : &#39;x-chart-legend&#39;
+    },
+<span id='BUI-Chart-Legend-property-items'>    /**
+</span>     * 子项的配置项
+     * @type {Array}
+     */
+    items : {
+
+    },
+<span id='BUI-Chart-Legend-property-layout'>    /**
+</span>     * 布局方式： horizontal，vertical
+     * @type {String}
+     */
+    layout : {
+      value : &#39;horizontal&#39;
+    },
+<span id='BUI-Chart-Legend-property-dx'>    /**
+</span>     * 对齐位置的偏移量x
+     * @type {Number}
+     */
+    dx : {
+      value : 0
+    },
+<span id='BUI-Chart-Legend-property-dy'>    /**
+</span>     * 对齐位置的偏移量y
+     * @type {Number}
+     */
+    dy : {
+      value : 0
+    },
+<span id='BUI-Chart-Legend-property-align'>    /**
+</span>     * 对齐方式,top,left,right,bottom
+     * @type {String}
+     */
+    align : {
+      value : &#39;bottom&#39;
+    },
+<span id='BUI-Chart-Legend-property-back'>    /**
+</span>     * 边框的配置项，一般是一个正方形
+     * @type {Object}
+     */
+    back : {
+      value : {
+        stroke : &#39;#909090&#39;
+      }
+    }
+
+  }
+
+  BUI.extend(Legend,PlotItem);
+
+  BUI.augment(Legend,{
+
+    renderUI : function(){
+      var _self = this
+      Legend.superclass.renderUI.call(_self);
+      _self._renderItems();
+      _self._renderBorder();    
+    },
+    _renderItems : function(){
+      var _self = this,
+        items = _self.get(&#39;items&#39;),
+        itemsGroup = _self.addGroup();
+
+      _self.set(&#39;itemsGroup&#39;,itemsGroup);
+
+      BUI.each(items,function(item,index){
+        _self._addItem(item,index);
+      });
+    },
+<span id='BUI-Chart-Legend-method-addItem'>    /**
+</span>     * 添加图例
+     * @param {Object} item 图例项的配置信息
+     */
+    addItem : function(item){
+      var _self = this,
+        items = _self.get(&#39;items&#39;);
+
+      _self._addItem(item,items.length);
+      _self.resetBorder();
+      _self.resetPosition();
+    },
+    //添加图例
+    _addItem : function(item,index){
+      var _self = this,
+        itemsGroup = _self.get(&#39;itemsGroup&#39;),
+        x = _self._getNextX(),
+        y = _self._getNextY(),
+        cfg = BUI.mix({x : x,y : y},item);
+
+      cfg.legend = _self;
+      itemsGroup.addGroup(Item,cfg);
+    },
+
+    //生成边框
+    _renderBorder : function(){
+      var _self = this,
+        border = _self.get(&#39;back&#39;),
+        width,
+        height,
+        cfg,
+        shape;
+
+      if(border){
+        width = _self._getTotalWidth();
+        height = _self._getTotalHeight();
+
+        cfg = BUI.mix({
+          r: 5,
+          width : width,
+          height : height
+        },border);
+
+        shape = _self.addShape(&#39;rect&#39;,cfg);
+        _self.set(&#39;borderShape&#39;,shape);
+      }
+    },
+    //重置边框
+    resetBorder : function(){
+      var _self = this,
+        borderShape = _self.get(&#39;borderShape&#39;);
+      if(borderShape){
+        borderShape.attr({
+          width : _self._getTotalWidth(),
+          height : _self._getTotalHeight()
+        });
+      }
+    },
+    //定位
+    resetPosition : function(){
+      var _self = this,
+        align = _self.get(&#39;align&#39;),
+        plotRange = _self.get(&#39;plotRange&#39;),
+        top = plotRange.tl,
+        end = plotRange.br,
+        dx = _self.get(&#39;dx&#39;),
+        dy = _self.get(&#39;dy&#39;),
+        width = _self._getTotalWidth(),
+        x,y;
+      switch(align){
+        case &#39;top&#39; :
+          x = top.x;
+          y = top.y;
+          break;
+        case &#39;left&#39;:
+          x = top.x - width;
+          y = (top.y + end.y)/2;
+          break;
+        case &#39;right&#39;:
+          x = end.x;
+          y = (top.y + end.y)/2;
+          break;
+        case &#39;bottom&#39;:
+          x = (top.x + end.x) /2 - width/2;
+          y = end.y;
+        default : 
+          break;
+      }
+
+     _self.move(x+dx,y+dy);
+
+    },
+    //获取总的个数
+    _getCount : function(){
+
+      return this.get(&#39;itemsGroup&#39;).get(&#39;children&#39;).length;
+    },
+    //获取下一个图例项的x坐标
+    _getNextX : function(){
+      var _self = this,
+        layout = _self.get(&#39;layout&#39;),
+        nextX = PADDING;
+      if(layout == &#39;horizontal&#39;){
+        var children = _self.get(&#39;itemsGroup&#39;).get(&#39;children&#39;);
+        BUI.each(children,function(item){
+          if(item.isGroup){
+            nextX += (item.getWidth() + PADDING);
+          }
+          
+        });
+      }
+      return nextX;
+    },
+    //获取下一个图例项的y坐标
+    _getNextY : function(){
+      var _self = this,
+        layout = _self.get(&#39;layout&#39;);
+      if(layout == &#39;horizontal&#39;){
+        return PADDING;
+      }else{
+        return LINE_HEIGHT * _self._getCount() + PADDING ;
+      }
+    },
+    //获取总的宽度
+    _getTotalWidth : function(){
+      return this._getNextX();
+    },
+    //获取整体的高度
+    _getTotalHeight : function(){
+      var _self = this,
+        nextY = _self._getNextY();
+
+      if(_self.get(&#39;layout&#39;) == &#39;horizontal&#39;){
+        return LINE_HEIGHT + PADDING * 2;
+      }
+      return nextY + PADDING;
+    }
+  });
+
+  return Legend;
+});
+</pre>
+</body>
+</html>

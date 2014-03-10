@@ -20,17 +20,16 @@
  * @author dxq613@gmail.com
  * @ignore
  */
-define('bui/list/listitem',['bui/common'],function (require) {
+define(&#39;bui/list/listitem&#39;,[&#39;bui/common&#39;],function (require) {
 
 
-  var BUI = require('bui/common'),
+  var BUI = require(&#39;bui/common&#39;),
     Component = BUI.Component,
     UIBase = Component.UIBase;
     
 <span id='BUI-List-ItemView'>  /**
 </span>   * @private
    * @class BUI.List.ItemView
-   * @extends BUI.Component.View
    * @extends BUI.Component.View
    * @mixins BUI.Component.UIBase.ListItemView
    * 列表项的视图层对象
@@ -49,25 +48,25 @@ define('bui/list/listitem',['bui/common'],function (require) {
     
   },{
     ATTRS : 
-<span id='global-property-'>    /**
+<span id=''>    /**
 </span>     * @lends BUI.List.Item#
      * @ignore
      */
     {
-      elTagName:{
-        view:true,
-        value:'li'
+<span id='-property-elTagName'>      elTagName:{
+</span>        view:true,
+        value:&#39;li&#39;
       },
-      xview:{
-        value:itemView
+<span id='-property-xview'>      xview:{
+</span>        value:itemView
       },
-      tpl:{
-        view:true,
-        value:'&lt;span&gt;{text}&lt;/span&gt;'
+<span id='-property-tpl'>      tpl:{
+</span>        view:true,
+        value:&#39;&lt;span&gt;{text}&lt;/span&gt;&#39;
       }
     }
   },{
-    xclass:'list-item'
+    xclass:&#39;list-item&#39;
   });
 
   item.View = itemView;

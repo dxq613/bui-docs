@@ -20,11 +20,11 @@
  * @ignore
  */
 
-define('bui/tree/selection',['bui/list'],function (require) {
+define(&#39;bui/tree/selection&#39;,[&#39;bui/list&#39;],function (require) {
 
 
-	var BUI = require('bui/common'),
-		SimpleList = require('bui/list').SimpleList;
+	var BUI = require(&#39;bui/common&#39;),
+		SimpleList = require(&#39;bui/list&#39;).SimpleList;
 
 <span id='BUI-Tree-Selection'>	/**
 </span>	 * @class BUI.Tree.Selection
@@ -43,10 +43,10 @@ define('bui/tree/selection',['bui/list'],function (require) {
 		 */
 		getSelection : function(){
 			var _self = this,
-				field = _self.getStatusField('selected'),
+				field = _self.getStatusField(&#39;selected&#39;),
 				store;
 			if(field){
-				store = _self.get('store');
+				store = _self.get(&#39;store&#39;);
 				return store.findNodesBy(function(node){
 					return node[field];
 				});
@@ -59,10 +59,10 @@ define('bui/tree/selection',['bui/list'],function (require) {
 		 */
 		getSelected : function(){
 			var _self = this,
-				field = _self.getStatusField('selected'),
+				field = _self.getStatusField(&#39;selected&#39;),
 				store;
 			if(field){
-				store = _self.get('store');
+				store = _self.get(&#39;store&#39;);
 				return store.findNodeBy(function(node){
 					return node[field];
 				});

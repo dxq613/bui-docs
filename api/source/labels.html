@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 图表中的文本信息
+ * @ignore
+ */
+
+define(&#39;bui/chart/labels&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plotitem&#39;,&#39;bui/graphic&#39;],function (require) {
+	
+	var BUI = require(&#39;bui/common&#39;),
+		Item = require(&#39;bui/chart/plotitem&#39;),
+		Util = require(&#39;bui/graphic&#39;).Util,
+		CLS_LABELS = &#39;x-chart-labels&#39;;
+
+<span id='BUI-Chart-Labels'>	/**
+</span>	 * @class BUI.Chart.Labels
+	 * 文本集合
+	 * @extends BUI.Chart.PlotItem
+	 */
+	var Labels = function(cfg){
+		Labels.superclass.constructor.call(this,cfg);
+	};
+
+	Labels.ATTRS = {
+
+		elCls : {
+			value : CLS_LABELS
+		},
+		zIndex : {
+			value : 6
+		},
+<span id='BUI-Chart-Labels-property-items'>		/**
+</span>		 * 文本集合
+		 * @type {Array}
+		 */
+		items : {
+
+		},
+<span id='BUI-Chart-Labels-property-label'>		/**
+</span>		 * 内部label的默认配置信息
+		 * @type {Object}
+		 */
+		label : {
+
+		},
+<span id='BUI-Chart-Labels-property-renderer'>		/**
+</span>		 * 格式化函数 function (text,item)
+		 * @type {Function}
+		 */
+		renderer : {
+
+		},
+		animate : {
+			value : true
+		},
+		duration : {
+			value : 400
+		}
+
+	};
+
+	BUI.extend(Labels,Item);
+
+	BUI.augment(Labels,{
+		
+		//渲染控件
+		renderUI : function(){
+			var _self = this;
+			Labels.superclass.renderUI.call(_self);
+			_self._drawLabels();
+		},
+<span id='BUI-Chart-Labels-method-addLabel'>		/**
+</span>		 * 添加文本
+		 * @param {[type]} item [description]
+		 */
+		addLabel : function(item){
+			var _self = this,
+				items = _self.get(&#39;items&#39;),
+				count = items.length;
+			items.push(item);
+
+			return _self._addLabel(item,count);
+
+		},
+		//绘制文本
+		_drawLabels : function(){
+			var _self = this,
+				items = _self.get(&#39;items&#39;),
+				cfg;
+
+			BUI.each(items,function(item,index){
+				_self._addLabel(item,index);
+			});
+		},
+
+		_addLabel : function(item,index){
+			var _self = this,
+				cfg = _self._getLabelCfg(item,index);
+
+			return _self._createText(cfg);
+		},
+		_getLabelCfg : function(item,index){
+			var _self = this,
+				label = _self.get(&#39;label&#39;),
+				renderer = _self.get(&#39;renderer&#39;);
+
+			if(!BUI.isObject(item)){
+				var tmp = item;
+				item = {};
+				item.text = tmp;
+			}
+
+			if(renderer){
+				item.text = renderer(item.text,item,index);
+			}
+
+			item.text = item.text.toString();
+			item.x = (item.x || 0) + (label.x || 0);
+			item.y = (item.y || 0) + (label.y || 0);
+			cfg = BUI.merge(label,item);
+
+			return cfg;
+		},
+		changeLabel : function(label,item){
+			var _self = this,
+				index = BUI.Array.indexOf(label,_self.get(&#39;children&#39;)),
+				cfg = _self._getLabelCfg(item,index);
+			if(label){
+				if(Util.svg &amp;&amp; _self.get(&#39;animate&#39;)){
+					label.attr(&#39;text&#39;,cfg.text);
+					label.animate({
+						x : cfg.x,
+						y : cfg.y
+					},_self.get(&#39;duration&#39;));
+				}else{
+					label.attr(cfg);
+				}
+			}
+		},
+<span id='BUI-Chart-Labels-method-_createText'>		/**
+</span>		 * 创建按文本
+		 * @private
+		 */
+		_createText : function(cfg){
+			return this.addShape(&#39;label&#39;,cfg);
+		}
+
+	});
+
+
+	return Labels;
+});</pre>
+</body>
+</html>

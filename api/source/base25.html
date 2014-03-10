@@ -21,15 +21,15 @@
  * @author: 索丘 zengyue.yezy@alibaba-inc.com
  **/
 
-define('bui/uploader/button/base', ['bui/common', './filter'], function(require) {
+define(&#39;bui/uploader/button/base&#39;, [&#39;bui/common&#39;, &#39;./filter&#39;], function(require) {
 
-  var BUI = require('bui/common'),
+  var BUI = require(&#39;bui/common&#39;),
     Component = BUI.Component,
-    Filter = require('bui/uploader/button/filter'),
+    Filter = require(&#39;bui/uploader/button/filter&#39;),
     PREFIX = BUI.prefix,
-    CLS_UPLOADER = PREFIX + 'uploader',
-    CLS_UPLOADER_BUTTON = CLS_UPLOADER + '-button',
-    CLS_UPLOADER_BUTTON_TEXT = CLS_UPLOADER_BUTTON + '-text';
+    CLS_UPLOADER = PREFIX + &#39;uploader&#39;,
+    CLS_UPLOADER_BUTTON = CLS_UPLOADER + &#39;-button&#39;,
+    CLS_UPLOADER_BUTTON_TEXT = CLS_UPLOADER_BUTTON + &#39;-text&#39;;
 
 <span id='global-method-getFileName'>  /**
 </span>   * 获取文件名称
@@ -49,8 +49,8 @@ define('bui/uploader/button/base', ['bui/common', './filter'], function(require)
    * @ignore
    */
   function getFileExtName(filename){
-    var result = /\.[^\.]+/.exec(filename) || [];
-    return result.join('').toLowerCase();
+    var result = /\.[^\.]+$/.exec(filename) || [];
+    return result.join(&#39;&#39;).toLowerCase();
   }
 
 <span id='global-method-convertByteSize'>  /**
@@ -66,11 +66,11 @@ define('bui/uploader/button/base', ['bui/common', './filter'], function(require)
       bytes = bytes / 1024;
       i++;
     } while (bytes &gt; 99);
-    return Math.max(bytes, 0.1).toFixed(1) + ['KB', 'MB', 'GB', 'TB', 'PB', 'EB'][i];
+    return Math.max(bytes, 0.1).toFixed(1) + [&#39;KB&#39;, &#39;MB&#39;, &#39;GB&#39;, &#39;TB&#39;, &#39;PB&#39;, &#39;EB&#39;][i];
   }
 
   function getFileId (file) {
-    return file.id || BUI.guid('bui-uploader-file');
+    return file.id || BUI.guid(&#39;bui-uploader-file&#39;);
   }
 
 
@@ -83,9 +83,9 @@ define('bui/uploader/button/base', ['bui/common', './filter'], function(require)
   baseView.prototype = {
     _uiSetText: function (v) {
       var _self = this,
-        text = _self.get('text'),
-        textCls = _self.get('textCls'),
-        textEl = _self.get('el').find('.' + textCls);
+        text = _self.get(&#39;text&#39;),
+        textCls = _self.get(&#39;textCls&#39;),
+        textEl = _self.get(&#39;el&#39;).find(&#39;.&#39; + textCls);
       textEl.text(text);
     }
   }
@@ -101,14 +101,16 @@ define('bui/uploader/button/base', ['bui/common', './filter'], function(require)
   base.ATTRS = {
 <span id='BUI-Uploader-Button-property-buttonCls'>    /**
 </span>     * 按钮的样式
+     * @protected
      * @type {String}
      */
     buttonCls: {
-      value: CLS_UPLOADER_BUTTON + '-wrap',
+      value: CLS_UPLOADER_BUTTON + &#39;-wrap&#39;,
       view: true
     },
 <span id='BUI-Uploader-Button-property-textCls'>    /**
 </span>     * 文本的样式
+     * @protected
      * @type {String}
      */
     textCls: {
@@ -121,11 +123,11 @@ define('bui/uploader/button/base', ['bui/common', './filter'], function(require)
      */
     text: {
       view: true,
-      value: '上传文件'
+      value: &#39;上传文件&#39;
     },
     tpl: {
       view: true,
-      value: '&lt;a href=&quot;javascript:void(0);&quot; class=&quot;' + CLS_UPLOADER_BUTTON + '-wrap' + '&quot;&gt;&lt;span class=&quot;' + CLS_UPLOADER_BUTTON_TEXT + '&quot;&gt;{text}&lt;/span&gt;&lt;/a&gt;'
+      value: &#39;&lt;a href=&quot;javascript:void(0);&quot; class=&quot;&#39; + CLS_UPLOADER_BUTTON + &#39;-wrap&#39; + &#39;&quot;&gt;&lt;span class=&quot;&#39; + CLS_UPLOADER_BUTTON_TEXT + &#39;&quot;&gt;{text}&lt;/span&gt;&lt;/a&gt;&#39;
     },
 <span id='BUI-Uploader-Button-property-disabled'>    /**
 </span>     * 是否可用,false为可用
@@ -133,6 +135,7 @@ define('bui/uploader/button/base', ['bui/common', './filter'], function(require)
      * @default false
      */
     disabled : {
+      view: true,
       value : false
     },
 <span id='BUI-Uploader-Button-property-multiple'>    /**
@@ -141,6 +144,7 @@ define('bui/uploader/button/base', ['bui/common', './filter'], function(require)
      * @default true
      */
     multiple : {
+      view: true,
       value : true
     },
 <span id='BUI-Uploader-Button-property-filter'>    /**
@@ -151,6 +155,17 @@ define('bui/uploader/button/base', ['bui/common', './filter'], function(require)
     filter : {
       shared : false,
       value : []
+    },
+    events: {
+      value: {
+<span id='BUI-Uploader-Button-event-change'>        /**
+</span>         * 选中文件时
+         * @event
+         * @param {Object} e 事件对象
+         * @param {Array} e.files 选中的文件
+         */
+        &#39;change&#39;: false
+      }
     }
   };
 
@@ -190,31 +205,6 @@ define('bui/uploader/button/base', ['bui/common', './filter'], function(require)
       file.attr = fileAttrs;
       return file;
     },
-    //设置多选
-    _uiSetMultiple : function (v) {
-      this.setMultiple(v);
-    },
-<span id='BUI-Uploader-Button-method-setMultiple'>    /**
-</span>     * @template
-     * @protected
-     * 设置是否多选，但是从函数含义上来看使用
-     * 更合适
-     * 模板函数，用于子类扩展，参考 模板模式
-     */
-    setMultiple: function(v){
-    },
-    //设置禁用
-    _uiSetDisabled : function (v) {
-      this.setDisabled(v);
-    },
-<span id='BUI-Uploader-Button-method-setDisabled'>    /**
-</span>     * @protected
-     * @template
-     * 设置禁用，其实直接替换成_uiSetDisabled更好
-     * 
-     */
-    setDisabled: function(v){
-    },
     getFilter: function(v){
       if(v){
         var desc = [],
@@ -233,22 +223,20 @@ define('bui/uploader/button/base', ['bui/common', './filter'], function(require)
 
         }
         return {
-          desc: desc.join(','),
-          ext: ext.join(','),
-          type: type.join(',')
+          desc: desc.join(&#39;,&#39;),
+          ext: ext.join(&#39;,&#39;),
+          type: type.join(&#39;,&#39;)
         }
       }
     },
+    //设置多选
+    _uiSetMultiple : function (v) {
+    },
+    //设置禁用
+    _uiSetDisabled : function (v) {
+    },
     //设置过滤
     _uiSetFilter : function (v) {
-      this.setFilter(v);
-    },
-<span id='BUI-Uploader-Button-method-setFilter'>    /**
-</span>     * @protected
-     * @template
-     * 设置过滤
-     */
-    setFilter: function(v){
     }
   }
 

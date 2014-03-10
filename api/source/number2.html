@@ -21,14 +21,14 @@
  * @ignore
  */
 
-define('bui/form/numberfield',['bui/form/basefield'],function (require) {
+define(&#39;bui/form/numberfield&#39;,[&#39;bui/form/basefield&#39;],function (require) {
 
 <span id='BUI-Form-Field-Number'>  /**
 </span>   * 表单数字域
    * @class BUI.Form.Field.Number
    * @extends BUI.Form.Field
    */
-  var Field = require('bui/form/basefield'),
+  var Field = require(&#39;bui/form/basefield&#39;),
     numberField = Field.extend({
 
 <span id='BUI-Form-Field-Number-method-parseValue'>     /**
@@ -38,25 +38,25 @@ define('bui/form/numberfield',['bui/form/basefield'],function (require) {
      * @return {Number}  该字段指定的类型
      */
     parseValue : function(value){
-      if(value == '' || value == null){
+      if(value == &#39;&#39; || value == null){
         return null;
       }
       if(BUI.isNumber(value)){
         return value;
       }
       var _self = this,
-        allowDecimals = _self.get('allowDecimals');
-      value = value.replace(/\,/g,'');
+        allowDecimals = _self.get(&#39;allowDecimals&#39;);
+      value = value.replace(/\,/g,&#39;&#39;);
       if(!allowDecimals){
         return parseInt(value,10);
       }
-      return parseFloat(parseFloat(value).toFixed(_self.get('decimalPrecision')));
+      return parseFloat(parseFloat(value).toFixed(_self.get(&#39;decimalPrecision&#39;)));
     },
     _uiSetMax : function(v){
-      this.addRule('max',v);
+      this.addRule(&#39;max&#39;,v);
     },
     _uiSetMin : function(v){
-      this.addRule('min',v);
+      this.addRule(&#39;min&#39;,v);
     }
   },{
     ATTRS : {
@@ -85,7 +85,7 @@ define('bui/form/numberfield',['bui/form/basefield'],function (require) {
        * @type {String}
        */
       validEvent : {
-        value : 'keyup change'
+        value : &#39;keyup change&#39;
       },
       defaultRules : {
         value : {
@@ -115,7 +115,7 @@ define('bui/form/numberfield',['bui/form/basefield'],function (require) {
       }
     }
   },{
-    xclass : 'form-field-number'
+    xclass : &#39;form-field-number&#39;
   });
 
   return numberField;

@@ -20,24 +20,24 @@
  * @ignore
  */
 
-define('bui/mask/loadmask',['bui/mask/mask'],function (require) {
+define(&#39;bui/mask/loadmask&#39;,[&#39;bui/mask/mask&#39;],function (require) {
   
-  var Mask = require('bui/mask/mask');
+  var Mask = require(&#39;bui/mask/mask&#39;);
 
 <span id='BUI-Mask-LoadMask'>   /**
 </span>     * 屏蔽指定元素，并显示加载信息
      * &lt;pre&gt;&lt;/code&gt;
-     * BUI.use('bui/mask',function(Mask){
+     * BUI.use(&#39;bui/mask&#39;,function(Mask){
      *    var loadMask = new Mask.LoadMask({
-     *        el : '#domId',
-     *        msg : 'loading ....'
+     *        el : &#39;#domId&#39;,
+     *        msg : &#39;loading ....&#39;
      *    });
      *
-     *    $('#btn').on('click',function(){
+     *    $(&#39;#btn&#39;).on(&#39;click&#39;,function(){
      *        loadMask.show();
      *    });
      *
-     *    $('#btn1').on('click',function(){
+     *    $(&#39;#btn1&#39;).on(&#39;click&#39;,function(){
      *        loadMask.hide();
      *    });
      * });
@@ -57,7 +57,7 @@ define('bui/mask/loadmask',['bui/mask/mask'],function (require) {
 </span>         * 屏蔽的元素
          * &lt;pre&gt;&lt;/code&gt;
          *    var loadMask = new Mask.LoadMask({
-         *        el : '#domId'
+         *        el : &#39;#domId&#39;
          *    });
          * &lt;/code&gt;&lt;/pre&gt;
          * @cfg {jQuery} el
@@ -69,27 +69,27 @@ define('bui/mask/loadmask',['bui/mask/mask'],function (require) {
 </span>         * 加载时显示的加载信息
          * &lt;pre&gt;&lt;/code&gt;
          *    var loadMask = new Mask.LoadMask({
-         *        el : '#domId',
-         *        msg : '正在加载，请稍后。。。'
+         *        el : &#39;#domId&#39;,
+         *        msg : &#39;正在加载，请稍后。。。&#39;
          *    });
          * &lt;/code&gt;&lt;/pre&gt;
-         * @cfg {String} msg [msg = 'Loading...']
+         * @cfg {String} msg [msg = &#39;Loading...&#39;]
          */
         msg:{
-            value : 'Loading...'
+            value : &#39;Loading...&#39;
         },
 <span id='BUI-Mask-LoadMask-cfg-msgCls'>        /**
 </span>         * 加载时显示的加载信息的样式
          * &lt;pre&gt;&lt;/code&gt;
          *    var loadMask = new Mask.LoadMask({
-         *        el : '#domId',
-         *        msgCls : 'custom-cls'
+         *        el : &#39;#domId&#39;,
+         *        msgCls : &#39;custom-cls&#39;
          *    });
          * &lt;/code&gt;&lt;/pre&gt;
-         * @cfg {String} [msgCls = 'x-mask-loading']
+         * @cfg {String} [msgCls = &#39;x-mask-loading&#39;]
          */
         msgCls:{
-            value : 'x-mask-loading'
+            value : &#39;x-mask-loading&#39;
         },
 <span id='global-property-disabled'>        /**
 </span>         * 加载控件是否禁用
@@ -105,49 +105,49 @@ define('bui/mask/loadmask',['bui/mask/mask'],function (require) {
 
     //对象原型
     BUI.augment(LoadMask,
-<span id='global-property-'>    /** 
+<span id=''>    /** 
 </span>    * @lends BUI.Mask.LoadMask.prototype 
     * @ignore
     */
     {
         
-<span id='BUI-Mask-LoadMask-method-disable'>        /**
+<span id='-method-disable'>        /**
 </span>         * 设置控件不可用
          */
         disable:function () {
-            this.set('disabled',true);
+            this.set(&#39;disabled&#39;,true);
         },
-<span id='BUI-Mask-LoadMask-method-onLoad'>        /**
+<span id='-method-onLoad'>        /**
 </span>         * @private 加载已经完毕，解除屏蔽
          */
         onLoad:function () {
-            Mask.unmaskElement(this.get('el'));
+            Mask.unmaskElement(this.get(&#39;el&#39;));
         },
-<span id='BUI-Mask-LoadMask-method-onBeforeLoad'>        /**
+<span id='-method-onBeforeLoad'>        /**
 </span>         * @private 开始加载，屏蔽当前元素
          */
         onBeforeLoad:function () {
             var _self = this;
-            if (!_self.get('disabled')) {
-                Mask.maskElement(_self.get('el'), _self.get('msg'), this.get('msgCls'));
+            if (!_self.get(&#39;disabled&#39;)) {
+                Mask.maskElement(_self.get(&#39;el&#39;), _self.get(&#39;msg&#39;), this.get(&#39;msgCls&#39;));
             }
         },
-<span id='BUI-Mask-LoadMask-method-show'>        /**
+<span id='-method-show'>        /**
 </span>         * 显示加载条，并遮盖元素
          */
         show:function () {
             this.onBeforeLoad();
         },
 
-<span id='BUI-Mask-LoadMask-method-hide'>        /**
+<span id='-method-hide'>        /**
 </span>         * 隐藏加载条，并解除遮盖元素
          */
         hide:function () {
             this.onLoad();
         },
 
-        /*
-         * 清理资源
+<span id='-method-destroy'>        /*
+</span>         * 清理资源
          */
         destroy:function () {
             this.hide();

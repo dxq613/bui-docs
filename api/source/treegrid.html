@@ -20,10 +20,10 @@
  * @ignore
  */
 
-define('bui/extensions/treegrid',['bui/common','bui/grid','bui/tree'],function (require) {
-  'use strict';
-  var Tree = require('bui/tree'),
-    Grid = require('bui/grid');
+define(&#39;bui/extensions/treegrid&#39;,[&#39;bui/common&#39;,&#39;bui/grid&#39;,&#39;bui/tree&#39;],function (require) {
+  &#39;use strict&#39;;
+  var Tree = require(&#39;bui/tree&#39;),
+    Grid = require(&#39;bui/grid&#39;);
     
 
 <span id='BUI-Extensions-TreeGrid'>  /**
@@ -36,11 +36,11 @@ define('bui/extensions/treegrid',['bui/common','bui/grid','bui/tree'],function (
   },{
     ATTRS : {
       iconContainer : {
-        value : '.bui-grid-cell-inner'
+        value : &#39;.bui-grid-cell-inner&#39;
       }
     }
   },{
-    xclass : 'tree-grid'
+    xclass : &#39;tree-grid&#39;
   });
 
   return TreeGrid;

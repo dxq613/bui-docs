@@ -29,12 +29,12 @@
  */
 
 
-define('bui/component/controller',['bui/component/uibase','bui/component/manage','bui/component/view','bui/component/loader'],function(require){
-    'use strict';
-    var UIBase = require('bui/component/uibase'),
-        Manager = require('bui/component/manage'),
-        View = require('bui/component/view'),
-        Loader = require('bui/component/loader'),
+define(&#39;bui/component/controller&#39;,[&#39;bui/component/uibase&#39;,&#39;bui/component/manage&#39;,&#39;bui/component/view&#39;,&#39;bui/component/loader&#39;],function(require){
+    &#39;use strict&#39;;
+    var UIBase = require(&#39;bui/component/uibase&#39;),
+        Manager = require(&#39;bui/component/manage&#39;),
+        View = require(&#39;bui/component/view&#39;),
+        Loader = require(&#39;bui/component/loader&#39;),
         wrapBehavior = BUI.wrapBehavior,
         getWrapBehavior = BUI.getWrapBehavior;
 
@@ -47,7 +47,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
             // in case bubbled from sub component
             if (self === ev.target) {
                 var value = ev.newVal,
-                    view = self.get('view');
+                    view = self.get(&#39;view&#39;);
                 if(view){
                     view.set(attrName, value); 
                 }
@@ -62,7 +62,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
     function wrapperViewGetter(attrName) {
         return function (v) {
             var self = this,
-                view = self.get('view');
+                view = self.get(&#39;view&#39;);
             return v === undefined ? view.get(attrName) : v;
         };
     }
@@ -74,22 +74,22 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
         // 生成父组件的 dom 结构
         self.create();
         var contentEl = self.getContentElement(),
-            defaultCls = self.get('defaultChildClass');
+            defaultCls = self.get(&#39;defaultChildClass&#39;);
         //配置默认 xclass
         if(!c.xclass &amp;&amp; !(c instanceof Controller)){
             if(!c.xtype){
                 c.xclass = defaultCls;
             }else{
-                c.xclass = defaultCls + '-' + c.xtype;
+                c.xclass = defaultCls + &#39;-&#39; + c.xtype;
             }
             
         }
 
         c = BUI.Component.create(c, self);
-        c.setInternal('parent', self);
+        c.setInternal(&#39;parent&#39;, self);
         // set 通知 view 也更新对应属性
-        c.set('render', contentEl);
-        c.set('elBefore', renderBefore);
+        c.set(&#39;render&#39;, contentEl);
+        c.set(&#39;elBefore&#39;, renderBefore);
         // 如果 parent 也没渲染，子组件 create 出来和 parent 节点关联
         // 子组件和 parent 组件一起渲染
         // 之前设好属性，view ，logic 同步还没 bind ,create 不是 render ，还没有 bindUI
@@ -109,7 +109,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
             attrName,
             cfg = {},
             v,
-            Render = self.get('xview');
+            Render = self.get(&#39;xview&#39;);
 
       
         //将渲染层初始化所需要的属性，直接构造器设置过去
@@ -130,7 +130,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
                     // setter 不应该有实际操作，仅用于正规化比较好
                     // attrCfg.setter = wrapperViewSetter(attrName);
                     // 不更改attrCfg的定义，可以多个实例公用一份attrCfg
-                    /*self.on('after' + BUI.ucfirst(attrName) + 'Change',
+                    /*self.on(&#39;after&#39; + BUI.ucfirst(attrName) + &#39;Change&#39;,
                         wrapperViewSetter(attrName));
                     */
                     // 逻辑层读值直接从 view 层读
@@ -157,7 +157,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
             }
             constructor = constructor.superclass &amp;&amp; constructor.superclass.constructor;
         }
-        return re.join(' ');
+        return re.join(&#39; &#39;);
     }
 
     function isMouseEventWithinElement(e, elem) {
@@ -169,7 +169,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
 
 <span id='BUI-Component-Controller'>    /**
 </span>     * 可以实例化的控件，作为最顶层的控件类，一切用户控件都继承此控件
-     * xclass: 'controller'.
+     * xclass: &#39;controller&#39;.
      * ** 创建子控件 ** 
      * &lt;pre&gt;&lt;code&gt;
      * var Control = Controller.extend([mixin1,mixin2],{ //原型链上的函数
@@ -189,16 +189,16 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
      *       }
      *   }
      * },{
-     *     xclass : 'a' //用于把对象解析成类
+     *     xclass : &#39;a&#39; //用于把对象解析成类
      * });
      * &lt;/code&gt;&lt;/pre&gt;
      *
      * ** 创建对象 **
      * &lt;pre&gt;&lt;code&gt;
      * var c1 = new Control({
-     *     render : '#t1', //在t1上创建
-     *     text : 'text1',
-     *     children : [{xclass : 'a',text : 'a1'},{xclass : 'b',text : 'b1'}]
+     *     render : &#39;#t1&#39;, //在t1上创建
+     *     text : &#39;text1&#39;,
+     *     children : [{xclass : &#39;a&#39;,text : &#39;a1&#39;},{xclass : &#39;b&#39;,text : &#39;b1&#39;}]
      * });
      *
      * c1.render();
@@ -234,18 +234,18 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
         initializer: function () {
             var self = this;
 
-            if(!self.get('id')){
-                self.set('id',self.getNextUniqueId());
+            if(!self.get(&#39;id&#39;)){
+                self.set(&#39;id&#39;,self.getNextUniqueId());
             }
-            Manager.addComponent(self.get('id'),self);
+            Manager.addComponent(self.get(&#39;id&#39;),self);
             // initialize view
             var view = constructView(self);
-            self.setInternal('view', view);
+            self.setInternal(&#39;view&#39;, view);
             self.__view = view;
         },
 
 <span id='BUI-Component-Controller-method-getNextUniqueId'>        /**
-</span>         * 返回新的唯一的Id,结果是 'xclass' + number
+</span>         * 返回新的唯一的Id,结果是 &#39;xclass&#39; + number
          * @protected
          * @return {String} 唯一id
          */
@@ -262,10 +262,10 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
         createDom: function () {
             var self = this,
                 //el,
-                view = self.get('view');
+                view = self.get(&#39;view&#39;);
             view.create(undefined);
             //el = view.getKeyEventTarget();
-            /*if (!self.get('allowTextSelection')) {
+            /*if (!self.get(&#39;allowTextSelection&#39;)) {
                 //el.unselectable(undefined);
             }*/
         },
@@ -277,11 +277,11 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
          */
         renderUI: function () {
             var self = this, 
-                loader = self.get('loader');
-            self.get('view').render();
+                loader = self.get(&#39;loader&#39;);
+            self.get(&#39;view&#39;).render();
             self._initChildren();
             if(loader){
-                self.setInternal('loader',loader);
+                self.setInternal(&#39;loader&#39;,loader);
             }
             /**/
 
@@ -292,8 +292,8 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
                 children, 
                 child;
             // then render my children
-            children = children || self.get('children').concat();
-            self.get('children').length = 0;
+            children = children || self.get(&#39;children&#39;).concat();
+            self.get(&#39;children&#39;).length = 0;
             for (i = 0; i &lt; children.length; i++) {
                 child = self.addChild(children[i]);
                 child.render();
@@ -305,9 +305,9 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
          */
         bindUI:function () {
             var self = this,
-                events = self.get('events');
-            this.on('afterVisibleChange', function (e) {
-                this.fire(e.newVal ? 'show' : 'hide');
+                events = self.get(&#39;events&#39;);
+            this.on(&#39;afterVisibleChange&#39;, function (e) {
+                this.fire(e.newVal ? &#39;show&#39; : &#39;hide&#39;);
             });
             //处理控件事件，设置事件是否冒泡
             BUI.each(events, function (v,k) {
@@ -320,7 +320,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
 </span>         * 控件是否包含指定的DOM元素,包括根节点
          * &lt;pre&gt;&lt;code&gt;
          *   var control = new Control();
-         *   $(document).on('click',function(ev){
+         *   $(document).on(&#39;click&#39;,function(ev){
          *     var target = ev.target;
          *
          *     if(!control.containsElement(elem)){ //未点击在控件内部
@@ -333,10 +333,10 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
          */
         containsElement : function (elem) {
           var _self = this,
-            el = _self.get('el'),
-            children = _self.get('children'),
+            el = _self.get(&#39;el&#39;),
+            children = _self.get(&#39;children&#39;),
             result = false;
-          if(!_self.get('rendered')){
+          if(!_self.get(&#39;rendered&#39;)){
             return false;
           }
           if($.contains(el[0],elem) || el[0] === elem){
@@ -358,7 +358,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
          */
         isChildrenElement : function(elem){
             var _self = this,
-                children = _self.get('children'),
+                children = _self.get(&#39;children&#39;),
                 rst = false;
             BUI.each(children,function(child){
                 if(child.containsElement(elem)){
@@ -374,7 +374,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
         show:function () {
             var self = this;
             self.render();
-            self.set('visible', true);
+            self.set(&#39;visible&#39;, true);
             return self;
         },
 
@@ -383,7 +383,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
          */
         hide:function () {
             var self = this;
-            self.set('visible', false);
+            self.set(&#39;visible&#39;, false);
             return self;
         },
 <span id='BUI-Component-Controller-method-toggle'>        /**
@@ -395,7 +395,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
          * &lt;/code&gt;&lt;/pre&gt;
          */
         toggle : function(){
-            this.set('visible',!this.get('visible'));
+            this.set(&#39;visible&#39;,!this.get(&#39;visible&#39;));
             return this;
         },
         _uiSetFocusable: function (focusable) {
@@ -403,53 +403,53 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
                 t,
                 el = self.getKeyEventTarget();
             if (focusable) {
-                el.attr('tabIndex', 0)
+                el.attr(&#39;tabIndex&#39;, 0)
                     // remove smart outline in ie
                     // set outline in style for other standard browser
-                    .attr('hideFocus', true)
-                    .on('focus', wrapBehavior(self, 'handleFocus'))
-                    .on('blur', wrapBehavior(self, 'handleBlur'))
-                    .on('keydown', wrapBehavior(self, 'handleKeydown'))
-                    .on('keyup',wrapBehavior(self,'handleKeyUp'));
+                    .attr(&#39;hideFocus&#39;, true)
+                    .on(&#39;focus&#39;, wrapBehavior(self, &#39;handleFocus&#39;))
+                    .on(&#39;blur&#39;, wrapBehavior(self, &#39;handleBlur&#39;))
+                    .on(&#39;keydown&#39;, wrapBehavior(self, &#39;handleKeydown&#39;))
+                    .on(&#39;keyup&#39;,wrapBehavior(self,&#39;handleKeyUp&#39;));
             } else {
-                el.removeAttr('tabIndex');
-                if (t = getWrapBehavior(self, 'handleFocus')) {
-                    el.off('focus', t);
+                el.removeAttr(&#39;tabIndex&#39;);
+                if (t = getWrapBehavior(self, &#39;handleFocus&#39;)) {
+                    el.off(&#39;focus&#39;, t);
                 }
-                if (t = getWrapBehavior(self, 'handleBlur')) {
-                    el.off('blur', t);
+                if (t = getWrapBehavior(self, &#39;handleBlur&#39;)) {
+                    el.off(&#39;blur&#39;, t);
                 }
-                if (t = getWrapBehavior(self, 'handleKeydown')) {
-                    el.off('keydown', t);
+                if (t = getWrapBehavior(self, &#39;handleKeydown&#39;)) {
+                    el.off(&#39;keydown&#39;, t);
                 }
-                if (t = getWrapBehavior(self, 'handleKeyUp')) {
-                    el.off('keyup', t);
+                if (t = getWrapBehavior(self, &#39;handleKeyUp&#39;)) {
+                    el.off(&#39;keyup&#39;, t);
                 }
             }
         },
 
         _uiSetHandleMouseEvents: function (handleMouseEvents) {
-            var self = this, el = self.get('el'), t;
+            var self = this, el = self.get(&#39;el&#39;), t;
             if (handleMouseEvents) {
-                el.on('mouseenter', wrapBehavior(self, 'handleMouseEnter'))
-                    .on('mouseleave', wrapBehavior(self, 'handleMouseLeave'))
-                    .on('contextmenu', wrapBehavior(self, 'handleContextMenu'))
-                    .on('mousedown', wrapBehavior(self, 'handleMouseDown'))
-                    .on('mouseup', wrapBehavior(self, 'handleMouseUp'))
-                    .on('dblclick', wrapBehavior(self, 'handleDblClick'));
+                el.on(&#39;mouseenter&#39;, wrapBehavior(self, &#39;handleMouseEnter&#39;))
+                    .on(&#39;mouseleave&#39;, wrapBehavior(self, &#39;handleMouseLeave&#39;))
+                    .on(&#39;contextmenu&#39;, wrapBehavior(self, &#39;handleContextMenu&#39;))
+                    .on(&#39;mousedown&#39;, wrapBehavior(self, &#39;handleMouseDown&#39;))
+                    .on(&#39;mouseup&#39;, wrapBehavior(self, &#39;handleMouseUp&#39;))
+                    .on(&#39;dblclick&#39;, wrapBehavior(self, &#39;handleDblClick&#39;));
             } else {
-                t = getWrapBehavior(self, 'handleMouseEnter') &amp;&amp;
-                    el.off('mouseenter', t);
-                t = getWrapBehavior(self, 'handleMouseLeave') &amp;&amp;
-                    el.off('mouseleave', t);
-                t = getWrapBehavior(self, 'handleContextMenu') &amp;&amp;
-                    el.off('contextmenu', t);
-                t = getWrapBehavior(self, 'handleMouseDown') &amp;&amp;
-                    el.off('mousedown', t);
-                t = getWrapBehavior(self, 'handleMouseUp') &amp;&amp;
-                    el.off('mouseup', t);
-                t = getWrapBehavior(self, 'handleDblClick') &amp;&amp;
-                    el.off('dblclick', t);
+                t = getWrapBehavior(self, &#39;handleMouseEnter&#39;) &amp;&amp;
+                    el.off(&#39;mouseenter&#39;, t);
+                t = getWrapBehavior(self, &#39;handleMouseLeave&#39;) &amp;&amp;
+                    el.off(&#39;mouseleave&#39;, t);
+                t = getWrapBehavior(self, &#39;handleContextMenu&#39;) &amp;&amp;
+                    el.off(&#39;contextmenu&#39;, t);
+                t = getWrapBehavior(self, &#39;handleMouseDown&#39;) &amp;&amp;
+                    el.off(&#39;mousedown&#39;, t);
+                t = getWrapBehavior(self, &#39;handleMouseUp&#39;) &amp;&amp;
+                    el.off(&#39;mouseup&#39;, t);
+                t = getWrapBehavior(self, &#39;handleDblClick&#39;) &amp;&amp;
+                    el.off(&#39;dblclick&#39;, t);
             }
         },
 
@@ -461,21 +461,21 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
         //当使用visiblity显示隐藏时，隐藏时把DOM移除出视图内，显示时回复原位置
         _uiSetVisible : function(isVisible){
             var self = this,
-                el = self.get('el'),
-                visibleMode = self.get('visibleMode');
-            if (visibleMode === 'visibility') {
+                el = self.get(&#39;el&#39;),
+                visibleMode = self.get(&#39;visibleMode&#39;);
+            if (visibleMode === &#39;visibility&#39;) {
                 if(isVisible){
-                    var position = self.get('cachePosition');
+                    var position = self.get(&#39;cachePosition&#39;);
                     if(position){
-                        self.set('xy',position);
+                        self.set(&#39;xy&#39;,position);
                     }
                 }
                 if(!isVisible){
                     var position = [
-                        self.get('x'),self.get('y')
+                        self.get(&#39;x&#39;),self.get(&#39;y&#39;)
                     ];
-                    self.set('cachePosition',position);
-                    self.set('xy',[-999,-999]);
+                    self.set(&#39;cachePosition&#39;,position);
+                    self.set(&#39;xy&#39;,[-999,-999]);
                 }
             }
         },
@@ -490,7 +490,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
 </span>         * 使控件可用
          */
         enable : function(){
-            this.set('disabled',false);
+            this.set(&#39;disabled&#39;,false);
             return this;
         },
 <span id='BUI-Component-Controller-method-disable'>        /**
@@ -501,15 +501,15 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
          * &lt;/code&gt;&lt;/pre&gt;
          */
         disable : function(){
-            this.set('disabled',true);
+            this.set(&#39;disabled&#39;,true);
             return this;
         },
 <span id='BUI-Component-Controller-method-focus'>        /**
 </span>         * 控件获取焦点
          */
         focus : function(){
-            if(this.get('focusable')){
-                this.set('focused',true);
+            if(this.get(&#39;focusable&#39;)){
+                this.set(&#39;focused&#39;,true);
             }
         },
 <span id='global-method-getContentElement'>        /**
@@ -518,7 +518,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
          * @ignore
          */
         getContentElement: function () {
-            return this.get('view').getContentElement();
+            return this.get(&#39;view&#39;).getContentElement();
         },
 
 <span id='global-method-getKeyEventTarget'>        /**
@@ -527,15 +527,15 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
          * @ignore
          */
         getKeyEventTarget: function () {
-            return this.get('view').getKeyEventTarget();
+            return this.get(&#39;view&#39;).getKeyEventTarget();
         },
 
 <span id='BUI-Component-Controller-method-addChild'>        /**
 </span>         * 添加控件的子控件，索引值为 0-based
          * &lt;pre&gt;&lt;code&gt;
          *  control.add(new Control());//添加controller对象
-         *  control.add({xclass : 'a'});//添加xclass 为a 的一个对象
-         *  control.add({xclass : 'b'},2);//插入到第三个位置
+         *  control.add({xclass : &#39;a&#39;});//添加xclass 为a 的一个对象
+         *  control.add({xclass : &#39;b&#39;},2);//插入到第三个位置
          * &lt;/code&gt;&lt;/pre&gt;
          * @param {BUI.Component.Controller|Object} c 子控件的实例或者配置项
          * @param {String} [c.xclass] 如果c为配置项，设置c的xclass
@@ -543,7 +543,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
          */
         addChild: function (c, index) {
             var self = this,
-                children = self.get('children'),
+                children = self.get(&#39;children&#39;),
                 renderBefore;
             if (index === undefined) {
                 index = children.length;
@@ -555,14 +555,14 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
              * @param {Object} e.child 添加子控件时传入的配置项或者子控件
              * @param {Number} e.index 添加的位置
              */
-            self.fire('beforeAddChild',{child : c,index : index});
-            renderBefore = children[index] &amp;&amp; children[index].get('el') || null;
+            self.fire(&#39;beforeAddChild&#39;,{child : c,index : index});
+            renderBefore = children[index] &amp;&amp; children[index].get(&#39;el&#39;) || null;
             c = initChild(self, c, renderBefore);
             children.splice(index, 0, c);
             // 先 create 占位 再 render
-            // 防止 render 逻辑里读 parent.get('children') 不同步
+            // 防止 render 逻辑里读 parent.get(&#39;children&#39;) 不同步
             // 如果 parent 已经渲染好了子组件也要立即渲染，就 创建 dom ，绑定事件
-            if (self.get('rendered')) {
+            if (self.get(&#39;rendered&#39;)) {
                 c.render();
             }
 
@@ -573,7 +573,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
              * @param {Object} e.child 添加子控件
              * @param {Number} e.index 添加的位置
              */
-            self.fire('afterAddChild',{child : c,index : index});
+            self.fire(&#39;afterAddChild&#39;,{child : c,index : index});
             return c;
         },
 <span id='BUI-Component-Controller-method-remove'>        /**
@@ -589,7 +589,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
          */
         remove : function(destroy){
             var self = this,
-                parent = self.get('parent');
+                parent = self.get(&#39;parent&#39;);
             if(parent){
                 parent.removeChild(self,destroy);
             }else if (destroy) {
@@ -615,7 +615,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
          */
         removeChild: function (c, destroy) {
             var self = this,
-                children = self.get('children'),
+                children = self.get(&#39;children&#39;),
                 index = BUI.Array.indexOf(c, children);
 
             if(index === -1){
@@ -628,7 +628,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
              * @param {Object} e.child 子控件
              * @param {Boolean} e.destroy 是否清除DOM
              */
-            self.fire('beforeRemoveChild',{child : c,destroy : destroy});
+            self.fire(&#39;beforeRemoveChild&#39;,{child : c,destroy : destroy});
 
             if (index !== -1) {
                 children.splice(index, 1);
@@ -645,7 +645,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
              * @param {Object} e.child 子控件
              * @param {Boolean} e.destroy 是否清除DOM
              */
-            self.fire('afterRemoveChild',{child : c,destroy : destroy});
+            self.fire(&#39;afterRemoveChild&#39;,{child : c,destroy : destroy});
 
             return c;
         },
@@ -663,7 +663,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
         removeChildren: function (destroy) {
             var self = this,
                 i,
-                t = [].concat(self.get('children'));
+                t = [].concat(self.get(&#39;children&#39;));
             for (i = 0; i &lt; t.length; i++) {
                 self.removeChild(t[i], destroy);
             }
@@ -679,14 +679,14 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
          * @return {BUI.Component.Controller} 子控件或者null 
          */
         getChildAt: function (index) {
-            var children = this.get('children');
+            var children = this.get(&#39;children&#39;);
             return children[index] || null;
         },
 <span id='BUI-Component-Controller-method-getChild'>        /**
 </span>         * 根据Id获取子控件
          * &lt;pre&gt;&lt;code&gt;
-         *  control.getChild('id'); //从控件的直接子控件中查找
-         *  control.getChild('id',true);//递归查找所有子控件，包含子控件的子控件
+         *  control.getChild(&#39;id&#39;); //从控件的直接子控件中查找
+         *  control.getChild(&#39;id&#39;,true);//递归查找所有子控件，包含子控件的子控件
          * &lt;/code&gt;&lt;/pre&gt;
          * @param  {String} id 控件编号
          * @param  {Boolean} deep 是否继续查找在子控件中查找
@@ -694,18 +694,18 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
          */
         getChild : function(id,deep){
             return this.getChildBy(function(item){
-                return item.get('id') === id;
+                return item.get(&#39;id&#39;) === id;
             },deep);
         },
 <span id='BUI-Component-Controller-method-getChildBy'>        /**
 </span>         * 通过匹配函数查找子控件，返回第一个匹配的对象
          * &lt;pre&gt;&lt;code&gt;
          *  control.getChildBy(function(child){//从控件的直接子控件中查找
-         *    return child.get('id') = '1243';
+         *    return child.get(&#39;id&#39;) = &#39;1243&#39;;
          *  }); 
          *  
          *  control.getChild(function(child){//递归查找所有子控件，包含子控件的子控件
-         *    return child.get('id') = '1243';
+         *    return child.get(&#39;id&#39;) = &#39;1243&#39;;
          *  },true);
          * &lt;/code&gt;&lt;/pre&gt;
          * @param  {Function} math 查找的匹配函数
@@ -716,32 +716,32 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
             return this.getChildrenBy(math,deep)[0] || null;
         },
 <span id='BUI-Component-Controller-method-getAppendHeight'>        /**
-</span>         * 获取控件的附加高度 = control.get('el').outerHeight() - control.get('el').height()
+</span>         * 获取控件的附加高度 = control.get(&#39;el&#39;).outerHeight() - control.get(&#39;el&#39;).height()
          * @protected
          * @return {Number} 附加宽度
          */
         getAppendHeight : function(){
-            var el = this.get('el');
+            var el = this.get(&#39;el&#39;);
             return el.outerHeight() - el.height();
         },
 <span id='BUI-Component-Controller-method-getAppendWidth'>        /**
-</span>         * 获取控件的附加宽度 = control.get('el').outerWidth() - control.get('el').width()
+</span>         * 获取控件的附加宽度 = control.get(&#39;el&#39;).outerWidth() - control.get(&#39;el&#39;).width()
          * @protected
          * @return {Number} 附加宽度
          */
         getAppendWidth : function(){
-            var el = this.get('el');
+            var el = this.get(&#39;el&#39;);
             return el.outerWidth() - el.width();
         },
 <span id='BUI-Component-Controller-method-getChildrenBy'>        /**
 </span>         * 查找符合条件的子控件
          * &lt;pre&gt;&lt;code&gt;
          *  control.getChildrenBy(function(child){//从控件的直接子控件中查找
-         *    return child.get('type') = '1';
+         *    return child.get(&#39;type&#39;) = &#39;1&#39;;
          *  }); 
          *  
          *  control.getChildrenBy(function(child){//递归查找所有子控件，包含子控件的子控件
-         *    return child.get('type') = '1';
+         *    return child.get(&#39;type&#39;) = &#39;1&#39;;
          *  },true);
          * &lt;/code&gt;&lt;/pre&gt;
          * @param  {Function} math 查找的匹配函数
@@ -775,7 +775,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
          * @param  {Function} func 迭代函数，函数原型function(child,index)
          */
         eachChild : function(func){
-            BUI.each(this.get('children'),func);
+            BUI.each(this.get(&#39;children&#39;),func);
         },
 <span id='BUI-Component-Controller-method-handleDblClick'>        /**
 </span>         * Handle dblclick events. By default, this performs its associated action by calling
@@ -786,18 +786,18 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
         handleDblClick: function (ev) {
             this.performActionInternal(ev);
             if(!this.isChildrenElement(ev.target)){
-                this.fire('dblclick',{domTarget : ev.target,domEvent : ev});
+                this.fire(&#39;dblclick&#39;,{domTarget : ev.target,domEvent : ev});
             }
         },
 
 <span id='BUI-Component-Controller-method-handleMouseOver'>        /**
-</span>         * Called by it's container component to dispatch mouseenter event.
+</span>         * Called by it&#39;s container component to dispatch mouseenter event.
          * @private
          * @param {jQuery.Event} ev DOM event to handle.
          */
         handleMouseOver: function (ev) {
             var self = this,
-                el = self.get('el');
+                el = self.get(&#39;el&#39;);
             if (!isMouseEventWithinElement(ev, el)) {
                 self.handleMouseEnter(ev);
                 
@@ -805,13 +805,13 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
         },
 
 <span id='BUI-Component-Controller-method-handleMouseOut'>        /**
-</span>         * Called by it's container component to dispatch mouseleave event.
+</span>         * Called by it&#39;s container component to dispatch mouseleave event.
          * @private
          * @param {jQuery.Event} ev DOM event to handle.
          */
         handleMouseOut: function (ev) {
             var self = this,
-                el = self.get('el');
+                el = self.get(&#39;el&#39;);
             if (!isMouseEventWithinElement(ev, el)) {
                 self.handleMouseLeave(ev);
                 
@@ -825,8 +825,8 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
          */
         handleMouseEnter: function (ev) {
             var self = this;
-            this.set('highlighted', !!ev);
-            self.fire('mouseenter',{domTarget : ev.target,domEvent : ev});
+            this.set(&#39;highlighted&#39;, !!ev);
+            self.fire(&#39;mouseenter&#39;,{domTarget : ev.target,domEvent : ev});
         },
 
 <span id='BUI-Component-Controller-method-handleMouseLeave'>        /**
@@ -836,9 +836,9 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
          */
         handleMouseLeave: function (ev) {
             var self = this;
-            self.set('active', false);
-            self.set('highlighted', !ev);
-            self.fire('mouseleave',{domTarget : ev.target,domEvent : ev});
+            self.set(&#39;active&#39;, false);
+            self.set(&#39;highlighted&#39;, !ev);
+            self.fire(&#39;mouseleave&#39;,{domTarget : ev.target,domEvent : ev});
         },
 
 <span id='BUI-Component-Controller-method-handleMouseDown'>        /**
@@ -852,29 +852,29 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
         handleMouseDown: function (ev) {
             var self = this,
                 n,
-                isMouseActionButton = ev['which'] === 1,
+                isMouseActionButton = ev[&#39;which&#39;] === 1,
                 el;
             if (isMouseActionButton) {
                 el = self.getKeyEventTarget();
-                if (self.get('activeable')) {
-                    self.set('active', true);
+                if (self.get(&#39;activeable&#39;)) {
+                    self.set(&#39;active&#39;, true);
                 }
-                if (self.get('focusable')) {
+                if (self.get(&#39;focusable&#39;)) {
                     el[0].focus();
-                    self.set('focused', true);
+                    self.set(&#39;focused&#39;, true);
                 }
 
-                if (!self.get('allowTextSelection')) {
+                if (!self.get(&#39;allowTextSelection&#39;)) {
                     // firefox /chrome 不会引起焦点转移
                     n = ev.target.nodeName;
                     n = n &amp;&amp; n.toLowerCase();
                     // do not prevent focus when click on editable element
-                    if (n !== 'input' &amp;&amp; n !== 'textarea') {
+                    if (n !== &#39;input&#39; &amp;&amp; n !== &#39;textarea&#39;) {
                         ev.preventDefault();
                     }
                 }
                 if(!self.isChildrenElement(ev.target)){
-                    self.fire('mousedown',{domTarget : ev.target,domEvent : ev});
+                    self.fire(&#39;mousedown&#39;,{domTarget : ev.target,domEvent : ev});
                 }
                 
             }
@@ -891,15 +891,15 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
             var self = this,
                 isChildrenElement = self.isChildrenElement(ev.target);
             // 左键
-            if (self.get('active') &amp;&amp; ev.which === 1) {
+            if (self.get(&#39;active&#39;) &amp;&amp; ev.which === 1) {
                 self.performActionInternal(ev);
-                self.set('active', false);
+                self.set(&#39;active&#39;, false);
                 if(!isChildrenElement){
-                    self.fire('click',{domTarget : ev.target,domEvent : ev});
+                    self.fire(&#39;click&#39;,{domTarget : ev.target,domEvent : ev});
                 }
             }
             if(!isChildrenElement){
-                self.fire('mouseup',{domTarget : ev.target,domEvent : ev});
+                self.fire(&#39;mouseup&#39;,{domTarget : ev.target,domEvent : ev});
             }
         },
 
@@ -917,8 +917,8 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
          * @param {jQuery.Event} ev DOM event to handle.
          */
         handleFocus: function (ev) {
-            this.set('focused', !!ev);
-            this.fire('focus',{domEvent : ev,domTarget : ev.target});
+            this.set(&#39;focused&#39;, !!ev);
+            this.fire(&#39;focus&#39;,{domEvent : ev,domTarget : ev.target});
         },
 
 <span id='BUI-Component-Controller-method-handleBlur'>        /**
@@ -927,8 +927,8 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
          * @param {jQuery.Event} ev DOM event to handle.
          */
         handleBlur: function (ev) {
-            this.set('focused', !ev);
-            this.fire('blur',{domEvent : ev,domTarget : ev.target});
+            this.set(&#39;focused&#39;, !ev);
+            this.fire(&#39;blur&#39;,{domEvent : ev,domTarget : ev.target});
         },
 
 <span id='BUI-Component-Controller-method-handleKeyEventInternal'>        /**
@@ -941,13 +941,13 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
                 isChildrenElement = self.isChildrenElement(ev.target);
             if (ev.which === 13) {
                 if(!isChildrenElement){
-                    self.fire('click',{domTarget : ev.target,domEvent : ev});
+                    self.fire(&#39;click&#39;,{domTarget : ev.target,domEvent : ev});
                 }
                 
                 return this.performActionInternal(ev);
             }
             if(!isChildrenElement){
-                self.fire('keydown',{domTarget : ev.target,domEvent : ev});
+                self.fire(&#39;keydown&#39;,{domTarget : ev.target,domEvent : ev});
             }
         },
 
@@ -967,7 +967,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
         handleKeyUp : function(ev){
             var self = this;
             if(!self.isChildrenElement(ev.target)){
-                self.fire('keyup',{domTarget : ev.target,domEvent : ev});
+                self.fire(&#39;keyup&#39;,{domTarget : ev.target,domEvent : ev});
             }
         },
 <span id='BUI-Component-Controller-method-performActionInternal'>        /**
@@ -986,12 +986,12 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
                 id,
                 i,
                 view,
-                children = self.get('children');
-            id = self.get('id');
+                children = self.get(&#39;children&#39;);
+            id = self.get(&#39;id&#39;);
             for (i = 0; i &lt; children.length; i++) {
                 children[i].destroy &amp;&amp; children[i].destroy();
             }
-            self.get('view').destroy();
+            self.get(&#39;view&#39;).destroy();
             Manager.removeComponent(id);
         },
         //覆写set方法
@@ -1020,9 +1020,9 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
                 return _self;
             }
             ucName = BUI.ucfirst(name);
-            m = '_uiSet' + ucName;
+            m = &#39;_uiSet&#39; + ucName;
             //触发before事件
-            _self.fire('before' + ucName + 'Change', {
+            _self.fire(&#39;before&#39; + ucName + &#39;Change&#39;, {
               attrName: name,
               prevVal: prevVal,
               newVal: value
@@ -1038,8 +1038,8 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
             ev = {attrName: name,prevVal: prevVal,newVal: value};
 
             //触发before事件
-            _self.fire('after' + ucName + 'Change', ev);
-            if(_self.get('binded') &amp;&amp; _self[m]){
+            _self.fire(&#39;after&#39; + ucName + &#39;Change&#39;, ev);
+            if(_self.get(&#39;binded&#39;) &amp;&amp; _self[m]){
                 _self[m](value,ev);
             }
             return _self;
@@ -1067,8 +1067,8 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
 </span>             * 控件的Html 内容
              * &lt;pre&gt;&lt;code&gt;
              *  new Control({
-             *     content : '内容',
-             *     render : '#c1'
+             *     content : &#39;内容&#39;,
+             *     render : &#39;#c1&#39;
              *  });
              * &lt;/code&gt;&lt;/pre&gt;
              * @cfg {String|jQuery} content
@@ -1084,9 +1084,9 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
 </span>			 * 控件根节点使用的标签
              * &lt;pre&gt;&lt;code&gt;
              *  new Control({
-             *     elTagName : 'ul',
-             *      content : '&lt;li&gt;内容&lt;/li&gt;',  //控件的DOM &amp;lt;ul&amp;gt;&amp;lt;li&amp;gt;内容&amp;lt;/li&amp;gt;&amp;lt;/ul&amp;gt;
-             *     render : '#c1'
+             *     elTagName : &#39;ul&#39;,
+             *      content : &#39;&lt;li&gt;内容&lt;/li&gt;&#39;,  //控件的DOM &amp;lt;ul&amp;gt;&amp;lt;li&amp;gt;内容&amp;lt;/li&amp;gt;&amp;lt;/ul&amp;gt;
+             *     render : &#39;#c1&#39;
              *  });  
              * &lt;/code&gt;&lt;/pre&gt;
 			 * @cfg {String} elTagName
@@ -1094,7 +1094,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
 			elTagName: {
 				// 生成标签名字
 				view : true,
-				value: 'div'
+				value: &#39;div&#39;
 			},
 <span id='BUI-Component-Controller-property-defaultChildClass'>            /**
 </span>             * 子元素的默认 xclass,配置child的时候没必要每次都填写xclass
@@ -1105,19 +1105,19 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
             },
 <span id='BUI-Component-Controller-property-xtype'>            /**
 </span>             * 如果控件未设置 xclass，同时父元素设置了 defaultChildClass，那么
-             * xclass = defaultChildClass + '-' + xtype
+             * xclass = defaultChildClass + &#39;-&#39; + xtype
              * &lt;pre&gt;&lt;code&gt;
              *  A.ATTRS = {
              *    defaultChildClass : {
-             *        value : 'b'
+             *        value : &#39;b&#39;
              *    }
              *  }
-             *  //类B 的xclass = 'b'类 B1的xclass = 'b-1',类 B2的xclass = 'b-2',那么
+             *  //类B 的xclass = &#39;b&#39;类 B1的xclass = &#39;b-1&#39;,类 B2的xclass = &#39;b-2&#39;,那么
              *  var a = new A({
              *    children : [
-             *        {content : 'b'}, //B类
-             *        {content : 'b1',xtype:'1'}, //B1类
-             *        {content : 'b2',xtype:'2'}, //B2类
+             *        {content : &#39;b&#39;}, //B类
+             *        {content : &#39;b1&#39;,xtype:&#39;1&#39;}, //B1类
+             *        {content : &#39;b2&#39;,xtype:&#39;2&#39;}, //B2类
              *    ]
              *  });
              * &lt;/code&gt;&lt;/pre&gt;
@@ -1141,7 +1141,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
 </span>             * 控件宽度
              * &lt;pre&gt;&lt;code&gt;
              * new Control({
-             *   width : 200 // 200,'200px','20%'
+             *   width : 200 // 200,&#39;200px&#39;,&#39;20%&#39;
              * });
              * &lt;/code&gt;&lt;/pre&gt;
              * @cfg {Number|String} width
@@ -1149,9 +1149,9 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
 <span id='BUI-Component-Controller-property-width'>            /**
 </span>             * 控件宽度
              * &lt;pre&gt;&lt;code&gt;
-             *  control.set('width',200);
-             *  control.set('width','200px');
-             *  control.set('width','20%');
+             *  control.set(&#39;width&#39;,200);
+             *  control.set(&#39;width&#39;,&#39;200px&#39;);
+             *  control.set(&#39;width&#39;,&#39;20%&#39;);
              * &lt;/code&gt;&lt;/pre&gt;
              * @type {Number|String}
              */
@@ -1162,7 +1162,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
 </span>             * 控件宽度
              * &lt;pre&gt;&lt;code&gt;
              * new Control({
-             *   height : 200 // 200,'200px','20%'
+             *   height : 200 // 200,&#39;200px&#39;,&#39;20%&#39;
              * });
              * &lt;/code&gt;&lt;/pre&gt;
              * @cfg {Number|String} height
@@ -1170,9 +1170,9 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
 <span id='BUI-Component-Controller-property-height'>            /**
 </span>             * 控件宽度
              * &lt;pre&gt;&lt;code&gt;
-             *  control.set('height',200);
-             *  control.set('height','200px');
-             *  control.set('height','20%');
+             *  control.set(&#39;height&#39;,200);
+             *  control.set(&#39;height&#39;,&#39;200px&#39;);
+             *  control.set(&#39;height&#39;,&#39;20%&#39;);
              * &lt;/code&gt;&lt;/pre&gt;
              * @type {Number|String}
              */
@@ -1183,9 +1183,9 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
 </span>             * 控件根节点应用的样式
              * &lt;pre&gt;&lt;code&gt;
              *  new Control({
-             *   elCls : 'test',
-             *   content : '内容',
-             *   render : '#t1'   //&amp;lt;div id='t1'&amp;gt;&amp;lt;div class=&quot;test&quot;&amp;gt;内容&amp;lt;/div&amp;gt;&amp;lt;/div&amp;gt;
+             *   elCls : &#39;test&#39;,
+             *   content : &#39;内容&#39;,
+             *   render : &#39;#t1&#39;   //&amp;lt;div id=&#39;t1&#39;&amp;gt;&amp;lt;div class=&quot;test&quot;&amp;gt;内容&amp;lt;/div&amp;gt;&amp;lt;/div&amp;gt;
              *  });
              * &lt;/code&gt;&lt;/pre&gt;
              * @cfg {String} elCls
@@ -1201,16 +1201,16 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
 </span>             * @cfg {Object} elStyle
 			 * 控件根节点应用的css属性
              *  &lt;pre&gt;&lt;code&gt;
-             *    var cfg = {elStyle : {width:'100px', height:'200px'}};
+             *    var cfg = {elStyle : {width:&#39;100px&#39;, height:&#39;200px&#39;}};
              *  &lt;/code&gt;&lt;/pre&gt;
              */
 <span id='BUI-Component-Controller-property-elStyle'>            /**
 </span>             * 控件根节点应用的css属性，以键值对形式
              * @type {Object}
 			 *  &lt;pre&gt;&lt;code&gt;
-             *	 control.set('elStyle',	{
-             *		width:'100px',
-             *		height:'200px'
+             *	 control.set(&#39;elStyle&#39;,	{
+             *		width:&#39;100px&#39;,
+             *		height:&#39;200px&#39;
              *   });
              *  &lt;/code&gt;&lt;/pre&gt;
              */
@@ -1222,14 +1222,14 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
 			 * 控件根节点应用的属性，以键值对形式:
              * &lt;pre&gt;&lt;code&gt;
              *  new Control({
-             *    elAttrs :{title : 'tips'}   
+             *    elAttrs :{title : &#39;tips&#39;}   
              *  });
              * &lt;/code&gt;&lt;/pre&gt;
              */
 <span id='global-property-elAttrs'>            /**
 </span>             * @type {Object}
 			 * 控件根节点应用的属性，以键值对形式:
-             * { title : 'tips'}
+             * { title : &#39;tips&#39;}
              * @ignore
              */
             elAttrs:{
@@ -1239,7 +1239,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
 </span>             * 将控件插入到指定元素前
              * &lt;pre&gt;&lt;code&gt;
              *  new Control({
-             *      elBefore : '#t1'
+             *      elBefore : &#39;#t1&#39;
              *  });
              * &lt;/code&gt;&lt;/pre&gt;
              * @cfg {jQuery} elBefore
@@ -1276,7 +1276,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
                      * @param {jQuery.Event} e.domEvent DOM触发的事件
                      * @param {HTMLElement} e.domTarget 触发事件的DOM节点
                      */
-                    'click' : true,
+                    &#39;click&#39; : true,
 <span id='BUI-Component-Controller-event-dblclick'>                    /**
 </span>                     * 双击事件，此事件会冒泡，所以可以在父元素上监听所有子元素的此事件
                      * @event
@@ -1285,7 +1285,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
                      * @param {jQuery.Event} e.domEvent DOM触发的事件
                      * @param {HTMLElement} e.domTarget 触发事件的DOM节点
                      */
-                    'dblclick' : true,
+                    &#39;dblclick&#39; : true,
 <span id='BUI-Component-Controller-event-mouseenter'>                    /**
 </span>                     * 鼠标移入控件
                      * @event
@@ -1294,7 +1294,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
                      * @param {jQuery.Event} e.domEvent DOM触发的事件
                      * @param {HTMLElement} e.domTarget 触发事件的DOM节点
                      */
-                    'mouseenter' : true,
+                    &#39;mouseenter&#39; : true,
 <span id='BUI-Component-Controller-event-mouseleave'>                    /**
 </span>                     * 鼠标移出控件
                      * @event
@@ -1303,7 +1303,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
                      * @param {jQuery.Event} e.domEvent DOM触发的事件
                      * @param {HTMLElement} e.domTarget 触发事件的DOM节点
                      */
-                    'mouseleave' : true,
+                    &#39;mouseleave&#39; : true,
 <span id='BUI-Component-Controller-event-keydown'>                    /**
 </span>                     * 键盘按下按键事件，此事件会冒泡，所以可以在父元素上监听所有子元素的此事件
                      * @event
@@ -1312,7 +1312,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
                      * @param {jQuery.Event} e.domEvent DOM触发的事件
                      * @param {HTMLElement} e.domTarget 触发事件的DOM节点
                      */
-                    'keydown' : true,
+                    &#39;keydown&#39; : true,
 <span id='BUI-Component-Controller-event-keyup'>                    /**
 </span>                     * 键盘按键抬起控件，此事件会冒泡，所以可以在父元素上监听所有子元素的此事件
                      * @event
@@ -1321,7 +1321,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
                      * @param {jQuery.Event} e.domEvent DOM触发的事件
                      * @param {HTMLElement} e.domTarget 触发事件的DOM节点
                      */
-                    'keyup' : true,
+                    &#39;keyup&#39; : true,
 <span id='BUI-Component-Controller-event-focus'>                    /**
 </span>                     * 控件获取焦点事件
                      * @event
@@ -1330,7 +1330,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
                      * @param {jQuery.Event} e.domEvent DOM触发的事件
                      * @param {HTMLElement} e.domTarget 触发事件的DOM节点
                      */
-                    'focus' : false,
+                    &#39;focus&#39; : false,
 <span id='BUI-Component-Controller-event-blur'>                    /**
 </span>                     * 控件丢失焦点事件
                      * @event
@@ -1339,7 +1339,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
                      * @param {jQuery.Event} e.domEvent DOM触发的事件
                      * @param {HTMLElement} e.domTarget 触发事件的DOM节点
                      */
-                    'blur' : false,
+                    &#39;blur&#39; : false,
 <span id='BUI-Component-Controller-event-mousedown'>                    /**
 </span>                     * 鼠标按下控件，此事件会冒泡，所以可以在父元素上监听所有子元素的此事件
                      * @event
@@ -1348,7 +1348,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
                      * @param {jQuery.Event} e.domEvent DOM触发的事件
                      * @param {HTMLElement} e.domTarget 触发事件的DOM节点
                      */
-                    'mousedown' : true,
+                    &#39;mousedown&#39; : true,
 <span id='BUI-Component-Controller-event-mouseup'>                    /**
 </span>                     * 鼠标抬起控件，此事件会冒泡，所以可以在父元素上监听所有子元素的此事件
                      * @event
@@ -1357,26 +1357,26 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
                      * @param {jQuery.Event} e.domEvent DOM触发的事件
                      * @param {HTMLElement} e.domTarget 触发事件的DOM节点
                      */
-                    'mouseup' : true,
+                    &#39;mouseup&#39; : true,
 <span id='BUI-Component-Controller-event-show'>                    /**
 </span>                     * 控件显示
                      * @event
                      */
-                    'show' : false,
+                    &#39;show&#39; : false,
 <span id='BUI-Component-Controller-event-hide'>                    /**
 </span>                     * 控件隐藏
                      * @event
                      */
-                    'hide' : false
+                    &#39;hide&#39; : false
                 }
             },
 <span id='BUI-Component-Controller-cfg-render'>            /**
 </span>             * 指定控件的容器
              * &lt;pre&gt;&lt;code&gt;
              *  new Control({
-             *    render : '#t1',
-             *    elCls : 'test',
-             *    content : '&lt;span&gt;123&lt;/span&gt;'  //&amp;lt;div id=&quot;t1&quot;&amp;gt;&amp;lt;div class=&quot;test bui-xclass&quot;&amp;gt;&amp;lt;span&amp;gt;123&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;&amp;lt;/div&amp;gt;
+             *    render : &#39;#t1&#39;,
+             *    elCls : &#39;test&#39;,
+             *    content : &#39;&lt;span&gt;123&lt;/span&gt;&#39;  //&amp;lt;div id=&quot;t1&quot;&amp;gt;&amp;lt;div class=&quot;test bui-xclass&quot;&amp;gt;&amp;lt;span&amp;gt;123&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;&amp;lt;/div&amp;gt;
              *  });
              * &lt;/code&gt;&lt;/pre&gt;
              * @cfg {jQuery} render
@@ -1398,7 +1398,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
                 view : 1
             },
 <span id='BUI-Component-Controller-property-statusCls'>            /**
-</span>             * 状态相关的样式,默认情况下会使用 前缀名 + xclass + '-' + 状态名
+</span>             * 状态相关的样式,默认情况下会使用 前缀名 + xclass + &#39;-&#39; + 状态名
              * &lt;ol&gt;
              *     &lt;li&gt;hover&lt;/li&gt;
              *     &lt;li&gt;focused&lt;/li&gt;
@@ -1415,27 +1415,27 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
             },
 <span id='BUI-Component-Controller-cfg-visibleMode'>            /**
 </span>             * 控件的可视方式,值为：
-             *  - 'display' 
-             *  - 'visibility'
+             *  - &#39;display&#39; 
+             *  - &#39;visibility&#39;
              *  &lt;pre&gt;&lt;code&gt;
              *   new Control({
-             *     visibleMode: 'visibility'
+             *     visibleMode: &#39;visibility&#39;
              *   });
              *  &lt;/code&gt;&lt;/pre&gt;
-             * @cfg {String} [visibleMode = 'display']
+             * @cfg {String} [visibleMode = &#39;display&#39;]
              */
 <span id='BUI-Component-Controller-property-visibleMode'>            /**
 </span>             * 控件的可视方式,使用 css 
-             *  - 'display' 或者 
-             *  - 'visibility'
+             *  - &#39;display&#39; 或者 
+             *  - &#39;visibility&#39;
              * &lt;pre&gt;&lt;code&gt;
-             *  control.set('visibleMode','display')
+             *  control.set(&#39;visibleMode&#39;,&#39;display&#39;)
              * &lt;/code&gt;&lt;/pre&gt;
              * @type {String}
              */
             visibleMode:{
                 view:1,
-                value : 'display'
+                value : &#39;display&#39;
             },
 <span id='BUI-Component-Controller-cfg-visible'>            /**
 </span>             * 控件是否可见
@@ -1449,8 +1449,8 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
 <span id='BUI-Component-Controller-property-visible'>            /**
 </span>             * 控件是否可见
              * &lt;pre&gt;&lt;code&gt;
-             *  control.set('visible',true); //control.show();
-             *  control.set('visible',false); //control.hide();
+             *  control.set(&#39;visible&#39;,true); //control.show();
+             *  control.set(&#39;visible&#39;,false); //control.hide();
              * &lt;/code&gt;&lt;/pre&gt;
              * @type {Boolean}
              * @default true
@@ -1486,7 +1486,7 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
              */
             defaultLoaderCfg : {
                 value : {
-                    property : 'content',
+                    property : &#39;content&#39;,
                     autoLoad : true
                 }
             },
@@ -1500,16 +1500,16 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
                         defaultCfg;
                     if(v &amp;&amp; !v.isLoader){
                         v.target = _self;
-                        defaultCfg = _self.get('defaultLoaderCfg')
+                        defaultCfg = _self.get(&#39;defaultLoaderCfg&#39;)
                         v = new Loader(BUI.merge(defaultCfg,v));
-                        _self.setInternal('loader',v);
+                        _self.setInternal(&#39;loader&#39;,v);
                     }
                     return v;
                 }
             },
 <span id='BUI-Component-Controller-property-allowTextSelection'>            /**
-</span>             * 1. Whether allow select this component's text.&lt;br/&gt;
-             * 2. Whether not to lose last component's focus if click current one (set false).
+</span>             * 1. Whether allow select this component&#39;s text.&lt;br/&gt;
+             * 2. Whether not to lose last component&#39;s focus if click current one (set false).
              *
              * Defaults to: false.
              * @type {Boolean}
@@ -1616,8 +1616,8 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
 <span id='BUI-Component-Controller-property-disabled'>            /**
 </span>             * 禁用控件
              * &lt;pre&gt;&lt;code&gt;
-             *  control.set('disabled',true); //==  control.disable();
-             *  control.set('disabled',false); //==  control.enable();
+             *  control.set(&#39;disabled&#39;,true); //==  control.disable();
+             *  control.set(&#39;disabled&#39;,false); //==  control.enable();
              * &lt;/code&gt;&lt;/pre&gt;
              * @type {Boolean}
              * @default false
@@ -1643,18 +1643,18 @@ define('bui/component/controller',['bui/component/uibase','bui/component/manage'
         PARSER : {
             visible : function(el){
                 var _self = this,
-                    display = el.css('display'),
+                    display = el.css(&#39;display&#39;),
 
-                    visibility = el.css('visibility'),
-                    visibleMode = _self.get('visibleMode');
-                if((display == 'none' &amp;&amp; visibleMode == 'display')  || (visibility == 'hidden' &amp;&amp; visibleMode == 'visibility')){
+                    visibility = el.css(&#39;visibility&#39;),
+                    visibleMode = _self.get(&#39;visibleMode&#39;);
+                if((display == &#39;none&#39; &amp;&amp; visibleMode == &#39;display&#39;)  || (visibility == &#39;hidden&#39; &amp;&amp; visibleMode == &#39;visibility&#39;)){
                     return false;
                 }
                 return true;
             }
         }
     }, {
-        xclass: 'controller',
+        xclass: &#39;controller&#39;,
         priority : 0
     });
     

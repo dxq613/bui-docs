@@ -20,28 +20,28 @@
  * @ignore
  */
 
-define('bui/picker/picker',['bui/overlay'],function (require) {
+define(&#39;bui/picker/picker&#39;,[&#39;bui/overlay&#39;],function (require) {
   
-  var Overlay = require('bui/overlay').Overlay;
+  var Overlay = require(&#39;bui/overlay&#39;).Overlay;
 
 <span id='BUI-Picker-Picker'>  /**
 </span>   * 选择器控件的基类，弹出一个层来选择数据，不要使用此类创建控件，仅用于继承实现控件
-   * xclass : 'picker'
+   * xclass : &#39;picker&#39;
    * &lt;pre&gt;&lt;code&gt;
-   * BUI.use(['bui/picker','bui/list'],function(Picker,List){
+   * BUI.use([&#39;bui/picker&#39;,&#39;bui/list&#39;],function(Picker,List){
    *
    * var items = [
-   *       {text:'选项1',value:'a'},
-   *       {text:'选项2',value:'b'},
-   *      {text:'选项3',value:'c'}
+   *       {text:&#39;选项1&#39;,value:&#39;a&#39;},
+   *       {text:&#39;选项2&#39;,value:&#39;b&#39;},
+   *      {text:&#39;选项3&#39;,value:&#39;c&#39;}
    *     ],
    *   list = new List.SimpleList({
-   *     elCls:'bui-select-list',
+   *     elCls:&#39;bui-select-list&#39;,
    *     items : items
    *   }),
    *   picker = new Picker.ListPicker({
-   *     trigger : '#show',  
-   *     valueField : '#hide', //如果需要列表返回的value，放在隐藏域，那么指定隐藏域
+   *     trigger : &#39;#show&#39;,  
+   *     valueField : &#39;#hide&#39;, //如果需要列表返回的value，放在隐藏域，那么指定隐藏域
    *     width:100,  //指定宽度
    *     children : [list] //配置picker内的列表
    *   });
@@ -56,17 +56,17 @@ define('bui/picker/picker',['bui/overlay'],function (require) {
     
       bindUI : function(){
         var _self = this,
-          //innerControl = _self.get('innerControl'),
-          hideEvent = _self.get('hideEvent'),
-          trigger = $(_self.get('trigger'));
+          //innerControl = _self.get(&#39;innerControl&#39;),
+          hideEvent = _self.get(&#39;hideEvent&#39;),
+          trigger = $(_self.get(&#39;trigger&#39;));
 
-        _self.on('show',function(ev){
-        //trigger.on(_self.get('triggerEvent'),function(e){
-          if(!_self.get('isInit')){
+        _self.on(&#39;show&#39;,function(ev){
+        //trigger.on(_self.get(&#39;triggerEvent&#39;),function(e){
+          if(!_self.get(&#39;isInit&#39;)){
             _self._initControl();
           }
-          if(_self.get('autoSetValue')){
-            var valueField = _self.get('valueField') || _self.get('textField') || _self.get('curTrigger'),
+          if(_self.get(&#39;autoSetValue&#39;)){
+            var valueField = _self.get(&#39;valueField&#39;) || _self.get(&#39;textField&#39;) || _self.get(&#39;curTrigger&#39;),
               val = $(valueField).val();
             _self.setSelectedValue(val);
           }
@@ -77,15 +77,15 @@ define('bui/picker/picker',['bui/overlay'],function (require) {
       },
       _initControl : function(){
         var _self = this;
-        if(_self.get('isInit')){ //已经初始化过
+        if(_self.get(&#39;isInit&#39;)){ //已经初始化过
           return ;
         }
-        if(!_self.get('innerControl')){
+        if(!_self.get(&#39;innerControl&#39;)){
           var control = _self.createControl();
-          _self.get('children').push(control);
+          _self.get(&#39;children&#39;).push(control);
         }
         _self.initControlEvent();
-        _self.set('isInit',true);
+        _self.set(&#39;isInit&#39;,true);
       },
 <span id='BUI-Picker-Picker-method-initControl'>      /**
 </span>       * 初始化内部控件，绑定事件
@@ -103,14 +103,14 @@ define('bui/picker/picker',['bui/overlay'],function (require) {
       //初始化内部控件的事件
       initControlEvent : function(){
         var _self = this,
-          innerControl = _self.get('innerControl'),
-          trigger = $(_self.get('trigger')),
-          hideEvent = _self.get('hideEvent');
+          innerControl = _self.get(&#39;innerControl&#39;),
+          trigger = $(_self.get(&#39;trigger&#39;)),
+          hideEvent = _self.get(&#39;hideEvent&#39;);
 
-        innerControl.on(_self.get('changeEvent'),function(e){
-          var curTrigger = _self.get('curTrigger'),
-            textField = _self.get('textField') || curTrigger || trigger,
-            valueField = _self.get('valueField'),
+        innerControl.on(_self.get(&#39;changeEvent&#39;),function(e){
+          var curTrigger = _self.get(&#39;curTrigger&#39;),
+            textField = _self.get(&#39;textField&#39;) || curTrigger || trigger,
+            valueField = _self.get(&#39;valueField&#39;),
             selValue = _self.getSelectedValue(),
             isChange = false;
 
@@ -120,7 +120,7 @@ define('bui/picker/picker',['bui/overlay'],function (require) {
             if(selText != preText){
               $(textField).val(selText);
               isChange = true;
-              $(textField).trigger('change');
+              $(textField).trigger(&#39;change&#39;);
             }
           }
           
@@ -129,7 +129,7 @@ define('bui/picker/picker',['bui/overlay'],function (require) {
             if(valueField != preValue){
               $(valueField).val(selValue);
               isChange = true;
-              $(valueField).trigger('change');
+              $(valueField).trigger(&#39;change&#39;);
             }
           }
           if(isChange){
@@ -138,8 +138,8 @@ define('bui/picker/picker',['bui/overlay'],function (require) {
         });
         
         if(hideEvent){
-          innerControl.on(_self.get('hideEvent'),function(){
-            var curTrigger = _self.get('curTrigger');
+          innerControl.on(_self.get(&#39;hideEvent&#39;),function(){
+            var curTrigger = _self.get(&#39;curTrigger&#39;);
             try{ //隐藏时，在ie6,7下会报错
               if(curTrigger){
                 curTrigger.focus();
@@ -161,7 +161,7 @@ define('bui/picker/picker',['bui/overlay'],function (require) {
         
       },
 <span id='BUI-Picker-Picker-method-getSelectedValue'>      /**
-</span>       * 获取选中的值，多选状态下，值以','分割
+</span>       * 获取选中的值，多选状态下，值以&#39;,&#39;分割
        * @template
        * @protected
        * @return {String} 选中的值
@@ -170,7 +170,7 @@ define('bui/picker/picker',['bui/overlay'],function (require) {
         
       },
 <span id='BUI-Picker-Picker-method-getSelectedText'>      /**
-</span>       * 获取选中项的文本，多选状态下，文本以','分割
+</span>       * 获取选中项的文本，多选状态下，文本以&#39;,&#39;分割
        * @template
        * @protected
        * @return {String} 选中的文本
@@ -182,7 +182,7 @@ define('bui/picker/picker',['bui/overlay'],function (require) {
 </span>       * 选择器获取焦点时，默认选中内部控件
        */
       focus : function(){
-        this.get('innerControl').focus();
+        this.get(&#39;innerControl&#39;).focus();
       },
 <span id='BUI-Picker-Picker-method-onChange'>      /**
 </span>       * @protected
@@ -190,9 +190,9 @@ define('bui/picker/picker',['bui/overlay'],function (require) {
        */
       onChange : function(selText,selValue,ev){
         var _self = this,
-          curTrigger = _self.get('curTrigger');
-        //curTrigger &amp;&amp; curTrigger.trigger('change'); //触发改变事件
-        _self.fire('selectedchange',{value : selValue,text : selText,curTrigger : curTrigger});
+          curTrigger = _self.get(&#39;curTrigger&#39;);
+        //curTrigger &amp;&amp; curTrigger.trigger(&#39;change&#39;); //触发改变事件
+        _self.fire(&#39;selectedchange&#39;,{value : selValue,text : selText,curTrigger : curTrigger});
       },
 <span id='BUI-Picker-Picker-method-handleNavEsc'>      /**
 </span>       * 处理 esc 键
@@ -204,13 +204,13 @@ define('bui/picker/picker',['bui/overlay'],function (require) {
       },
       _uiSetValueField : function(v){
         var _self = this;
-        if(v != null &amp;&amp; v !== ''){ //if(v)问题太多
+        if(v != null &amp;&amp; v !== &#39;&#39;){ //if(v)问题太多
           _self.setSelectedValue($(v).val());
         }
       },
       _getTextField : function(){
         var _self = this;
-        return _self.get('textField') || _self.get('curTrigger');
+        return _self.get(&#39;textField&#39;) || _self.get(&#39;curTrigger&#39;);
       }
   },{
     ATTRS : {
@@ -222,20 +222,20 @@ define('bui/picker/picker',['bui/overlay'],function (require) {
        */
       innerControl : {
         getter:function(){
-          return this.get('children')[0];
+          return this.get(&#39;children&#39;)[0];
         }
       },
 <span id='BUI-Picker-Picker-cfg-triggerEvent'>      /**
 </span>       * 显示选择器的事件
-       * @cfg {String} [triggerEvent='click']
+       * @cfg {String} [triggerEvent=&#39;click&#39;]
        */
 <span id='BUI-Picker-Picker-property-triggerEvent'>      /**
 </span>       * 显示选择器的事件
        * @type {String}
-       * @default 'click'
+       * @default &#39;click&#39;
        */
       triggerEvent:{
-        value:'click'
+        value:&#39;click&#39;
       },
 <span id='BUI-Picker-Picker-cfg-autoSetValue'>      /**
 </span>       * 选择器选中的项，是否随着触发器改变
@@ -250,14 +250,14 @@ define('bui/picker/picker',['bui/overlay'],function (require) {
       },
 <span id='BUI-Picker-Picker-cfg-changeEvent'>      /**
 </span>       * 选择发生改变的事件
-       * @cfg {String} [changeEvent='selectedchange']
+       * @cfg {String} [changeEvent=&#39;selectedchange&#39;]
        */
 <span id='BUI-Picker-Picker-property-changeEvent'>      /**
 </span>       * 选择发生改变的事件
        * @type {String}
        */
       changeEvent : {
-        value:'selectedchange'
+        value:&#39;selectedchange&#39;
       },
 <span id='BUI-Picker-Picker-property-autoHide'>      /**
 </span>       * 自动隐藏
@@ -273,7 +273,7 @@ define('bui/picker/picker',['bui/overlay'],function (require) {
        * @type {String}
        */
       hideEvent:{
-        value:'itemclick'
+        value:&#39;itemclick&#39;
       },
 <span id='BUI-Picker-Picker-cfg-textField'>      /**
 </span>       * 返回的文本放在的DOM，一般是input
@@ -288,7 +288,7 @@ define('bui/picker/picker',['bui/overlay'],function (require) {
       },
       align : {
         value : {
-           points: ['bl','tl'], // ['tr', 'tl'] 表示 overlay 的 tl 与参考节点的 tr 对齐
+           points: [&#39;bl&#39;,&#39;tl&#39;], // [&#39;tr&#39;, &#39;tl&#39;] 表示 overlay 的 tl 与参考节点的 tr 对齐
            offset: [0, 0]      // 有效值为 [n, m]
         }
       },
@@ -313,7 +313,7 @@ define('bui/picker/picker',['bui/overlay'],function (require) {
        */
     }
   },{
-    xclass:'picker'
+    xclass:&#39;picker&#39;
   });
 
   return picker;

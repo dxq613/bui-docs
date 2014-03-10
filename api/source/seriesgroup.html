@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 所有数据图形序列的容器,管理这些序列的增删，active状态，事件处理等等
+ * @ignore
+ */
+
+define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plotitem&#39;,&#39;bui/chart/legend&#39;
+  ,&#39;bui/chart/activedgroup&#39;,&#39;bui/chart/series&#39;,&#39;bui/chart/tooltip&#39;,&#39;bui/chart/axis&#39;],function (require) {
+
+  var BUI = require(&#39;bui/common&#39;),
+    ActivedGroup = require(&#39;bui/chart/activedgroup&#39;),
+    PlotItem = require(&#39;bui/chart/plotitem&#39;),
+    Legend = require(&#39;bui/chart/legend&#39;),
+    Tooltip = require(&#39;bui/chart/tooltip&#39;),
+    Axis = require(&#39;bui/chart/axis&#39;),
+    Series = require(&#39;bui/chart/series&#39;),
+    maxPixel = 120, //坐标轴上的最大间距
+    minPixel = 80; //坐标轴上最小间距
+
+  function min(x,y){
+    return x &gt; y ? y : x;
+  }
+  function max(x,y){
+    return x &gt; y ? x : y;
+  }
+
+<span id='BUI-Chart-SeriesGroup'>  /**
+</span>   * @class BUI.Chart.SeriesGroup
+   * 数据序列的容器
+   * @protected
+   */
+  function Group(cfg){
+    Group.superclass.constructor.call(this,cfg);
+  }
+
+  Group.ATTRS = {
+    elCls : {
+      value : &#39;x-chart-series-group&#39;
+    },
+    zIndex : {
+      value : 5
+    },
+    plotRange : {
+
+    },
+<span id='BUI-Chart-SeriesGroup-property-colors'>    /**
+</span>     * 存在多个序列时，线的颜色，marker的颜色
+     * @type {Object}
+     */
+    colors : {
+      value : [&#39;#2f7ed8&#39;,&#39;#0d233a&#39;,&#39;#8bbc21&#39;,&#39;#910000&#39;,&#39;#1aadce&#39;,&#39;#492970&#39;,&#39;#f28f43&#39;,&#39;#77a1e5&#39;,&#39;#c42525&#39;,&#39;#a6c96a&#39;]
+    },
+<span id='BUI-Chart-SeriesGroup-property-symbols'>    /**
+</span>     * 如果使用marker，那么不同图形序列的形状
+     * @type {Array}
+     */
+    symbols : {
+      value : [&#39;circle&#39;,&#39;diamond&#39;,&#39;square&#39;,&#39;triangle&#39;,&#39;triangle-down&#39;]
+    },
+<span id='BUI-Chart-SeriesGroup-property-seriesOptions'>    /**
+</span>     * 序列图的统一配置项，不同的序列图有不同的配置项例如： 
+     *
+     *  - lineCfg : 折线图的配置项
+     *  - columnCfg : 柱状图的配置项
+     * @type {Object}
+     */
+    seriesOptions : {
+      value : {}
+    },
+<span id='BUI-Chart-SeriesGroup-property-series'>    /**
+</span>     * 数据图形序列的配置项
+     * @type {Array}
+     */
+    series : {
+
+    },
+<span id='BUI-Chart-SeriesGroup-property-legend'>    /**
+</span>     * 图例
+     * @type {Object}
+     */
+    legend : {
+
+    },
+<span id='BUI-Chart-SeriesGroup-property-xAxis'>    /**
+</span>     * x 坐标轴
+     * @type {BUI.Chart.Axis}
+     */
+    xAxis : {
+
+    },
+<span id='BUI-Chart-SeriesGroup-property-yAxis'>    /**
+</span>     * y 坐标轴
+     * @type {Array|BUI.Chart.Axis}
+     */
+    yAxis : {
+
+    },
+<span id='BUI-Chart-SeriesGroup-property-tooltip'>    /**
+</span>     * 提示信息的配置项
+     * @type {Object}
+     */
+    tooltip : {
+
+    },
+<span id='BUI-Chart-SeriesGroup-property-stackedData'>    /**
+</span>     * @private
+     * 缓存的层叠数据
+     * @type {Array}
+     */
+    stackedData : {
+
+    }
+
+  };
+
+  BUI.extend(Group,PlotItem);
+
+  BUI.mixin(Group,[ActivedGroup]);
+
+  BUI.augment(Group,{
+
+    
+    //渲染控件
+    renderUI : function(){
+      var _self = this;
+      Group.superclass.renderUI.call(_self);
+      //_self._renderTracer();
+      _self._renderLegend();
+      
+      _self._renderSeries();
+      _self._renderAxis();
+      _self._addSeriesAxis();
+
+      _self._paintAxis(_self.get(&#39;xAxis&#39;),&#39;xAxis&#39;);
+      _self._paintAxis(_self.get(&#39;yAxis&#39;),&#39;yAxis&#39;);
+      _self._paintSeries();
+
+      _self._renderTooltip();
+    },
+    //绑定事件
+    bindUI : function(){
+      var _self = this;
+      Group.superclass.bindUI.call(_self);
+      _self.bindCanvasEvent();
+    },
+    //绑定鼠标在画板上移动事件
+    bindCanvasEvent : function(){
+      var _self = this,
+        canvas = _self.get(&#39;canvas&#39;);
+      canvas.on(&#39;mousemove&#39;,BUI.wrapBehavior(_self,&#39;onCanvasMove&#39;));
+    },
+    //处理鼠标在画板上移动
+    onCanvasMove : function(ev){
+      var _self = this,
+        canvas = _self.get(&#39;canvas&#39;),
+        tipGroup = _self.get(&#39;tipGroup&#39;),
+        point,
+        tipInfo;
+
+      if(!tipGroup){
+        return;
+      }
+
+      point = canvas.getPoint(ev.pageX,ev.pageY);
+      if(_self._isInAxis(point)){
+        _self._processTracking(point,tipGroup);
+      }else{
+        //标志从显示到隐藏
+        if(tipGroup.get(&#39;visible&#39;)){
+          _self.clearActivedItem();
+          if(tipGroup.get(&#39;shared&#39;)){
+            BUI.each(_self.getVisibleSeries(),function(series){
+              var markers = series.get(&#39;markersGroup&#39;);
+              markers &amp;&amp; markers.clearActivedItem();
+            });
+          }
+          _self._hideTip();
+        }
+      }
+    },
+<span id='BUI-Chart-SeriesGroup-method-'>    /**
+</span>     * @protected
+     * 获取可以被激活的元素
+     * @return {BUI.Chart.Actived[]} 可以被激活的元素集合
+     */
+    /*getActiveItems : function(){
+      var _self = this,
+        series = _self.getSeries(),
+        rst = [];
+
+      BUI.each(series,function(item){
+        if(item.isActived){
+          rst.push(item);
+        }
+      });
+      return rst;
+    },
+    clearActived : function(){
+      var _self = this,
+        series = _self.getSeries();
+      BUI.each(series,function(item){
+        if(item.clearActived){
+          item.clearActived();
+        }
+      });
+    },*/
+<span id='BUI-Chart-SeriesGroup-method-getSeries'>    /**
+</span>     * 获取所有的数据序列
+     * @return {Array} [description]
+     */
+    getSeries : function(){
+      return this.get(&#39;children&#39;);
+    },
+    //处理鼠标跟随事件
+    _processTracking : function(point,tipGroup){
+      var _self = this,
+        sArray = [],
+        //prePoint = _self.get(&#39;prePoint&#39;),
+        tipInfo;
+
+
+      if(!tipGroup.get(&#39;shared&#39;)){
+        var activedItem = _self.getActived();
+        activedItem &amp;&amp; sArray.push(activedItem);
+      }else{
+        sArray = _self.getSeries();
+      }
+
+      BUI.each(sArray,function(series){
+        if(series &amp;&amp; series.get(&#39;stickyTracking&#39;) &amp;&amp; series.get(&#39;visible&#39;)){
+          series.onStickyTracking({point : point});
+        }
+      });
+      if(sArray.length){
+        tipInfo = _self._getTipInfo(sArray,point);
+        if(tipInfo.items.length){
+          _self._showTooltip(tipInfo.title,tipInfo.point,tipInfo.items);
+        }
+        
+      }
+    },
+    //获取显示tooltip的内容
+    _getTipInfo : function(sArray,point){
+      var rst = {
+        items : [],
+        point : {}
+      };
+      var count = 0,
+        renderer = this.get(&#39;tipGroup&#39;).get(&#39;pointRenderer&#39;);
+      BUI.each(sArray,function(series,index){
+        var info = series.getTrackingInfo(point),
+            item = {},
+            title;
+        
+        if(info){
+          if(series.get(&#39;visible&#39;)){
+            count = count + 1;
+            item.name = series.get(&#39;name&#39;);
+            item.value = renderer ? renderer(info) : series.getTipItem(info);
+            item.color = info.color || series.get(&#39;color&#39;);
+            rst.items.push(item);
+            var markersGroup = series.get(&#39;markersGroup&#39;);
+            if(markersGroup &amp;&amp; markersGroup.get(&#39;single&#39;)){
+              var marker = markersGroup.getChildAt(0);
+              marker &amp;&amp; marker.attr({
+                x :info.x,
+                y : info.y
+              });
+            }
+          }
+          if(series.get(&#39;xAxis&#39;)){
+            title = series.get(&#39;xAxis&#39;).formatPoint(info.xValue);
+          }else{
+            title = info.xValue;
+          }
+          if(count == 1){
+            rst.title =  title;
+            if(info.x){
+              rst.point.x = info.x;
+              if(sArray.length == 1){
+                rst.point.y = info.y;
+              }else{
+                rst.point.y = point.y;
+              }
+            }else{
+              rst.point.x = point.x;
+              rst.point.y = point.y;
+            }
+            
+          }
+        }
+      });
+
+      return rst;
+    },
+    //显示tooltip
+    _showTooltip : function(title,point,items){
+      var _self = this,
+        tooltip = _self.get(&#39;tipGroup&#39;),
+        prePoint = _self.get(&#39;prePoint&#39;);
+      if(!prePoint || prePoint.x != point.x || prePoint.y != point.y){
+        tooltip.setTitle(title);
+        tooltip.setItems(items);
+        tooltip.setPosition(point.x,point.y);
+        if(!tooltip.get(&#39;visible&#39;)){
+          tooltip.show();
+        }
+        _self.set(&#39;prePoint&#39;,point);
+      }
+    },
+    //隐藏tip
+    _hideTip : function(){
+      var _self = this,
+        tipGroup = _self.get(&#39;tipGroup&#39;);
+      if(tipGroup &amp;&amp; tipGroup.get(&#39;visible&#39;)){
+        tipGroup.hide();
+        _self.set(&#39;prePoint&#39;,null);
+      }
+    },
+    //是否在坐标系内
+    _isInAxis : function(point){
+      var _self = this,
+        plotRange = _self.get(&#39;plotRange&#39;);
+
+      return plotRange.isInRange(point);
+    },
+    //渲染所有的序列
+    _renderSeries : function(){
+      var _self = this,
+        series = _self.get(&#39;series&#39;);
+
+      BUI.each(series,function(item,index){
+        _self.addSeries(item,index);
+      });
+    },
+    //渲染legend
+    _renderLegend : function(){
+      var _self = this,
+        legend = _self.get(&#39;legend&#39;),
+        legendGroup;
+
+      if(legend){
+        legend.items = legend.items || [];
+        legend.plotRange = _self.get(&#39;plotRange&#39;);
+        legendGroup = _self.get(&#39;parent&#39;).addGroup(Legend,legend);
+        _self.set(&#39;legendGroup&#39;,legendGroup);
+      }
+    },
+    //渲染tooltip
+    _renderTooltip : function(){
+      var _self = this,
+        tooltip = _self.get(&#39;tooltip&#39;),
+        tipGroup;
+      if(tooltip){
+        tooltip.plotRange = _self.get(&#39;plotRange&#39;);
+        tipGroup = _self.get(&#39;parent&#39;).addGroup(Tooltip,tooltip);
+        _self.set(&#39;tipGroup&#39;,tipGroup);
+      }
+    },
+    _renderAxis : function(){
+      var _self = this,
+        xAxis = _self.get(&#39;xAxis&#39;),
+        yAxis = _self.get(&#39;yAxis&#39;);
+      if(xAxis &amp;&amp; !xAxis.isGroup){
+        xAxis = _self._createAxis(xAxis);
+        _self.set(&#39;xAxis&#39;,xAxis);
+      }
+
+      if(BUI.isArray(yAxis) &amp;&amp; !yAxis[0].isGroup){ //如果y轴是一个数组
+        var temp = [];
+        BUI.each(yAxis,function(item){
+          temp.push(_self._createAxis(item));
+          _self.set(&#39;yAxis&#39;,temp);
+        });
+      }
+
+      if(yAxis &amp;&amp; !yAxis.isGroup){
+        if(xAxis &amp;&amp; xAxis.get(&#39;type&#39;) == &#39;circle&#39;){
+          yAxis.type = &#39;radius&#39;;
+          yAxis.circle = xAxis;
+        }
+        yAxis = _self._createAxis(yAxis);
+        _self.set(&#39;yAxis&#39;,yAxis);
+      }
+    },
+    //创建坐标轴
+    _createAxis : function(axis){
+      var _self = this,
+        type = axis.type,
+        C,
+        name;
+      if(axis.categories){
+        type = &#39;category&#39;;
+      }else if(!axis.ticks &amp;&amp; type != &#39;circle&#39;){
+        axis.autoTicks = true; //标记是自动计算的坐标轴
+      }
+      axis.plotRange = _self.get(&#39;plotRange&#39;);
+      axis.autoPaint = false;  //暂时不绘制坐标轴，需要自动生成坐标轴
+
+      type = type || &#39;number&#39;;
+      name = BUI.ucfirst(type);
+      C = Axis[name];
+      if(C){
+        return  _self.get(&#39;parent&#39;).addGroup(C,axis);
+      }
+      return null;
+    },
+    //获取y轴的坐标点
+    _caculateAxisInfo : function(axis,name){
+      var _self = this,
+        data = [],
+        type = axis.get(&#39;type&#39;),
+        length = axis.getLength(),
+        minCount = Math.floor(length / maxPixel),
+        maxCount = Math.ceil(length / minPixel),
+        stackType,
+        series,
+        min,
+        max,
+        interval,
+        autoUtil;
+        if(type == &#39;number&#39; || type == &#39;radius&#39;) {
+          min = axis.getCfgAttr(&#39;min&#39;);
+          max = axis.getCfgAttr(&#39;max&#39;);
+          autoUtil = Axis.Auto;
+        }else if(type == &#39;time&#39;){
+          var startDate = axis.get(&#39;startDate&#39;),
+            endDate = axis.get(&#39;endDate&#39;);
+          if(startDate){
+            min = startDate.getTime();
+          }
+          if(endDate){
+            max = endDate.getTime();
+          }
+          autoUtil = Axis.Auto.Time;
+        }
+        
+        interval = axis.getCfgAttr(&#39;tickInterval&#39;);
+      
+      series = _self.getSeries();
+
+      var cfg = {
+        min : min,
+        max : max,
+        
+        interval: interval
+      };
+      if(name == &#39;yAxis&#39;){
+        cfg.maxCount = maxCount;
+        cfg.minCount = minCount;
+        stackType = series[0].get(&#39;stackType&#39;);
+      }
+      if(stackType &amp;&amp; stackType != &#39;none&#39;){
+        data = _self.getStackedData(axis,name);
+      }else{
+        data = _self.getSeriesData(axis,name);
+      }
+      cfg.data = data;
+
+      var rst =  autoUtil.caculate(cfg,stackType);
+
+      return rst;
+
+    },
+<span id='BUI-Chart-SeriesGroup-method-getSeriesData'>    /**
+</span>     * 获取数据序列的数据
+     * @protected
+     * @param  {BUI.Chart.Axis} axis 坐标轴
+     * @param  {String} name 坐标轴名称
+     * @return {Array} 数据集合
+     */
+    getSeriesData : function(axis,name){
+      var _self = this,
+        data = [],
+        series = _self.getVisibleSeries();
+      axis = axis || _self.get(&#39;yAxis&#39;);
+      name = name || &#39;yAxis&#39;;
+
+      BUI.each(series,function(item){
+        if(item.get(name) == axis){
+          data.push(item.getData(name));
+        }
+      });
+
+      return data;
+    },
+<span id='BUI-Chart-SeriesGroup-method-getStackedData'>    /**
+</span>     * @protected
+     * 获取层叠数据
+     * @param  {String} stackType 层叠类型
+     * @param  {BUI.Chart.Axis} axis 坐标轴
+     * @param  {String} name 坐标轴名称
+     * @return {Array} 数据集合
+     */
+    getStackedData : function(axis,name){
+      var _self = this,
+        data,
+        first
+        stackedData = _self.get(&#39;stackedData&#39;),
+        arr = [];
+      if(stackedData){
+        arr = stackedData;
+      }else{
+        data = _self.getSeriesData(axis,name);
+        first = data[0];
+
+        BUI.each(first,function(value,index){
+          var temp = value;
+          for(var i = 1 ; i&lt; data.length; i++){
+            temp += data[i][index];
+          }
+          arr.push(temp);
+        });
+        _self.set(&#39;stackedData&#39;,arr);
+      }
+
+      return arr;
+    },
+    //name 标示是xAxis ,yAxis and so on
+    _paintAxis : function(axis,name){
+      var _self = this,
+        arr;
+
+      if(BUI.isArray(axis)){
+        arr = axis;
+      }else{
+        arr = [axis];
+      }
+
+      BUI.each(arr,function(item,index){
+        if(_self._hasRelativeSeries(item,name)){
+          if(item.get(&#39;autoTicks&#39;)){
+            var info = _self._caculateAxisInfo(item,name);
+            item.set(&#39;tickInterval&#39;,info.interval);
+            item.set(&#39;ticks&#39;,info.ticks);
+          }
+          
+          item.paint();
+        }
+        
+      });
+      
+    },
+    _hasRelativeSeries : function(axis,name){
+      var _self = this,
+        series = _self.getVisibleSeries(),
+        rst = false;
+
+      BUI.each(series,function(item){
+        if(item.get(name) == axis){
+          rst = true;
+          return false;
+        }
+      });
+      return rst;
+
+    },
+    //数据变化或者序列显示隐藏引起的坐标轴变化
+    _resetAxis : function(axis){
+      var _self = this,
+        info = _self._caculateAxisInfo(axis,&#39;yAxis&#39;),
+        series = _self.getSeries();
+
+      _self.set(&#39;stackedData&#39;,null);
+      //如果是非自动计算坐标轴，不进行重新计算
+      if(!axis.get(&#39;autoTicks&#39;)){
+        return;
+      }
+      axis.change(info);
+      BUI.each(series,function(item){
+        if(item.get(&#39;yAxis&#39;) == axis &amp;&amp; item.get(&#39;visible&#39;)){
+          item.repaint();
+        }
+      });
+      
+    },
+    //获取默认的类型
+    _getDefaultType : function(){
+      var _self = this,
+        seriesCfg = _self.get(&#39;seriesOptions&#39;),
+        rst = &#39;line&#39;; //默认类型是线
+      BUI.each(seriesCfg,function(v,k){
+        rst = k.replace(&#39;Cfg&#39;,&#39;&#39;);
+        return false;
+      });
+      return rst;
+    },
+<span id='BUI-Chart-SeriesGroup-method-getVisibleSeries'>    /**
+</span>     * 获取显示的数据序列
+     * @return {BUI.Chart.Series[]} 数据序列集合
+     */
+    getVisibleSeries : function(){
+      var _self = this,
+        series = _self.getSeries();
+      return BUI.Array.filter(series,function(item){
+        return item.get(&#39;visible&#39;);
+      });
+    },
+<span id='BUI-Chart-SeriesGroup-method-addSeries'>    /**
+</span>     * 添加数据序列
+     * @param {BUI.Chart.Series} item 数据序列对象
+     */
+    addSeries : function(item,index){
+      var _self = this,
+        type = item.type || _self._getDefaultType(),
+        cons = _self._getSeriesClass(type),
+        cfg = _self._getSeriesCfg(type,item,index),
+        series ;
+      cfg.autoPaint = cfg.autoPaint || false;
+
+      series  = _self.addGroup(cons,cfg);
+      _self._addLegendItem(series);
+      return series;
+    },
+    //绘制数据线
+    _paintSeries : function(){
+      var _self = this,
+        series = _self.getSeries();
+
+      BUI.each(series,function(item){
+        item.paint();
+      });
+    },
+    _addSeriesAxis : function(){
+      var _self = this,
+        series = _self.getSeries();
+
+      BUI.each(series,function(item){
+        if(item.get(&#39;type&#39;) == &#39;pie&#39;){
+          return true;
+        }
+        //x轴
+        if(!item.get(&#39;xAxis&#39;)){
+          item.set(&#39;xAxis&#39;, _self.get(&#39;xAxis&#39;));
+        }
+        //y轴
+        var yAxis = _self.get(&#39;yAxis&#39;);
+
+        if(item.get(&#39;yAxis&#39;) == null){
+          if(BUI.isArray(yAxis)){
+            item.set(&#39;yAxis&#39;) = yAxis[0];
+          }else{
+            item.set(&#39;yAxis&#39;,yAxis);
+          }
+        }
+        //多个y轴时
+        if(BUI.isNumber(item.get(&#39;yAxis&#39;))){
+          item.set(&#39;yAxis&#39;,yAxis[item.yAxis]);
+        }
+      });
+      
+    },
+<span id='BUI-Chart-SeriesGroup-method-showSeries'>    /**
+</span>     * 显示series
+     * @param  {BUI.Chart.Series} series 数据序列对象
+     */
+    showSeries : function(series){
+      var _self = this;
+      if(!series.get(&#39;visible&#39;)){
+        series.show();
+        _self._resetAxis(series.get(&#39;yAxis&#39;));
+      }
+    },
+<span id='BUI-Chart-SeriesGroup-method-hideSeries'>    /**
+</span>     * 隐藏series
+     * @param  {BUI.Chart.Series} series 数据序列对象
+     */
+    hideSeries : function(series){
+      var _self = this;
+      if(series.get(&#39;visible&#39;)){
+        series.hide();
+        _self._resetAxis(series.get(&#39;yAxis&#39;));
+      }
+    },
+    _addLegendItem : function(series){
+      var _self = this,
+        legendGroup = _self.get(&#39;legendGroup&#39;);
+      legendGroup &amp;&amp; legendGroup.addItem({
+        series : series
+      });
+    },
+    //获取序列的配置信息
+    _getSeriesCfg : function(type,item,index){
+      var _self = this,
+        seriesCfg = _self.get(&#39;seriesOptions&#39;),
+        colors = _self.get(&#39;colors&#39;),
+        symbols = _self.get(&#39;symbols&#39;);
+
+      item = BUI.mix(true,{},seriesCfg[type + &#39;Cfg&#39;],item);
+
+      //颜色
+      if(!item.color &amp;&amp; colors.length){
+        item.color = colors[index % (colors.length)];
+      }
+      //marker的形状
+      if(item.markers &amp;&amp; item.markers.marker &amp;&amp; !item.markers.marker.symbol){
+        item.markers.marker.symbol = symbols[index % symbols.length];
+      }
+      
+      return item;
+    },
+    //根据类型获取构造函数
+    _getSeriesClass : function(type){
+      var name = BUI.ucfirst(type),
+        c = Series[name] || Series;
+      return c;
+    },
+    remove : function(){
+      var _self = this,
+        canvas = _self.get(&#39;canvas&#39;);
+      canvas.off(&#39;mousemove&#39;,BUI.getWrapBehavior(_self,&#39;onCanvasMove&#39;));
+      Group.superclass.remove.call(_self);
+    }
+
+  });
+
+  return Group;
+});</pre>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * 内部显示Labels的控件扩展
+ * @ignore
+ */
+
+define(&#39;bui/chart/showlabels&#39;,[&#39;bui/chart/labels&#39;],function (require) {
+	var BUI = require(&#39;bui/common&#39;),
+		Labels = require(&#39;bui/chart/labels&#39;);
+
+<span id='BUI-Chart-ShowLabels'>	/**
+</span>	 * @class BUI.Chart.ShowLabels
+	 * 内部显示文本集合
+	 */
+	var ShowLabels = function(){
+
+	};
+
+	ShowLabels.ATTRS = {
+
+<span id='BUI-Chart-ShowLabels-property-labels'>		/**
+</span>		 * 多个文本的配置项
+		 * @type {Object}
+		 */
+		labels : {
+
+		}
+	};
+
+	BUI.augment(ShowLabels,{
+ 
+<span id='BUI-Chart-ShowLabels-method-renderLabels'>		/**
+</span>		 * @protected
+		 * 渲染文本
+		 */
+		renderLabels : function(){
+			var _self = this,
+          labels = _self.get(&#39;labels&#39;),
+          labelsGroup;
+      if(!labels){
+        return;
+      }
+      if(!labels.items){
+      	labels.items = [];
+      }
+
+      /*labels.x = _self.get(&#39;x&#39;);
+      labels.y = _self.get(&#39;y&#39;);*/
+
+      labelsGroup = _self.addGroup(Labels,labels);
+      _self.set(&#39;labelsGroup&#39;,labelsGroup);
+		},
+<span id='BUI-Chart-ShowLabels-method-resetLabels'>		/**
+</span>		 * 设置labels
+		 * @param  {Array} items items的配置信息
+		 */
+		resetLabels : function(items){
+			var _self = this,
+				labels = _self.get(&#39;labels&#39;);
+				
+			if(!labels){
+				return;
+			}
+			
+			var labelsGroup = _self.get(&#39;labelsGroup&#39;),
+				children = labelsGroup.get(&#39;children&#39;),
+				count = children.length;
+			items = items || labels.items;
+			BUI.each(items,function(item,index){
+				if(index &lt; count){
+					var label = children[index];
+					labelsGroup.changeLabel(label,item);
+				}else{
+					_self.addLabel(item.text,item);
+				}
+			});
+
+			for(var i = count - 1; i &gt;= items.length ; i--){
+				children[i].remove();
+			}
+		},
+<span id='BUI-Chart-ShowLabels-method-addLabel'>		/**
+</span>		 * @protected
+		 * 添加文本项
+		 * @param {String|Number} value  显示的文本
+		 * @param {Object} offsetPoint 显示的位置
+		 */
+    addLabel : function(value,offsetPoint){
+      var _self = this,
+          labelsGroup = _self.get(&#39;labelsGroup&#39;),
+          label = {},
+          rst;
+      if(labelsGroup){
+      	label.text = value;
+	      label.x = offsetPoint.x;
+	      label.y = offsetPoint.y;
+        label.point = offsetPoint;
+	      rst = labelsGroup.addLabel(label);
+      }
+      return rst;
+    },
+<span id='BUI-Chart-ShowLabels-method-removeLabels'>    /**
+</span>     * @protected
+     * 移除文本
+     */
+    removeLabels : function(){
+    	var _self = this,
+    		labelsGroup = _self.get(&#39;labelsGroup&#39;);
+    	labelsGroup &amp;&amp; labelsGroup.remove();
+    }
+	})
+
+	return ShowLabels;
+});</pre>
+</body>
+</html>

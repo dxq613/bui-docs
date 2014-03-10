@@ -20,31 +20,31 @@
  * @ignore
  */
 
-define('bui/form/plainfield',['bui/form/basefield'],function (require) {
-  var Field = require('bui/form/basefield');
+define(&#39;bui/form/plainfield&#39;,[&#39;bui/form/basefield&#39;],function (require) {
+  var Field = require(&#39;bui/form/basefield&#39;);
 
 
   var PlainFieldView = Field.View.extend({
 
     _uiSetValue : function(v){
       var _self = this,
-        textEl = _self.get('textEl'),
+        textEl = _self.get(&#39;textEl&#39;),
         container = _self.getControlContainer(),
-        renderer = _self.get('renderer'), 
+        renderer = _self.get(&#39;renderer&#39;), 
         text = renderer ? renderer(v) : v,
-        width = _self.get('width'),
+        width = _self.get(&#39;width&#39;),
         appendWidth = 0,
         textTpl;
       if(textEl){
         
         textEl.remove();
       }
-      text = text || '&amp;nbsp;';
-      textTpl = BUI.substitute(_self.get('textTpl'),{text : text});
+      text = text || &#39;&amp;nbsp;&#39;;
+      textTpl = BUI.substitute(_self.get(&#39;textTpl&#39;),{text : text});
       textEl = $(textTpl).appendTo(container);
       appendWidth = textEl.outerWidth() - textEl.width();
       textEl.width(width - appendWidth);
-      _self.set('textEl',textEl);
+      _self.set(&#39;textEl&#39;,textEl);
     }
 
   },{
@@ -53,7 +53,7 @@ define('bui/form/plainfield',['bui/form/basefield'],function (require) {
       value : {}
     }
   },{
-    xclass : 'form-field-plain-view'
+    xclass : &#39;form-field-plain-view&#39;
   });
 
 <span id='BUI-Form-Field-Plain'>  /**
@@ -70,7 +70,7 @@ define('bui/form/plainfield',['bui/form/basefield'],function (require) {
        * @type {String}
        */
       controlTpl : {
-        value : '&lt;input type=&quot;hidden&quot;/&gt;'
+        value : &#39;&lt;input type=&quot;hidden&quot;/&gt;&#39;
       },
 <span id='BUI-Form-Field-Plain-property-textTpl'>      /**
 </span>       * 显示文本的模板
@@ -78,7 +78,7 @@ define('bui/form/plainfield',['bui/form/basefield'],function (require) {
        */
       textTpl : {
         view : true,
-        value : '&lt;span class=&quot;x-form-text&quot;&gt;{text}&lt;/span&gt;'
+        value : &#39;&lt;span class=&quot;x-form-text&quot;&gt;{text}&lt;/span&gt;&#39;
       },
 <span id='BUI-Form-Field-Plain-property-renderer'>      /**
 </span>       * 将字段的值格式化输出
@@ -91,14 +91,14 @@ define('bui/form/plainfield',['bui/form/basefield'],function (require) {
         }
       },
       tpl : {
-        value : ''
+        value : &#39;&#39;
       },
       xview : {
         value : PlainFieldView
       }
     }
   },{
-    xclass : 'form-field-plain'
+    xclass : &#39;form-field-plain&#39;
   });
 
   return PlainField;

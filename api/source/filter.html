@@ -15,18 +15,24 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">define('bui/uploader/button/filter',['bui/common'], function(require){
+  <pre class="prettyprint lang-js">define(&#39;bui/uploader/button/filter&#39;,[&#39;bui/common&#39;], function(require){
 
-  var BUI = require('bui/common');
+  var BUI = require(&#39;bui/common&#39;);
+
+<span id='BUI-Uploader-Filter'>  /**
+</span>   * @ignore
+   * @class  BUI.Uploader.Filter
+   * @private
+   */
 
   var filter =  {
     msexcel: {
       type: &quot;application/msexcel&quot;,
-      ext: '.xls,.xlsx'
+      ext: &#39;.xls,.xlsx&#39;
     },
     msword: {
       type: &quot;application/msword&quot;,
-      ext: '.doc,.docx'
+      ext: &#39;.doc,.docx&#39;
     },
     // {type: &quot;application/pdf&quot;},
     // {type: &quot;application/poscript&quot;},
@@ -39,25 +45,25 @@
     // {type: &quot;audio/x-waw&quot;},
     // image: {
     //   type: &quot;image/*&quot;,
-    //   ext: '.gif,.jpg,.png,.bmp'
+    //   ext: &#39;.gif,.jpg,.png,.bmp&#39;
     // },
     gif: {
       type: &quot;image/gif&quot;,
-      ext: '.gif'
+      ext: &#39;.gif&#39;
     },
     jpeg: {
       type: &quot;image/jpeg&quot;,
-      ext: '.jpg'
+      ext: &#39;.jpg&#39;
     },
     // {type: &quot;image/tiff&quot;},
     bmp: {
       type: &quot;image/x-ms-bmp&quot;,
-      ext: '.bmp'
+      ext: &#39;.bmp&#39;
     },
     //{type: &quot;image/x-photo-cd&quot;},
     png: {
       type: &quot;image/png&quot;,
-      ext: '.png'
+      ext: &#39;.png&#39;
     }
     // {type: &quot;image/x-portablebitmap&quot;},
     // {type: &quot;image/x-portable-greymap&quot;},
@@ -74,7 +80,7 @@
     _getValueByDesc: function(desc, key){
       var value = [];
       if(BUI.isString(desc)){
-        desc = desc.split(',');
+        desc = desc.split(&#39;,&#39;);
       }
       if(BUI.isArray(desc)){
         BUI.each(desc, function(v, k){
@@ -82,29 +88,29 @@
           item &amp;&amp; item[key] &amp;&amp; value.push(item[key]);
         });
       }
-      return value.join(',');
+      return value.join(&#39;,&#39;);
     },
     getTypeByDesc: function(desc){
-      return this._getValueByDesc(desc, 'type');
+      return this._getValueByDesc(desc, &#39;type&#39;);
     },
     getExtByDesc: function(desc){
-      return this._getValueByDesc(desc, 'ext');
+      return this._getValueByDesc(desc, &#39;ext&#39;);
     },
     getTypeByExt: function(ext){
       var type = [];
       if(BUI.isString(ext)){
-        ext = ext.split(',');
+        ext = ext.split(&#39;,&#39;);
       };
       if(BUI.isArray(ext)){
         BUI.each(ext, function(e){
           BUI.each(filter, function(item, desc){
-            if(BUI.Array.indexOf(e, item.ext.split(',')) &gt; -1){
+            if(BUI.Array.indexOf(e, item.ext.split(&#39;,&#39;)) &gt; -1){
               type.push(item.type);
             }
           });
         });
       };
-      return type.join(',');
+      return type.join(&#39;,&#39;);
     }
   }
 });</pre>

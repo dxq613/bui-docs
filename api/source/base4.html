@@ -20,19 +20,19 @@
  * @ignore
  */
 (function(){
-var BASE = 'bui/data/';
-define('bui/data',['bui/common',BASE + 'sortable',BASE + 'proxy',BASE + 'abstractstore',BASE + 'store',
-  BASE + 'node',BASE + 'treestore'],function(r) {
+var BASE = &#39;bui/data/&#39;;
+define(&#39;bui/data&#39;,[&#39;bui/common&#39;,BASE + &#39;sortable&#39;,BASE + &#39;proxy&#39;,BASE + &#39;abstractstore&#39;,BASE + &#39;store&#39;,
+  BASE + &#39;node&#39;,BASE + &#39;treestore&#39;],function(r) {
   
-  var BUI = r('bui/common'),
-    Data = BUI.namespace('Data');
+  var BUI = r(&#39;bui/common&#39;),
+    Data = BUI.namespace(&#39;Data&#39;);
   BUI.mix(Data,{
-    Sortable : r(BASE + 'sortable'),
-    Proxy : r(BASE + 'proxy'),
-    AbstractStore : r(BASE + 'abstractstore'),
-    Store : r(BASE + 'store'),
-    Node : r(BASE + 'node'),
-    TreeStore : r(BASE + 'treestore')
+    Sortable : r(BASE + &#39;sortable&#39;),
+    Proxy : r(BASE + &#39;proxy&#39;),
+    AbstractStore : r(BASE + &#39;abstractstore&#39;),
+    Store : r(BASE + &#39;store&#39;),
+    Node : r(BASE + &#39;node&#39;),
+    TreeStore : r(BASE + &#39;treestore&#39;)
   });
 
   return Data;

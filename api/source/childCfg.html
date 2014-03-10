@@ -20,7 +20,7 @@
  * @ignore
  */
 
-define('bui/component/uibase/childcfg',function (require) {
+define(&#39;bui/component/uibase/childcfg&#39;,function (require) {
 
 <span id='BUI-Component-UIBase-ChildCfg'>  /**
 </span>   * @class BUI.Component.UIBase.ChildCfg
@@ -39,8 +39,8 @@ define('bui/component/uibase/childcfg',function (require) {
      * &lt;pre&gt;&lt;code&gt;
      *   var control = new Control({
      *     defaultChildCfg : {
-     *       tpl : '&amp;lt;li&amp;gt;{text}&amp;lt;/li&amp;gt;',
-     *       xclass : 'a-b'
+     *       tpl : &#39;&amp;lt;li&amp;gt;{text}&amp;lt;/li&amp;gt;&#39;,
+     *       xclass : &#39;a-b&#39;
      *     }
      *   });
      * &lt;/code&gt;&lt;/pre&gt;
@@ -58,9 +58,9 @@ define('bui/component/uibase/childcfg',function (require) {
 
     _init : function(){
       var _self = this,
-        defaultChildCfg = _self.get('defaultChildCfg');
+        defaultChildCfg = _self.get(&#39;defaultChildCfg&#39;);
       if(defaultChildCfg){
-        _self.on('beforeAddChild',function(ev){
+        _self.on(&#39;beforeAddChild&#39;,function(ev){
           var child = ev.child;
           if($.isPlainObject(child)){
             BUI.each(defaultChildCfg,function(v,k){

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 图形的入口文件
+ * @ignore
+ */
+
+define(&#39;bui/graphic&#39;,[&#39;bui/common&#39;,&#39;bui/graphic/canvas&#39;,&#39;bui/graphic/shape&#39;,&#39;bui/graphic/group&#39;,&#39;bui/graphic/util&#39;],function (require) {
+	var BUI = require(&#39;bui/common&#39;),
+		Graphic = BUI.namespace(&#39;Graphic&#39;);
+
+	BUI.mix(Graphic,{
+		Canvas : require(&#39;bui/graphic/canvas&#39;),
+		Group : require(&#39;bui/graphic/group&#39;),
+		Shape : require(&#39;bui/graphic/shape&#39;),
+		Util : require(&#39;bui/graphic/util&#39;)
+	});
+
+	return Graphic;
+});</pre>
+</body>
+</html>

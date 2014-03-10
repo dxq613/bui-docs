@@ -20,11 +20,11 @@
  * @ignore
  */
 
-define('bui/tooltip',['bui/common','bui/tooltip/tip','bui/tooltip/tips'],function (require) {
-  var BUI = require('bui/common'),
-    Tooltip = BUI.namespace('Tooltip'),
-    Tip = require('bui/tooltip/tip'),
-    Tips = require('bui/tooltip/tips');
+define(&#39;bui/tooltip&#39;,[&#39;bui/common&#39;,&#39;bui/tooltip/tip&#39;,&#39;bui/tooltip/tips&#39;],function (require) {
+  var BUI = require(&#39;bui/common&#39;),
+    Tooltip = BUI.namespace(&#39;Tooltip&#39;),
+    Tip = require(&#39;bui/tooltip/tip&#39;),
+    Tips = require(&#39;bui/tooltip/tips&#39;);
 
   BUI.mix(Tooltip,{
     Tip : Tip,

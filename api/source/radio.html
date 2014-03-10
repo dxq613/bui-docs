@@ -20,9 +20,9 @@
  * @ignore
  */
 
-define('bui/form/radiofield',['bui/form/checkfield'],function (required) {
+define(&#39;bui/form/radiofield&#39;,[&#39;bui/form/checkfield&#39;],function (required) {
   
-  var CheckField = required('bui/form/checkfield');
+  var CheckField = required(&#39;bui/form/checkfield&#39;);
 
 <span id='BUI-Form-Field-Radio'>  /**
 </span>   * 表单单选域
@@ -32,15 +32,15 @@ define('bui/form/radiofield',['bui/form/checkfield'],function (required) {
   var RadioField = CheckField.extend({
     bindUI : function(){
       var _self = this,
-        parent = _self.get('parent'),
-        name = _self.get('name');
+        parent = _self.get(&#39;parent&#39;),
+        name = _self.get(&#39;name&#39;);
 
       if(parent){
-        _self.getInnerControl().on('click',function(ev){
+        _self.getInnerControl().on(&#39;click&#39;,function(ev){
           var fields = parent.getFields(name);
           BUI.each(fields,function(field){
             if(field != _self){
-              field.set('checked',false);
+              field.set(&#39;checked&#39;,false);
             }
           });
         });
@@ -54,21 +54,21 @@ define('bui/form/radiofield',['bui/form/checkfield'],function (required) {
        */
       controlTpl : {
         view : true,
-        value : '&lt;input type=&quot;radio&quot;/&gt;'
+        value : &#39;&lt;input type=&quot;radio&quot;/&gt;&#39;
       },
 <span id='BUI-Form-Field-Radio-property-controlContainer'>      /**
 </span>       * 控件容器，如果为空直接添加在控件容器上
        * @type {String|HTMLElement}
        */
       controlContainer : {
-        value : '.radio'
+        value : &#39;.radio&#39;
       },
       tpl : {
-        value : '&lt;label&gt;&lt;span class=&quot;radio&quot;&gt;&lt;/span&gt;{label}&lt;/label&gt;'
+        value : &#39;&lt;label&gt;&lt;span class=&quot;radio&quot;&gt;&lt;/span&gt;{label}&lt;/label&gt;&#39;
       }
     }
   },{
-    xclass : 'form-field-radio'
+    xclass : &#39;form-field-radio&#39;
   });
 
   return RadioField;

@@ -20,19 +20,19 @@
  * @author dxq613@gmail.com
  * @ignore
  */
-define('bui/component/uibase/bindable',function(){
+define(&#39;bui/component/uibase/bindable&#39;,function(){
 	
 <span id='BUI-Component-UIBase-Bindable'>	/**
 </span>		* bindable extension class.
 		* &lt;pre&gt;&lt;code&gt;
-		*   BUI.use(['bui/list','bui/data','bui/mask'],function(List,Data,Mask){
+		*   BUI.use([&#39;bui/list&#39;,&#39;bui/data&#39;,&#39;bui/mask&#39;],function(List,Data,Mask){
 		*     var store = new Data.Store({
-		*       url : 'data/xx.json'
+		*       url : &#39;data/xx.json&#39;
 		*     });
 		*   	var list = new List.SimpleList({
-		*  	    render : '#l1',
+		*  	    render : &#39;#l1&#39;,
 		*  	    store : store,
-		*  	    loadMask : new Mask.LoadMask({el : '#t1'})
+		*  	    loadMask : new Mask.LoadMask({el : &#39;#t1&#39;})
 		*     });
 		*
 		*     list.render();
@@ -52,12 +52,12 @@ define('bui/component/uibase/bindable',function(){
 </span>		* 绑定 {@link BUI.Data.Store}的事件
 		* &lt;pre&gt;&lt;code&gt;
 		*  var store = new Data.Store({
-		*   url : 'data/xx.json',
+		*   url : &#39;data/xx.json&#39;,
 		*   autoLoad : true
 		*  });
 		*
 		*  var list = new List.SimpleList({
-		*  	 render : '#l1',
+		*  	 render : &#39;#l1&#39;,
 		*  	 store : store
 		*  });
 		*
@@ -68,7 +68,7 @@ define('bui/component/uibase/bindable',function(){
 <span id='BUI-Component-UIBase-Bindable-property-store'>		/**
 </span>		* 绑定 {@link BUI.Data.Store}的事件
 		* &lt;pre&gt;&lt;code&gt;
-		*  var store = list.get('store');
+		*  var store = list.get(&#39;store&#39;);
 		* &lt;/code&gt;&lt;/pre&gt;
 		* @type {BUI.Data.Store}
 		*/
@@ -78,14 +78,14 @@ define('bui/component/uibase/bindable',function(){
 <span id='BUI-Component-UIBase-Bindable-cfg-loadMask'>		/**
 </span>		* 加载数据时，是否显示等待加载的屏蔽层
 		* &lt;pre&gt;&lt;code&gt;
-		*   BUI.use(['bui/list','bui/data','bui/mask'],function(List,Data,Mask){
+		*   BUI.use([&#39;bui/list&#39;,&#39;bui/data&#39;,&#39;bui/mask&#39;],function(List,Data,Mask){
 		*     var store = new Data.Store({
-		*       url : 'data/xx.json'
+		*       url : &#39;data/xx.json&#39;
 		*     });
 		*   	var list = new List.SimpleList({
-		*  	    render : '#l1',
+		*  	    render : &#39;#l1&#39;,
 		*  	    store : store,
-		*  	    loadMask : new Mask.LoadMask({el : '#t1'})
+		*  	    loadMask : new Mask.LoadMask({el : &#39;#t1&#39;})
 		*     });
 		*
 		*     list.render();
@@ -106,53 +106,53 @@ define('bui/component/uibase/bindable',function(){
 
 
 	BUI.augment(bindable,
-<span id='global-property-'>	/**
+<span id=''>	/**
 </span>	* @lends BUI.Data.Bindable.prototype
 	* @ignore
 	*/	
 	{
 
-		__bindUI : function(){
-			var _self = this,
-				store = _self.get('store'),
-				loadMask = _self.get('loadMask');
+<span id='-method-__bindUI'>		__bindUI : function(){
+</span>			var _self = this,
+				store = _self.get(&#39;store&#39;),
+				loadMask = _self.get(&#39;loadMask&#39;);
 			if(!store){
 				return;
 			}
-			store.on('beforeload',function(e){
+			store.on(&#39;beforeload&#39;,function(e){
 				_self.onBeforeLoad(e);
 				if(loadMask &amp;&amp; loadMask.show){
 					loadMask.show();
 				}
 			});
-			store.on('load',function(e){
+			store.on(&#39;load&#39;,function(e){
 				_self.onLoad(e);
 				if(loadMask &amp;&amp; loadMask.hide){
 					loadMask.hide();
 				}
 			});
-			store.on('exception',function(e){
+			store.on(&#39;exception&#39;,function(e){
 				_self.onException(e);
 				if(loadMask &amp;&amp; loadMask.hide){
 					loadMask.hide();
 				}
 			});
-			store.on('add',function(e){
+			store.on(&#39;add&#39;,function(e){
 				_self.onAdd(e);
 			});
-			store.on('remove',function(e){
+			store.on(&#39;remove&#39;,function(e){
 				_self.onRemove(e);
 			});
-			store.on('update',function(e){
+			store.on(&#39;update&#39;,function(e){
 				_self.onUpdate(e);
 			});
-			store.on('localsort',function(e){
+			store.on(&#39;localsort&#39;,function(e){
 				_self.onLocalSort(e);
 			});
 		},
-		__syncUI : function(){
-			var _self = this,
-				store = _self.get('store');
+<span id='-method-__syncUI'>		__syncUI : function(){
+</span>			var _self = this,
+				store = _self.get(&#39;store&#39;);
 			if(!store){
 				return;
 			}
@@ -160,7 +160,7 @@ define('bui/component/uibase/bindable',function(){
 				_self.onLoad();
 			}
 		},
-<span id='BUI-Component-UIBase-Bindable-method-onBeforeLoad'>		/**
+<span id='-method-onBeforeLoad'>		/**
 </span>		* @protected
     * @template
 		* before store load data
@@ -170,7 +170,7 @@ define('bui/component/uibase/bindable',function(){
 		onBeforeLoad : function(e){
 
 		},
-<span id='BUI-Component-UIBase-Bindable-method-onLoad'>		/**
+<span id='-method-onLoad'>		/**
 </span>		* @protected
     * @template
 		* after store load data
@@ -180,7 +180,7 @@ define('bui/component/uibase/bindable',function(){
 		onLoad : function(e){
 			
 		},
-<span id='BUI-Component-UIBase-Bindable-method-onException'>		/**
+<span id='-method-onException'>		/**
 </span>		* @protected
     * @template
 		* occurred exception when store is loading data
@@ -190,7 +190,7 @@ define('bui/component/uibase/bindable',function(){
 		onException : function(e){
 			
 		},
-<span id='BUI-Component-UIBase-Bindable-method-onAdd'>		/**
+<span id='-method-onAdd'>		/**
 </span>		* @protected
     * @template
 		* after added data to store
@@ -200,7 +200,7 @@ define('bui/component/uibase/bindable',function(){
 		onAdd : function(e){
 		
 		},
-<span id='BUI-Component-UIBase-Bindable-method-onRemove'>		/**
+<span id='-method-onRemove'>		/**
 </span>		* @protected
     * @template
 		* after remvoed data to store
@@ -210,7 +210,7 @@ define('bui/component/uibase/bindable',function(){
 		onRemove : function(e){
 		
 		},
-<span id='BUI-Component-UIBase-Bindable-method-onUpdate'>		/**
+<span id='-method-onUpdate'>		/**
 </span>		* @protected
     * @template
 		* after updated data to store
@@ -220,7 +220,7 @@ define('bui/component/uibase/bindable',function(){
 		onUpdate : function(e){
 		
 		},
-<span id='BUI-Component-UIBase-Bindable-method-onLocalSort'>		/**
+<span id='-method-onLocalSort'>		/**
 </span>		* @protected
     * @template
 		* after local sorted data to store

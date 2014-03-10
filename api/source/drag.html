@@ -21,10 +21,10 @@
  * @ignore
  */
 
-define('bui/component/uibase/drag',function(){
+define(&#39;bui/component/uibase/drag&#39;,function(){
 
    
-    var dragBackId = BUI.guid('drag');
+    var dragBackId = BUI.guid(&#39;drag&#39;);
     
 <span id='BUI-Component-UIBase-Drag'>    /**
 </span>     * 拖拽控件的扩展
@@ -34,9 +34,9 @@ define('bui/component/uibase/drag',function(){
      *  });
      *
      *  var c = new Contol({ //拖动控件时，在#t2内
-     *      content : '&lt;div id=&quot;header&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;',
-     *      dragNode : '#header',
-     *      constraint : '#t2'
+     *      content : &#39;&lt;div id=&quot;header&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&#39;,
+     *      dragNode : &#39;#header&#39;,
+     *      constraint : &#39;#t2&#39;
      *  });
      * &lt;/code&gt;&lt;/pre&gt;
      * @class BUI.Component.UIBase.Drag
@@ -56,9 +56,9 @@ define('bui/component/uibase/drag',function(){
          *  });
          *
          *  var c = new Contol({ //拖动控件时，在#t2内
-         *      content : '&lt;div id=&quot;header&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;',
-         *      dragNode : '#header',
-         *      constraint : '#t2'
+         *      content : &#39;&lt;div id=&quot;header&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&#39;,
+         *      dragNode : &#39;#header&#39;,
+         *      constraint : &#39;#t2&#39;
          *  });
          * &lt;/code&gt;&lt;/pre&gt;
          * @cfg {jQuery} dragNode
@@ -92,9 +92,9 @@ define('bui/component/uibase/drag',function(){
          *  });
          *
          *  var c = new Contol({ //拖动控件时，在#t2内
-         *      content : '&lt;div id=&quot;header&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;',
-         *      dragNode : '#header',
-         *      constraint : '#t2'
+         *      content : &#39;&lt;div id=&quot;header&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&#39;,
+         *      dragNode : &#39;#header&#39;,
+         *      constraint : &#39;#t2&#39;
          *  });
          * &lt;/code&gt;&lt;/pre&gt;
          * @cfg {jQuery} constraint
@@ -114,32 +114,32 @@ define('bui/component/uibase/drag',function(){
         dragBackEl : {
 <span id='BUI-Component-UIBase-Drag-method-getter'>            /** @private **/
 </span>            getter:function(){
-                return $('#'+dragBackId);
+                return $(&#39;#&#39;+dragBackId);
             }
         }
     };
-    var dragTpl = '&lt;div id=&quot;' + dragBackId + '&quot; style=&quot;background-color: red; position: fixed; left: 0px; width: 100%; height: 100%; top: 0px; cursor: move; z-index: 999999; display: none; &quot;&gt;&lt;/div&gt;';
+    var dragTpl = &#39;&lt;div id=&quot;&#39; + dragBackId + &#39;&quot; style=&quot;background-color: red; position: fixed; left: 0px; width: 100%; height: 100%; top: 0px; cursor: move; z-index: 999999; display: none; &quot;&gt;&lt;/div&gt;&#39;;
        
     function initBack(){
-        var el = $(dragTpl).css('opacity', 0).prependTo('body');
+        var el = $(dragTpl).css(&#39;opacity&#39;, 0).prependTo(&#39;body&#39;);
         return el;
     }
     drag.prototype = {
         
         __bindUI : function(){
             var _self = this,
-                constraint = _self.get('constraint'),
-                dragNode = _self.get('dragNode');
+                constraint = _self.get(&#39;constraint&#39;),
+                dragNode = _self.get(&#39;dragNode&#39;);
             if(!dragNode){
                 return;
             }
-            dragNode.on('mousedown',function(e){
+            dragNode.on(&#39;mousedown&#39;,function(e){
 
                 if(e.which == 1){
                     e.preventDefault();
-                    _self.set('draging',{
-                        elX: _self.get('x'),
-                        elY: _self.get('y'),
+                    _self.set(&#39;draging&#39;,{
+                        elX: _self.get(&#39;x&#39;),
+                        elY: _self.get(&#39;y&#39;),
                         startX : e.pageX,
                         startY : e.pageY
                     });
@@ -150,7 +150,7 @@ define('bui/component/uibase/drag',function(){
 </span>             * @private
              */
             function mouseMove(e){
-                var draging = _self.get('draging');
+                var draging = _self.get(&#39;draging&#39;);
                 if(draging){
                     e.preventDefault();
                     _self._dragMoveTo(e.pageX,e.pageY,draging,constraint);
@@ -161,8 +161,8 @@ define('bui/component/uibase/drag',function(){
              */
             function mouseUp(e){
                 if(e.which == 1){
-                    _self.set('draging',false);
-                    var dragBackEl = _self.get('dragBackEl');
+                    _self.set(&#39;draging&#39;,false);
+                    var dragBackEl = _self.get(&#39;dragBackEl&#39;);
                     if(dragBackEl){
                         dragBackEl.hide();
                     }
@@ -173,40 +173,40 @@ define('bui/component/uibase/drag',function(){
 </span>             * @private
              */
             function registEvent(){
-                $(document).on('mousemove',mouseMove);
-                $(document).on('mouseup',mouseUp);
+                $(document).on(&#39;mousemove&#39;,mouseMove);
+                $(document).on(&#39;mouseup&#39;,mouseUp);
             }
 <span id='BUI-Component-UIBase-Drag-method-unregistEvent'>            /**
 </span>             * @private
              */
             function unregistEvent(){
-                $(document).off('mousemove',mouseMove);
-                $(document).off('mouseup',mouseUp);
+                $(document).off(&#39;mousemove&#39;,mouseMove);
+                $(document).off(&#39;mouseup&#39;,mouseUp);
             }
 
         },
         _dragMoveTo : function(x,y,draging,constraint){
             var _self = this,
-                dragBackEl = _self.get('dragBackEl'),
-                draging = draging || _self.get('draging'),
+                dragBackEl = _self.get(&#39;dragBackEl&#39;),
+                draging = draging || _self.get(&#39;draging&#39;),
                 offsetX = draging.startX - x,
                 offsetY = draging.startY - y;
             if(!dragBackEl.length){
                  dragBackEl = initBack();
             }
             dragBackEl.css({
-                cursor: 'move',
-                display: 'block'
+                cursor: &#39;move&#39;,
+                display: &#39;block&#39;
             });
-            _self.set('xy',[_self._getConstrainX(draging.elX - offsetX,constraint),
+            _self.set(&#39;xy&#39;,[_self._getConstrainX(draging.elX - offsetX,constraint),
                             _self._getConstrainY(draging.elY - offsetY,constraint)]);    
 
         },
         _getConstrainX : function(x,constraint){
             var _self = this,
-                width =  _self.get('el').outerWidth(),
+                width =  _self.get(&#39;el&#39;).outerWidth(),
                 endX = x + width,
-                curX = _self.get('x');
+                curX = _self.get(&#39;x&#39;);
             //如果存在约束
             if(constraint){
                 var constraintOffset = constraint.offset();
@@ -227,9 +227,9 @@ define('bui/component/uibase/drag',function(){
         },
         _getConstrainY : function(y,constraint){
              var _self = this,
-                height =  _self.get('el').outerHeight(),
+                height =  _self.get(&#39;el&#39;).outerHeight(),
                 endY = y + height,
-                curY = _self.get('y');
+                curY = _self.get(&#39;y&#39;);
             //如果存在约束
             if(constraint){
                 var constraintOffset = constraint.offset();

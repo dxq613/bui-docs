@@ -20,9 +20,9 @@
  * @ignore
  */
 
-define('bui/editor/record',['bui/common','bui/editor/editor'],function (require) {
-  var BUI = require('bui/common'),
-    Editor = require('bui/editor/editor');
+define(&#39;bui/editor/record&#39;,[&#39;bui/common&#39;,&#39;bui/editor/editor&#39;],function (require) {
+  var BUI = require(&#39;bui/common&#39;),
+    Editor = require(&#39;bui/editor/editor&#39;);
 
 <span id='BUI-Editor-RecordEditor'>  /**
 </span>   * @class BUI.Editor.RecordEditor
@@ -37,7 +37,7 @@ define('bui/editor/record',['bui/common','bui/editor/editor'],function (require)
      * @return {String} 返回需要编辑的文本
      */
     getSourceValue : function(){
-      return this.get('record');
+      return this.get(&#39;record&#39;);
     },
 <span id='BUI-Editor-RecordEditor-method-updateSource'>    /**
 </span>     * @protected
@@ -46,7 +46,7 @@ define('bui/editor/record',['bui/common','bui/editor/editor'],function (require)
      */
     updateSource : function(value){
       var _self = this,
-        record = _self.get('record');
+        record = _self.get(&#39;record&#39;);
       BUI.mix(record,value);
     },
     _uiSetRecord : function(v){
@@ -62,14 +62,14 @@ define('bui/editor/record',['bui/common','bui/editor/editor'],function (require)
        * @type {String}
        */
       innerValueField : {
-        value : 'record'
+        value : &#39;record&#39;
       },
 <span id='BUI-Editor-RecordEditor-property-acceptEvent'>      /**
 </span>       * 接受更改的事件
        * @type {String}
        */
       acceptEvent : {
-        value : ''
+        value : &#39;&#39;
       },
 <span id='BUI-Editor-RecordEditor-property-emptyValue'>      /**
 </span>       * 空值的数据，清空编辑器时使用
@@ -100,7 +100,7 @@ define('bui/editor/record',['bui/common','bui/editor/editor'],function (require)
        * @type {String}
        */
       controlCfgField : {
-        value : 'form'
+        value : &#39;form&#39;
       },
 <span id='BUI-Editor-RecordEditor-property-form'>      /**
 </span>       * 编辑器内表单的配置项
@@ -115,7 +115,7 @@ define('bui/editor/record',['bui/common','bui/editor/editor'],function (require)
        */
       errorAlign : {
         value : {
-          points: ['tr','tl'],
+          points: [&#39;tr&#39;,&#39;tl&#39;],
           offset : [10,0]
         }
       },
@@ -127,26 +127,26 @@ define('bui/editor/record',['bui/common','bui/editor/editor'],function (require)
         valueFn : function(){
           var _self = this;
           return {
-            xclass : 'form',
-            errorTpl : '',
+            xclass : &#39;form&#39;,
+            errorTpl : &#39;&#39;,
             showError : true,
             showChildError : true,
             defaultChildCfg : {
-              elCls : 'bui-inline-block',
-              tpl : '',
+              elCls : &#39;bui-inline-block&#39;,
+              tpl : &#39;&#39;,
               forceFit : true
             },
             buttons : [
             {
-              btnCls : 'button button-primary',
-              text : '确定',
+              btnCls : &#39;button button-primary&#39;,
+              text : &#39;确定&#39;,
               handler : function(){
                 _self.accept();
               }
             },
             {
-              btnCls : 'button',
-              text : '取消',
+              btnCls : &#39;button&#39;,
+              text : &#39;取消&#39;,
               handler : function(){
                 _self.cancel();
               }
@@ -156,7 +156,7 @@ define('bui/editor/record',['bui/common','bui/editor/editor'],function (require)
       }
     }
   },{
-    xclass : 'record-editor'
+    xclass : &#39;record-editor&#39;
   });
 
   return editor;

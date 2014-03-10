@@ -21,39 +21,39 @@
  * @ignore
  */
 
-define('bui/list/keynav',['bui/common'],function (require) {
-  'use strict';
+define(&#39;bui/list/keynav&#39;,[&#39;bui/common&#39;],function (require) {
+  &#39;use strict&#39;;
 <span id='BUI-List-KeyNav'>  /**
 </span>   * @class BUI.List.KeyNav
    * 列表导航扩展类
    */
-  var  BUI = require('bui/common'),
+  var  BUI = require(&#39;bui/common&#39;),
     KeyNav = function(){};
 
   KeyNav.ATTRS = {
 <span id='BUI-List-KeyNav-cfg-highlightedStatus'>    /**
 </span>     * 选项高亮使用的状态,有些场景下，使用selected更合适
-     * @cfg {String} [highlightedStatus='hover']
+     * @cfg {String} [highlightedStatus=&#39;hover&#39;]
      */
     highlightedStatus : {
-      value : 'hover'
+      value : &#39;hover&#39;
     }
   };
 
   BUI.augment(KeyNav,{
 
 <span id='BUI-List-KeyNav-method-setHighlighted'>    /**
-</span>     * 设置选项高亮，默认使用 'hover' 状态
+</span>     * 设置选项高亮，默认使用 &#39;hover&#39; 状态
      * @param  {Object} item 选项
      * @param  {Boolean} value 状态值，true,false
      * @protected
      */
     setHighlighted : function(item,element){
-      if(this.hasStatus(item,'hover',element)){
+      if(this.hasStatus(item,&#39;hover&#39;,element)){
         return;
       }
       var _self = this,
-        highlightedStatus = _self.get('highlightedStatus'),
+        highlightedStatus = _self.get(&#39;highlightedStatus&#39;),
         lightedElement = _self._getHighLightedElement(),
         lightedItem = lightedElement ? _self.getItemByElement(lightedElement) : null;
       if(lightedItem !== item){
@@ -65,8 +65,8 @@ define('bui/list/keynav',['bui/common'],function (require) {
     },
     _getHighLightedElement : function(){
       var _self = this,
-        highlightedStatus = _self.get('highlightedStatus'),
-        element = _self.get('view').getFirstElementByStatus(highlightedStatus);
+        highlightedStatus = _self.get(&#39;highlightedStatus&#39;),
+        element = _self.get(&#39;view&#39;).getFirstElementByStatus(highlightedStatus);
       return element;
     },
 <span id='BUI-List-KeyNav-method-getHighlighted'>    /**
@@ -76,8 +76,8 @@ define('bui/list/keynav',['bui/common'],function (require) {
      */
     getHighlighted : function(){
       var _self = this,
-        highlightedStatus = _self.get('highlightedStatus'),
-        element = _self.get('view').getFirstElementByStatus(highlightedStatus);
+        highlightedStatus = _self.get(&#39;highlightedStatus&#39;),
+        element = _self.get(&#39;view&#39;).getFirstElementByStatus(highlightedStatus);
       return _self.getItemByElement(element) || null;
     },
 <span id='BUI-List-KeyNav-method-getColumnCount'>    /**
@@ -228,7 +228,7 @@ define('bui/list/keynav',['bui/common'],function (require) {
       if(current){
         element = _self.findElement(current);
         //_self.setSelected(current);
-        $(element).trigger('click');
+        $(element).trigger(&#39;click&#39;);
       }
     },
 <span id='BUI-List-KeyNav-method-handleNavEsc'>    /**

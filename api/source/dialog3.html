@@ -20,9 +20,9 @@
  * @ignore
  */
 
-define('bui/editor/dialog',['bui/overlay','bui/editor/mixin'],function (require) {
-  var Dialog = require('bui/overlay').Dialog,
-    Mixin = require('bui/editor/mixin');
+define(&#39;bui/editor/dialog&#39;,[&#39;bui/overlay&#39;,&#39;bui/editor/mixin&#39;],function (require) {
+  var Dialog = require(&#39;bui/overlay&#39;).Dialog,
+    Mixin = require(&#39;bui/editor/mixin&#39;);
 
 <span id='BUI-Editor-DialogEditor'>   /**
 </span>   * @class BUI.Editor.DialogEditor
@@ -38,7 +38,7 @@ define('bui/editor/dialog',['bui/overlay','bui/editor/mixin'],function (require)
      * @return {String} 返回需要编辑的文本
      */
     getSourceValue : function(){
-      return this.get('record');
+      return this.get(&#39;record&#39;);
     },
 <span id='BUI-Editor-DialogEditor-method-handleNavEnter'>    /**
 </span>     * @protected
@@ -47,13 +47,13 @@ define('bui/editor/dialog',['bui/overlay','bui/editor/mixin'],function (require)
      */
     handleNavEnter : function(ev){
       var _self = this,
-        success = _self.get('success'),
+        success = _self.get(&#39;success&#39;),
         sender = ev.target;
-      if(sender.tagName === 'TEXTAREA'){ //文本输入框，不确定隐藏
+      if(sender.tagName === &#39;TEXTAREA&#39;){ //文本输入框，不确定隐藏
         return;
       }
-      if(sender.tagName === 'BUTTON'){
-        $(sender).trigger('click');
+      if(sender.tagName === &#39;BUTTON&#39;){
+        $(sender).trigger(&#39;click&#39;);
       }
       if(success){
         success.call(_self);
@@ -66,7 +66,7 @@ define('bui/editor/dialog',['bui/overlay','bui/editor/mixin'],function (require)
      */
     cancel : function(){
       //if(this.onCancel()!== false){
-        this.fire('cancel');
+        this.fire(&#39;cancel&#39;);
         this.clearValue();
         this.close();
       //} 
@@ -78,7 +78,7 @@ define('bui/editor/dialog',['bui/overlay','bui/editor/mixin'],function (require)
      */
     updateSource : function(value){
       var _self = this,
-        record = _self.get('record');
+        record = _self.get(&#39;record&#39;);
       BUI.mix(record,value);
     },
     _uiSetRecord : function(v){
@@ -96,14 +96,14 @@ define('bui/editor/dialog',['bui/overlay','bui/editor/mixin'],function (require)
        * @type {String}
        */
       innerValueField : {
-        value : 'record'
+        value : &#39;record&#39;
       },
 <span id='BUI-Editor-DialogEditor-property-acceptEvent'>      /**
 </span>       * 接受更改的事件
        * @type {String}
        */
       acceptEvent : {
-        value : ''
+        value : &#39;&#39;
       },
 <span id='BUI-Editor-DialogEditor-property-record'>      /**
 </span>       * 编辑的记录
@@ -127,7 +127,7 @@ define('bui/editor/dialog',['bui/overlay','bui/editor/mixin'],function (require)
        * @type {String}
        */
       controlCfgField : {
-        value : 'form'
+        value : &#39;form&#39;
       },
 <span id='BUI-Editor-DialogEditor-property-changeSourceEvent'>      /**
 </span>       * dialog 编辑器一般由按钮触发，在触发时设置数据源
@@ -135,7 +135,7 @@ define('bui/editor/dialog',['bui/overlay','bui/editor/mixin'],function (require)
        * @type {String}
        */
       changeSourceEvent : {
-        value : ''
+        value : &#39;&#39;
       },
 <span id='BUI-Editor-DialogEditor-property-defaultChildCfg'>      /**
 </span>       * 默认的字段域配置项
@@ -143,7 +143,7 @@ define('bui/editor/dialog',['bui/overlay','bui/editor/mixin'],function (require)
        */
       defaultChildCfg : {
         value : {
-          xclass : 'form-horizontal'
+          xclass : &#39;form-horizontal&#39;
         }
       },
 <span id='BUI-Editor-DialogEditor-property-focusable'>      /**
@@ -172,7 +172,7 @@ define('bui/editor/dialog',['bui/overlay','bui/editor/mixin'],function (require)
       }
     }
   },{
-    xclass : 'dialog-editor'
+    xclass : &#39;dialog-editor&#39;
   });
 
   return editor;

@@ -21,22 +21,22 @@
  * copied by dxq613@gmail.com
  * @ignore
  */
-define('bui/component/uibase/base',['bui/component/manage'],function(require){
+define(&#39;bui/component/uibase/base&#39;,[&#39;bui/component/manage&#39;],function(require){
 
-  var Manager = require('bui/component/manage'),
+  var Manager = require(&#39;bui/component/manage&#39;),
    
-    UI_SET = '_uiSet',
-        ATTRS = 'ATTRS',
+    UI_SET = &#39;_uiSet&#39;,
+        ATTRS = &#39;ATTRS&#39;,
         ucfirst = BUI.ucfirst,
         noop = $.noop,
-        Base = require('bui/base');
+        Base = require(&#39;bui/base&#39;);
 <span id='global-method-initHierarchy'>   /**
 </span>     * 模拟多继承
      * init attr using constructors ATTRS meta info
      * @ignore
      */
     function initHierarchy(host, config) {
-        callMethodByHierarchy(host, 'initializer', 'constructor');
+        callMethodByHierarchy(host, &#39;initializer&#39;, &#39;constructor&#39;);
     }
 
     function callMethodByHierarchy(host, mainMethod, extMethod) {
@@ -56,7 +56,7 @@ define('bui/component/uibase/base',['bui/component/manage'],function(require){
                 for (var i = 0; i &lt; exts.length; i++) {
                     ext = exts[i];
                     if (ext) {
-                        if (extMethod != 'constructor') {
+                        if (extMethod != &#39;constructor&#39;) {
                             //只调用真正自己构造器原型的定义，继承原型链上的不要管
                             if (ext.prototype.hasOwnProperty(extMethod)) {
                                 ext = ext.prototype[extMethod];
@@ -104,7 +104,7 @@ define('bui/component/uibase/base',['bui/component/manage'],function(require){
 
         while (c) {
             // 只触发该类真正的析构器，和父亲没关系，所以不要在子类析构器中调用 superclass
-            if (c.prototype.hasOwnProperty('destructor')) {
+            if (c.prototype.hasOwnProperty(&#39;destructor&#39;)) {
                 c.prototype.destructor.apply(host);
             }
 
@@ -164,7 +164,7 @@ define('bui/component/uibase/base',['bui/component/manage'],function(require){
                 if (self[m]) {
                     // 自动绑定事件到对应函数
                     (function (attr, m) {
-                        self.on('after' + ucfirst(attr) + 'Change', function (ev) {
+                        self.on(&#39;after&#39; + ucfirst(attr) + &#39;Change&#39;, function (ev) {
                             // fix! 防止冒泡过来的
                             if (ev.target === self) {
                                 self[m](ev.newVal, ev);
@@ -217,22 +217,22 @@ define('bui/component/uibase/base',['bui/component/manage'],function(require){
         Base.apply(_self, arguments);
 
         //保存用户传入的配置项
-        _self.setInternal('userConfig',config);
+        _self.setInternal(&#39;userConfig&#39;,config);
         // 按照类层次执行初始函数，主类执行 initializer 函数，扩展类执行构造器函数
         initHierarchy(_self, config);
 
         var listener,
             n,
-            plugins = _self.get('plugins')/*,
-            listeners = _self.get('listeners')*/;
+            plugins = _self.get(&#39;plugins&#39;)/*,
+            listeners = _self.get(&#39;listeners&#39;)*/;
 
         constructPlugins(plugins);
     
-        var xclass= _self.get('xclass');
+        var xclass= _self.get(&#39;xclass&#39;);
         if(xclass){
           _self.__xclass = xclass;//debug 方便
         }
-        actionPlugins(_self, plugins, 'initializer');
+        actionPlugins(_self, plugins, &#39;initializer&#39;);
 
         // 是否自动渲染
         config &amp;&amp; config.autoRender &amp;&amp; _self.render();
@@ -278,7 +278,7 @@ define('bui/component/uibase/base',['bui/component/manage'],function(require){
 </span>     * @type {Object}
      * 事件处理函数:
      *      {
-     *        'click':function(e){}
+     *        &#39;click&#39;:function(e){}
      *      }
      *  @ignore
      */
@@ -336,22 +336,22 @@ define('bui/component/uibase/base',['bui/component/manage'],function(require){
     create : function(){
       var self = this;
             // 是否生成过节点
-            if (!self.get('created')) {
+            if (!self.get(&#39;created&#39;)) {
 <span id='BUI-Component-UIBase-event-beforeCreateDom'>                /**
 </span>                 * @event beforeCreateDom
                  * fired before root node is created
                  * @param e
                  */
-                self.fire('beforeCreateDom');
-                callMethodByHierarchy(self, 'createDom', '__createDom');
-                self._set('created', true);
+                self.fire(&#39;beforeCreateDom&#39;);
+                callMethodByHierarchy(self, &#39;createDom&#39;, &#39;__createDom&#39;);
+                self._set(&#39;created&#39;, true);
 <span id='BUI-Component-UIBase-event-afterCreateDom'>                /**
 </span>                 * @event afterCreateDom
                  * fired when root node is created
                  * @param e
                  */
-                self.fire('afterCreateDom');
-                actionPlugins(self, self.get('plugins'), 'createDom');
+                self.fire(&#39;afterCreateDom&#39;);
+                actionPlugins(self, self.get(&#39;plugins&#39;), &#39;createDom&#39;);
             }
             return self;
     },
@@ -361,17 +361,17 @@ define('bui/component/uibase/base',['bui/component/manage'],function(require){
     render : function(){
       var _self = this;
             // 是否已经渲染过
-            if (!_self.get('rendered')) {
-                var plugins = _self.get('plugins');
+            if (!_self.get(&#39;rendered&#39;)) {
+                var plugins = _self.get(&#39;plugins&#39;);
                 _self.create(undefined);
-                _self.set('created',true);
+                _self.set(&#39;created&#39;,true);
 <span id='BUI-Component-UIBase-event-beforeRenderUI'>                /**
 </span>                 * @event beforeRenderUI
                  * fired when root node is ready
                  * @param e
                  */
-                _self.fire('beforeRenderUI');
-                callMethodByHierarchy(_self, 'renderUI', '__renderUI');
+                _self.fire(&#39;beforeRenderUI&#39;);
+                callMethodByHierarchy(_self, &#39;renderUI&#39;, &#39;__renderUI&#39;);
 
 <span id='BUI-Component-UIBase-event-afterRenderUI'>                /**
 </span>                 * @event afterRenderUI
@@ -379,48 +379,48 @@ define('bui/component/uibase/base',['bui/component/manage'],function(require){
                  * @param e
                  */
 
-                _self.fire('afterRenderUI');
-                actionPlugins(_self, plugins, 'renderUI');
+                _self.fire(&#39;afterRenderUI&#39;);
+                actionPlugins(_self, plugins, &#39;renderUI&#39;);
 
 <span id='BUI-Component-UIBase-event-beforeBindUI'>                /**
 </span>                 * @event beforeBindUI
-                 * fired before UIBase 's internal event is bind.
+                 * fired before UIBase &#39;s internal event is bind.
                  * @param e
                  */
 
-                _self.fire('beforeBindUI');
+                _self.fire(&#39;beforeBindUI&#39;);
                 bindUI(_self);
-                callMethodByHierarchy(_self, 'bindUI', '__bindUI');
-                _self.set('binded',true);
+                callMethodByHierarchy(_self, &#39;bindUI&#39;, &#39;__bindUI&#39;);
+                _self.set(&#39;binded&#39;,true);
 <span id='BUI-Component-UIBase-event-afterBindUI'>                /**
 </span>                 * @event afterBindUI
-                 * fired when UIBase 's internal event is bind.
+                 * fired when UIBase &#39;s internal event is bind.
                  * @param e
                  */
 
-                _self.fire('afterBindUI');
-                actionPlugins(_self, plugins, 'bindUI');
+                _self.fire(&#39;afterBindUI&#39;);
+                actionPlugins(_self, plugins, &#39;bindUI&#39;);
 
 <span id='BUI-Component-UIBase-event-beforeSyncUI'>                /**
 </span>                 * @event beforeSyncUI
-                 * fired before UIBase 's internal state is synchronized.
+                 * fired before UIBase &#39;s internal state is synchronized.
                  * @param e
                  */
 
-                _self.fire('beforeSyncUI');
+                _self.fire(&#39;beforeSyncUI&#39;);
 
                 syncUI(_self);
-                callMethodByHierarchy(_self, 'syncUI', '__syncUI');
+                callMethodByHierarchy(_self, &#39;syncUI&#39;, &#39;__syncUI&#39;);
 
 <span id='BUI-Component-UIBase-event-afterSyncUI'>                /**
 </span>                 * @event afterSyncUI
-                 * fired after UIBase 's internal state is synchronized.
+                 * fired after UIBase &#39;s internal state is synchronized.
                  * @param e
                  */
 
-                _self.fire('afterSyncUI');
-                actionPlugins(_self, plugins, 'syncUI');
-                _self._set('rendered', true);
+                _self.fire(&#39;afterSyncUI&#39;);
+                actionPlugins(_self, plugins, &#39;syncUI&#39;);
+                _self._set(&#39;rendered&#39;, true);
             }
             return _self;
     },
@@ -456,19 +456,19 @@ define('bui/component/uibase/base',['bui/component/manage'],function(require){
         var _self = this;
 <span id='BUI-Component-UIBase-event-beforeDestroy'>        /**
 </span>         * @event beforeDestroy
-         * fired before UIBase 's destroy.
+         * fired before UIBase &#39;s destroy.
          * @param e
          */
-        _self.fire('beforeDestroy');
+        _self.fire(&#39;beforeDestroy&#39;);
 
-        actionPlugins(_self, _self.get('plugins'), 'destructor');
+        actionPlugins(_self, _self.get(&#39;plugins&#39;), &#39;destructor&#39;);
         destroyHierarchy(_self);
 <span id='BUI-Component-UIBase-event-afterDestroy'>         /**
 </span>         * @event afterDestroy
-         * fired before UIBase 's destroy.
+         * fired before UIBase &#39;s destroy.
          * @param e
          */
-        _self.fire('afterDestroy');
+        _self.fire(&#39;afterDestroy&#39;);
         _self.off();
         _self.clearAttrVals();
         _self.destroyed = true;

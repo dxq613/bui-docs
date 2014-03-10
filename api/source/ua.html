@@ -20,13 +20,13 @@
  * @ignore
  * @author dxq613@gmail.com
  */
-define('bui/ua', function () {
+define(&#39;bui/ua&#39;, function () {
 
     function numberify(s) {
         var c = 0;
-        // convert '1.2.3.4' to 1.234
+        // convert &#39;1.2.3.4&#39; to 1.234
         return parseFloat(s.replace(/\./g, function () {
-            return (c++ === 0) ? '.' : '';
+            return (c++ === 0) ? &#39;.&#39; : &#39;&#39;;
         }));
     };
 

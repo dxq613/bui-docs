@@ -20,11 +20,11 @@
  * @ignore
  */
 
-define('bui/editor/mixin',function (require) {
+define(&#39;bui/editor/mixin&#39;,function (require) {
 
   function initEditor (self) {
    var _self = self,
-      controlCfgField = _self.get('controlCfgField'),
+      controlCfgField = _self.get(&#39;controlCfgField&#39;),
       control = _self.get(controlCfgField),
       c = _self.addChild(control);
     _self.setInternal(controlCfgField,c);
@@ -45,7 +45,7 @@ define('bui/editor/mixin',function (require) {
      * @type {String}
      */
     acceptEvent : {
-      value : 'autohide'
+      value : &#39;autohide&#39;
     },
 <span id='BUI-Editor-Mixin-property-preventHide'>    /**
 </span>     * 当发生错误时是否阻止编辑器消失
@@ -59,7 +59,7 @@ define('bui/editor/mixin',function (require) {
      * @type {String}
      */
     changeSourceEvent : {
-      value : 'show triggerchange'
+      value : &#39;show triggerchange&#39;
     },
 <span id='BUI-Editor-Mixin-property-ignoreInputFields'>    /**
 </span>     * 是否忽略掉输入框之类的键盘事件
@@ -119,14 +119,14 @@ define('bui/editor/mixin',function (require) {
     //绑定事件
     __bindUI : function(){
       var _self = this,
-      acceptEvent = _self.get('acceptEvent'),
-      changeSourceEvent = _self.get('changeSourceEvent');
+      acceptEvent = _self.get(&#39;acceptEvent&#39;),
+      changeSourceEvent = _self.get(&#39;changeSourceEvent&#39;);
 
       if(acceptEvent){
         _self.on(acceptEvent,function(){
           if(_self.accept()){
             return ;
-          }else if(_self.get('preventHide')){
+          }else if(_self.get(&#39;preventHide&#39;)){
             return false;
           }else{
             _self.cancel();
@@ -136,7 +136,7 @@ define('bui/editor/mixin',function (require) {
       if(changeSourceEvent){
         _self.on(changeSourceEvent,function(){
           _self.setValue(_self.getSourceValue());
-          if(_self.get('visible')){
+          if(_self.get(&#39;visible&#39;)){
             _self.focus();
           }
         });
@@ -149,7 +149,7 @@ define('bui/editor/mixin',function (require) {
      */
     getInnerControl : function(){
       var _self = this,
-        children = _self.get('children');
+        children = _self.get(&#39;children&#39;);
       return children[0];
     },
 <span id='BUI-Editor-Mixin-method-setValue'>    /**
@@ -160,9 +160,9 @@ define('bui/editor/mixin',function (require) {
     setValue : function(value,hideError){
       var _self = this,
         innerControl = _self.getInnerControl();
-      _self.set('editValue',value);
+      _self.set(&#39;editValue&#39;,value);
       _self.clearControlValue();
-      innerControl.set(_self.get('innerValueField'),value);
+      innerControl.set(_self.get(&#39;innerValueField&#39;),value);
       if(!value){//编辑的值等于空，则可能不会触发验证
         _self.valid();
       }
@@ -177,7 +177,7 @@ define('bui/editor/mixin',function (require) {
     getValue :function(){
       var _self = this,
         innerControl = _self.getInnerControl();
-      return innerControl.get(_self.get('innerValueField'));
+      return innerControl.get(_self.get(&#39;innerValueField&#39;));
     },
 <span id='BUI-Editor-Mixin-method-isValid'>    /**
 </span>     * 编辑的内容是否通过验证
@@ -211,7 +211,7 @@ define('bui/editor/mixin',function (require) {
      */
     isChange : function(){
       var _self = this,
-        editValue = _self.get('editValue'),
+        editValue = _self.get(&#39;editValue&#39;),
         value = _self.getValue();
       return editValue !== value;
     },
@@ -230,7 +230,7 @@ define('bui/editor/mixin',function (require) {
     clearControlValue : function(){
       var _self = this,
         innerControl = _self.getInnerControl();
-      innerControl.set(_self.get('innerValueField'),_self.get('emptyValue'));
+      innerControl.set(_self.get(&#39;innerValueField&#39;),_self.get(&#39;emptyValue&#39;));
     },
 <span id='BUI-Editor-Mixin-method-clearErrors'>    /**
 </span>     * 清除错误
@@ -271,11 +271,11 @@ define('bui/editor/mixin',function (require) {
      */
     handleNavEnter : function(ev){
       var sender = ev.target;
-      if(sender.tagName === 'TEXTAREA'){ //文本输入框，不确定隐藏
+      if(sender.tagName === &#39;TEXTAREA&#39;){ //文本输入框，不确定隐藏
         return;
       }
-      if(sender.tagName === 'BUTTON'){
-        $(sender).trigger('click');
+      if(sender.tagName === &#39;BUTTON&#39;){
+        $(sender).trigger(&#39;click&#39;);
       }
       this.accept();
     },
@@ -300,13 +300,13 @@ define('bui/editor/mixin',function (require) {
       }
       value = _self.getValue();
 
-      if(_self.get('autoUpdate')){
+      if(_self.get(&#39;autoUpdate&#39;)){
         _self.updateSource(value);
       }
-      if(_self.fire('beforeaccept',{value :value}) == false){
+      if(_self.fire(&#39;beforeaccept&#39;,{value :value}) == false){
         return;
       }
-      _self.fire('accept',{value :value,editValue : _self.get('editValue')});/**/
+      _self.fire(&#39;accept&#39;,{value :value,editValue : _self.get(&#39;editValue&#39;)});/**/
       _self.hide();
       return true;
     },
@@ -314,7 +314,7 @@ define('bui/editor/mixin',function (require) {
 </span>     * 取消编辑
      */
     cancel : function(){
-      this.fire('cancel');
+      this.fire(&#39;cancel&#39;);
       this.clearValue();
       this.close();
     }

@@ -20,27 +20,28 @@
  * @ignore
  */
 ;(function(){
-var BASE = 'bui/form/';
-define(BASE + 'field',['bui/common',BASE + 'textfield',BASE + 'datefield',BASE + 'selectfield',BASE + 'hiddenfield',
-  BASE + 'numberfield',BASE + 'checkfield',BASE + 'radiofield',BASE + 'checkboxfield',BASE + 'plainfield',BASE + 'listfield',
-  BASE + 'checklistfield',BASE + 'radiolistfield'],function (require) {
-  var BUI = require('bui/common'),
-    Field = require(BASE + 'basefield');
+var BASE = &#39;bui/form/&#39;;
+define(BASE + &#39;field&#39;,[&#39;bui/common&#39;,BASE + &#39;textfield&#39;,BASE + &#39;datefield&#39;,BASE + &#39;selectfield&#39;,BASE + &#39;hiddenfield&#39;,
+  BASE + &#39;numberfield&#39;,BASE + &#39;checkfield&#39;,BASE + &#39;radiofield&#39;,BASE + &#39;checkboxfield&#39;,BASE + &#39;plainfield&#39;,BASE + &#39;listfield&#39;,
+  BASE + &#39;checklistfield&#39;,BASE + &#39;radiolistfield&#39;, BASE + &#39;textareafield&#39;],function (require) {
+  var BUI = require(&#39;bui/common&#39;),
+    Field = require(BASE + &#39;basefield&#39;);
 
   BUI.mix(Field,{
-    Text : require(BASE + 'textfield'),
-    Date : require(BASE + 'datefield'),
-    Select : require(BASE + 'selectfield'),
-    Hidden : require(BASE + 'hiddenfield'),
-    Number : require(BASE + 'numberfield'),
-    Check : require(BASE + 'checkfield'),
-    Radio : require(BASE + 'radiofield'),
-    Checkbox : require(BASE + 'checkboxfield'),
-    Plain : require(BASE + 'plainfield'),
-    List : require(BASE + 'listfield'),
-    Uploader : require(BASE + 'uploaderfield'),
-    CheckList : require(BASE + 'checklistfield'),
-    RadioList : require(BASE + 'radiolistfield')
+    Text : require(BASE + &#39;textfield&#39;),
+    Date : require(BASE + &#39;datefield&#39;),
+    Select : require(BASE + &#39;selectfield&#39;),
+    Hidden : require(BASE + &#39;hiddenfield&#39;),
+    Number : require(BASE + &#39;numberfield&#39;),
+    Check : require(BASE + &#39;checkfield&#39;),
+    Radio : require(BASE + &#39;radiofield&#39;),
+    Checkbox : require(BASE + &#39;checkboxfield&#39;),
+    Plain : require(BASE + &#39;plainfield&#39;),
+    List : require(BASE + &#39;listfield&#39;),
+    TextArea : require(BASE + &#39;textareafield&#39;),
+    Uploader : require(BASE + &#39;uploaderfield&#39;),
+    CheckList : require(BASE + &#39;checklistfield&#39;),
+    RadioList : require(BASE + &#39;radiolistfield&#39;)
   });
 
   return Field;

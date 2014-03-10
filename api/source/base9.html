@@ -21,13 +21,13 @@
  * @ignore
  */
 
-define('bui/picker',['bui/common','bui/picker/picker','bui/picker/listpicker'],function (require) {
-  var BUI = require('bui/common'),
-    Picker = BUI.namespace('Picker');
+define(&#39;bui/picker&#39;,[&#39;bui/common&#39;,&#39;bui/picker/picker&#39;,&#39;bui/picker/listpicker&#39;],function (require) {
+  var BUI = require(&#39;bui/common&#39;),
+    Picker = BUI.namespace(&#39;Picker&#39;);
 
   BUI.mix(Picker,{
-    Picker : require('bui/picker/picker'),
-    ListPicker : require('bui/picker/listpicker')
+    Picker : require(&#39;bui/picker/picker&#39;),
+    ListPicker : require(&#39;bui/picker/listpicker&#39;)
   });
 
   return Picker;

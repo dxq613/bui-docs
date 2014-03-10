@@ -20,22 +20,22 @@
  * @ignore
  */
 
-define('bui/select/combox',['bui/common','bui/select/select'],function (require) {
+define(&#39;bui/select/combox&#39;,[&#39;bui/common&#39;,&#39;bui/select/select&#39;],function (require) {
 
-  var BUI = require('bui/common'),
-    Select = require('bui/select/select'),
-    CLS_INPUT = BUI.prefix + 'combox-input';
+  var BUI = require(&#39;bui/common&#39;),
+    Select = require(&#39;bui/select/select&#39;),
+    CLS_INPUT = BUI.prefix + &#39;combox-input&#39;;
 
 <span id='BUI-Select-Combox'>  /**
 </span>   * 组合框 用于提示输入
-   * xclass:'combox'
+   * xclass:&#39;combox&#39;
    * &lt;pre&gt;&lt;code&gt;
-   * BUI.use('bui/select',function(Select){
+   * BUI.use(&#39;bui/select&#39;,function(Select){
    * 
    *  var select = new Select.Combox({
-   *    render:'#c1',
-   *    name:'combox',
-   *    items:['选项1','选项2','选项3','选项4']
+   *    render:&#39;#c1&#39;,
+   *    name:&#39;combox&#39;,
+   *    items:[&#39;选项1&#39;,&#39;选项2&#39;,&#39;选项3&#39;,&#39;选项4&#39;]
    *  });
    *  select.render();
    * });
@@ -47,8 +47,8 @@ define('bui/select/combox',['bui/common','bui/select/select'],function (require)
 
     renderUI : function(){
       var _self = this,
-        picker = _self.get('picker');
-      picker.set('autoFocused',false);
+        picker = _self.get(&#39;picker&#39;);
+      picker.set(&#39;autoFocused&#39;,false);
     },
     _uiSetItems : function(v){
       var _self = this;
@@ -60,37 +60,50 @@ define('bui/select/combox',['bui/common','bui/select/select'],function (require)
         }
       }
       combox.superclass._uiSetItems.call(_self,v);
-    }
+    },
+    bindUI: function(){
+      var _self = this,
+        picker = _self.get(&#39;picker&#39;),
+        list = picker.get(&#39;list&#39;),
+        textField = picker.get(&#39;textField&#39;);
 
+      //修复手动清空textField里面的值，再选时不填充的bug
+      $(textField).on(&#39;keyup&#39;, function(ev){
+        var item = list.getSelected();
+        if(item){
+          list.clearItemStatus(item);
+        }
+      });
+    }
   },{
     ATTRS : 
-<span id='global-property-'>    /**
+<span id=''>    /**
 </span>     * @lends BUI.Select.Combox#
      * @ignore
      */
     {
-<span id='BUI-Select-Combox-property-tpl'>      /**
+<span id='-property-tpl'>      /**
 </span>       * 控件的模版
        * @type {String}
        * @default  
-       * '&amp;lt;input type=&quot;text&quot; class=&quot;'+CLS_INPUT+'&quot;/&amp;gt;'
+       * &#39;&amp;lt;input type=&quot;text&quot; class=&quot;&#39;+CLS_INPUT+&#39;&quot;/&amp;gt;&#39;
        */
       tpl:{
         view:true,
-        value:'&lt;input type=&quot;text&quot; class=&quot;'+CLS_INPUT+'&quot;/&gt;'
+        value:&#39;&lt;input type=&quot;text&quot; class=&quot;&#39;+CLS_INPUT+&#39;&quot;/&gt;&#39;
       },
-<span id='BUI-Select-Combox-property-inputCls'>      /**
+<span id='-property-inputCls'>      /**
 </span>       * 显示选择回的文本DOM节点的样式
        * @type {String}
        * @protected
-       * @default 'bui-combox-input'
+       * @default &#39;bui-combox-input&#39;
        */
       inputCls:{
         value:CLS_INPUT
       }
     }
   },{
-    xclass:'combox'
+    xclass:&#39;combox&#39;
   });
 
   return combox;

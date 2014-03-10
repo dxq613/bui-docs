@@ -22,12 +22,12 @@
  * @ignore
  */
 
-define('bui/component/uibase/close',function () {
+define(&#39;bui/component/uibase/close&#39;,function () {
   
-  var CLS_PREFIX = BUI.prefix + 'ext-';
+  var CLS_PREFIX = BUI.prefix + &#39;ext-&#39;;
 
   function getCloseRenderBtn(self) {
-      return $(self.get('closeTpl'));
+      return $(self.get(&#39;closeTpl&#39;));
   }
 
 <span id='BUI-Component-UIBase-CloseView'>  /**
@@ -40,15 +40,15 @@ define('bui/component/uibase/close',function () {
 
   CloseView.ATTRS = {
     closeTpl : {
-      value : '&lt;a ' +
-            'tabindex=&quot;0&quot; ' +
-            &quot;href='javascript:void(\&quot;关闭\&quot;)' &quot; +
-            'role=&quot;button&quot; ' +
-            'class=&quot;' + CLS_PREFIX + 'close' + '&quot;&gt;' +
-            '&lt;span class=&quot;' +
-            CLS_PREFIX + 'close-x' +
-            '&quot;&gt;关闭&lt;' + '/span&gt;' +
-            '&lt;' + '/a&gt;'
+      value : &#39;&lt;a &#39; +
+            &#39;tabindex=&quot;0&quot; &#39; +
+            &quot;href=&#39;javascript:void(\&quot;关闭\&quot;)&#39; &quot; +
+            &#39;role=&quot;button&quot; &#39; +
+            &#39;class=&quot;&#39; + CLS_PREFIX + &#39;close&#39; + &#39;&quot;&gt;&#39; +
+            &#39;&lt;span class=&quot;&#39; +
+            CLS_PREFIX + &#39;close-x&#39; +
+            &#39;&quot;&gt;关闭&lt;&#39; + &#39;/span&gt;&#39; +
+            &#39;&lt;&#39; + &#39;/a&gt;&#39;
     },
     closeable:{
         value:true
@@ -60,12 +60,12 @@ define('bui/component/uibase/close',function () {
   CloseView.prototype = {
       _uiSetCloseable:function (v) {
           var self = this,
-              btn = self.get('closeBtn');
+              btn = self.get(&#39;closeBtn&#39;);
           if (v) {
               if (!btn) {
-                  self.setInternal('closeBtn', btn = getCloseRenderBtn(self));
+                  self.setInternal(&#39;closeBtn&#39;, btn = getCloseRenderBtn(self));
               }
-              btn.appendTo(self.get('el'), undefined);
+              btn.appendTo(self.get(&#39;el&#39;), undefined);
           } else {
               if (btn) {
                   btn.remove();
@@ -82,16 +82,16 @@ define('bui/component/uibase/close',function () {
   function Close() {
   }
 
-  var HIDE = 'hide';
+  var HIDE = &#39;hide&#39;;
   Close.ATTRS =
   {
 <span id='BUI-Component-UIBase-Close-cfg-closeTpl'>      /**
 </span>      * 关闭按钮的默认模版
       * &lt;pre&gt;&lt;code&gt;
       *   var overlay = new Overlay({
-      *     closeTpl : '&lt;a href=&quot;#&quot; title=&quot;close&quot;&gt;x&lt;/a&gt;',
+      *     closeTpl : &#39;&lt;a href=&quot;#&quot; title=&quot;close&quot;&gt;x&lt;/a&gt;&#39;,
       *     closeable : true,
-      *     trigger : '#t1'
+      *     trigger : &#39;#t1&#39;
       *   });
       *   overlay.render();
       * &lt;/code&gt;&lt;/pre&gt;
@@ -130,8 +130,8 @@ define('bui/component/uibase/close',function () {
        * 
        *  - &quot;hide&quot; : default 隐藏. 
        *  - &quot;destroy&quot;：当点击关闭按钮时移除（destroy)控件
-       *  - 'remove' : 当存在父控件时使用remove，同时从父元素中删除
-       * @cfg {String} [closeAction = 'hide']
+       *  - &#39;remove&#39; : 当存在父控件时使用remove，同时从父元素中删除
+       * @cfg {String} [closeAction = &#39;hide&#39;]
        */
 <span id='BUI-Component-UIBase-Close-property-closeAction'>      /**
 </span>       * 关闭时隐藏还是移除DOM结构
@@ -174,8 +174,8 @@ define('bui/component/uibase/close',function () {
 
   var actions = {
       hide:HIDE,
-      destroy:'destroy',
-      remove : 'remove'
+      destroy:&#39;destroy&#39;,
+      remove : &#39;remove&#39;
   };
 
   Close.prototype = {
@@ -183,8 +183,8 @@ define('bui/component/uibase/close',function () {
           var self = this;
           if (v &amp;&amp; !self.__bindCloseEvent) {
               self.__bindCloseEvent = 1;
-              self.get('closeBtn').on('click', function (ev) {
-                if(self.fire('closeclick',{domTarget : ev.target}) !== false){
+              self.get(&#39;closeBtn&#39;).on(&#39;click&#39;, function (ev) {
+                if(self.fire(&#39;closeclick&#39;,{domTarget : ev.target}) !== false){
                   self.close();
                 }
                 ev.preventDefault();
@@ -192,23 +192,23 @@ define('bui/component/uibase/close',function () {
           }
       },
       __destructor:function () {
-          var btn = this.get('closeBtn');
+          var btn = this.get(&#39;closeBtn&#39;);
           btn &amp;&amp; btn.detach();
       },
 <span id='BUI-Component-UIBase-Close-method-close'>      /**
-</span>       * 关闭弹出框，如果closeAction = 'hide'那么就是隐藏，如果 closeAction = 'destroy'那么就是释放,'remove'从父控件中删除，并释放
+</span>       * 关闭弹出框，如果closeAction = &#39;hide&#39;那么就是隐藏，如果 closeAction = &#39;destroy&#39;那么就是释放,&#39;remove&#39;从父控件中删除，并释放
        */
       close : function(){
         var self = this,
-          action = actions[self.get('closeAction') || HIDE];
-        if(self.fire('closing',{action : action}) !== false){
-          self.fire('beforeclosed',{action : action});
-          if(action == 'remove'){ //移除时同时destroy
+          action = actions[self.get(&#39;closeAction&#39;) || HIDE];
+        if(self.fire(&#39;closing&#39;,{action : action}) !== false){
+          self.fire(&#39;beforeclosed&#39;,{action : action});
+          if(action == &#39;remove&#39;){ //移除时同时destroy
             self[action](true);
           }else{
             self[action]();
           }
-          self.fire('closed',{action : action});
+          self.fire(&#39;closed&#39;,{action : action});
         }
       }
   };

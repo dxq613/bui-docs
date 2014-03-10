@@ -20,13 +20,13 @@
  * @ignore
  */
 
-define('bui/tab/tabpanelitem',['bui/common','bui/tab/tabitem','bui/tab/panelitem'],function (require) {
+define(&#39;bui/tab/tabpanelitem&#39;,[&#39;bui/common&#39;,&#39;bui/tab/tabitem&#39;,&#39;bui/tab/panelitem&#39;],function (require) {
   
 
-  var BUI = require('bui/common'),
-    TabItem = require('bui/tab/tabitem'),
-    PanelItem = require('bui/tab/panelitem'),
-    CLS_TITLE = 'bui-tab-item-text',
+  var BUI = require(&#39;bui/common&#39;),
+    TabItem = require(&#39;bui/tab/tabitem&#39;),
+    PanelItem = require(&#39;bui/tab/panelitem&#39;),
+    CLS_TITLE = &#39;bui-tab-item-text&#39;,
     Component = BUI.Component;
 
 <span id='BUI-Tab-TabPanelItemView'>  /**
@@ -38,12 +38,12 @@ define('bui/tab/tabpanelitem',['bui/common','bui/tab/tabitem','bui/tab/panelitem
   var itemView = TabItem.View.extend([Component.UIBase.Close.View],{
     _uiSetTitle : function(v){
       var _self = this,
-        el = _self.get('el'),
-        titleEl = el.find('.' + CLS_TITLE);
+        el = _self.get(&#39;el&#39;),
+        titleEl = el.find(&#39;.&#39; + CLS_TITLE);
       titleEl.text(v);
     }
   },{
-    xclass:'tab-panel-item-view'
+    xclass:&#39;tab-panel-item-view&#39;
   });
 
 
@@ -64,7 +64,7 @@ define('bui/tab/tabpanelitem',['bui/common','bui/tab/tabitem','bui/tab/panelitem
        * @type {String}
        */
       closeAction : {
-        value : 'remove'
+        value : &#39;remove&#39;
       },
 <span id='BUI-Tab-TabPanelItem-cfg-title'>      /**
 </span>       * 标题
@@ -74,7 +74,7 @@ define('bui/tab/tabpanelitem',['bui/common','bui/tab/tabitem','bui/tab/panelitem
 </span>       * 标题
        * @type {String}
        * &lt;code&gt;
-       *   tab.getItem('id').set('title','new title');
+       *   tab.getItem(&#39;id&#39;).set(&#39;title&#39;,&#39;new title&#39;);
        * &lt;/code&gt;
        */
       title : {
@@ -87,7 +87,7 @@ define('bui/tab/tabpanelitem',['bui/common','bui/tab/tabitem','bui/tab/panelitem
        * @type {String}
        */
       tpl : {
-        value : '&lt;span class=&quot;' + CLS_TITLE + '&quot;&gt;{text}{title}&lt;/span&gt;'
+        value : &#39;&lt;span class=&quot;&#39; + CLS_TITLE + &#39;&quot;&gt;{text}{title}&lt;/span&gt;&#39;
       },
       closeable : {
         value : false
@@ -102,7 +102,7 @@ define('bui/tab/tabpanelitem',['bui/common','bui/tab/tabitem','bui/tab/panelitem
       }
     }
   },{
-    xclass:'tab-panel-item'
+    xclass:&#39;tab-panel-item&#39;
   });
   
   item.View = itemView;

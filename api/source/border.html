@@ -19,15 +19,15 @@
 </span> * @fileOverview 经典的边框布局
  * @ignore
  */
-define('bui/layout/border',['bui/common','bui/layout/abstract','bui/layout/borderitem','bui/layout/collapsable'],function(require) {
+define(&#39;bui/layout/border&#39;,[&#39;bui/common&#39;,&#39;bui/layout/abstract&#39;,&#39;bui/layout/borderitem&#39;,&#39;bui/layout/collapsable&#39;],function(require) {
 
-	var BUI = require('bui/common'),
-		Abstract = require('bui/layout/abstract'),
-		Item = require('bui/layout/borderitem'),
-		Collapsable = require('bui/layout/collapsable'),
-		CLS_TOP = 'x-border-top',
-		CLS_MIDDLE = 'x-border-middle',
-		CLS_BOTTOM = 'x-border-bottom',
+	var BUI = require(&#39;bui/common&#39;),
+		Abstract = require(&#39;bui/layout/abstract&#39;),
+		Item = require(&#39;bui/layout/borderitem&#39;),
+		Collapsable = require(&#39;bui/layout/collapsable&#39;),
+		CLS_TOP = &#39;x-border-top&#39;,
+		CLS_MIDDLE = &#39;x-border-middle&#39;,
+		CLS_BOTTOM = &#39;x-border-bottom&#39;,
 		REGINS = Item.REGINS;
 
 <span id='BUI-Layout-Border'>	/**
@@ -40,59 +40,59 @@ define('bui/layout/border',['bui/common','bui/layout/abstract','bui/layout/borde
 				control = new BUI.Component.Controller({
 				width:600,
 				height:500,
-				render : '#J_Layout',
-				elCls : 'ext-border-layout',
+				render : &#39;#J_Layout&#39;,
+				elCls : &#39;ext-border-layout&#39;,
 				children : [{
 					layout : {
-						title : 'north',
-						region : 'north',
+						title : &#39;north&#39;,
+						region : &#39;north&#39;,
 						height : 50
 					},
 					width : 100,
 					height :15,
-					elCls : 'red',
-					xclass : 'controller',
+					elCls : &#39;red&#39;,
+					xclass : &#39;controller&#39;,
 					content : &quot;一 无自适应&quot;
 				},{
-					xclass : 'controller',
-					elCls : 'red',
+					xclass : &#39;controller&#39;,
+					elCls : &#39;red&#39;,
 					layout : {
-						region : 'south',
-						title : 'south',
-						fit : 'height',
+						region : &#39;south&#39;,
+						title : &#39;south&#39;,
+						fit : &#39;height&#39;,
 						
 						height : 50
 					},
 					width : 250,
-					content : '二 自适应高，但是不自适应宽'
+					content : &#39;二 自适应高，但是不自适应宽&#39;
 				},{
-					xclass : 'controller',
+					xclass : &#39;controller&#39;,
 					layout : {
-						region : 'east',
-						fit : 'both',
-						title : 'east',
+						region : &#39;east&#39;,
+						fit : &#39;both&#39;,
+						title : &#39;east&#39;,
 						width : 150
 					},
-					elCls : 'red',
+					elCls : &#39;red&#39;,
 					content : &quot;三 自适应宽高&quot;
 				},{
-					xclass : 'controller',
+					xclass : &#39;controller&#39;,
 					layout : {
-						region : 'west',
-						fit : 'width',
+						region : &#39;west&#39;,
+						fit : &#39;width&#39;,
 						width : 100
 					},
-					elCls : 'red',
+					elCls : &#39;red&#39;,
 					content : &quot;四 自适应宽&quot;
 				},{
-					xclass : 'controller',
+					xclass : &#39;controller&#39;,
 					layout : {
-						region : 'center',
-						fit : 'both'
+						region : &#39;center&#39;,
+						fit : &#39;both&#39;
 					},
 					
-					elCls : 'blue',
-					content : '居中 自适应宽高'
+					elCls : &#39;blue&#39;,
+					content : &#39;居中 自适应宽高&#39;
 				}],
 				plugins : [layout]
 			});
@@ -111,13 +111,13 @@ define('bui/layout/border',['bui/common','bui/layout/abstract','bui/layout/borde
 		 * @type {Array}
 		 */
 		layoutEvents : {
-			value : ['afterAddChild','afterRemoveChild']
+			value : [&#39;afterAddChild&#39;,&#39;afterRemoveChild&#39;]
 		},
 		itemConstructor : {
 			value : Item
 		},
 		wraperCls : {
-			value : 'x-border-body'
+			value : &#39;x-border-body&#39;
 		},
 		duration : {
 			value : 200
@@ -127,17 +127,17 @@ define('bui/layout/border',['bui/common','bui/layout/abstract','bui/layout/borde
 		 * @type {String}
 		 */
 		triggerCls : {
-			value : 'x-collapsed-btn'
+			value : &#39;x-collapsed-btn&#39;
 		},
 		tpl : {
-			value : '&lt;div class=&quot;x-layout-border&quot;&gt;\
-					&lt;div class=&quot;' + CLS_TOP + '&quot;&gt;&lt;/div&gt;\
-					&lt;div class=&quot;' + CLS_MIDDLE + '&quot;&gt;&lt;/div&gt;\
-					&lt;div class=&quot;' + CLS_BOTTOM + '&quot;&gt;&lt;/div&gt;\
-				&lt;/div&gt;'
+			value : &#39;&lt;div class=&quot;x-layout-border&quot;&gt;\
+					&lt;div class=&quot;&#39; + CLS_TOP + &#39;&quot;&gt;&lt;/div&gt;\
+					&lt;div class=&quot;&#39; + CLS_MIDDLE + &#39;&quot;&gt;&lt;/div&gt;\
+					&lt;div class=&quot;&#39; + CLS_BOTTOM + &#39;&quot;&gt;&lt;/div&gt;\
+				&lt;/div&gt;&#39;
 		},
 		itemTpl : {
-			value : '&lt;div class=&quot;x-border-{region} x-layout-item-border&quot;&gt;&lt;div class=&quot;x-border-body&quot;&gt;&lt;/div&gt;&lt;/div&gt;'
+			value : &#39;&lt;div class=&quot;x-border-{region} x-layout-item-border&quot;&gt;&lt;div class=&quot;x-border-body&quot;&gt;&lt;/div&gt;&lt;/div&gt;&#39;
 		}
 	};
 
@@ -161,14 +161,14 @@ define('bui/layout/border',['bui/common','bui/layout/abstract','bui/layout/borde
 		 */
 		afterWraper : function(){
 			var _self = this,
-				container = _self.get('container'),
-				topEl = container.find('.' + CLS_TOP),
-				middleEl = container.find('.' + CLS_MIDDLE),
-				bottomEl = container.find('.' + CLS_BOTTOM);
+				container = _self.get(&#39;container&#39;),
+				topEl = container.find(&#39;.&#39; + CLS_TOP),
+				middleEl = container.find(&#39;.&#39; + CLS_MIDDLE),
+				bottomEl = container.find(&#39;.&#39; + CLS_BOTTOM);
 
-			_self.set('topEl',topEl);
-			_self.set('middleEl',middleEl);
-			_self.set('bottomEl',bottomEl);
+			_self.set(&#39;topEl&#39;,topEl);
+			_self.set(&#39;middleEl&#39;,middleEl);
+			_self.set(&#39;bottomEl&#39;,bottomEl);
 		},
 <span id='BUI-Layout-Border-method-afterInitItems'>		/**
 </span>		 * 布局选项初始化完毕
@@ -180,16 +180,16 @@ define('bui/layout/border',['bui/common','bui/layout/abstract','bui/layout/borde
 		//设置中间部分的高度和margin,
 		_setMiddleDimension : function(){
 			var _self = this,
-				middleEl = _self.get('middleEl'),
+				middleEl = _self.get(&#39;middleEl&#39;),
 				middleHeight = _self._getMiddleHeight(),
 				left = _self._getMiddleLeft(),
 				right = _self._getMiddleRight(),
-				items = _self.get('items'),
-				center = _self.getItemsByRegion('center')[0];
+				items = _self.get(&#39;items&#39;),
+				center = _self.getItemsByRegion(&#39;center&#39;)[0];
 			middleEl.height(middleHeight);
 			if(center){
-				var el = center.get('el');
-				el.css({'marginLeft':left,'marginRight' : right});
+				var el = center.get(&#39;el&#39;);
+				el.css({&#39;marginLeft&#39;:left,&#39;marginRight&#39; : right});
 			}
 			_self._fitMiddleControl();
 		},
@@ -198,7 +198,7 @@ define('bui/layout/border',['bui/common','bui/layout/abstract','bui/layout/borde
 			var _self = this,
 				items = _self.getItems();
 			BUI.each(items,function(item){
-				var region = item.get('region');
+				var region = item.get(&#39;region&#39;);
 				if(region == REGINS.EAST || region == REGINS.WEST || region == REGINS.CENTER){
 					item.syncFit();
 				}
@@ -207,16 +207,16 @@ define('bui/layout/border',['bui/common','bui/layout/abstract','bui/layout/borde
 		//获取中间位置的高度
 		_getMiddleHeight : function(){
 			var _self = this,
-				container = _self.get('container'),
+				container = _self.get(&#39;container&#39;),
 				totalHeight = container.height(),
-				middleEl = _self.get('middleEl'),
-				topEl = _self.get('topEl'),
+				middleEl = _self.get(&#39;middleEl&#39;),
+				topEl = _self.get(&#39;topEl&#39;),
 				appendHeight,
 				middleHeight;
 			if(topEl.children().length){
-				middleHeight = totalHeight - topEl.outerHeight() - _self.get('bottomEl').outerHeight();
+				middleHeight = totalHeight - topEl.outerHeight() - _self.get(&#39;bottomEl&#39;).outerHeight();
 			}else{
-				middleHeight = totalHeight - _self.get('bottomEl').outerHeight();
+				middleHeight = totalHeight - _self.get(&#39;bottomEl&#39;).outerHeight();
 			}
 			 
 			appendHeight = middleEl.outerHeight() - middleEl.height();
@@ -230,26 +230,26 @@ define('bui/layout/border',['bui/common','bui/layout/abstract','bui/layout/borde
 		 */
 		getItemsByRegion : function(region){
 			return  this.getItemsBy(function(item){
-					return item.get('region') === region;
+					return item.get(&#39;region&#39;) === region;
 			});
 		},
 		//获取中间部分左边的宽度
 		_getMiddleLeft : function(){
 			var _self = this,
-				westItems = _self.getItemsByRegion('west'),
+				westItems = _self.getItemsByRegion(&#39;west&#39;),
 				leftWidth = 0;
 				BUI.each(westItems,function(item){
-					leftWidth += item.get('el').outerWidth();
+					leftWidth += item.get(&#39;el&#39;).outerWidth();
 				});
 			return leftWidth;
 		},
 		//获取中间部分右边的宽度
 		_getMiddleRight : function(){
 			var _self = this,
-				eastItems = _self.getItemsByRegion('east'),
+				eastItems = _self.getItemsByRegion(&#39;east&#39;),
 				rightWidth = 0;
 				BUI.each(eastItems,function(item){
-					rightWidth += item.get('el').outerWidth();
+					rightWidth += item.get(&#39;el&#39;).outerWidth();
 				});
 			return rightWidth;
 		},
@@ -262,13 +262,13 @@ define('bui/layout/border',['bui/common','bui/layout/abstract','bui/layout/borde
 				rst;
 			switch(itemAttrs.region){
 				case REGINS.NORTH : 
-					rst = _self.get('topEl');
+					rst = _self.get(&#39;topEl&#39;);
 					break;
 				case REGINS.SOUTH : 
-					rst = _self.get('bottomEl');
+					rst = _self.get(&#39;bottomEl&#39;);
 				  break;
 				default : 
-					rst = _self.get('middleEl');
+					rst = _self.get(&#39;middleEl&#39;);
 					break;
 			}
 			return rst;
@@ -284,18 +284,18 @@ define('bui/layout/border',['bui/common','bui/layout/abstract','bui/layout/borde
 			var _self = this,
 				property = item.getCollapseProperty(),
 				factor = collapsed ? 1 : -1,
-				duration = _self.get('duration');
-			if(property == 'height'){
+				duration = _self.get(&#39;duration&#39;);
+			if(property == &#39;height&#39;){
 				_self._setMiddleHeight(range * factor,duration);
 			}else{
-				_self._setCenterWidth(item.get('region'),range * factor * -1,duration);
+				_self._setCenterWidth(item.get(&#39;region&#39;),range * factor * -1,duration);
 			}
 
 		},
 		//设置中间的高度
 		_setMiddleHeight : function(range,duration){
 			var _self = this,
-				middleEl = _self.get('middleEl'),
+				middleEl = _self.get(&#39;middleEl&#39;),
 				preHeight = middleEl.height(),
 				height = preHeight + range;
 
@@ -305,13 +305,13 @@ define('bui/layout/border',['bui/common','bui/layout/abstract','bui/layout/borde
 		//设置中间的宽度
 		_setCenterWidth : function(region,range,duration){
 			var _self = this,
-				center = _self.getItemsByRegion('center')[0],
-				property = region == REGINS.EAST ? 'marginRight' : 'marginLeft',
+				center = _self.getItemsByRegion(&#39;center&#39;)[0],
+				property = region == REGINS.EAST ? &#39;marginRight&#39; : &#39;marginLeft&#39;,
 				centerEl,
 				prev,
 				css = {};
 			if(center){
-				centerEl = center.get('el');
+				centerEl = center.get(&#39;el&#39;);
 			}
 			prev = parseFloat(centerEl.css(property));
 			css[property] = range + prev;

@@ -20,19 +20,19 @@
  * @author dxq613@gmail.com
  * @ignore
  */
-define('bui/grid/simplegrid',['bui/common','bui/list'],function(require) {
+define(&#39;bui/grid/simplegrid&#39;,[&#39;bui/common&#39;,&#39;bui/list&#39;],function(require) {
   
-  var BUI = require('bui/common'),
-    List = require('bui/list'),
+  var BUI = require(&#39;bui/common&#39;),
+    List = require(&#39;bui/list&#39;),
     Component = BUI.Component,
     UIBase = Component.UIBase,
     PREFIX = BUI.prefix,
-    CLS_GRID = PREFIX + 'grid',
-    CLS_GRID_ROW = CLS_GRID + '-row',
-    CLS_ROW_ODD = PREFIX + 'grid-row-odd',
-    CLS_ROW_EVEN = PREFIX + 'grid-row-even',
-    CLS_GRID_BORDER = PREFIX + 'grid-border',
-    CLS_ROW_FIRST = PREFIX + 'grid-row-first';
+    CLS_GRID = PREFIX + &#39;grid&#39;,
+    CLS_GRID_ROW = CLS_GRID + &#39;-row&#39;,
+    CLS_ROW_ODD = PREFIX + &#39;grid-row-odd&#39;,
+    CLS_ROW_EVEN = PREFIX + &#39;grid-row-even&#39;,
+    CLS_GRID_BORDER = PREFIX + &#39;grid-border&#39;,
+    CLS_ROW_FIRST = PREFIX + &#39;grid-row-first&#39;;
 
 
 <span id='BUI-Grid-SimpleGridView'>  /**
@@ -49,9 +49,9 @@ define('bui/grid/simplegrid',['bui/common','bui/list'],function(require) {
      */
     setColumns : function(columns){
       var _self = this,
-        headerRowEl = _self.get('headerRowEl');
+        headerRowEl = _self.get(&#39;headerRowEl&#39;);
 
-      columns = columns || _self.get('columns');
+      columns = columns || _self.get(&#39;columns&#39;);
       //清空表头
       headerRowEl.empty();
 
@@ -62,7 +62,7 @@ define('bui/grid/simplegrid',['bui/common','bui/list'],function(require) {
     //创建列
     _createColumn : function(column,parent){
       var _self = this,
-        columnTpl = BUI.substitute(_self.get('columnTpl'),column);
+        columnTpl = BUI.substitute(_self.get(&#39;columnTpl&#39;),column);
       $(columnTpl).appendTo(parent);
     },
 <span id='global-method-getItemTpl'>    /**
@@ -71,18 +71,18 @@ define('bui/grid/simplegrid',['bui/common','bui/list'],function(require) {
      */
     getItemTpl : function  (record,index) {
       var _self = this,
-          columns = _self.get('columns'),
-          rowTpl = _self.get('rowTpl'),
+          columns = _self.get(&#39;columns&#39;),
+          rowTpl = _self.get(&#39;rowTpl&#39;),
           oddCls = index % 2 === 0 ? CLS_ROW_ODD : CLS_ROW_EVEN,
           cellsTpl = [],
           rowEl;
 
       BUI.each(columns, function (column) {
-          var dataIndex = column['dataIndex'];
+          var dataIndex = column[&#39;dataIndex&#39;];
           cellsTpl.push(_self._getCellTpl(column, dataIndex, record));
       });
 
-      rowTpl = BUI.substitute(rowTpl,{cellsTpl:cellsTpl.join(''), oddCls:oddCls});
+      rowTpl = BUI.substitute(rowTpl,{cellsTpl:cellsTpl.join(&#39;&#39;), oddCls:oddCls});
       return rowTpl;
     },
     //get cell template by config and record
@@ -90,7 +90,7 @@ define('bui/grid/simplegrid',['bui/common','bui/list'],function(require) {
         var _self = this,
             renderer = column.renderer,
             text = renderer ? renderer(record[dataIndex], record) : record[dataIndex],
-            cellTpl = _self.get('cellTpl');
+            cellTpl = _self.get(&#39;cellTpl&#39;);
         return BUI.substitute(cellTpl,{elCls : column.elCls,text:text});    
     },
 <span id='global-method-clearData'>    /**
@@ -99,7 +99,7 @@ define('bui/grid/simplegrid',['bui/common','bui/list'],function(require) {
      */
     clearData : function(){
       var _self = this,
-        tbodyEl = _self.get('itemContainer');
+        tbodyEl = _self.get(&#39;itemContainer&#39;);
        tbodyEl.empty();
     },
     showData : function(data){
@@ -112,7 +112,7 @@ define('bui/grid/simplegrid',['bui/common','bui/list'],function(require) {
     //设置单元格边框
     _uiSetInnerBorder : function(v){
         var _self = this,
-            el = _self.get('el');
+            el = _self.get(&#39;el&#39;);
         if(v){
             el.addClass(CLS_GRID_BORDER);
         }else{
@@ -121,8 +121,8 @@ define('bui/grid/simplegrid',['bui/common','bui/list'],function(require) {
     },
     _uiSetTableCls : function(v){
       var _self = this,
-        tableEl = _self.get('el').find('table');
-      tableEl.attr('class',v);
+        tableEl = _self.get(&#39;el&#39;).find(&#39;table&#39;);
+      tableEl.attr(&#39;class&#39;,v);
     }
   },{
     ATTRS : {
@@ -133,8 +133,8 @@ define('bui/grid/simplegrid',['bui/common','bui/list'],function(require) {
       headerRowEl : {
         valueFn :function(){
           var _self = this,
-            thead = _self.get('el').find('thead');
-          return thead.children('tr');
+            thead = _self.get(&#39;el&#39;).find(&#39;thead&#39;);
+          return thead.children(&#39;tr&#39;);
         }
       },
 <span id='global-property-itemContainer'>      /**
@@ -144,7 +144,7 @@ define('bui/grid/simplegrid',['bui/common','bui/list'],function(require) {
        */
       itemContainer :{
         valueFn :function(){
-          return this.get('el').find('tbody');
+          return this.get(&#39;el&#39;).find(&#39;tbody&#39;);
         }
       },
       tableCls : {
@@ -152,36 +152,36 @@ define('bui/grid/simplegrid',['bui/common','bui/list'],function(require) {
       }
     }
   },{
-    xclass:'simple-grid-veiw'
+    xclass:&#39;simple-grid-veiw&#39;
   });
 
 <span id='BUI-Grid-SimpleGrid'>  /**
 </span>   * 简单表格
-   * xclass:'simple-grid'
+   * xclass:&#39;simple-grid&#39;
    * &lt;pre&gt;&lt;code&gt;
-   *  BUI.use('bui/grid',function(Grid){
+   *  BUI.use(&#39;bui/grid&#39;,function(Grid){
    *     
    *    var columns = [{
-   *             title : '表头1(10%)',
-   *             dataIndex :'a',
-   *             width:'10%'
+   *             title : &#39;表头1(10%)&#39;,
+   *             dataIndex :&#39;a&#39;,
+   *             width:&#39;10%&#39;
    *           },{
-   *             id: '123',
-   *             title : '表头2(20%)',
-   *             dataIndex :'b',
-   *             width:'20%'
+   *             id: &#39;123&#39;,
+   *             title : &#39;表头2(20%)&#39;,
+   *             dataIndex :&#39;b&#39;,
+   *             width:&#39;20%&#39;
    *           },{
-   *             title : '表头3(70%)',
-   *             dataIndex : 'c',
-   *             width:'70%'
+   *             title : &#39;表头3(70%)&#39;,
+   *             dataIndex : &#39;c&#39;,
+   *             width:&#39;70%&#39;
    *         }],
-   *         data = [{a:'123'},{a:'cdd',b:'edd'},{a:'1333',c:'eee',d:2}];
+   *         data = [{a:&#39;123&#39;},{a:&#39;cdd&#39;,b:&#39;edd&#39;},{a:&#39;1333&#39;,c:&#39;eee&#39;,d:2}];
    *
    *     var grid = new Grid.SimpleGrid({
-   *       render:'#grid',
+   *       render:&#39;#grid&#39;,
    *       columns : columns,
    *       items : data,
-   *       idField : 'a'
+   *       idField : &#39;a&#39;
    *     });
    *
    *     grid.render();
@@ -191,69 +191,69 @@ define('bui/grid/simplegrid',['bui/common','bui/list'],function(require) {
    * @extends BUI.List.SimpleList
    */
   var simpleGrid = BUI.List.SimpleList.extend(
-<span id='global-property-'>  /**
+<span id=''>  /**
 </span>   * @lends BUI.Grid.SimpleGrid.prototype
    * @ignore
    */
   {
-    renderUI : function(){
-      this.get('view').setColumns();
+<span id='-method-renderUI'>    renderUI : function(){
+</span>      this.get(&#39;view&#39;).setColumns();
     },
-<span id='BUI-Grid-SimpleGrid-method-bindUI'>    /**
+<span id='-method-bindUI'>    /**
 </span>     * 绑定事件
      * @protected
      */
     bindUI : function(){
       var _self = this,
-        itemCls = _self.get('itemCls'),
-        hoverCls = itemCls + '-hover',
-        el = _self.get('el');
+        itemCls = _self.get(&#39;itemCls&#39;),
+        hoverCls = itemCls + &#39;-hover&#39;,
+        el = _self.get(&#39;el&#39;);
 
-      el.delegate('.'+itemCls,'mouseover',function(ev){
+      el.delegate(&#39;.&#39;+itemCls,&#39;mouseover&#39;,function(ev){
         var sender = $(ev.currentTarget);
         sender.addClass(hoverCls);
-      }).delegate('.'+itemCls,'mouseout',function(ev){
+      }).delegate(&#39;.&#39;+itemCls,&#39;mouseout&#39;,function(ev){
         var sender = $(ev.currentTarget);
         sender.removeClass(hoverCls);
       });
     },
-<span id='BUI-Grid-SimpleGrid-method-showData'>    /**
+<span id='-method-showData'>    /**
 </span>     * 显示数据
      * &lt;pre&gt;&lt;code&gt;
      *   var data = [{},{}];
      *   grid.showData(data);
      *
      *   //等同
-     *   grid.set('items',data);
+     *   grid.set(&#39;items&#39;,data);
      * &lt;/code&gt;&lt;/pre&gt;
      * @param  {Array} data 要显示的数据
      */
     showData : function(data){
       this.clearData();
-      //this.get('view').showData(data);
-      this.set('items',data);
+      //this.get(&#39;view&#39;).showData(data);
+      this.set(&#39;items&#39;,data);
     },
-<span id='BUI-Grid-SimpleGrid-method-clearData'>    /**
+<span id='-method-clearData'>    /**
 </span>     * 清除数据
      */
     clearData : function(){
-      this.get('view').clearData();
+      this.get(&#39;view&#39;).clearData();
     },
-    _uiSetColumns : function(columns){
-      var _self = this;
+<span id='-method-_uiSetColumns'>    _uiSetColumns : function(columns){
+</span>      var _self = this;
 
       //重置列，先清空数据
       _self.clearData();
-      _self.get('view').setColumns(columns);
+      _self.get(&#39;view&#39;).setColumns(columns);
     }
   },{
     ATTRS : 
-<span id='global-property-'>    /**
+<span id=''>    /**
 </span>     * @lends BUI.Grid.SimpleGrid#
      * @ignore
      */
     {
-<span id='BUI-Grid-SimpleGrid-property-itemCls'>      /**
+<span id='-property-itemCls'>      /**
 </span>       * 表格可点击项的样式
        * @protected
        * @type {String}
@@ -262,14 +262,14 @@ define('bui/grid/simplegrid',['bui/common','bui/list'],function(require) {
         view:true,
         value : CLS_GRID_ROW
       },
-<span id='BUI-Grid-SimpleGrid-property-tableCls'>      /**
+<span id='-property-tableCls'>      /**
 </span>       * 表格应用的样式，更改此值，则不应用默认表格样式
        * &lt;pre&gt;&lt;code&gt;
        * grid = new Grid.SimpleGrid({
-       *   render:'#grid',
+       *   render:&#39;#grid&#39;,
        *   columns : columns,
        *   innerBorder : false,
-       *   tableCls:'table table-bordered table-striped', 
+       *   tableCls:&#39;table table-bordered table-striped&#39;, 
        *   store : store 
        * }); 
        * &lt;/code&gt;&lt;/pre&gt;
@@ -277,13 +277,13 @@ define('bui/grid/simplegrid',['bui/common','bui/list'],function(require) {
        */
       tableCls : {
         view : true,
-        value : CLS_GRID + '-table'
+        value : CLS_GRID + &#39;-table&#39;
       },
-<span id='BUI-Grid-SimpleGrid-cfg-columns'>      /**
+<span id='-cfg-columns'>      /**
 </span>       * 列信息
        * @cfg {Array} columns
        */
-<span id='BUI-Grid-SimpleGrid-property-columns'>      /**
+<span id='-property-columns'>      /**
 </span>       * 列信息，仅支持以下配置项：
        * &lt;ol&gt;
        *   &lt;li&gt;title：标题&lt;/li&gt;
@@ -300,20 +300,20 @@ define('bui/grid/simplegrid',['bui/common','bui/list'],function(require) {
         sync:false,
         value : []
       },
-<span id='BUI-Grid-SimpleGrid-property-tpl'>      /**
+<span id='-property-tpl'>      /**
 </span>       * 模板
        * @protected
        */
       tpl:{
         view : true,
-        value:'&lt;table cellspacing=&quot;0&quot; class=&quot;{tableCls}&quot; cellpadding=&quot;0&quot;&gt;&lt;thead&gt;&lt;tr&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;/tbody&gt;&lt;/table&gt;'
+        value:&#39;&lt;table cellspacing=&quot;0&quot; class=&quot;{tableCls}&quot; cellpadding=&quot;0&quot;&gt;&lt;thead&gt;&lt;tr&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;/tbody&gt;&lt;/table&gt;&#39;
       },
-<span id='BUI-Grid-SimpleGrid-cfg-innerBorder'>      /**
+<span id='-cfg-innerBorder'>      /**
 </span>       * 单元格左右之间是否出现边框
        * &lt;pre&gt;&lt;code&gt;
        * &lt;pre&gt;&lt;code&gt;
        * grid = new Grid.SimpleGrid({
-       *   render:'#grid',
+       *   render:&#39;#grid&#39;,
        *   columns : columns,
        *   innerBorder : false,
        *   store : store 
@@ -322,7 +322,7 @@ define('bui/grid/simplegrid',['bui/common','bui/list'],function(require) {
        * &lt;/code&gt;&lt;/pre&gt;
        * @cfg {Boolean} [innerBorder=true]
        */
-<span id='BUI-Grid-SimpleGrid-property-innerBorder'>      /**
+<span id='-property-innerBorder'>      /**
 </span>       * 单元格左右之间是否出现边框
        * @type {Boolean}
        * @default true
@@ -331,31 +331,31 @@ define('bui/grid/simplegrid',['bui/common','bui/list'],function(require) {
           view:true,
           value : true
       },
-<span id='BUI-Grid-SimpleGrid-property-rowTpl'>      /**
+<span id='-property-rowTpl'>      /**
 </span>       * 行模版
        * @type {Object}
        */
       rowTpl:{
         view : true,
-        value:'&lt;tr class=&quot;' + CLS_GRID_ROW + ' {oddCls}&quot;&gt;{cellsTpl}&lt;/tr&gt;'
+        value:&#39;&lt;tr class=&quot;&#39; + CLS_GRID_ROW + &#39; {oddCls}&quot;&gt;{cellsTpl}&lt;/tr&gt;&#39;
       },
-<span id='BUI-Grid-SimpleGrid-property-cellTpl'>      /**
+<span id='-property-cellTpl'>      /**
 </span>       * 单元格的模版
        * @type {String}
        */
       cellTpl:{
         view:true,
-        value:'&lt;td class=&quot;' + CLS_GRID + '-cell {elCls}&quot;&gt;&lt;div class=&quot;' + CLS_GRID + '-cell-inner&quot;&gt;&lt;span class=&quot;' + CLS_GRID + '-cell-text&quot;&gt;{text}&lt;/span&gt;&lt;/div&gt;&lt;/td&gt;'
+        value:&#39;&lt;td class=&quot;&#39; + CLS_GRID + &#39;-cell {elCls}&quot;&gt;&lt;div class=&quot;&#39; + CLS_GRID + &#39;-cell-inner&quot;&gt;&lt;span class=&quot;&#39; + CLS_GRID + &#39;-cell-text&quot;&gt;{text}&lt;/span&gt;&lt;/div&gt;&lt;/td&gt;&#39;
       },
-<span id='BUI-Grid-SimpleGrid-property-columnTpl'>      /**
+<span id='-property-columnTpl'>      /**
 </span>       * 列的配置模版
        * @type {String}
        */
       columnTpl : {
         view:true,
-        value : '&lt;th class=&quot;' + CLS_GRID + '-hd {elCls}&quot; width=&quot;{width}&quot;&gt;&lt;div class=&quot;' + CLS_GRID + '-hd-inner&quot;&gt;&lt;span class=&quot;' + CLS_GRID + '-hd-title&quot;&gt;{title}&lt;/span&gt;&lt;/div&gt;&lt;/th&gt;'
+        value : &#39;&lt;th class=&quot;&#39; + CLS_GRID + &#39;-hd {elCls}&quot; width=&quot;{width}&quot;&gt;&lt;div class=&quot;&#39; + CLS_GRID + &#39;-hd-inner&quot;&gt;&lt;span class=&quot;&#39; + CLS_GRID + &#39;-hd-title&quot;&gt;{title}&lt;/span&gt;&lt;/div&gt;&lt;/th&gt;&#39;
       },
-<span id='BUI-Grid-SimpleGrid-property-events'>      /**
+<span id='-property-events'>      /**
 </span>       * @private
        */
       events :{ 
@@ -364,12 +364,12 @@ define('bui/grid/simplegrid',['bui/common','bui/list'],function(require) {
             
           }
       },
-      xview : {
-        value : simpleGridView
+<span id='-property-xview'>      xview : {
+</span>        value : simpleGridView
       }
     }
   },{
-    xclass:'simple-grid'
+    xclass:&#39;simple-grid&#39;
   });
   
   simpleGrid.View = simpleGridView;

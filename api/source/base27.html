@@ -20,12 +20,12 @@
  * @ignore
  */
 
-define('bui/progressbar',['bui/common','bui/progressbar/base','bui/progressbar/load'],function (require) {
-  var BUI = require('bui/common'),
-    ProgressBar = BUI.namespace('ProgressBar');
+define(&#39;bui/progressbar&#39;,[&#39;bui/common&#39;,&#39;bui/progressbar/base&#39;,&#39;bui/progressbar/load&#39;],function (require) {
+  var BUI = require(&#39;bui/common&#39;),
+    ProgressBar = BUI.namespace(&#39;ProgressBar&#39;);
   BUI.mix(ProgressBar,{
-    Base : require('bui/progressbar/base'),
-    Load : require('bui/progressbar/load')
+    Base : require(&#39;bui/progressbar/base&#39;),
+    Load : require(&#39;bui/progressbar/load&#39;)
   });
 
   return ProgressBar;

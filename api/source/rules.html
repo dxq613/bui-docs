@@ -20,9 +20,9 @@
  * @ignore
  */
 
-define('bui/form/rules',['bui/form/rule'],function (require) {
+define(&#39;bui/form/rules&#39;,[&#39;bui/form/rule&#39;],function (require) {
 
-  var Rule = require('bui/form/rule');
+  var Rule = require(&#39;bui/form/rule&#39;);
 
   function toNumber(value){
     return parseFloat(value);
@@ -53,7 +53,7 @@ define('bui/form/rules',['bui/form/rule'],function (require) {
         name = rule.name;
         ruleMap[name] = new Rule(rule);        
       }else if(rule.get){
-        name = rule.get('name'); 
+        name = rule.get(&#39;name&#39;); 
         ruleMap[name] = rule;
       }
       return ruleMap[name];
@@ -113,8 +113,8 @@ define('bui/form/rules',['bui/form/rule'],function (require) {
    * @type {BUI.Form.Rule}
    */
   var required = rules.add({
-    name : 'required',
-    msg : '不能为空！',
+    name : &#39;required&#39;,
+    msg : &#39;不能为空！&#39;,
     validator : function(value,required,formatedMsg){
       if(required !== false &amp;&amp; /^\s*$/.test(value)){
         return formatedMsg;
@@ -130,18 +130,18 @@ define('bui/form/rules',['bui/form/rule'],function (require) {
    *  &lt;li&gt;equalTo: 一个字符串，id（#id_name) 或者 name&lt;/li&gt;
    * &lt;/ol&gt;
    *         {
-   *           equalTo : '#password'
+   *           equalTo : &#39;#password&#39;
    *         }
    *         //或者
    *         {
-   *           equalTo : 'password'
+   *           equalTo : &#39;password&#39;
    *         } 
    * @member BUI.Form.Rules
    * @type {BUI.Form.Rule}
    */
   var equalTo = rules.add({
-    name : 'equalTo',
-    msg : '两次输入不一致！',
+    name : &#39;equalTo&#39;,
+    msg : &#39;两次输入不一致！&#39;,
     validator : function(value,equalTo,formatedMsg){
       var el = $(equalTo);
       if(el.length){
@@ -167,10 +167,10 @@ define('bui/form/rules',['bui/form/rule'],function (require) {
    * @type {BUI.Form.Rule}
    */
   var min = rules.add({
-    name : 'min',
-    msg : '输入值不能小于{0}！',
+    name : &#39;min&#39;,
+    msg : &#39;输入值不能小于{0}！&#39;,
     validator : function(value,min,formatedMsg){
-      if(value !== '' &amp;&amp; toNumber(value) &lt; toNumber(min)){
+      if(value !== &#39;&#39; &amp;&amp; toNumber(value) &lt; toNumber(min)){
         return formatedMsg;
       }
     }
@@ -188,16 +188,16 @@ define('bui/form/rules',['bui/form/rule'],function (require) {
    *         }
    *         //字符串
    *         {
-   *           max : '100'
+   *           max : &#39;100&#39;
    *         }
    * @member BUI.Form.Rules
    * @type {BUI.Form.Rule}
    */
   var max = rules.add({
-    name : 'max',
-    msg : '输入值不能大于{0}！',
+    name : &#39;max&#39;,
+    msg : &#39;输入值不能大于{0}！&#39;,
     validator : function(value,max,formatedMsg){
-      if(value !== '' &amp;&amp; toNumber(value) &gt; toNumber(max)){
+      if(value !== &#39;&#39; &amp;&amp; toNumber(value) &gt; toNumber(max)){
         return formatedMsg;
       }
     }
@@ -214,8 +214,8 @@ define('bui/form/rules',['bui/form/rule'],function (require) {
    * @type {BUI.Form.Rule}
    */
   var length = rules.add({
-    name : 'length',
-    msg : '输入值长度为{0}！',
+    name : &#39;length&#39;,
+    msg : &#39;输入值长度为{0}！&#39;,
     validator : function(value,len,formatedMsg){
       if(value != null){
         value = $.trim(value.toString());
@@ -239,8 +239,8 @@ define('bui/form/rules',['bui/form/rule'],function (require) {
    * @type {BUI.Form.Rule}
    */
   var minlength = rules.add({
-    name : 'minlength',
-    msg : '输入值长度不小于{0}！',
+    name : &#39;minlength&#39;,
+    msg : &#39;输入值长度不小于{0}！&#39;,
     validator : function(value,min,formatedMsg){
       if(value != null){
         value = $.trim(value.toString());
@@ -266,8 +266,8 @@ define('bui/form/rules',['bui/form/rule'],function (require) {
    * @type {BUI.Form.Rule}   
    */
   var maxlength = rules.add({
-    name : 'maxlength',
-    msg : '输入值长度不大于{0}！',
+    name : &#39;maxlength&#39;,
+    msg : &#39;输入值长度不大于{0}！&#39;,
     validator : function(value,max,formatedMsg){
       if(value){
         value = $.trim(value.toString());
@@ -290,8 +290,8 @@ define('bui/form/rules',['bui/form/rule'],function (require) {
    * @type {BUI.Form.Rule}
    */
   var regexp = rules.add({
-    name : 'regexp',
-    msg : '输入值不符合{0}！',
+    name : &#39;regexp&#39;,
+    msg : &#39;输入值不符合{0}！&#39;,
     validator : function(value,regexp,formatedMsg){
       if(regexp){
         return regexp.test(value) ? undefined : formatedMsg;
@@ -309,8 +309,8 @@ define('bui/form/rules',['bui/form/rule'],function (require) {
    * @type {BUI.Form.Rule}
    */
   var email = rules.add({
-    name : 'email',
-    msg : '不是有效的邮箱地址！',
+    name : &#39;email&#39;,
+    msg : &#39;不是有效的邮箱地址！&#39;,
     validator : function(value,baseValue,formatedMsg){
       value = $.trim(value);
       if(value){
@@ -330,8 +330,8 @@ define('bui/form/rules',['bui/form/rule'],function (require) {
    * @type {BUI.Form.Rule}
    */
   var date = rules.add({
-    name : 'date',
-    msg : '不是有效的日期！',
+    name : &#39;date&#39;,
+    msg : &#39;不是有效的日期！&#39;,
     validator : function(value,baseValue,formatedMsg){
       if(BUI.isNumber(value)){ //数字认为是日期
         return;
@@ -354,15 +354,15 @@ define('bui/form/rules',['bui/form/rule'],function (require) {
    *  &lt;li&gt;minDate: 日期，字符串&lt;/li&gt;
    * &lt;/ol&gt;
    *         {
-   *           minDate : '2001-01-01';
+   *           minDate : &#39;2001-01-01&#39;;
    *         }
    *         //字符串
    * @member BUI.Form.Rules
    * @type {BUI.Form.Rule}
    */
   var minDate = rules.add({
-    name : 'minDate',
-    msg : '输入日期不能小于{0}！',
+    name : &#39;minDate&#39;,
+    msg : &#39;输入日期不能小于{0}！&#39;,
     validator : function(value,minDate,formatedMsg){
       if(value){
         var date = toDate(value);
@@ -381,18 +381,18 @@ define('bui/form/rules',['bui/form/rule'],function (require) {
    *  &lt;li&gt;maxDate: 日期、字符串&lt;/li&gt;
    * &lt;/ol&gt;
    *         {
-   *           maxDate : '2001-01-01';
+   *           maxDate : &#39;2001-01-01&#39;;
    *         }
    *         //或日期
    *         {
-   *           maxDate : new Date('2001-01-01');
+   *           maxDate : new Date(&#39;2001-01-01&#39;);
    *         }
    * @member BUI.Form.Rules
    * @type {BUI.Form.Rule}
    */
   var maxDate = rules.add({
-    name : 'maxDate',
-    msg : '输入日期不能大于{0}！',
+    name : &#39;maxDate&#39;,
+    msg : &#39;输入日期不能大于{0}！&#39;,
     validator : function(value,maxDate,formatedMsg){
       if(value){
         var date = toDate(value);
@@ -402,6 +402,28 @@ define('bui/form/rules',['bui/form/rule'],function (require) {
       }
     }
   });
+
+<span id='BUI-Form-Rules-property-mobile'>  /**
+</span>   * 数字验证，会对值去除空格，无数据不进行校验
+   * 允许千分符，例如： 12,000,000的格式
+   * &lt;ol&gt;
+   *  &lt;li&gt;name: mobile&lt;/li&gt;
+   *  &lt;li&gt;msg: 不是有效的手机号码！&lt;/li&gt;
+   * &lt;/ol&gt;
+   * @member BUI.Form.Rules
+   * @type {BUI.Form.Rule}
+   */
+  var mobile = rules.add({
+    name : &#39;mobile&#39;,
+    msg : &#39;不是有效的手机号码！&#39;,
+    validator : function(value,baseValue,formatedMsg){
+      value = $.trim(value);
+      if(value){
+        return /^\d{11}$/.test(value) ? undefined : formatedMsg;
+      }
+    }
+  });
+
 <span id='BUI-Form-Rules-property-number'>  /**
 </span>   * 数字验证，会对值去除空格，无数据不进行校验
    * 允许千分符，例如： 12,000,000的格式
@@ -413,13 +435,13 @@ define('bui/form/rules',['bui/form/rule'],function (require) {
    * @type {BUI.Form.Rule}
    */
   var number = rules.add({
-    name : 'number',
-    msg : '不是有效的数字！',
+    name : &#39;number&#39;,
+    msg : &#39;不是有效的数字！&#39;,
     validator : function(value,baseValue,formatedMsg){
       if(BUI.isNumber(value)){
         return;
       }
-      value = value.replace(/\,/g,'');
+      value = value.replace(/\,/g,&#39;&#39;);
       return !isNaN(value) ? undefined : formatedMsg;
     }
   });
@@ -435,7 +457,7 @@ define('bui/form/rules',['bui/form/rule'],function (require) {
     return prevVal &lt; curVal;
   }
   function isEmpty(value){
-    return value == '' || value == null;
+    return value == &#39;&#39; || value == null;
   }
   //测试是否后面的数据大于前面的
   function rangeValid(value,baseValue,formatedMsg,group){
@@ -447,8 +469,8 @@ define('bui/form/rules',['bui/form/rule'],function (require) {
         curVal,
         prevVal;
       if(cur &amp;&amp; prev){
-        curVal = cur.get('value');
-        prevVal = prev.get('value');
+        curVal = cur.get(&#39;value&#39;);
+        prevVal = prev.get(&#39;value&#39;);
         if(!isEmpty(curVal) &amp;&amp; !isEmpty(prevVal) &amp;&amp; !testRange(baseValue,curVal,prevVal)){
           valid = false;
           break;
@@ -477,8 +499,8 @@ define('bui/form/rules',['bui/form/rule'],function (require) {
    * @type {BUI.Form.Rule}   
    */
   var dateRange = rules.add({
-    name : 'dateRange',
-    msg : '结束日期不能小于起始日期！',
+    name : &#39;dateRange&#39;,
+    msg : &#39;结束日期不能小于起始日期！&#39;,
     validator : rangeValid
   });
 
@@ -499,17 +521,17 @@ define('bui/form/rules',['bui/form/rule'],function (require) {
    * @type {BUI.Form.Rule}   
    */
   var numberRange = rules.add({
-    name : 'numberRange',
-    msg : '结束数字不能小于开始数字！',
+    name : &#39;numberRange&#39;,
+    msg : &#39;结束数字不能小于开始数字！&#39;,
     validator : rangeValid
   });
 
   function getFieldName (self) {
     var firstField = self.getFieldAt(0);
     if(firstField){
-      return firstField.get('name');
+      return firstField.get(&#39;name&#39;);
     }
-    return '';
+    return &#39;&#39;;
   }
 
   function testCheckRange(value,range){
@@ -564,8 +586,8 @@ define('bui/form/rules',['bui/form/rule'],function (require) {
    * @type {BUI.Form.Rule}   
    */
   var checkRange = rules.add({
-    name : 'checkRange',
-    msg : '必须选中{0}项！',
+    name : &#39;checkRange&#39;,
+    msg : &#39;必须选中{0}项！&#39;,
     validator : function(record,baseValue,formatedMsg,group){
       var name = getFieldName(group),
         value,

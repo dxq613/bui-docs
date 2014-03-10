@@ -20,14 +20,14 @@
  * @ignore
  */
 
-define('bui/tree',['bui/common','bui/tree/treemixin','bui/tree/treelist','bui/tree/treemenu'],function (require) {
-  var BUI = require('bui/common'),
-    Tree = BUI.namespace('Tree');
+define(&#39;bui/tree&#39;,[&#39;bui/common&#39;,&#39;bui/tree/treemixin&#39;,&#39;bui/tree/treelist&#39;,&#39;bui/tree/treemenu&#39;],function (require) {
+  var BUI = require(&#39;bui/common&#39;),
+    Tree = BUI.namespace(&#39;Tree&#39;);
 
   BUI.mix(Tree,{
-    TreeList : require('bui/tree/treelist'),
-    Mixin : require('bui/tree/treemixin'),
-    TreeMenu : require('bui/tree/treemenu')
+    TreeList : require(&#39;bui/tree/treelist&#39;),
+    Mixin : require(&#39;bui/tree/treemixin&#39;),
+    TreeMenu : require(&#39;bui/tree/treemenu&#39;)
   });
   return Tree;
 });</pre>

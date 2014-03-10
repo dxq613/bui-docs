@@ -20,13 +20,13 @@
  * @ignore
  */
 
-define('bui/layout/columns',['bui/common','bui/layout/abstract'],function (require) {
+define(&#39;bui/layout/columns&#39;,[&#39;bui/common&#39;,&#39;bui/layout/abstract&#39;],function (require) {
 	
-	var BUI = require('bui/common'),
-		Abstract = require('bui/layout/abstract');
+	var BUI = require(&#39;bui/common&#39;),
+		Abstract = require(&#39;bui/layout/abstract&#39;);
 
 	function formatPercent(num){
-		return (num * 100) + '%';
+		return (num * 100) + &#39;%&#39;;
 	}
 
 <span id='BUI-Layout-Columns'>	/**
@@ -40,44 +40,44 @@ define('bui/layout/columns',['bui/common','bui/layout/abstract'],function (requi
 				control = new BUI.Component.Controller({
 				width:800,
 				height:500,
-				render : '#J_Layout',
-				elCls : 'layout-test',
-				defaultChildClass : 'controller',
+				render : &#39;#J_Layout&#39;,
+				elCls : &#39;layout-test&#39;,
+				defaultChildClass : &#39;controller&#39;,
 				children : [
 					{
 						
-						content : '1'
+						content : &#39;1&#39;
 					},{
-						id : '2',
-						content : '2'
-					},{
-						
-						content : '3'
+						id : &#39;2&#39;,
+						content : &#39;2&#39;
 					},{
 						
-						content : '4'
+						content : &#39;3&#39;
+					},{
+						
+						content : &#39;4&#39;
 					},
 
 					{
-						content : '5'
+						content : &#39;5&#39;
 					},{
 						
-						content : '6'
+						content : &#39;6&#39;
 					},
 
 					{
-						id:'7',
+						id:&#39;7&#39;,
 						
-						content : '7'
+						content : &#39;7&#39;
 					},{
 						layout : {
 							col : 2 //从0开始
 						},
-						id : '8',
-						content : '8 列 3'
+						id : &#39;8&#39;,
+						content : &#39;8 列 3&#39;
 					},
 					{
-						content : '9'
+						content : &#39;9&#39;
 					}
 
 				],
@@ -104,13 +104,13 @@ define('bui/layout/columns',['bui/common','bui/layout/abstract'],function (requi
 		 * @type {String}
 		 */
 		columnTpl : {
-			value : '&lt;div class=&quot;x-layout-column&quot;&gt;&lt;/div&gt;'
+			value : &#39;&lt;div class=&quot;x-layout-column&quot;&gt;&lt;/div&gt;&#39;
 		},
 		tpl : {
-			value : '&lt;div class=&quot;x-layout-columns&quot;&gt;&lt;/div&gt;'
+			value : &#39;&lt;div class=&quot;x-layout-columns&quot;&gt;&lt;/div&gt;&#39;
 		},
 		itemTpl : {
-			value : '&lt;div class=&quot;x-layout-item-column&quot;&gt;&lt;/div&gt;'
+			value : &#39;&lt;div class=&quot;x-layout-item-column&quot;&gt;&lt;/div&gt;&#39;
 		}
 	};
 
@@ -134,14 +134,14 @@ define('bui/layout/columns',['bui/common','bui/layout/abstract'],function (requi
 		moveItem : function(item,to){
 			var _self = this,
 				itemContainer;
-			if(to &gt;= _self.get('columns') || to &lt; 0){
+			if(to &gt;= _self.get(&#39;columns&#39;) || to &lt; 0){
 				return;
 			}
 
-			item.set('col',to);
+			item.set(&#39;col&#39;,to);
 			itemContainer = _self.getItemContainer({col : to});
-			item.set('container',itemContainer);
-			item.get('el').appendTo(itemContainer);
+			item.set(&#39;container&#39;,itemContainer);
+			item.get(&#39;el&#39;).appendTo(itemContainer);
 		},
 <span id='BUI-Layout-Columns-method-afterWraper'>		/**
 </span>		 * @protected
@@ -149,20 +149,20 @@ define('bui/layout/columns',['bui/common','bui/layout/abstract'],function (requi
 		 */
 		afterWraper : function(){
 			var _self = this,
-				columns = _self.get('columns'),
-				container = _self.get('container'),
+				columns = _self.get(&#39;columns&#39;),
+				container = _self.get(&#39;container&#39;),
 				arr = [];
 			for (var i = 0; i &lt; columns; i++) {
-				arr.push(_self.get('columnTpl'));
+				arr.push(_self.get(&#39;columnTpl&#39;));
 			};
-			container.html(arr.join(''));
+			container.html(arr.join(&#39;&#39;));
 
 			_self._setColumnsWidth();
 		},
 		//获取平均宽度
 		_setColumnsWidth : function(){
 			var _self = this,
-				container = _self.get('container'),
+				container = _self.get(&#39;container&#39;),
 				children = container.children(),
 				containerWidth = container.width(),
 				avgWidth = parseInt(containerWidth / children.length,10),
@@ -180,13 +180,13 @@ define('bui/layout/columns',['bui/common','bui/layout/abstract'],function (requi
 		 */
 		getItemContainer : function(itemAttrs){
 			var _self = this,
-				items = _self.get('items'),
-				columns = _self.get('columns'),
-				container = this.get('container');
+				items = _self.get(&#39;items&#39;),
+				columns = _self.get(&#39;columns&#39;),
+				container = this.get(&#39;container&#39;);
 			if(itemAttrs.col === undefined){
 				itemAttrs.col = items.length % columns;
 			}
-			return $(container.find('.x-layout-column')[itemAttrs.col]);
+			return $(container.find(&#39;.x-layout-column&#39;)[itemAttrs.col]);
 		}
 	});
 

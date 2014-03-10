@@ -20,10 +20,10 @@
  * @ignore
  */
 
-define('bui/component/uibase/depends',['bui/component/manage'],function (require) {
+define(&#39;bui/component/uibase/depends&#39;,[&#39;bui/component/manage&#39;],function (require) {
   
   var regexp = /^#(.*):(.*)$/,
-    Manager = require('bui/component/manage');
+    Manager = require(&#39;bui/component/manage&#39;);
 
   //获取依赖信息
   function getDepend(name){
@@ -77,7 +77,7 @@ define('bui/component/uibase/depends',['bui/component/manage'],function (require
   function getSource(id){
     var control = Manager.getComponent(id);
     if(!control){
-      control = $('#' + id);
+      control = $(&#39;#&#39; + id);
       if(!control.length){
         control = null;
       }
@@ -91,9 +91,9 @@ define('bui/component/uibase/depends',['bui/component/manage'],function (require
    * &lt;pre&gt;&lt;code&gt;
    *       var control = new Control({
    *         depends : {
-   *           '#btn:click':['toggle'],//当点击id为'btn'的按钮时，执行 control 的toggle方法
-   *           '#checkbox1:checked':['show'],//当勾选checkbox时，显示控件
-   *           '#menu:click',function(){}
+   *           &#39;#btn:click&#39;:[&#39;toggle&#39;],//当点击id为&#39;btn&#39;的按钮时，执行 control 的toggle方法
+   *           &#39;#checkbox1:checked&#39;:[&#39;show&#39;],//当勾选checkbox时，显示控件
+   *           &#39;#menu:click&#39;,function(){}
    *         }
    *       });
    * &lt;/code&gt;&lt;/pre&gt;
@@ -114,9 +114,9 @@ define('bui/component/uibase/depends',['bui/component/manage'],function (require
      * &lt;pre&gt;&lt;code&gt;
      *       var control = new Control({
      *         depends : {
-     *           '#btn:click':['toggle'],//当点击id为'btn'的按钮时，执行 control 的toggle方法
-     *           '#checkbox1:checked':['show'],//当勾选checkbox时，显示控件
-     *           '#menu:click',function(){}
+     *           &#39;#btn:click&#39;:[&#39;toggle&#39;],//当点击id为&#39;btn&#39;的按钮时，执行 control 的toggle方法
+     *           &#39;#checkbox1:checked&#39;:[&#39;show&#39;],//当勾选checkbox时，显示控件
+     *           &#39;#menu:click&#39;,function(){}
      *         }
      *       });
      * &lt;/code&gt;&lt;/pre&gt;
@@ -148,7 +148,7 @@ define('bui/component/uibase/depends',['bui/component/manage'],function (require
      */
     initDependences : function(){
       var _self = this,
-        depends = _self.get('depends');
+        depends = _self.get(&#39;depends&#39;);
       BUI.each(depends,function(action,name){
         _self.addDependence(name,action);
       });
@@ -156,9 +156,9 @@ define('bui/component/uibase/depends',['bui/component/manage'],function (require
 <span id='BUI-Component-UIBase-Depends-method-addDependence'>    /**
 </span>     * 添加依赖，如果已经有同名的事件，则移除，再添加
      * &lt;pre&gt;&lt;code&gt;
-     *  form.addDependence('#btn:click',['toggle']); //当按钮#btn点击时，表单交替显示隐藏
+     *  form.addDependence(&#39;#btn:click&#39;,[&#39;toggle&#39;]); //当按钮#btn点击时，表单交替显示隐藏
      *
-     *  form.addDependence('#btn:click',function(){//当按钮#btn点击时，表单交替显示隐藏
+     *  form.addDependence(&#39;#btn:click&#39;,function(){//当按钮#btn点击时，表单交替显示隐藏
      *   //TO DO
      *  }); 
      * &lt;/code&gt;&lt;/pre&gt;
@@ -167,7 +167,7 @@ define('bui/component/uibase/depends',['bui/component/manage'],function (require
      */
     addDependence : function(name,action){
       var _self = this,
-        dependencesMap = _self.get('dependencesMap'),
+        dependencesMap = _self.get(&#39;dependencesMap&#39;),
         depend;
       _self.removeDependence(name);
       depend = bindDepend(_self,name,action)
@@ -178,13 +178,13 @@ define('bui/component/uibase/depends',['bui/component/manage'],function (require
 <span id='BUI-Component-UIBase-Depends-method-removeDependence'>    /**
 </span>     * 移除依赖
      * &lt;pre&gt;&lt;code&gt;
-     *  form.removeDependence('#btn:click'); //当按钮#btn点击时，表单不在监听
+     *  form.removeDependence(&#39;#btn:click&#39;); //当按钮#btn点击时，表单不在监听
      * &lt;/code&gt;&lt;/pre&gt;
      * @param  {String} name 依赖名称
      */
     removeDependence : function(name){
       var _self = this,
-        dependencesMap = _self.get('dependencesMap'),
+        dependencesMap = _self.get(&#39;dependencesMap&#39;),
         depend = dependencesMap[name];
       if(depend){
         offDepend(depend);
@@ -199,11 +199,11 @@ define('bui/component/uibase/depends',['bui/component/manage'],function (require
      */
     clearDependences : function(){
       var _self = this,
-        map = _self.get('dependencesMap');
+        map = _self.get(&#39;dependencesMap&#39;);
       BUI.each(map,function(depend,name){
         offDepend(depend);
       });
-      _self.set('dependencesMap',{});
+      _self.set(&#39;dependencesMap&#39;,{});
     },
     __destructor : function(){
       this.clearDependences();

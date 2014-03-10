@@ -21,20 +21,20 @@
  * @ignore
  */
 
-define('bui/progressbar/base',['bui/common'],function(require){
+define(&#39;bui/progressbar/base&#39;,[&#39;bui/common&#39;],function(require){
 
-	var BUI = require('bui/common');
+	var BUI = require(&#39;bui/common&#39;);
 
 	var progressBarView = BUI.Component.View.extend({
 		_uiSetPercent : function (v) {
 
 			var _self = this,
-				innerEl = _self.get('el').children();
+				innerEl = _self.get(&#39;el&#39;).children();
 			if(!BUI.isArray(v)){
 				v = [v];
 			}
 			BUI.each(innerEl,function (item,index) {
-				$(item).width(v[index] + '%');
+				$(item).width(v[index] + &#39;%&#39;);
 			});
 
 		}
@@ -45,15 +45,15 @@ define('bui/progressbar/base',['bui/common'],function(require){
 	});
 <span id='BUI-ProgressBar-Base'>	/**
 </span> 	* 基础进度条，用于显示进度
- 	* xclass:'progress-bar'
+ 	* xclass:&#39;progress-bar&#39;
  	* &lt;pre&gt;&lt;code&gt;
- 	*  BUI.use('bui/progressbar',function(ProgressBar){
+ 	*  BUI.use(&#39;bui/progressbar&#39;,function(ProgressBar){
   *   
   *     var Progressbar = ProgressBar.Base,
   *       progressbar = new Progressbar({
-  *         elCls : 'progress progress-striped active',
-  *         render : '#progressbar',
-  *         tpl : '&lt;div class=&quot;bar&quot;&gt;&lt;/div&gt;',
+  *         elCls : &#39;progress progress-striped active&#39;,
+  *         render : &#39;#progressbar&#39;,
+  *         tpl : &#39;&lt;div class=&quot;bar&quot;&gt;&lt;/div&gt;&#39;,
   *         percent:10
   *       });
   *     progressbar.render();
@@ -75,7 +75,7 @@ define('bui/progressbar/base',['bui/common'],function(require){
 				value: 0
 			},
 			tpl : {
-				value : '&lt;div class=&quot;progress-bar-inner&quot;&gt;&lt;/div&gt;'
+				value : &#39;&lt;div class=&quot;progress-bar-inner&quot;&gt;&lt;/div&gt;&#39;
 			},
 			xview : {
 				value : progressBarView
@@ -83,7 +83,7 @@ define('bui/progressbar/base',['bui/common'],function(require){
 		}
 
 	},{
-		xclass:'progress-bar'
+		xclass:&#39;progress-bar&#39;
 	});
 
 	return progressBar;

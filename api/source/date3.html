@@ -21,12 +21,12 @@
  * @ignore
  */
 
-define('bui/form/datefield',['bui/common','bui/form/basefield','bui/calendar'],function (require) {
+define(&#39;bui/form/datefield&#39;,[&#39;bui/common&#39;,&#39;bui/form/basefield&#39;,&#39;bui/calendar&#39;],function (require) {
 
-  var BUI = require('bui/common'),
-    Field = require('bui/form/basefield'),
+  var BUI = require(&#39;bui/common&#39;),
+    Field = require(&#39;bui/form/basefield&#39;),
     DateUtil = BUI.Date;/*,
-    DatePicker = require('bui/calendar').DatePicker*/
+    DatePicker = require(&#39;bui/calendar&#39;).DatePicker*/
 
 <span id='BUI-Form-Field-Date'>  /**
 </span>   * 表单文本域
@@ -38,12 +38,12 @@ define('bui/form/datefield',['bui/common','bui/form/basefield','bui/calendar'],f
     renderUI : function(){
       
       var _self = this,
-        datePicker = _self.get('datePicker');
+        datePicker = _self.get(&#39;datePicker&#39;);
       if($.isPlainObject(datePicker)){
         _self.initDatePicker(datePicker);
       }
-      if((datePicker.get &amp;&amp; datePicker.get('showTime'))|| datePicker.showTime){
-        _self.getInnerControl().addClass('calendar-time');
+      if((datePicker.get &amp;&amp; datePicker.get(&#39;showTime&#39;))|| datePicker.showTime){
+        _self.getInnerControl().addClass(&#39;calendar-time&#39;);
       }
 
     },
@@ -51,13 +51,13 @@ define('bui/form/datefield',['bui/common','bui/form/basefield','bui/calendar'],f
     initDatePicker : function(datePicker){
       var _self = this;
 
-      BUI.use('bui/calendar',function(Calendar){
+      BUI.use(&#39;bui/calendar&#39;,function(Calendar){
         datePicker.trigger = _self.getInnerControl();
         datePicker.autoRender = true;
         datePicker = new Calendar.DatePicker(datePicker);
-        _self.set('datePicker',datePicker);
-        _self.set('isCreatePicker',true);
-        _self.get('children').push(datePicker);
+        _self.set(&#39;datePicker&#39;,datePicker);
+        _self.set(&#39;isCreatePicker&#39;,true);
+        _self.get(&#39;children&#39;).push(datePicker);
       });
     },
 <span id='BUI-Form-Field-Date-method-setControlValue'>    /**
@@ -76,12 +76,12 @@ define('bui/form/datefield',['bui/common','bui/form/basefield','bui/calendar'],f
     //获取格式化函数
     _getFormatMask : function(){
       var _self = this,
-        datePicker = _self.get('datePicker');
+        datePicker = _self.get(&#39;datePicker&#39;);
 
-      if(datePicker.get('showTime')){
-        return 'yyyy-mm-dd HH:MM:ss';
+      if(datePicker.get(&#39;showTime&#39;)){
+        return &#39;yyyy-mm-dd HH:MM:ss&#39;;
       }
-      return 'yyyy-mm-dd';
+      return &#39;yyyy-mm-dd&#39;;
     },
 <span id='BUI-Form-Field-Date-method-parseValue'>     /**
 </span>     * 将字符串等格式转换成日期
@@ -102,16 +102,16 @@ define('bui/form/datefield',['bui/common','bui/form/basefield','bui/calendar'],f
      * 是否当前值
      */
     isCurrentValue : function (value) {
-      return DateUtil.isEquals(value,this.get('value'));
+      return DateUtil.isEquals(value,this.get(&#39;value&#39;));
     },
     //设置最大值
     _uiSetMax : function(v){
-      this.addRule('max',v);
+      this.addRule(&#39;max&#39;,v);
       var _self = this,
-        datePicker = _self.get('datePicker');
+        datePicker = _self.get(&#39;datePicker&#39;);
       if(datePicker){
         if(datePicker.set){
-          datePicker.set('maxDate',v);
+          datePicker.set(&#39;maxDate&#39;,v);
         }else{
           datePicker.maxDate = v;
         }
@@ -120,12 +120,12 @@ define('bui/form/datefield',['bui/common','bui/form/basefield','bui/calendar'],f
     },
     //设置最小值
     _uiSetMin : function(v){
-      this.addRule('min',v);
+      this.addRule(&#39;min&#39;,v);
       var _self = this,
-        datePicker = _self.get('datePicker');
+        datePicker = _self.get(&#39;datePicker&#39;);
       if(datePicker){
         if(datePicker.set){
-          datePicker.set('minDate',v);
+          datePicker.set(&#39;minDate&#39;,v);
         }else{
           datePicker.minDate = v;
         }
@@ -138,7 +138,7 @@ define('bui/form/datefield',['bui/common','bui/form/basefield','bui/calendar'],f
        * @type {String}
        */
       controlTpl : {
-        value : '&lt;input type=&quot;text&quot; class=&quot;calendar&quot;/&gt;'
+        value : &#39;&lt;input type=&quot;text&quot; class=&quot;calendar&quot;/&gt;&#39;
       },
       defaultRules : {
         value : {
@@ -188,7 +188,7 @@ define('bui/form/datefield',['bui/common','bui/form/basefield','bui/calendar'],f
     },
     PARSER : {
       datePicker : function(el){
-        if(el.hasClass('calendar-time')){
+        if(el.hasClass(&#39;calendar-time&#39;)){
           return {
             showTime : true
           }
@@ -197,7 +197,7 @@ define('bui/form/datefield',['bui/common','bui/form/basefield','bui/calendar'],f
       }
     }
   },{
-    xclass : 'form-field-date'
+    xclass : &#39;form-field-date&#39;
   });
 
   return dateField;

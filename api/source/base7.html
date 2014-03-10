@@ -20,13 +20,13 @@
  * @ignore
  */
 
-define('bui/calendar',['bui/common','bui/calendar/calendar','bui/calendar/monthpicker','bui/calendar/datepicker'],function (require) {
-  var BUI = require('bui/common'),
-    Calendar = BUI.namespace('Calendar');
+define(&#39;bui/calendar&#39;,[&#39;bui/common&#39;,&#39;bui/calendar/calendar&#39;,&#39;bui/calendar/monthpicker&#39;,&#39;bui/calendar/datepicker&#39;],function (require) {
+  var BUI = require(&#39;bui/common&#39;),
+    Calendar = BUI.namespace(&#39;Calendar&#39;);
   BUI.mix(Calendar,{
-    Calendar : require('bui/calendar/calendar'),
-    MonthPicker : require('bui/calendar/monthpicker'),
-    DatePicker : require('bui/calendar/datepicker')
+    Calendar : require(&#39;bui/calendar/calendar&#39;),
+    MonthPicker : require(&#39;bui/calendar/monthpicker&#39;),
+    DatePicker : require(&#39;bui/calendar/datepicker&#39;)
   });
 
   return Calendar;

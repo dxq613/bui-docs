@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 表格的栅格背景
+ * @ignore
+ */
+
+define(&#39;bui/chart/grid&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plotitem&#39;],function (require) {
+	
+	var BUI = require(&#39;bui/common&#39;),
+		Item = require(&#39;bui/chart/plotitem&#39;),
+		Util = require(&#39;bui/graphic&#39;).Util,
+		CLS_GRID = &#39;x-chart-grid&#39;;
+
+	function ensure(attrName,self,defVal){
+		var item = self.get(attrName);
+		if(!item){
+			item = defVal;
+			self.set(attrName,item);
+		}
+		return item;
+	}
+
+	function lines2path(lines,attrs){
+		var path = &#39;&#39;,
+			cfg = BUI.mix({},attrs);
+
+		BUI.each(lines,function(item){
+      var subPath = BUI.substitute(&#39;M{x1} {y1}L{x2} {y2}&#39;,item);
+  	  path += subPath;
+    });
+    cfg.path = path;
+    return cfg;
+	}
+
+
+<span id='BUI-Chart-Grid'>	/**
+</span>	 * @class BUI.Chart.Grid
+	 * 背景栅格
+	 * @extends BUI.Chart.PlotItem
+	 */
+	function Grid(cfg){
+		Grid.superclass.constructor.call(this,cfg);
+	}
+
+	BUI.extend(Grid,Item);
+
+	Grid.ATTRS = {
+		zIndex : {
+      value : 1
+    },
+		elCls : {
+			value : CLS_GRID
+		},
+<span id='BUI-Chart-Grid-property-type'>		/**
+</span>		 * 如果栅格线由多个点构成，线的类型
+		 *
+		 *  - line 不封闭的线
+		 *  - polygon 封闭的多边形
+		 *  - circle 圆
+		 * @type {String}
+		 */
+		type : {
+			value : &#39;line&#39;
+		},
+<span id='BUI-Chart-Grid-property-line'>		/**
+</span>		 * 线的样式配置
+		 * @type {Object}
+		 */
+		line : {
+			
+		},
+<span id='BUI-Chart-Grid-property-minorLine'>		/**
+</span>		 * 次要线的配置项
+		 * @type {Number}
+		 */
+		minorLine : {
+
+		},
+<span id='BUI-Chart-Grid-property-minorCount'>		/**
+</span>		 * 2个Grid线中间的次要线的数目
+		 * @type {Number}
+		 */
+		minorCount : {
+			value : 0
+		},
+<span id='BUI-Chart-Grid-property-renderer'>		/**
+</span>		 * 渲染函数，使用此函数时，将阻止默认线的生成
+		 * @type {Function}
+		 */
+		renderer : {
+
+		},
+<span id='BUI-Chart-Grid-property-items'>    /**
+</span>     * 线集合的配置
+     * @type {Array}
+     */
+    items : {
+
+    },
+<span id='BUI-Chart-Grid-property-odd'>    /**
+</span>     * 栅格内部的奇数背景配置
+     * @type {Object}
+     */
+    odd : {
+
+    },
+<span id='BUI-Chart-Grid-property-even'>    /**
+</span>     * 栅格内部的偶数背景配置
+     * @type {Object}
+     */
+    even : {
+
+    },
+<span id='BUI-Chart-Grid-property-animate'>    /**
+</span>     * 发生改变时是否触发动画
+     * @type {Boolean}
+     */
+    animate : {
+    	value : true
+    },
+    duration : {
+    	value : 1000
+    }
+
+	};
+
+	BUI.augment(Grid,{
+
+		renderUI : function(){
+			var _self = this;
+    	Grid.superclass.renderUI.call(_self);
+    	_self._drawLines();
+		},
+		//绘制栅格线
+		_drawLines : function(){
+			var _self = this,
+				lineCfg = _self.get(&#39;line&#39;),
+				items = _self.get(&#39;items&#39;);
+
+			if(items){
+				var preItem;
+				_self._precessItems(items);
+				_self._drawGridLines(items,lineCfg,CLS_GRID + &#39;-line&#39;);
+				if(_self.get(&#39;minorCount&#39;)){
+					_self.drawMinorLines();
+				}
+			}
+
+		},
+		//渲染自定义栅格，渲染奇偶线
+		_precessItems : function(items){
+			var _self = this,
+				minorCount = _self.get(&#39;minorCount&#39;),
+				renderer = _self.get(&#39;renderer&#39;),
+				preItem;
+
+			BUI.each(items,function(item,index){
+					if(renderer){
+						renderer.call(this,item,index);
+					}else if(minorCount){
+						if(preItem){
+							_self._addMonorItem(item,preItem);
+						}
+					}
+					if(preItem &amp;&amp; (_self.get(&#39;odd&#39;) || _self.get(&#39;even&#39;))){
+						_self._drawOddEven(item,preItem,index);
+					}
+					
+					preItem = item;
+			});
+		},
+<span id='BUI-Chart-Grid-method-change'>		/**
+</span>		 * 栅格改变
+		 * @param  {Array} items 栅格点的坐标
+		 */
+		change : function(items){
+			var _self = this;
+			_self.set(&#39;items&#39;,items);
+			_self._clearPre();
+			_self._precessItems(items);
+			_self._changeGridLines(items,CLS_GRID + &#39;-line&#39;,true);
+			_self._changeMinorLinses();
+
+		},
+		_clearPre : function(){
+			var _self = this,
+				items;
+			if(_self.get(&#39;minorCount&#39;)){
+				_self.set(&#39;minorItems&#39;,[]);
+			}
+			//除了栅格线外，全部清除
+			items = _self.findBy(function(item){
+					var elCls = item.get(&#39;elCls&#39;);
+					if(elCls == CLS_GRID + &#39;-line&#39; || elCls == CLS_GRID + &#39;-minor&#39;){
+						return false;
+					}
+					return true;
+			});
+
+			BUI.each(items,function(item){
+				item.remove();
+			});
+		},
+		//是否垂直
+		_isVertical : function(item){
+			if(item.x1 == item.x2){
+				return true;
+			}
+			return false;
+		},
+		//画栅格
+		_drawGridLines : function(items,lineCfg,cls){
+			var _self = this,
+        cfg = _self._linesToPath(items,lineCfg),
+      	gridLine =	_self.addShape({
+	        type : &#39;path&#39;,
+	        elCls : cls,
+	        attrs : cfg
+	    	});
+    	_self.set(&#39;gridLine&#39; + cls,gridLine);
+		},
+		//更改栅格
+		_changeGridLines : function(items,cls,animate){
+			var _self = this,
+
+        gridLine = _self.get(&#39;gridLine&#39; + cls);
+      if(gridLine){
+      	var cfg = _self._linesToPath(items,{});
+      	if(animate){
+      		Util.animPath(gridLine,cfg.path,2);
+      	}else{
+      		gridLine.attr(&#39;path&#39;,cfg.path);
+      	}
+      	
+      }
+		},
+		_linesToPath : function(items,lineCfg){
+			var _self = this,
+				path = [],
+				type = _self.get(&#39;type&#39;),
+				cfg;
+			if(type == &#39;line&#39;){
+				return lines2path(items,lineCfg);
+			}
+			cfg = BUI.mix({},lineCfg);
+			BUI.each(items,function(item){
+				path = path.concat(_self._getMultiplePath(item,type));
+			});
+			cfg.path = path;
+			return cfg;
+		},
+		_getMultiplePath : function(item,type){
+			var _self = this,
+				points = item.points,
+				path = [];
+			if(type == &#39;polygon&#39;){ //多边形
+				BUI.each(points,function(point,index){
+					
+					if(index == 0){
+						path.push([&#39;M&#39;,point.x,point.y]);
+					}else{
+						path.push([&#39;L&#39;,point.x,point.y]);
+					}
+				});
+				path.push(&#39;z&#39;);
+			}else{
+				var x = item.center.x,
+					y = item.center.y,
+					rx = item.r,
+					ry = item.r;
+				path = [[&quot;M&quot;, x, y], [&quot;m&quot;, 0, -ry], [&quot;a&quot;, rx, ry, 0, 1, 1, 0, 2 * ry], [&quot;a&quot;, rx, ry, 0, 1, 1, 0, -2 * ry], [&quot;z&quot;]];
+			}
+			return path;
+		},
+		//绘制奇偶背景
+		_drawOddEven : function(item,preItem,index){
+			var _self = this,
+				odd = _self.get(&#39;odd&#39;),
+				even = _self.get(&#39;even&#39;),
+				name,
+				attrs;
+
+			if(index % 2 == 0){
+				if(even){
+					attrs = _self._getBackItem(preItem,item,even);
+					name = &#39;even&#39;;
+				}
+			}else if(odd){
+				attrs = _self._getBackItem(preItem,item,odd);
+				name = &#39;odd&#39;;
+			}
+			if(attrs){
+				_self.addShape({
+					type : &#39;path&#39;,
+					elCls : CLS_GRID + &#39;-&#39; + name,
+					attrs : attrs
+				});
+			}
+		},
+		_getBackItem: function(start,end,cfg){
+			var _self = this, 
+				path = BUI.substitute(&#39;M {x1} {y1} L{x2} {y2}&#39;,start);
+			path = path + BUI.substitute(&#39;L{x2} {y2} L{x1} {y1}Z&#39;,end);
+
+			cfg = BUI.merge(cfg,{
+				path : path
+			});
+			return cfg;
+		},
+		//获取次要线配置
+		_getMinorItem : function(start,end,index,count){
+			var _self = this,
+				isVertical = _self._isVertical(start,end),
+				field = isVertical ? &#39;x&#39; : &#39;y&#39;,
+				ortho = isVertical ? &#39;y&#39; : &#39;x&#39;,
+				length = end[field + &#39;1&#39;] - start[field + &#39;1&#39;],
+				avg = length / (count + 1),
+				rst = {};
+
+			rst[field + &#39;1&#39;] = rst[field + &#39;2&#39;] = (index + 1) * avg + start[field + &#39;1&#39;];
+			rst[ortho + &#39;1&#39;] = start[ortho + &#39;1&#39;];
+			rst[ortho + &#39;2&#39;] = start[ortho + &#39;2&#39;];
+			return rst;
+			
+		},
+		_addMonorItem : function(item,preItem){
+			var _self = this,
+				minorItems = ensure(&#39;minorItems&#39;,_self,[]),
+				minorCount = _self.get(&#39;minorCount&#39;);
+			if(minorCount){
+				for(var i = 0; i &lt; minorCount ; i++){
+					var minorItem = _self._getMinorItem(preItem,item,i,minorCount);
+					minorItems.push(minorItem);
+				}
+			}
+		},
+		//绘制次要线
+		drawMinorLines : function(){
+			var _self = this,
+				lineCfg = _self.get(&#39;minorLine&#39;),
+				minorItems = _self.get(&#39;minorItems&#39;);
+			_self._drawGridLines(minorItems,lineCfg,CLS_GRID + &#39;-minor&#39;);
+		},
+		_changeMinorLinses : function(){
+			var _self = this,
+				minorItems = _self.get(&#39;minorItems&#39;);
+			_self._changeGridLines(minorItems,CLS_GRID + &#39;-minor&#39;);
+		}
+	});
+
+	return Grid;
+});</pre>
+</body>
+</html>

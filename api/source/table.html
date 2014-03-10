@@ -20,11 +20,11 @@
  * @ignore
  */
 
-define('bui/layout/table',['bui/common','bui/layout/abstract','bui/layout/cellitem'],function (require) {
+define(&#39;bui/layout/table&#39;,[&#39;bui/common&#39;,&#39;bui/layout/abstract&#39;,&#39;bui/layout/cellitem&#39;],function (require) {
 
-	var BUI = require('bui/common'),
-		Abstract = require('bui/layout/abstract'),
-		Item = require('bui/layout/cellitem');
+	var BUI = require(&#39;bui/common&#39;),
+		Abstract = require(&#39;bui/layout/abstract&#39;),
+		Item = require(&#39;bui/layout/cellitem&#39;);
 
 <span id='BUI-Layout-Table'>	/**
 </span>	 * @class BUI.Layout.Table
@@ -39,32 +39,32 @@ define('bui/layout/table',['bui/common','bui/layout/abstract','bui/layout/cellit
 				control = new BUI.Component.Controller({
 				width:600,
 				height:500,
-				render : '#J_Layout',
-				elCls : 'layout-test',
-				defaultChildClass : 'controller',
+				render : &#39;#J_Layout&#39;,
+				elCls : &#39;layout-test&#39;,
+				defaultChildClass : &#39;controller&#39;,
 				children : [
 					{
 						layout : {
 							row : 0,
 							height : 50
 						},
-						content : '1'
+						content : &#39;1&#39;
 					},{
 						layout : {
 							row : 0
 						},
-						content : '2'
+						content : &#39;2&#39;
 					},{
 						layout : {
 							row : 0
 						},
-						content : '3'
+						content : &#39;3&#39;
 					},{
 						layout : {
 							row : 0,
 							rowspan : 4
 						},
-						content : '4'
+						content : &#39;4&#39;
 					},
 
 					{
@@ -73,36 +73,36 @@ define('bui/layout/table',['bui/common','bui/layout/abstract','bui/layout/cellit
 							colspan : 2,
 							height : 100
 						},
-						content : '5'
+						content : &#39;5&#39;
 					},{
 						layout : {
 							row : 1
 						},
-						content : '6'
+						content : &#39;6&#39;
 					},
 
 					{
-						id:'7',
+						id:&#39;7&#39;,
 						layout : {
 							row : 2
 						},
-						content : '7'
+						content : &#39;7&#39;
 					},{
 						layout : {
 							row : 2,
 							colspan : 2,
 							rowspan:2
 						},
-						id : '8',
-						content : '8'
+						id : &#39;8&#39;,
+						content : &#39;8&#39;
 					},
 
 					{
-						id:'9',
+						id:&#39;9&#39;,
 						layout : {
 							row : 3
 						},
-						content : '9'
+						content : &#39;9&#39;
 					}
 
 				],
@@ -134,7 +134,7 @@ define('bui/layout/table',['bui/common','bui/layout/abstract','bui/layout/cellit
 		 * @type {String}
 		 */
 		tpl : {
-			value : '&lt;table class=&quot;x-layout-table&quot;&gt;&lt;tbody&gt;&lt;/tbody&gt;&lt;/table&gt;'
+			value : &#39;&lt;table class=&quot;x-layout-table&quot;&gt;&lt;tbody&gt;&lt;/tbody&gt;&lt;/table&gt;&#39;
 		},
 <span id='BUI-Layout-Table-property-columns'>		/**
 </span>		 * 列的数目
@@ -155,7 +155,7 @@ define('bui/layout/table',['bui/common','bui/layout/abstract','bui/layout/cellit
 		 * @type {String}
 		 */
 		itemTpl : {
-			value : '&lt;td class=&quot;x-layout-item-cell&quot;&gt;&lt;/td&gt;'
+			value : &#39;&lt;td class=&quot;x-layout-item-cell&quot;&gt;&lt;/td&gt;&#39;
 		}
 	};
 
@@ -169,13 +169,13 @@ define('bui/layout/table',['bui/common','bui/layout/abstract','bui/layout/cellit
 		 */
 		afterWraper : function(){
 			var _self = this,
-				rows = _self.get('rows'),
-				container = _self.get('container'),
+				rows = _self.get(&#39;rows&#39;),
+				container = _self.get(&#39;container&#39;),
 				arr = [];
 			for (var i = 0; i &lt; rows; i++) {
-				arr.push('&lt;tr&gt;&lt;/tr&gt;');
+				arr.push(&#39;&lt;tr&gt;&lt;/tr&gt;&#39;);
 			};
-			container.find('tbody').html(arr.join(''));
+			container.find(&#39;tbody&#39;).html(arr.join(&#39;&#39;));
 		},
 <span id='BUI-Layout-Table-method-getItemContainer'>		/**
 </span>		 * @protected
@@ -183,8 +183,8 @@ define('bui/layout/table',['bui/common','bui/layout/abstract','bui/layout/cellit
 		 */
 		getItemContainer : function(itemAttrs){
 			var _self = this,
-				container = this.get('container');
-			return $(container.find('tr')[itemAttrs.row]);
+				container = this.get(&#39;container&#39;);
+			return $(container.find(&#39;tr&#39;)[itemAttrs.row]);
 		}
 	});
 

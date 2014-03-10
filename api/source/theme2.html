@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 图表的皮肤
+ * @ignore
+ */
+
+define(&#39;bui/chart/theme&#39;,function (requrie) {
+
+  var BUI = requrie(&#39;bui/common&#39;);
+
+<span id='Theme'>  /**
+</span>   * BUI.Chart.Theme
+   * @param {Object} cfg  样式的配置项
+   * @param {Object} base 扩展的样式
+   */
+  var Theme = function(cfg,base){
+
+    Theme.initTheme(cfg,base);
+    return cfg;
+  };
+
+  Theme.initTheme = function(cfg,base){
+    BUI.mix(true,cfg,base);
+  };
+
+  var lineCfg = {
+        duration : 1000,
+        line : {
+          &#39;stroke-width&#39;: 2,
+          &#39;stroke-linejoin&#39;: &#39;round&#39;,
+          &#39;stroke-linecap&#39;: &#39;round&#39;
+        },
+        lineActived : {
+          &#39;stroke-width&#39;: 3
+        },
+        markers : {
+          marker : {
+            radius : 3
+          },
+          actived : {
+            radius : 6,
+            stroke: &#39;#fff&#39;
+          }
+        },
+        animate : true
+      };
+  Theme.Base = Theme({
+    colors : [&#39;#2f7ed8&#39;,&#39;#0d233a&#39;,&#39;#8bbc21&#39;,&#39;#910000&#39;,&#39;#1aadce&#39;,&#39;#492970&#39;,&#39;#f28f43&#39;,&#39;#77a1e5&#39;,&#39;#c42525&#39;,&#39;#a6c96a&#39;],
+    symbols : [&#39;circle&#39;,&#39;diamond&#39;,&#39;square&#39;,&#39;triangle&#39;,&#39;triangle-down&#39;],
+    plotCfg : {
+      margin : 50
+    },
+    xAxis : {
+      labels : {
+        label : {
+          y : 12
+        }
+      }
+    },
+    yAxis : {
+      line : null,
+      tickLine : null,
+      grid : {
+        line : {
+          stroke : &#39;#c0c0c0&#39;
+        }
+      },
+      title : {
+        text : &#39;&#39;,
+        font : &#39;16px bold&#39;,
+        rotate : 90,
+        x : -30
+      },
+      position:&#39;left&#39;,
+      labels : {
+        label : {
+          x : -12
+        }
+      }
+    },
+    legend : {
+        dy : 30
+    },
+    seriesOptions : {
+      lineCfg : lineCfg,
+      areaCfg : lineCfg,
+      bubbleCfg : {
+        circle : {
+            &#39;stroke-width&#39; : 1,
+            &#39;fill-opacity&#39; : .5
+        },
+        activeCircle : {
+            &#39;stroke-width&#39; : 2
+        }
+      },
+      pieCfg : {
+        colors : [&#39;#2f7ed8&#39;,&#39;#0d233a&#39;,&#39;#8bbc21&#39;,&#39;#910000&#39;,&#39;#1aadce&#39;,&#39;#492970&#39;,&#39;#f28f43&#39;,&#39;#77a1e5&#39;,&#39;#c42525&#39;,&#39;#a6c96a&#39;],
+        item : {
+          stroke : &#39;#fff&#39;
+        }
+      }
+      
+    },
+    tooltip : {
+      offset : 10
+    }
+
+  },{
+
+  });
+
+
+  return Theme;
+});</pre>
+</body>
+</html>

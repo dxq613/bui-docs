@@ -20,7 +20,7 @@
  * @ignore
  */
 
-define('bui/tab/panelitem',function (requrie) {
+define(&#39;bui/tab/panelitem&#39;,function (requrie) {
 
 <span id='BUI-Tab-PanelItem'>  /**
 </span>   * @class BUI.Tab.PanelItem
@@ -58,18 +58,18 @@ define('bui/tab/panelitem',function (requrie) {
      * @type {string}
      */
     panelVisibleStatus : {
-      value : 'selected'
+      value : &#39;selected&#39;
     },
 <span id='BUI-Tab-PanelItem-property-defaultLoaderCfg'>    /**
 </span>       * 默认的加载控件内容的配置,默认值：
        * &lt;pre&gt;
        *  {
-       *   property : 'panelContent',
+       *   property : &#39;panelContent&#39;,
        *   lazyLoad : {
-       *       event : 'active'
+       *       event : &#39;active&#39;
        *   },
        *     loadMask : {
-       *       el : _self.get('panel')
+       *       el : _self.get(&#39;panel&#39;)
        *   }
        * }
        * &lt;/pre&gt;
@@ -80,13 +80,13 @@ define('bui/tab/panelitem',function (requrie) {
           var _self = this,
             eventName = _self._getVisibleEvent();
           return {
-            property : 'panelContent',
+            property : &#39;panelContent&#39;,
             autoLoad : false,
             lazyLoad : {
               event : eventName
             },
             loadMask : {
-              el : _self.get('panel')
+              el : _self.get(&#39;panel&#39;)
             }
           }
         } 
@@ -116,16 +116,16 @@ define('bui/tab/panelitem',function (requrie) {
     },
     _resetPanelVisible : function(){
       var _self = this,
-        status = _self.get('panelVisibleStatus'),
+        status = _self.get(&#39;panelVisibleStatus&#39;),
         visible = _self.get(status);
       _self._setPanelVisible(visible);
     },
     //获取显示隐藏的事件
     _getVisibleEvent : function(){
       var _self = this,
-        status = _self.get('panelVisibleStatus');
+        status = _self.get(&#39;panelVisibleStatus&#39;);
 
-      return 'after' + BUI.ucfirst(status) + 'Change';;
+      return &#39;after&#39; + BUI.ucfirst(status) + &#39;Change&#39;;;
     },
 <span id='BUI-Tab-PanelItem-method-_setPanelVisible'>    /**
 </span>     * @private
@@ -134,16 +134,16 @@ define('bui/tab/panelitem',function (requrie) {
      */
     _setPanelVisible : function(visible){
       var _self = this,
-        panel = _self.get('panel'),
-        method = visible ? 'show' : 'hide';
+        panel = _self.get(&#39;panel&#39;),
+        method = visible ? &#39;show&#39; : &#39;hide&#39;;
       if(panel){
         $(panel)[method]();
       }
     },
     __destructor : function(){
       var _self = this,
-        panel = _self.get('panel');
-      if(panel &amp;&amp; _self.get('panelDestroyable')){
+        panel = _self.get(&#39;panel&#39;);
+      if(panel &amp;&amp; _self.get(&#39;panelDestroyable&#39;)){
         $(panel).remove();
       }
     },
@@ -153,14 +153,14 @@ define('bui/tab/panelitem',function (requrie) {
     },
     _uiSetPanelContent : function(v){
       var _self = this,
-        panel = _self.get('panel');
+        panel = _self.get(&#39;panel&#39;);
       //$(panel).html(v);
       _self._setPanelContent(panel,v);
     },
     //设置panel
     _uiSetPanel : function(v){
       var _self = this,
-        content = _self.get('panelContent');
+        content = _self.get(&#39;panelContent&#39;);
       if(content){
         _self._setPanelContent(v,content);
       }

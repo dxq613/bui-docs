@@ -21,8 +21,8 @@
  * @ignore
  */
 
-define('bui/list/listbox',['bui/list/simplelist'],function (require) {
-  var SimpleList = require('bui/list/simplelist');
+define(&#39;bui/list/listbox&#39;,[&#39;bui/list/simplelist&#39;],function (require) {
+  var SimpleList = require(&#39;bui/list/simplelist&#39;);
 <span id='BUI-List-Listbox'>  /**
 </span>   * 列表选择框
    * @extends BUI.List.SimpleList
@@ -32,12 +32,12 @@ define('bui/list/listbox',['bui/list/simplelist'],function (require) {
     bindUI : function(){
     	var _self = this;
       
-    	_self.on('selectedchange',function(e){
+    	_self.on(&#39;selectedchange&#39;,function(e){
     		var item = e.item,
     			sender = $(e.domTarget),
-    			checkbox =sender.find('input');
+    			checkbox =sender.find(&#39;input&#39;);
     		if(item){
-    			checkbox.attr('checked',e.selected);
+    			checkbox.attr(&#39;checked&#39;,e.selected);
     		}
     	});
     }
@@ -49,7 +49,7 @@ define('bui/list/listbox',['bui/list/simplelist'],function (require) {
        * @type {String}
        */
       itemTpl : {
-        value : '&lt;li&gt;&lt;span class=&quot;x-checkbox&quot;&gt;&lt;/span&gt;{text}&lt;/li&gt;'
+        value : &#39;&lt;li&gt;&lt;span class=&quot;x-checkbox&quot;&gt;&lt;/span&gt;{text}&lt;/li&gt;&#39;
       },
 <span id='BUI-List-Listbox-property-multipleSelect'>      /**
 </span>       * 选项模板
@@ -61,7 +61,7 @@ define('bui/list/listbox',['bui/list/simplelist'],function (require) {
       }
     }
   },{
-    xclass: 'listbox'
+    xclass: &#39;listbox&#39;
   });
 
   return listbox;

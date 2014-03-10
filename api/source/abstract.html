@@ -20,10 +20,10 @@
  * @ignore
  */
 
-define('bui/layout/abstract',['bui/common','bui/layout/baseitem'],function(require){
+define(&#39;bui/layout/abstract&#39;,[&#39;bui/common&#39;,&#39;bui/layout/baseitem&#39;],function(require){
 
-	var BUI = require('bui/common'),
-		Item = require('bui/layout/baseitem');
+	var BUI = require(&#39;bui/common&#39;),
+		Item = require(&#39;bui/layout/baseitem&#39;);
 
 <span id='BUI-Layout-Abstract'>	/**
 </span>	 * @class BUI.Layout.Abstract
@@ -57,7 +57,7 @@ define('bui/layout/abstract',['bui/common','bui/layout/baseitem'],function(requi
 		 * @type {Array}
 		 */
 		layoutEvents : {
-			value : ['afterWidthChange','afterHeightChange']
+			value : [&#39;afterWidthChange&#39;,&#39;afterHeightChange&#39;]
 		},
 <span id='BUI-Layout-Abstract-property-items'>		/**
 </span>		 * 内部选项
@@ -72,6 +72,13 @@ define('bui/layout/abstract',['bui/common','bui/layout/baseitem'],function(requi
 		 */
 		elCls : {
 
+		},
+<span id='BUI-Layout-Abstract-property-defaultCfg'>		/**
+</span>		 * 布局子项的默认得配置项
+		 * @type {Object}
+		 */
+		defaultCfg : {
+			value : {}
 		},
 <span id='BUI-Layout-Abstract-property-wraperCls'>		/**
 </span>		 * 放置控件的容器css
@@ -95,11 +102,11 @@ define('bui/layout/abstract',['bui/common','bui/layout/baseitem'],function(requi
 
 		},
 <span id='BUI-Layout-Abstract-property-itemTpl'>		/**
-</span>		 * 每一个布局子项
+</span>		 * 每一个布局子项的模板
 		 * @type {String}
 		 */
 		itemTpl : {
-			value : '&lt;div&gt;&lt;/div&gt;'
+			value : &#39;&lt;div&gt;&lt;/div&gt;&#39;
 		}
 	}
 
@@ -107,7 +114,7 @@ define('bui/layout/abstract',['bui/common','bui/layout/baseitem'],function(requi
 
 		initializer : function(control){
 			var _self = this;
-			_self.set('control',control);
+			_self.set(&#39;control&#39;,control);
 		},
 		renderUI : function(){
 			this._initWraper();
@@ -116,16 +123,16 @@ define('bui/layout/abstract',['bui/common','bui/layout/baseitem'],function(requi
 		//绑定宽度，高度发生改变的情形
 		bindUI : function(){
 			var _self = this,
-				control = _self.get('control'),
-				layoutEvents = _self.get('layoutEvents').join(' ');
+				control = _self.get(&#39;control&#39;),
+				layoutEvents = _self.get(&#39;layoutEvents&#39;).join(&#39; &#39;);
 
-			control.on('afterAddChild',function(ev){
+			control.on(&#39;afterAddChild&#39;,function(ev){
 				var child = ev.child;
 				_self.addItem(child);
 				
 			});
 
-			control.on('afterRemoveChild',function(ev){
+			control.on(&#39;afterRemoveChild&#39;,function(ev){
 				_self.removeItem(ev.child);
 			});
 			
@@ -147,11 +154,11 @@ define('bui/layout/abstract',['bui/common','bui/layout/baseitem'],function(requi
 		//初始化容器
 	  _initWraper : function(){
 	  	var _self = this,
-	  		control = _self.get('control'),
-	  		controlEl = control.get('view').get('contentEl'),
+	  		control = _self.get(&#39;control&#39;),
+	  		controlEl = control.get(&#39;view&#39;).get(&#39;contentEl&#39;),
 	  		node,
-	  		elCls = _self.get('elCls'),
-	  		tpl = _self.get('tpl');
+	  		elCls = _self.get(&#39;elCls&#39;),
+	  		tpl = _self.get(&#39;tpl&#39;);
 	  	if(tpl){
 	  		node = $(tpl).appendTo(controlEl);
 	  	}else{
@@ -160,7 +167,7 @@ define('bui/layout/abstract',['bui/common','bui/layout/baseitem'],function(requi
 	  	if(elCls){
 	  		node.addClass(elCls);
 	  	}
-	  	_self.set('container',node);
+	  	_self.set(&#39;container&#39;,node);
 	  	_self.afterWraper();
 		},
 <span id='BUI-Layout-Abstract-method-afterWraper'>		/**
@@ -177,7 +184,7 @@ define('bui/layout/abstract',['bui/common','bui/layout/baseitem'],function(requi
 		 */
 		getItemByElement : function(element){
 			return this.getItemBy(function(item){
-				return $.contains(item.get('el')[0],element[0]);
+				return $.contains(item.get(&#39;el&#39;)[0],element[0]);
 			});
 		},
 <span id='BUI-Layout-Abstract-method-getItemContainer'>		/**
@@ -185,7 +192,7 @@ define('bui/layout/abstract',['bui/common','bui/layout/baseitem'],function(requi
 		 * 获取布局选项的容器
 		 */
 		getItemContainer : function(itemAttrs){
-			return this.get('container');
+			return this.get(&#39;container&#39;);
 		},
 <span id='BUI-Layout-Abstract-method-initItems'>		/**
 </span>		 * @private
@@ -193,11 +200,11 @@ define('bui/layout/abstract',['bui/common','bui/layout/baseitem'],function(requi
 		 */
 		initItems : function(){
 			var _self = this,
-				control = _self.get('control'),
+				control = _self.get(&#39;control&#39;),
 				items = [],
-				controlChildren = control.get('children');
+				controlChildren = control.get(&#39;children&#39;);
 
-			_self.set('items',items);
+			_self.set(&#39;items&#39;,items);
 
 			for (var i = 0; i &lt; controlChildren.length; i++) {
 				_self.addItem(controlChildren[i]);
@@ -232,13 +239,15 @@ define('bui/layout/abstract',['bui/common','bui/layout/baseitem'],function(requi
 		 */
 		getItemCfg : function(controlChild){
 			var _self = this,
-				cfg = BUI.mix({},controlChild.get('layout'));
-			cfg.control = controlChild;
-			cfg.tpl = _self.get('itemTpl');
-			cfg.layout = _self;
-			cfg.wraperCls = _self.get('wraperCls');
-			cfg.container = _self.getItemContainer(cfg);
-
+				defaultCfg = _self.get(&#39;defaultCfg&#39;),
+				cfg = BUI.mix({},defaultCfg,{
+					control : controlChild,
+					tpl : _self.get(&#39;itemTpl&#39;),
+					layout : _self,
+					wraperCls : _self.get(&#39;wraperCls&#39;)
+				},controlChild.get(&#39;layout&#39;));
+				
+				cfg.container = _self.getItemContainer(cfg)
 			return cfg;
 		},
 <span id='BUI-Layout-Abstract-method-initItem'>		/**
@@ -247,7 +256,7 @@ define('bui/layout/abstract',['bui/common','bui/layout/baseitem'],function(requi
 		 */
 		initItem : function(controlChild){
 			var _self = this,
-				c = _self.get('itemConstructor'),
+				c = _self.get(&#39;itemConstructor&#39;),
 				cfg = _self.getItemCfg(controlChild);
 
 			return new c(cfg);
@@ -320,7 +329,7 @@ define('bui/layout/abstract',['bui/common','bui/layout/baseitem'],function(requi
 		 */
 		getItem : function(control){
 			return this.getItemBy(function(item){
-				return item.get('control') == control;
+				return item.get(&#39;control&#39;) == control;
 			});
 		},
 <span id='BUI-Layout-Abstract-method-getCount'>		/**
@@ -351,7 +360,7 @@ define('bui/layout/abstract',['bui/common','bui/layout/baseitem'],function(requi
 		 * @return {Array} 返回布局的子项
 		 */
 		getItems : function(){
-			return this.get('items');
+			return this.get(&#39;items&#39;);
 		},
 <span id='BUI-Layout-Abstract-method-resetLayout'>		/**
 </span>		 * @protected

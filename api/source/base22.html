@@ -20,23 +20,24 @@
  * @ignore
  */
 (function(){
-	var BASE = 'bui/layout/';
-	define('bui/layout',['bui/common',BASE + 'abstract',BASE + 'absolute',BASE + 'anchor', BASE + 'flow',BASE + 'columns',BASE + 'table',
-		BASE + 'border', BASE + 'accordion',BASE + 'viewport'],function (r) {
+	var BASE = &#39;bui/layout/&#39;;
+	define(&#39;bui/layout&#39;,[&#39;bui/common&#39;,BASE + &#39;abstract&#39;,BASE + &#39;absolute&#39;,BASE + &#39;anchor&#39;, BASE + &#39;flow&#39;,BASE + &#39;columns&#39;,BASE + &#39;table&#39;,
+		BASE + &#39;border&#39;, BASE + &#39;accordion&#39;,BASE + &#39;viewport&#39;],function (r) {
 
-		var BUI = r('bui/common');
+		var BUI = r(&#39;bui/common&#39;);
 
-		var Layout = BUI.namespace('Layout');
+		var Layout = BUI.namespace(&#39;Layout&#39;);
 
 		BUI.mix(Layout,{
-			Abstract : r(BASE + 'abstract'),
-			Anchor : r(BASE + 'anchor'),
-			Flow : r(BASE + 'flow'),
-			Columns : r(BASE + 'columns'),
-			Table : r(BASE + 'table'),
-			Border :r(BASE + 'border'), 
-			Accordion : r(BASE + 'accordion'),
-			Viewport : r(BASE + 'viewport')
+			Abstract : r(BASE + &#39;abstract&#39;),
+			Anchor : r(BASE + &#39;anchor&#39;),
+			Flow : r(BASE + &#39;flow&#39;),
+			Absolute : r(BASE + &#39;absolute&#39;),
+			Columns : r(BASE + &#39;columns&#39;),
+			Table : r(BASE + &#39;table&#39;),
+			Border :r(BASE + &#39;border&#39;), 
+			Accordion : r(BASE + &#39;accordion&#39;),
+			Viewport : r(BASE + &#39;viewport&#39;)
 		});
 
 		return Layout;

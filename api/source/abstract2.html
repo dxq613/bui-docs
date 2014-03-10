@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 抽象的坐标轴
+ * @ignore
+ */
+
+define(&#39;bui/chart/abstractaxis&#39;,function (require) {
+  
+  var BUI = require(&#39;bui/common&#39;),
+    Item = require(&#39;bui/chart/plotitem&#39;),
+    Grid = require(&#39;bui/chart/grid&#39;),
+    Util = require(&#39;bui/graphic&#39;).Util,
+    ShowLabels = require(&#39;bui/chart/showlabels&#39;),
+    CLS_AXIS = &#39;x-chart-axis&#39;;
+
+<span id='Abstract'>  /**
+</span>   * BUI.Chart.Axis.Abastract
+   * 抽象的坐标轴类
+   * @extends BUI.Chart.PlotItem
+   * @mixin BUI.Chart.ShowLabels
+   */
+  var Abstract = function(cfg){
+    Abstract.superclass.constructor.call(this,cfg);
+  };
+
+  Abstract.ATTRS = {
+
+<span id='Abstract-property-ticks'>    /**
+</span>     * 坐标轴上的坐标点
+     * @type {Number}
+     */
+    ticks : {
+
+    },
+<span id='Abstract-property-plotRange'>    /**
+</span>     * 显示数据的图形范围
+     */
+    plotRange : {
+
+    },
+<span id='Abstract-property-line'>    /**
+</span>     * 坐标轴线的配置信息,如果设置成null，则不显示轴线
+     * @type {Object}
+     */
+    line : {
+        
+    },
+<span id='Abstract-property-tickLine'>    /**
+</span>     * 标注坐标线的配置
+     * @type {Object}
+     */
+    tickLine : {
+        
+    },
+<span id='Abstract-property-grid'>    /**
+</span>     * 栅格配置
+     * @type {Object}
+     */
+    grid : {
+
+    },
+<span id='Abstract-property-labels'>    /**
+</span>     * 
+     * @type {Object}
+     */
+    labels : {
+
+    },
+<span id='Abstract-property-autoPaint'>    /**
+</span>     * 是否自动绘制
+     * @type {Object}
+     */
+    autoPaint : {
+        value : true
+    },
+<span id='Abstract-property-formatter'>    /**
+</span>     * 格式化坐标轴上的节点
+     * @type {Function}
+     */
+    formatter : {
+
+    }
+  }
+
+  BUI.extend(Abstract,Item);
+
+  BUI.mixin(Abstract,[ShowLabels]);
+
+  BUI.augment(Abstract,{
+    beforeRenderUI : function(){
+      Abstract.superclass.beforeRenderUI.call(this);
+      this.set(&#39;pointCache&#39;,[]);
+    },
+<span id='Abstract-method-renderUI'>     /**
+</span>     * @protected
+     * 渲染控件
+     */
+    renderUI : function(){
+        var _self = this;
+        Abstract.superclass.renderUI.call(_self);
+
+        _self.renderLabels();
+        
+        if(_self.get(&#39;title&#39;)){
+            _self._renderTitle();
+        }
+        if(_self.get(&#39;autoPaint&#39;)){
+            _self.paint();
+        }
+    },
+<span id='Abstract-method-paint'>    /**
+</span>     * 绘制坐标轴
+     */
+    paint : function(){
+        var _self = this;
+        _self._drawLines();
+        _self._renderTicks();
+        _self._renderGrid(); 
+    },
+    //渲染标题
+    _renderTitle : function(){
+        
+
+    },
+    //渲染栅格
+    _renderGrid : function(){
+        var _self = this,
+            grid = _self.get(&#39;grid&#39;),
+            gridGroup,
+            plotRange;
+        if(!grid){
+            return;
+        }
+        gridGroup = _self.get(&#39;parent&#39;).addGroup(Grid,grid);
+        _self.set(&#39;gridGroup&#39;,gridGroup);
+    },
+<span id='Abstract-method-getLinePath'>    /**
+</span>     * @protected
+     * 获取坐标轴的path
+     * @return {String|Array} path
+     */
+    getLinePath : function(){
+
+    },
+    //获取坐标轴上的节点位置
+    getOffsetPoint : function(index){
+
+    },
+<span id='Abstract-method-getValue'>    /**
+</span>     * 根据画板上的点获取坐标轴上的值，用于将cavas上的点的坐标转换成坐标轴上的坐标
+     * @param  {Number} offset 
+     * @return {Number} 点在坐标轴上的值
+     */
+    getValue : function(offset){
+
+    },
+<span id='Abstract-method-getSnapValue'>    /**
+</span>     * 获取逼近坐标点的值
+     * @param  {Number} offset 画布上的点在坐标轴上的对应值
+     * @param {Number} [tolerance] 容忍的区间
+     * @return {Number} 坐标轴上的值
+     */
+    getSnapValue : function(offset,tolerance){
+        var _self = this,
+            pointCache = _self.get(&#39;pointCache&#39;);
+        return Util.snapTo(pointCache,offset);
+            
+    },
+<span id='Abstract-method-getTicksCount'>    /**
+</span>     * 获取坐标点的个数
+     * @return {Number} 坐标点的个数
+     */
+    getTicksCount : function(){
+      return this.get(&#39;ticks&#39;).length;
+    },
+<span id='Abstract-method-getTickOffsetPoint'>    /**
+</span>     * @protected
+     * 获取显示坐标点的位置
+     */
+    getTickOffsetPoint : function(index){
+        return this.getOffsetPoint(index);
+    },
+<span id='Abstract-method-getOffsetByIndex'>    /**
+</span>     * 将指定的节点转换成对应的坐标点
+     * @param  {Number} index 顺序 
+     * @return {Number} 节点坐标点（单一坐标）x轴的坐标点或者y轴的坐标点
+     */
+    getOffsetByIndex : function(index){
+       
+    },
+    _drawLines : function(){
+      var _self = this,
+          lineAttrs = _self.get(&#39;line&#39;),
+          ticks = _self.get(&#39;ticks&#39;),
+          path;
+
+      if(lineAttrs){
+          path = _self.getLinePath();
+          lineAttrs = BUI.mix({
+            path : path
+          },lineAttrs);
+          var lineShape = _self.addShape({
+              type :&#39;path&#39;,
+              elCls : CLS_AXIS + &#39;-line&#39;,
+              attrs :lineAttrs
+          });
+          _self.set(&#39;lineShape&#39;,lineShape);
+      }
+       _self._processTicks(ticks);
+    },
+    
+    //处理节点
+    _processTicks : function(ticks,reset){
+       var _self = this,
+          pointCache = _self.get(&#39;pointCache&#39;),
+          labels = _self.get(&#39;labels&#39;);
+
+      ticks = ticks || _self.get(&#39;ticks&#39;);
+      BUI.each(ticks,function(tick,index){
+        var tickOffsetPoint = _self.getTickOffsetPoint(index),
+              offsetPoint = _self.getOffsetPoint(index),
+              offset = _self.getOffsetByIndex(index);
+
+          pointCache.push(offset);
+          if(_self.get(&#39;tickLine&#39;)){
+              _self._addTickItem(tickOffsetPoint,offset);
+          }
+          if(_self.get(&#39;grid&#39;)){
+              _self._addGridItem(tickOffsetPoint);
+          }
+          if(labels){
+            if(!reset){
+                _self.addLabel(_self.formatPoint(tick),offsetPoint,offset);
+            }else{
+              labels.items.push({
+                  text : tick,
+                  x : offsetPoint.x,
+                  y : offsetPoint.y
+              });
+            }
+              
+          }
+      });
+    },
+    
+    //渲染ticks
+    _renderTicks : function(){
+      var _self = this,
+          tickItems = _self.get(&#39;tickItems&#39;),
+          lineAttrs = _self.get(&#39;tickLine&#39;),
+          path = &#39;&#39;,
+          cfg = BUI.mix({},lineAttrs);
+      if(tickItems){
+          BUI.each(tickItems,function(item){
+              var subPath = BUI.substitute(&#39;M{x1} {y1}L{x2} {y2}&#39;,item);
+              path += subPath;
+          });
+          
+          delete cfg.value;
+          cfg.path = path;
+
+          var tickShape =  _self.addShape({
+              type : &#39;path&#39;,
+              elCls : CLS_AXIS + &#39;-ticks&#39;,
+              attrs : cfg
+          });
+          _self.set(&#39;tickShape&#39;,tickShape);
+          
+          
+      }
+    },
+    //添加坐标轴上的坐标点
+    _addTickItem : function(offsetPoint,offset){
+        var _self = this,
+            tickItems = _self.get(&#39;tickItems&#39;),
+            cfg = {
+                x1 : offsetPoint.x,
+                y1 : offsetPoint.y
+            },
+            end = _self.getTickEnd(offsetPoint,offset);
+        
+        if(!tickItems){
+            tickItems = [];
+            _self.set(&#39;tickItems&#39;,tickItems);
+        }
+        BUI.mix(cfg,end);
+        tickItems.push(cfg);
+    },
+<span id='Abstract-method-getTickEnd'>    /**
+</span>     * @protected
+     * 获取标示坐标点的线的终点
+     */
+    getTickEnd : function(start,offset){
+
+    },
+<span id='Abstract-method-formatPoint'>    /**
+</span>     * 格式化坐标轴上的节点，用于展示
+     * @param  {*} value 格式化文本
+     * @return {String}  格式化后的信息
+     */
+    formatPoint : function(value){
+        var _self = this,
+            formatter = _self.get(&#39;formatter&#39;);
+        if(formatter){
+            value = formatter.call(this,value);
+        }
+        return value;
+    },
+    //添加栅格节点
+    _addGridItem : function(offsetPoint){
+      var _self = this,
+          grid = _self.get(&#39;grid&#39;),
+          plotRange = _self.get(&#39;plotRange&#39;),
+          item = {},
+          cfg;
+      if(!grid.items){
+          grid.items = [];
+      }
+      cfg = _self.getGridItemCfg(offsetPoint);
+      BUI.mix(item,cfg);
+      grid.items.push(item);
+    },
+<span id='Abstract-method-getGridItemCfg'>    /**
+</span>     * 获取栅格项的配置信息，一般是起始点信息
+     * @protected
+     */
+    getGridItemCfg : function(offsetPoint){
+
+    },
+    //移除控件前移除对应的grid和labels
+    remove : function(){
+        
+        var _self = this,
+            gridGroup = _self.get(&#39;gridGroup&#39;),
+            labelsGroup = _self.get(&#39;labelsGroup&#39;);
+        gridGroup &amp;&amp; gridGroup.remove();
+        _self.removeLabels();
+        Abstract.superclass.remove.call(this);
+    }
+  });
+
+  return Abstract;
+});</pre>
+</body>
+</html>

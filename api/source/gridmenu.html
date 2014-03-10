@@ -19,15 +19,15 @@
 </span> * @fileOverview Grid 菜单
  * @ignore
  */
-define('bui/grid/plugins/menu',['bui/common','bui/menu'],function (require) {
+define(&#39;bui/grid/plugins/menu&#39;,[&#39;bui/common&#39;,&#39;bui/menu&#39;],function (require) {
 
-  var BUI = require('bui/common'),
-    Menu = require('bui/menu'),
+  var BUI = require(&#39;bui/common&#39;),
+    Menu = require(&#39;bui/menu&#39;),
     PREFIX = BUI.prefix,
-    ID_SORT_ASC = 'sort-asc',
-    ID_SORT_DESC = 'sort-desc',
-    ID_COLUMNS_SET = 'column-setting',
-    CLS_COLUMN_CHECKED = 'icon-check';
+    ID_SORT_ASC = &#39;sort-asc&#39;,
+    ID_SORT_DESC = &#39;sort-desc&#39;,
+    ID_COLUMNS_SET = &#39;column-setting&#39;,
+    CLS_COLUMN_CHECKED = &#39;icon-check&#39;;
 
 <span id='BUI-Grid-Plugins-GridMenu'>  /**
 </span>   * @class BUI.Grid.Plugins.GridMenu
@@ -56,7 +56,7 @@ define('bui/grid/plugins/menu',['bui/common','bui/menu'],function (require) {
 
     },
     triggerCls : {
-      value : PREFIX + 'grid-hd-menu-trigger'
+      value : PREFIX + &#39;grid-hd-menu-trigger&#39;
     },
 <span id='BUI-Grid-Plugins-GridMenu-property-items'>    /**
 </span>     * 菜单的配置项
@@ -66,21 +66,21 @@ define('bui/grid/plugins/menu',['bui/common','bui/menu'],function (require) {
       value : [
         {
           id:ID_SORT_ASC,
-          text:'升序',
-          iconCls:'icon-arrow-up'
+          text:&#39;升序&#39;,
+          iconCls:&#39;icon-arrow-up&#39;
         },
         {
           id:ID_SORT_DESC,
-          text:'降序',
-          iconCls : 'icon-arrow-down'
+          text:&#39;降序&#39;,
+          iconCls : &#39;icon-arrow-down&#39;
         },
         {
-          xclass:'menu-item-sparator'
+          xclass:&#39;menu-item-sparator&#39;
         },
         {
           id : ID_COLUMNS_SET,
-          text:'设置列',
-          iconCls:'icon-list-alt'
+          text:&#39;设置列&#39;,
+          iconCls:&#39;icon-list-alt&#39;
         }
       ]
     }
@@ -93,7 +93,7 @@ define('bui/grid/plugins/menu',['bui/common','bui/menu'],function (require) {
      */
     initializer : function (grid) {
       var _self = this;
-      _self.set('grid',grid);
+      _self.set(&#39;grid&#39;,grid);
 
     },
 <span id='BUI-Grid-Plugins-GridMenu-method-renderUI'>    /**
@@ -101,7 +101,7 @@ define('bui/grid/plugins/menu',['bui/common','bui/menu'],function (require) {
      */
     renderUI : function(grid){
       var _self = this, 
-        columns = grid.get('columns');
+        columns = grid.get(&#39;columns&#39;);
       BUI.each(columns,function(column){
         _self._addShowMenu(column);
       });
@@ -113,21 +113,21 @@ define('bui/grid/plugins/menu',['bui/common','bui/menu'],function (require) {
     bindUI : function (grid){
       var _self = this;
 
-      grid.on('columnadd',function(ev){
+      grid.on(&#39;columnadd&#39;,function(ev){
         _self._addShowMenu(ev.column);
       });
-      grid.on('columnclick',function (ev) {
+      grid.on(&#39;columnclick&#39;,function (ev) {
         var sender = $(ev.domTarget),
           column = ev.column,
           menu;
 
-        _self.set('activedColumn',column);
+        _self.set(&#39;activedColumn&#39;,column);
         
-        if(sender.hasClass(_self.get('triggerCls'))){
-          menu = _self.get('menu') || _self._initMenu();
-          menu.set('align',{
-            node: sender, // 参考元素, falsy 或 window 为可视区域, 'trigger' 为触发元素, 其他为指定元素
-            points: ['bl','tl'], // ['tr', 'tl'] 表示 overlay 的 tl 与参考节点的 tr 对齐
+        if(sender.hasClass(_self.get(&#39;triggerCls&#39;))){
+          menu = _self.get(&#39;menu&#39;) || _self._initMenu();
+          menu.set(&#39;align&#39;,{
+            node: sender, // 参考元素, falsy 或 window 为可视区域, &#39;trigger&#39; 为触发元素, 其他为指定元素
+            points: [&#39;bl&#39;,&#39;tl&#39;], // [&#39;tr&#39;, &#39;tl&#39;] 表示 overlay 的 tl 与参考节点的 tr 对齐
             offset: [0, 0] 
           });
           menu.show();
@@ -136,16 +136,16 @@ define('bui/grid/plugins/menu',['bui/common','bui/menu'],function (require) {
       });
     },
     _addShowMenu : function(column){
-      if(!column.get('fixed')){
-        column.set('showMenu',true);
+      if(!column.get(&#39;fixed&#39;)){
+        column.set(&#39;showMenu&#39;,true);
       }
     },
     //菜单显示后
     _afterShow : function (column,menu) {
       var _self = this,
-        grid = _self.get('grid');
+        grid = _self.get(&#39;grid&#39;);
 
-      menu = menu || _self.get('menu');
+      menu = menu || _self.get(&#39;menu&#39;);
       _self._resetSortMenuItems(column,menu);
       _self._resetColumnsVisible(menu);
     },
@@ -153,20 +153,20 @@ define('bui/grid/plugins/menu',['bui/common','bui/menu'],function (require) {
     _resetColumnsVisible : function (menu) {
       var _self = this,
         settingItem = menu.findItemById(ID_COLUMNS_SET),
-        subMenu = settingItem.get('subMenu') || _self._initColumnsMenu(settingItem),
-        columns = _self.get('grid').get('columns');
+        subMenu = settingItem.get(&#39;subMenu&#39;) || _self._initColumnsMenu(settingItem),
+        columns = _self.get(&#39;grid&#39;).get(&#39;columns&#39;);
       subMenu.removeChildren(true);
       $.each(columns,function (index,column) {
-        if(!column.get('fixed')){
+        if(!column.get(&#39;fixed&#39;)){
           var config = {
-              xclass : 'context-menu-item',
-              text : column.get('title'),
+              xclass : &#39;context-menu-item&#39;,
+              text : column.get(&#39;title&#39;),
               column : column,
-              iconCls : 'icon'
+              iconCls : &#39;icon&#39;
             },
             menuItem = subMenu.addChild(config);
-          if(column.get('visible')){
-            menuItem.set('selected',true);
+          if(column.get(&#39;visible&#39;)){
+            menuItem.set(&#39;selected&#39;,true);
           }
         }
       });
@@ -175,81 +175,81 @@ define('bui/grid/plugins/menu',['bui/common','bui/menu'],function (require) {
     _resetSortMenuItems : function(column,menu) {
       var ascItem = menu.findItemById(ID_SORT_ASC),
         descItem = menu.findItemById(ID_SORT_DESC);
-      if(column.get('sortable')){
-        ascItem.set('disabled',false);
-        descItem.set('disabled',false);
+      if(column.get(&#39;sortable&#39;)){
+        ascItem.set(&#39;disabled&#39;,false);
+        descItem.set(&#39;disabled&#39;,false);
       }else{
-        ascItem.set('disabled',true);
-        descItem.set('disabled',true);
+        ascItem.set(&#39;disabled&#39;,true);
+        descItem.set(&#39;disabled&#39;,true);
       }
     },
     //初始化菜单
     _initMenu : function () {
       var _self = this,
-        menu = _self.get('menu'),
+        menu = _self.get(&#39;menu&#39;),
         menuItems;
 
       if(!menu){
-        menuItems = _self.get('items');
+        menuItems = _self.get(&#39;items&#39;);
         $.each(menuItems,function (index,item) {
           if(!item.xclass){
-            item.xclass = 'context-menu-item'
+            item.xclass = &#39;context-menu-item&#39;
           }
         });
         menu = new Menu.ContextMenu({
           children : menuItems,
-          elCls : 'grid-menu'
+          elCls : &#39;grid-menu&#39;
         });
         _self._initMenuEvent(menu);
-        _self.set('menu',menu)
+        _self.set(&#39;menu&#39;,menu)
       }
       return menu;
     },
     _initMenuEvent : function  (menu) {
       var _self = this;
 
-      menu.on('itemclick',function(ev) {
+      menu.on(&#39;itemclick&#39;,function(ev) {
         var item = ev.item,
-          id = item.get('id'),
-          activedColumn = _self.get('activedColumn');
+          id = item.get(&#39;id&#39;),
+          activedColumn = _self.get(&#39;activedColumn&#39;);
         if(id === ID_SORT_ASC){
-          activedColumn.set('sortState','ASC');
+          activedColumn.set(&#39;sortState&#39;,&#39;ASC&#39;);
         }else if(id === ID_SORT_DESC){
-          activedColumn.set('sortState','DESC');
+          activedColumn.set(&#39;sortState&#39;,&#39;DESC&#39;);
         }
       });
 
-      menu.on('afterVisibleChange',function (ev) {
+      menu.on(&#39;afterVisibleChange&#39;,function (ev) {
         var visible = ev.newVal,
-          activedColumn = _self.get('activedColumn');
+          activedColumn = _self.get(&#39;activedColumn&#39;);
         if(visible &amp;&amp; activedColumn){
-          activedColumn.set('open',true);
+          activedColumn.set(&#39;open&#39;,true);
         }else{
-          activedColumn.set('open',false);
+          activedColumn.set(&#39;open&#39;,false);
         }
       });
     },
     _initColumnsMenu : function (settingItem) {
       var subMenu = new Menu.ContextMenu({
           multipleSelect : true,
-          elCls : 'grid-column-menu'
+          elCls : &#39;grid-column-menu&#39;
         });  
-      settingItem.set('subMenu',subMenu);
-      subMenu.on('itemclick',function (ev) {
+      settingItem.set(&#39;subMenu&#39;,subMenu);
+      subMenu.on(&#39;itemclick&#39;,function (ev) {
         var item = ev.item,
-          column = item.get('column'),
-          selected = item.get('selected');
+          column = item.get(&#39;column&#39;),
+          selected = item.get(&#39;selected&#39;);
         if(selected){
-          column.set('visible',true);
+          column.set(&#39;visible&#39;,true);
         }else{
-          column.set('visible',false);
+          column.set(&#39;visible&#39;,false);
         }
       });
       return subMenu;
     },
     destructor:function () {
       var _self = this,
-        menu = _self.get('menu');
+        menu = _self.get(&#39;menu&#39;);
       if(menu){
         menu.destroy();
       }

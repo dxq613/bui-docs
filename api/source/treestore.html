@@ -20,12 +20,12 @@
  * @ignore
  */
 
-define('bui/data/treestore',['bui/common','bui/data/node','bui/data/abstractstore','bui/data/proxy'],function (require) {
+define(&#39;bui/data/treestore&#39;,[&#39;bui/common&#39;,&#39;bui/data/node&#39;,&#39;bui/data/abstractstore&#39;,&#39;bui/data/proxy&#39;],function (require) {
 
-  var BUI = require('bui/common'),
-    Node = require('bui/data/node'),
-    Proxy = require('bui/data/proxy'),
-    AbstractStore = require('bui/data/abstractstore');
+  var BUI = require(&#39;bui/common&#39;),
+    Node = require(&#39;bui/data/node&#39;),
+    Proxy = require(&#39;bui/data/proxy&#39;),
+    AbstractStore = require(&#39;bui/data/abstractstore&#39;);
 
 <span id='BUI-Data-TreeStore'>  /**
 </span>   * @class BUI.Data.TreeStore
@@ -37,26 +37,26 @@ define('bui/data/treestore',['bui/common','bui/data/node','bui/data/abstractstor
    *   //加载静态数据
    *   var store = new TreeStore({
    *     root : {
-   *       text : '根节点',
-   *       id : 'root'
+   *       text : &#39;根节点&#39;,
+   *       id : &#39;root&#39;
    *     },
-   *     data : [{id : '1',text : 1},{id : '2',text : 2}] //会加载成root的children
+   *     data : [{id : &#39;1&#39;,text : 1},{id : &#39;2&#39;,text : 2}] //会加载成root的children
    *   });
-   *   //异步加载数据，自动加载数据时，会调用store.load({id : 'root'}); //root为根节点的id
+   *   //异步加载数据，自动加载数据时，会调用store.load({id : &#39;root&#39;}); //root为根节点的id
    *   var store = new TreeStore({
    *     root : {
-   *       text : '根节点',
-   *       id : 'root'
+   *       text : &#39;根节点&#39;,
+   *       id : &#39;root&#39;
    *     },
-   *     url : 'data/nodes.php',
+   *     url : &#39;data/nodes.php&#39;,
    *     autoLoad : true  //设置自动加载，初始化后自动加载数据
    *   });
    *
    *   //加载指定节点
-   *   var node = store.findNode('1');
+   *   var node = store.findNode(&#39;1&#39;);
    *   store.loadNode(node);
    *   //或者
-   *   store.load({id : '1'});//可以配置自定义参数，返回值附加到指定id的节点上
+   *   store.load({id : &#39;1&#39;});//可以配置自定义参数，返回值附加到指定id的节点上
    * &lt;/code&gt;&lt;/pre&gt;
    * @extends BUI.Data.AbstractStore
    */
@@ -69,7 +69,7 @@ define('bui/data/treestore',['bui/common','bui/data/node','bui/data/abstractstor
 </span>     * 根节点
      * &lt;pre&gt;&lt;code&gt;
      *  var store = new TreeStore({
-     *    root : {text : '根节点',id : 'rootId',children : [{id : '1',text : '1'}]}
+     *    root : {text : &#39;根节点&#39;,id : &#39;rootId&#39;,children : [{id : &#39;1&#39;,text : &#39;1&#39;}]}
      *  });
      * &lt;/code&gt;&lt;/pre&gt;
      * @cfg {Object} root
@@ -77,8 +77,8 @@ define('bui/data/treestore',['bui/common','bui/data/node','bui/data/abstractstor
 <span id='BUI-Data-TreeStore-property-root'>    /**
 </span>     * 根节点,初始化后不要更改对象，可以更改属性值
      * &lt;pre&gt;&lt;code&gt;
-     *  var root = store.get('root');
-     *  root.text = '修改的文本'；
+     *  var root = store.get(&#39;root&#39;);
+     *  root.text = &#39;修改的文本&#39;；
      *  store.update(root);
      * &lt;/code&gt;&lt;/pre&gt;
      * @type {Object}
@@ -91,18 +91,18 @@ define('bui/data/treestore',['bui/common','bui/data/node','bui/data/abstractstor
 </span>     * 数据映射，用于设置的数据跟@see {BUI.Data.Node} 不一致时，进行匹配。
      * 如果此属性为null,那么假设设置的对象是Node对象
      * &lt;pre&gt;&lt;code&gt;
-     *   //例如原始数据为 {name : '123',value : '文本123',isLeaf: false,nodes : []}
+     *   //例如原始数据为 {name : &#39;123&#39;,value : &#39;文本123&#39;,isLeaf: false,nodes : []}
      *   var store = new TreeStore({
      *     map : {
-     *       'name' : 'id',
-     *       'value' : 'text',
-     *       'isLeaf' : 'leaf' ,
-     *       'nodes' : 'children'
+     *       &#39;name&#39; : &#39;id&#39;,
+     *       &#39;value&#39; : &#39;text&#39;,
+     *       &#39;isLeaf&#39; : &#39;leaf&#39; ,
+     *       &#39;nodes&#39; : &#39;children&#39;
      *     }
      *   });
-     *   //映射后，记录会变成  {id : '123',text : '文本123',leaf: false,children : []};
+     *   //映射后，记录会变成  {id : &#39;123&#39;,text : &#39;文本123&#39;,leaf: false,children : []};
      *   //此时原始记录会作为对象的 record属性
-     *   var node = store.findNode('123'),
+     *   var node = store.findNode(&#39;123&#39;),
      *     record = node.record;
      * &lt;/code&gt;&lt;/pre&gt; 
      * **Notes:**
@@ -127,14 +127,14 @@ define('bui/data/treestore',['bui/common','bui/data/node','bui/data/abstractstor
      * &lt;pre&gt;&lt;code&gt;
      *  //返回数据为数组 [{},{}]，会直接附加到加载的节点后面
      *  
-     *  var node = store.loadNode('123');
+     *  var node = store.loadNode(&#39;123&#39;);
      *  store.loadNode(node);
      *  
      * &lt;/code&gt;&lt;/pre&gt;
-     * @cfg {Object} [dataProperty = 'nodes']
+     * @cfg {Object} [dataProperty = &#39;nodes&#39;]
      */
     dataProperty : {
-      value : 'nodes'
+      value : &#39;nodes&#39;
     },
     events : {
       value : [
@@ -142,7 +142,7 @@ define('bui/data/treestore',['bui/common','bui/data/node','bui/data/abstractstor
 </span>        * 当添加数据时触发该事件
         * @event  
         * &lt;pre&gt;&lt;code&gt;
-        *  store.on('add',function(ev){
+        *  store.on(&#39;add&#39;,function(ev){
         *    list.addItem(e.node,index);
         *  });
         * &lt;/code&gt;&lt;/pre&gt;
@@ -150,14 +150,14 @@ define('bui/data/treestore',['bui/common','bui/data/node','bui/data/abstractstor
         * @param {Object} e.node 添加的节点
         * @param {Number} index 添加的位置
         */
-        'add',
+        &#39;add&#39;,
 <span id='BUI-Data-TreeStore-event-update'>        /**  
 </span>        * 当更新数据指定字段时触发该事件 
         * @event  
         * @param {jQuery.Event} e  事件对象
         * @param {Object} e.node 更新的节点
         */
-        'update',
+        &#39;update&#39;,
 <span id='BUI-Data-TreeStore-event-remove'>        /**  
 </span>        * 当删除数据时触发该事件
         * @event  
@@ -165,12 +165,12 @@ define('bui/data/treestore',['bui/common','bui/data/node','bui/data/abstractstor
         * @param {Object} e.node 删除的节点
         * @param {Number} index 删除节点的索引
         */
-        'remove',
+        &#39;remove&#39;,
 <span id='BUI-Data-TreeStore-event-load'>        /**  
 </span>        * 节点加载完毕触发该事件
         * &lt;pre&gt;&lt;/code&gt;
         *   //异步加载节点,此时节点已经附加到加载节点的后面
-        *   store.on('load',function(ev){
+        *   store.on(&#39;load&#39;,function(ev){
         *     var params = ev.params,
         *       id = params.id,
         *       node = store.findNode(id),
@@ -184,7 +184,7 @@ define('bui/data/treestore',['bui/common','bui/data/node','bui/data/abstractstor
         * @param {Object} e.node 加载的节点
         * @param {Object} e.params 加载节点时的参数
         */
-        'load'
+        &#39;load&#39;
       ]
     }
   }
@@ -203,14 +203,14 @@ define('bui/data/treestore',['bui/common','bui/data/node','bui/data/abstractstor
     //初始化数据,如果默认加载数据，则加载数据
     _initData : function(){
       var _self = this,
-        autoLoad = _self.get('autoLoad'),
-        pidField = _self.get('pidField'),
-        proxy = _self.get('proxy'),
-        root = _self.get('root');
+        autoLoad = _self.get(&#39;autoLoad&#39;),
+        pidField = _self.get(&#39;pidField&#39;),
+        proxy = _self.get(&#39;proxy&#39;),
+        root = _self.get(&#39;root&#39;);
 
       //添加默认的匹配父元素的字段
-      if(!proxy.get('url') &amp;&amp; pidField){
-        proxy.get('matchFields').push(pidField);
+      if(!proxy.get(&#39;url&#39;) &amp;&amp; pidField){
+        proxy.get(&#39;matchFields&#39;).push(pidField);
       }
       
       if(autoLoad &amp;&amp; !root.children){
@@ -224,8 +224,8 @@ define('bui/data/treestore',['bui/common','bui/data/node','bui/data/abstractstor
      */
     initRoot : function(){
       var _self = this,
-        map = _self.get('map'),
-        root = _self.get('root');
+        map = _self.get(&#39;map&#39;),
+        root = _self.get(&#39;root&#39;);
       if(!root){
         root = {};
       }
@@ -238,19 +238,19 @@ define('bui/data/treestore',['bui/common','bui/data/node','bui/data/abstractstor
       if(root.children){
         _self.setChildren(root,root.children);
       }
-      _self.set('root',root);
+      _self.set(&#39;root&#39;,root);
     },
 <span id='BUI-Data-TreeStore-method-add'>    /**
 </span>     * 添加节点，触发{@link BUI.Data.TreeStore#event-add} 事件
      * &lt;pre&gt;&lt;code&gt;
      *  //添加到根节点下
-     *  store.add({id : '1',text : '1'});
+     *  store.add({id : &#39;1&#39;,text : &#39;1&#39;});
      *  //添加到指定节点
-     *  var node = store.findNode('1'),
-     *    subNode = store.add({id : '11',text : '11'},node);
+     *  var node = store.findNode(&#39;1&#39;),
+     *    subNode = store.add({id : &#39;11&#39;,text : &#39;11&#39;},node);
      *  //插入到节点的指定位置
-     *  var node = store.findNode('1'),
-     *    subNode = store.add({id : '12',text : '12'},node,0);
+     *  var node = store.findNode(&#39;1&#39;),
+     *    subNode = store.add({id : &#39;12&#39;,text : &#39;12&#39;},node,0);
      * &lt;/code&gt;&lt;/pre&gt;
      * @param {BUI.Data.Node|Object} node 节点或者数据对象
      * @param {BUI.Data.Node} [parent] 父节点,如果未指定则为根节点
@@ -261,14 +261,14 @@ define('bui/data/treestore',['bui/common','bui/data/node','bui/data/abstractstor
       var _self = this;
 
       node = _self._add(node,parent,index);
-      _self.fire('add',{node : node,record : node,index : index});
+      _self.fire(&#39;add&#39;,{node : node,record : node,index : index});
       return node;
     },
     //
     _add : function(node,parent,index){
-      parent = parent || this.get('root');  //如果未指定父元素，添加到跟节点
+      parent = parent || this.get(&#39;root&#39;);  //如果未指定父元素，添加到跟节点
       var _self = this,
-        map = _self.get('map'),
+        map = _self.get(&#39;map&#39;),
         nodes = parent.children,
         nodeChildren;
 
@@ -298,7 +298,7 @@ define('bui/data/treestore',['bui/common','bui/data/node','bui/data/abstractstor
 </span>     * 移除节点，触发{@link BUI.Data.TreeStore#event-remove} 事件
      * 
      * &lt;pre&gt;&lt;code&gt;
-     *  var node = store.findNode('1'); //根据节点id 获取节点
+     *  var node = store.findNode(&#39;1&#39;); //根据节点id 获取节点
      *  store.remove(node);
      * &lt;/code&gt;&lt;/pre&gt;
      * 
@@ -306,21 +306,21 @@ define('bui/data/treestore',['bui/common','bui/data/node','bui/data/abstractstor
      * @return {BUI.Data.Node} 删除的节点
      */
     remove : function(node){
-      var parent = node.parent || _self.get('root'),
+      var parent = node.parent || _self.get(&#39;root&#39;),
         index = BUI.Array.indexOf(node,parent.children) ;
 
       BUI.Array.remove(parent.children,node);
       if(parent.children.length === 0){
         parent.leaf = true;
       }
-      this.fire('remove',{node : node ,record : node , index : index});
+      this.fire(&#39;remove&#39;,{node : node ,record : node , index : index});
       node.parent = null;
       return node;
     },
 <span id='BUI-Data-TreeStore-method-setValue'>    /**
 </span>    * 设置记录的值 ，触发 update 事件
     * &lt;pre&gt;&lt;code&gt;
-    *  store.setValue(obj,'value','new value');
+    *  store.setValue(obj,&#39;value&#39;,&#39;new value&#39;);
     * &lt;/code&gt;&lt;/pre&gt;
     * @param {Object} obj 修改的记录
     * @param {String} field 修改的字段名
@@ -331,19 +331,19 @@ define('bui/data/treestore',['bui/common','bui/data/node','bui/data/abstractstor
         _self = this;
         node[field] = value;
 
-      _self.fire('update',{node:node,record : node,field:field,value:value});
+      _self.fire(&#39;update&#39;,{node:node,record : node,field:field,value:value});
     },
 <span id='BUI-Data-TreeStore-method-update'>    /**
 </span>     * 更新节点
      * &lt;pre&gt;&lt;code&gt;
-     *  var node = store.findNode('1'); //根据节点id 获取节点
-     *  node.text = 'modify text'; //修改文本
+     *  var node = store.findNode(&#39;1&#39;); //根据节点id 获取节点
+     *  node.text = &#39;modify text&#39;; //修改文本
      *  store.update(node);        //此时会触发update事件，绑定了store的控件会更新对应的DOM
      * &lt;/code&gt;&lt;/pre&gt;
      * @return {BUI.Data.Node} 更新节点
      */
     update : function(node){
-      this.fire('update',{node : node,record : node});
+      this.fire(&#39;update&#39;,{node : node,record : node});
     },
 <span id='BUI-Data-TreeStore-method-getResult'>    /**
 </span>     * 返回缓存的数据，根节点的直接子节点集合
@@ -351,34 +351,34 @@ define('bui/data/treestore',['bui/common','bui/data/node','bui/data/abstractstor
      *   //获取根节点的所有子节点
      *   var data = store.getResult();
      *   //获取根节点
-     *   var root = store.get('root');
+     *   var root = store.get(&#39;root&#39;);
      * &lt;/code&gt;&lt;/pre&gt;
      * @return {Array} 根节点下面的数据
      */
     getResult : function(){
-      return this.get('root').children;
+      return this.get(&#39;root&#39;).children;
     },
 <span id='BUI-Data-TreeStore-method-setResult'>    /**
 </span>     * 设置缓存的数据，设置为根节点的数据
     *   &lt;pre&gt;&lt;code&gt;
     *     var data = [
-    *       {id : '1',text : '文本1'},
-    *       {id : '2',text : '文本2',children:[
-    *         {id : '21',text : '文本21'}
+    *       {id : &#39;1&#39;,text : &#39;文本1&#39;},
+    *       {id : &#39;2&#39;,text : &#39;文本2&#39;,children:[
+    *         {id : &#39;21&#39;,text : &#39;文本21&#39;}
     *       ]},
-    *       {id : '3',text : '文本3'}
+    *       {id : &#39;3&#39;,text : &#39;文本3&#39;}
     *     ];
     *     store.setResult(data); //会对数据进行格式化，添加leaf等字段：
-    *                            //[{id : '1',text : '文本1',leaf : true},{id : '2',text : '文本2',leaf : false,children:[...]}....]
+    *                            //[{id : &#39;1&#39;,text : &#39;文本1&#39;,leaf : true},{id : &#39;2&#39;,text : &#39;文本2&#39;,leaf : false,children:[...]}....]
     *   &lt;/code&gt;&lt;/pre&gt;
      * @param {Array} data 缓存的数据
      */
     setResult : function(data){
       var _self = this,
-        proxy = _self.get('proxy'),
-        root = _self.get('root');
+        proxy = _self.get(&#39;proxy&#39;),
+        root = _self.get(&#39;root&#39;);
       if(proxy instanceof Proxy.Memery){
-        _self.set('data',data);
+        _self.set(&#39;data&#39;,data);
         _self.load({id : root.id});
       }else{
         _self.setChildren(root,data);
@@ -403,9 +403,9 @@ define('bui/data/treestore',['bui/common','bui/data/node','bui/data/abstractstor
 <span id='BUI-Data-TreeStore-method-findNode'>    /**
 </span>     * 查找节点
      * &lt;pre&gt;&lt;code&gt;
-     *  var node = store.findNode('1');//从根节点开始查找节点
+     *  var node = store.findNode(&#39;1&#39;);//从根节点开始查找节点
      *  
-     *  var subNode = store.findNode('123',node); //从指定节点开始查找
+     *  var subNode = store.findNode(&#39;123&#39;,node); //从指定节点开始查找
      * &lt;/code&gt;&lt;/pre&gt;
      * @param  {String} id 节点Id
      * @param  {BUI.Data.Node} [parent] 父节点
@@ -428,7 +428,7 @@ define('bui/data/treestore',['bui/common','bui/data/node','bui/data/abstractstor
       var _self = this;
       deep = deep == null ? true : deep;
       if(!parent){
-        var root = _self.get('root');
+        var root = _self.get(&#39;root&#39;);
         if(fn(root)){
           return root;
         }
@@ -452,7 +452,7 @@ define('bui/data/treestore',['bui/common','bui/data/node','bui/data/abstractstor
 </span>     * 查找节点,根据匹配函数查找
      * &lt;pre&gt;&lt;code&gt;
      *  var nodes = store.findNodesBy(function(node){
-     *   if(node.status == '0'){
+     *   if(node.status == &#39;0&#39;){
      *     return true;
      *   }
      *   return false;
@@ -468,7 +468,7 @@ define('bui/data/treestore',['bui/common','bui/data/node','bui/data/abstractstor
         rst = [];
 
       if(!parent){
-        parent = _self.get('root');
+        parent = _self.get(&#39;root&#39;);
       }
 
       BUI.each(parent.children,function(item){
@@ -490,8 +490,8 @@ define('bui/data/treestore',['bui/common','bui/data/node','bui/data/abstractstor
         return null;
       }
       var _self = this,
-        root = _self.get('root'),
-        pathArr = path.split(','),
+        root = _self.get(&#39;root&#39;),
+        pathArr = path.split(&#39;,&#39;),
         node,
         i,
         tempId = pathArr[0];
@@ -538,10 +538,10 @@ define('bui/data/treestore',['bui/common','bui/data/node','bui/data/abstractstor
      */
     afterProcessLoad : function(data,params){
       var _self = this,
-        pidField = _self.get('pidField'),
+        pidField = _self.get(&#39;pidField&#39;),
         id = params.id || params[pidField],
-        dataProperty = _self.get('dataProperty'),
-        node = _self.findNode(id) || _self.get('root');//如果找不到父元素，则放置在跟节点
+        dataProperty = _self.get(&#39;dataProperty&#39;),
+        node = _self.findNode(id) || _self.get(&#39;root&#39;);//如果找不到父元素，则放置在跟节点
 
       if(BUI.isArray(data)){
         _self.setChildren(node,data);
@@ -549,7 +549,7 @@ define('bui/data/treestore',['bui/common','bui/data/node','bui/data/abstractstor
         _self.setChildren(node,data[dataProperty]);
       }
       node.loaded = true; //标识已经加载过
-      _self.fire('load',{node : node,params : params});
+      _self.fire(&#39;load&#39;,{node : node,params : params});
     },
 <span id='BUI-Data-TreeStore-method-hasData'>    /**
 </span>     * 是否包含数据
@@ -557,7 +557,7 @@ define('bui/data/treestore',['bui/common','bui/data/node','bui/data/abstractstor
      */
     hasData : function(){
       //return true;
-      return this.get('root').children &amp;&amp; this.get('root').children.length !== 0;
+      return this.get(&#39;root&#39;).children &amp;&amp; this.get(&#39;root&#39;).children.length !== 0;
     },
 <span id='BUI-Data-TreeStore-method-isLoaded'>    /**
 </span>     * 是否已经加载过，叶子节点或者存在字节点的节点
@@ -565,11 +565,11 @@ define('bui/data/treestore',['bui/common','bui/data/node','bui/data/abstractstor
      * @return {Boolean}  是否加载过
      */
     isLoaded : function(node){
-      var root = this.get('root');
+      var root = this.get(&#39;root&#39;);
       if(node == root &amp;&amp; !root.children){
         return false;
       }
-      if(!this.get('url') &amp;&amp; !this.get('pidField')){ //如果不从远程加载数据,默认已经加载
+      if(!this.get(&#39;url&#39;) &amp;&amp; !this.get(&#39;pidField&#39;)){ //如果不从远程加载数据,默认已经加载
         return true;
       }
       
@@ -582,7 +582,7 @@ define('bui/data/treestore',['bui/common','bui/data/node','bui/data/abstractstor
      */
     loadNode : function(node,forceLoad){
       var _self = this,
-        pidField = _self.get('pidField'),
+        pidField = _self.get(&#39;pidField&#39;),
         params;
       //如果已经加载过，或者节点是叶子节点
       if(!forceLoad &amp;&amp; _self.isLoaded(node)){
@@ -600,7 +600,7 @@ define('bui/data/treestore',['bui/common','bui/data/node','bui/data/abstractstor
      */
     reloadNode : function(node){
       var _self = this;
-      node = node || _self.get('root');
+      node = node || _self.get(&#39;root&#39;);
       node.loaded = false;
       //node.children = [];
       _self.loadNode(node,true);
@@ -612,7 +612,7 @@ define('bui/data/treestore',['bui/common','bui/data/node','bui/data/abstractstor
      */
     loadPath : function(path){
       var _self = this,
-        arr = path.split(','),
+        arr = path.split(&#39;,&#39;),
         id = arr[0];
       if(_self.findNodeByPath(path)){ //加载过
         return;

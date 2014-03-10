@@ -21,13 +21,13 @@
  * @author dxq613
  */
 
-define('bui/module',['bui/common'], function (require) {
+define(&#39;bui/module&#39;,[&#39;bui/common&#39;], function (require) {
 
-  var BUI = require('bui/common');
+  var BUI = require(&#39;bui/common&#39;);
 
   var guid = 1;
   function getId(){
-    return 'module' + (guid++);
+    return &#39;module&#39; + (guid++);
   }
 <span id='BUI-Module-Module'>  /**
 </span>   * 业务模块
@@ -36,10 +36,10 @@ define('bui/module',['bui/common'], function (require) {
    */
   var Module = function(config){
     Module.superclass.constructor.call(this,config);
-    if(!this.get('id')){
-      this.set('id',getId());
+    if(!this.get(&#39;id&#39;)){
+      this.set(&#39;id&#39;,getId());
     }
-    if(this.get('autoInit')){
+    if(this.get(&#39;autoInit&#39;)){
       this.init();
     }
     Module.Manager.add(this);
@@ -99,7 +99,7 @@ define('bui/module',['bui/common'], function (require) {
          * @param {String} e.eventType 触发事件的名称
          * @param {Object} e.event 触发事件时传递的变量
          */
-        'change'
+        &#39;change&#39;
       ]
     }
   }
@@ -121,12 +121,12 @@ define('bui/module',['bui/common'], function (require) {
      * @return {BUI.Module.Module}
      */
     init : function(){
-      if(!this.get('hasInit')){
+      if(!this.get(&#39;hasInit&#39;)){
         this._initData();
         this._initDom();
         this._initModules();
         this._initEvent();
-        this.set('hasInit',true);
+        this.set(&#39;hasInit&#39;,true);
       }     
       return this;
     },
@@ -147,12 +147,12 @@ define('bui/module',['bui/common'], function (require) {
 
       Module.superclass.fire.apply(this, args);
 
-      var parent = this.get('parent');
+      var parent = this.get(&#39;parent&#39;);
       if(parent){
-        parent.fire('change', {module: module, eventType: eventType, event: event}, false);
+        parent.fire(&#39;change&#39;, {module: module, eventType: eventType, event: event}, false);
       }
       if(global){
-        Module.Manager.fire('change',{module : this,eventType: eventType, event : obj});
+        Module.Manager.fire(&#39;change&#39;,{module : this,eventType: eventType, event : obj});
       }
     },
     // /**
@@ -160,15 +160,15 @@ define('bui/module',['bui/common'], function (require) {
     //  * @param  {Module} module 添加子模块
     //  */
     // add : function(module){
-    //   this.addModule(module.get('id'),module);
+    //   this.addModule(module.get(&#39;id&#39;),module);
     // },
 <span id='BUI-Module-Module-method-addModule'>    /**
 </span>     * 添加子模块
      * @param  {BUI.Module.Module} module 添加子模块
      */
     addModule : function(module){
-      module.set('parent', this);
-      this.get('modules')[module.get('id')] = module;
+      module.set(&#39;parent&#39;, this);
+      this.get(&#39;modules&#39;)[module.get(&#39;id&#39;)] = module;
     },
 <span id='BUI-Module-Module-method-removeById'>    /**
 </span>     * 根据id删除模块
@@ -182,7 +182,7 @@ define('bui/module',['bui/common'], function (require) {
      * @param  {BUI.Module.Module} 模块
      */
     removeModule : function(module){
-      delete this.get('modules')[module.get('id')];
+      delete this.get(&#39;modules&#39;)[module.get(&#39;id&#39;)];
     },
 <span id='BUI-Module-Module-method-getModule'>    /**
 </span>     * 获取模板
@@ -190,7 +190,7 @@ define('bui/module',['bui/common'], function (require) {
      * @return {BUI.Module.Module} 模块
      */
     getModule : function(id){
-      return this.get('modules')[id];
+      return this.get(&#39;modules&#39;)[id];
     },
 <span id='BUI-Module-Module-method-eachModule'>    /**
 </span>     * 遍历模块
@@ -204,7 +204,7 @@ define('bui/module',['bui/common'], function (require) {
      * @return {Object} 子模块列表
      */
     getModules : function(){
-      return this.get('modules');
+      return this.get(&#39;modules&#39;);
     },
 <span id='BUI-Module-Module-method-_initData'>    /**
 </span>     * 初始化数据
@@ -240,7 +240,7 @@ define('bui/module',['bui/common'], function (require) {
      */
     _destroy : function(){
       var _self = this,
-        modules = _self.get('modules');
+        modules = _self.get(&#39;modules&#39;);
       BUI.each(modules,function(module){
         module.destroy();
       });
@@ -251,10 +251,10 @@ define('bui/module',['bui/common'], function (require) {
 </span>     * 释放模块
      */
     destroy : function(){
-      if(!this.get('destroyed')){
+      if(!this.get(&#39;destroyed&#39;)){
         Module.Manager.remove(this);
         this._destroy();
-        this.set('destroyed',true);
+        this.set(&#39;destroyed&#39;,true);
       }   
     }
   });
@@ -278,7 +278,7 @@ define('bui/module',['bui/common'], function (require) {
      * @param  {BUI.Module.Module} module 模块
      */
     add : function(module){
-      var id = module.get('id');      
+      var id = module.get(&#39;id&#39;);      
       modulesMap[id] = module;
     },
 <span id='BUI-Module-Manager-method-remove'>    /**
@@ -286,7 +286,7 @@ define('bui/module',['bui/common'], function (require) {
      * @param  {BUI.Module.Module} module 模块 
      */
     remove : function(module){
-      var id = module.get('id');
+      var id = module.get(&#39;id&#39;);
       delete modulesMap[id];
     },
 <span id='BUI-Module-Manager-method-getModule'>    /**

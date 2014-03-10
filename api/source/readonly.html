@@ -21,8 +21,8 @@
 * @author dxq613@gmail.com
 */
 
-define('bui/form/readonlyfield',['bui/form/basefield'],function (require) {
-  var Field = require('bui/form/basefield');
+define(&#39;bui/form/readonlyfield&#39;,[&#39;bui/form/basefield&#39;],function (require) {
+  var Field = require(&#39;bui/form/basefield&#39;);
 <span id='BUI-Form-Field-ReadOnly'>  /**
 </span>   * 表单隐藏域
    * @class BUI.Form.Field.ReadOnly
@@ -37,11 +37,11 @@ define('bui/form/readonlyfield',['bui/form/basefield'],function (require) {
        * @type {String}
        */
       controlTpl : {
-        value : '&lt;input type=&quot;text&quot; readonly=&quot;readonly&quot;/&gt;'
+        value : &#39;&lt;input type=&quot;text&quot; readonly=&quot;readonly&quot;/&gt;&#39;
       }
     }
   },{
-    xclass : 'form-field-readonly'
+    xclass : &#39;form-field-readonly&#39;
   });
 
   return readonlyField;

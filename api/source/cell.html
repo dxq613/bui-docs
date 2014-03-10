@@ -20,10 +20,10 @@
  * @ignore
  */
 
-define('bui/layout/cellitem',['bui/common','bui/layout/baseitem'],function (require) {
+define(&#39;bui/layout/cellitem&#39;,[&#39;bui/common&#39;,&#39;bui/layout/baseitem&#39;],function (require) {
 
-	var BUI = require('bui/common'),
-		Base = require('bui/layout/baseitem');
+	var BUI = require(&#39;bui/common&#39;),
+		Base = require(&#39;bui/layout/baseitem&#39;);
 
 <span id='BUI-Layout-Item-Cell'>	/**
 </span>	 * @class BUI.Layout.Item.Cell
@@ -62,7 +62,7 @@ define('bui/layout/cellitem',['bui/common','bui/layout/baseitem'],function (requ
 		 * @type {Array}
 		 */
 		attrProperties : {
-			value : ['rowspan','colspan']
+			value : [&#39;rowspan&#39;,&#39;colspan&#39;]
 		},
 <span id='BUI-Layout-Item-Cell-property-cells'>		/**
 </span>		 * 占用的单元格个数
@@ -70,7 +70,7 @@ define('bui/layout/cellitem',['bui/common','bui/layout/baseitem'],function (requ
 		 */
 		cells : {
 			getter : function(){
-				return this.get('rowspan') * this.get('colspan');
+				return this.get(&#39;rowspan&#39;) * this.get(&#39;colspan&#39;);
 			}
 		}
 	};

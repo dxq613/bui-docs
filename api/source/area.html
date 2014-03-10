@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 区域图序列
+ * @ignore
+ */
+
+define(&#39;bui/chart/areaseries&#39;,[&#39;bui/common&#39;,&#39;bui/chart/lineseries&#39;,&#39;bui/graphic&#39;,&#39;bui/chart/series/stacked&#39;],function (require) {
+  
+  var BUI = require(&#39;bui/common&#39;),
+    Line = require(&#39;bui/chart/lineseries&#39;),
+    Util = require(&#39;bui/graphic&#39;).Util,
+    Stacked = require(&#39;bui/chart/series/stacked&#39;),
+    REGEX_MOVE = /^M.*(M).*$/;
+
+  function trySet(obj,name,value){
+    if(obj &amp;&amp; !obj[name]){
+      obj[name] = value;
+    }
+  }
+<span id='BUI-Chart-Series-Area'>  /**
+</span>   * @class BUI.Chart.Series.Area
+   * 区域图的数据序列
+   * @extends BUI.Chart.Series.Line
+   */
+  var Area = function(cfg){
+    Area.superclass.constructor.call(this,cfg);
+  };
+
+  Area.ATTRS = {
+
+<span id='BUI-Chart-Series-Area-property-area'>    /**
+</span>     * 区域的配置信息
+     * @type {Object}
+     */
+    area : {
+      shared : false,
+      value : {
+        stroke : &#39;&#39;,
+        &#39;fill-opacity&#39; : &#39;0.70&#39;
+      }
+    }
+
+  };
+
+  BUI.extend(Area,Line);
+  BUI.mixin(Area,[Stacked]);
+
+  BUI.augment(Area,{
+    processColor : function(){
+      Area.superclass.processColor.call(this);
+      var _self = this,
+        color = _self.get(&#39;color&#39;),
+        area = _self.get(&#39;area&#39;);
+
+      trySet(area,&#39;fill&#39;,color);
+    },
+    renderUI : function(){
+      Area.superclass.renderUI.call(this);
+      var _self = this,
+        canvas = _self.get(&#39;canvas&#39;),
+        markersGroup = _self.get(&#39;markersGroup&#39;);
+      if(markersGroup &amp;&amp; _self.isStacked()){
+        $(markersGroup.get(&#39;node&#39;)).appendTo(canvas.get(&#39;node&#39;));
+      }
+    },
+    //覆盖隐藏方法，同时隐藏markers
+    hide : function(){
+      Area.superclass.hide.call(this);
+      var _self = this,
+        markersGroup = _self.get(&#39;markersGroup&#39;);
+      markersGroup &amp;&amp; markersGroup.hide();
+    },
+    //同时显示markers
+    show : function(){
+      Area.superclass.show.call(this);
+      var _self = this,
+        markersGroup = _self.get(&#39;markersGroup&#39;);
+      markersGroup &amp;&amp; markersGroup.show();
+    },
+<span id='BUI-Chart-Series-Area-method-drawInner'>    /**
+</span>     * @protected
+     * 绘制内部内容
+     */
+    drawInner : function(points){
+      var _self = this,
+        areaShape = _self.get(&#39;areaShape&#39;);
+      if(!areaShape){
+        _self.drawArea(points);
+      }else{
+        var path = _self._getAreaPath(points);
+        areaShape.attr(&#39;path&#39;,path);
+      }
+
+    },
+    _getAreaPath : function(points){
+      var _self = this,
+        stackType = _self.get(&#39;stackType&#39;),
+        path;
+      if(stackType &amp;&amp; stackType != &#39;none&#39;){
+        path = _self.points2StackArea(points);
+      }else{
+        path = _self.points2area(points);
+      }
+      return path;
+    },
+    //坐标轴变化引起的area变化
+    changeShapes : function(){
+      Area.superclass.changeShapes.call(this);
+      var _self = this,
+        areaShape = _self.get(&#39;areaShape&#39;),
+        points = _self.getPoints(),
+        path = _self._getAreaPath(points);
+      Util.animPath(areaShape,path);
+
+    },
+    
+    //绘制区域
+    drawArea : function(points){
+      var _self = this,
+        area = _self.get(&#39;area&#39;),
+        path = _self.isStacked() ? _self.points2StackArea(points) : _self.points2area(points),
+        cfg = BUI.mix({path :path},area),
+        areaShape;
+
+
+      areaShape = _self.addShape(&#39;path&#39;,cfg);
+
+      _self.set(&#39;areaShape&#39;,areaShape);
+    },
+<span id='BUI-Chart-Series-Area-method-processPoint'>    /**
+</span>     * @protected
+     * 处理节点，并且添加附加信息
+     */
+    processPoint : function(point,index){
+      var _self = this,
+        stackType = _self.get(&#39;stackType&#39;);
+      if(stackType &amp;&amp; stackType != &#39;none&#39;){
+        _self.processStackedPoint(point,index);
+      }
+    },
+    //获取层叠的区域图，忽略null值
+    points2StackArea : function(points){
+      var _self = this,
+        length = points.length,
+        value0 = _self.getBaseValue(),
+        first = points[0],
+        last = points[length - 1],
+        linePath,
+        isInCircle = _self.isInCircle(),
+        path = &#39;&#39;,
+        pre;
+
+      if(length){
+        pre = _self.getVisiblePrev();
+        linePath = _self.points2path(points);
+        path = linePath;
+        if(pre){
+          var prePoints = pre.getPoints().slice(0,points.length),
+            preFirst = prePoints[0],
+            prePath = _self.points2path(prePoints.reverse());
+          //if(!isInCircle){
+            prePath = prePath.replace(&#39;M&#39;,&#39;L&#39;);
+          //}
+          if(isInCircle){
+            path = linePath + &#39;L&#39; + preFirst.x + &#39; &#39;+ preFirst.y + prePath;
+          }else{
+            path = linePath + prePath;
+          }
+        }else{
+          if(!isInCircle){
+            path = &#39;M &#39; + first.x + &#39; &#39;+ value0 + linePath.replace(&#39;M&#39;,&#39;L&#39;);
+            path = path + &#39;L &#39;+ last.x + &#39; &#39;+value0+&#39;&#39;;
+          }
+
+        }
+        if(path &amp;&amp; !isInCircle){
+          path = path + &#39;z&#39;;
+        }
+      }
+      return path;
+    },
+    //点转换成区域的path
+    points2area : function(points){
+      var _self = this,
+        length = points.length,
+        value0 = _self.getBaseValue(),
+        first = points[0],
+        last = points[length - 1],
+        isInCircle = _self.isInCircle(),
+        linePath,
+        path = &#39;&#39;;
+     
+      if(length){ 
+        linePath = _self.points2path(points);
+        if(isInCircle){//在雷达图中显示时不考虑缺少点
+          var center = _self.getCircleCenter();
+          
+          path = linePath;
+
+        }else{
+          path = &#39;M &#39; + first.x + &#39; &#39;+ value0;
+          path = path + linePath.replace(&#39;M&#39;,&#39;L&#39;);
+          if(REGEX_MOVE.test(path)){
+            path = Util.parsePathString(path);
+            var temp = [];
+            BUI.each(path,function(item,index){
+              if(index !== 0 &amp;&amp; item[0] == &#39;M&#39;){ //如果遇到中断的点，附加2个点
+                var n1 = [],
+                  n2 = [],
+                  preItem = path[index - 1];
+                n1[0] = &#39;L&#39;;
+                n1[1] = preItem[1];
+                n1[2] = value0;
+
+                n2[0] = &#39;M&#39;;
+                n2[1] = item[1];
+                n2[2] = value0;
+
+                if(preItem[0] == &#39;R&#39;){ //防止2个
+                  preItem[0] = &#39;L&#39;;
+                  item[0] = &#39;R&#39;;
+                }else{
+                  item[0] = &#39;L&#39;;
+                }
+                temp.push(n1);
+                temp.push(n2);
+                
+              }
+              temp.push(item);
+              
+            });
+            path = temp;
+            path.push([[&#39;L&#39;,last.x,value0,&#39;z&#39;]]);
+
+          }else{
+            path = path + &#39;L &#39;+ last.x + &#39; &#39;+value0+&#39;z&#39;;
+          }
+          
+        }
+        
+      }
+      
+      return path;
+    }
+  });
+  return Area;
+});</pre>
+</body>
+</html>

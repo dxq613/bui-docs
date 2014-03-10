@@ -20,16 +20,16 @@
  * @ignore
  */
 
-define('bui/slider/slider',['bui/common'],function (require) {
-  'use strict';
+define(&#39;bui/slider/slider&#39;,[&#39;bui/common&#39;],function (require) {
+  &#39;use strict&#39;;
   var doc = document,
-    BUI = require('bui/common'),
-    CLS_HANDLE = 'x-slider-handle',
-    CLS_VERTICLE = 'x-slider-vertical',
-    CLS_HORI = 'x-slider-horizontal',
-    CLS_BACK = 'x-slider-back',
-    CLS_START = CLS_HANDLE + '-start',
-    CLS_END = CLS_HANDLE + '-end';
+    BUI = require(&#39;bui/common&#39;),
+    CLS_HANDLE = &#39;x-slider-handle&#39;,
+    CLS_VERTICLE = &#39;x-slider-vertical&#39;,
+    CLS_HORI = &#39;x-slider-horizontal&#39;,
+    CLS_BACK = &#39;x-slider-back&#39;,
+    CLS_START = CLS_HANDLE + &#39;-start&#39;,
+    CLS_END = CLS_HANDLE + &#39;-end&#39;;
 
   function parsePercet(v,total){
     if(v &gt; total){
@@ -45,11 +45,11 @@ define('bui/slider/slider',['bui/common'],function (require) {
   var SliderView = BUI.Component.View.extend({
     renderUI : function(){
       var _self = this,
-        isVertical = _self.get('isVertical');
+        isVertical = _self.get(&#39;isVertical&#39;);
       if(isVertical){
-        _self.get('el').addClass(CLS_VERTICLE);
+        _self.get(&#39;el&#39;).addClass(CLS_VERTICLE);
       }else{
-        _self.get('el').addClass(CLS_HORI);
+        _self.get(&#39;el&#39;).addClass(CLS_HORI);
       }
     },
     //设置范围
@@ -58,15 +58,15 @@ define('bui/slider/slider',['bui/common'],function (require) {
         start = end;
       }
       var _self = this,
-        backEl = _self.get('backEl'),
-        isVertical = _self.get('isVertical'),
-        handleEl = _self.get('handleEl'),
+        backEl = _self.get(&#39;backEl&#39;),
+        isVertical = _self.get(&#39;isVertical&#39;),
+        handleEl = _self.get(&#39;handleEl&#39;),
         handleCount = handleEl.length,
         range = end - start,
-        duration = anim ? _self.get('duration') : null,
-        rangeAttr = isVertical ? 'height' : 'width',
-        posAttr = isVertical ? 'bottom' : 'left',
-        method = anim ? 'animate' : 'css',
+        duration = anim ? _self.get(&#39;duration&#39;) : null,
+        rangeAttr = isVertical ? &#39;height&#39; : &#39;width&#39;,
+        posAttr = isVertical ? &#39;bottom&#39; : &#39;left&#39;,
+        method = anim ? &#39;animate&#39; : &#39;css&#39;,
         backCss = {},
         handleCss = {};
 
@@ -76,12 +76,12 @@ define('bui/slider/slider',['bui/common'],function (require) {
        * 垂直时使用bottom
        */
       function getPos(pos){
-        return pos + '%';
+        return pos + &#39;%&#39;;
       }
 
       if(backEl){
-        backCss[rangeAttr] = range + '%';
-        backCss[posAttr] = start + '%';//getPos(start);
+        backCss[rangeAttr] = range + &#39;%&#39;;
+        backCss[posAttr] = start + &#39;%&#39;;//getPos(start);
         backEl[method](backCss,duration);
       }
       
@@ -108,16 +108,16 @@ define('bui/slider/slider',['bui/common'],function (require) {
     //设置背景色
     _uiSetBackTpl : function(v){
       var _self = this,
-        el = _self.get('el'),
+        el = _self.get(&#39;el&#39;),
         backEl = $(v).appendTo(el);
       backEl.addClass(CLS_BACK);
-      _self.setInternal('backEl',backEl);
+      _self.setInternal(&#39;backEl&#39;,backEl);
     },
     //设置可拖动的滑块
     _uiSetHandleTpl : function(v){
       var _self = this,
-        el = _self.get('el'),
-        range = _self.get('range'),
+        el = _self.get(&#39;el&#39;),
+        range = _self.get(&#39;range&#39;),
         handleEl;
      
       if(!range){
@@ -126,15 +126,15 @@ define('bui/slider/slider',['bui/common'],function (require) {
         _self._createHandleEl(v,CLS_START);
         _self._createHandleEl(v,CLS_END);
       }
-      handleEl = el.find('.' + CLS_HANDLE);
-      _self.setInternal('handleEl',handleEl);
+      handleEl = el.find(&#39;.&#39; + CLS_HANDLE);
+      _self.setInternal(&#39;handleEl&#39;,handleEl);
     },
     _createHandleEl : function(tpl,cls){
       var _self = this,
-        el = _self.get('el'),
+        el = _self.get(&#39;el&#39;),
         handleEl = $(tpl).appendTo(el);
       handleEl.addClass(CLS_HANDLE);
-      handleEl.attr('tabindex','0');
+      handleEl.attr(&#39;tabindex&#39;,&#39;0&#39;);
       if(cls){
         handleEl.addClass(cls);
       }
@@ -158,19 +158,19 @@ define('bui/slider/slider',['bui/common'],function (require) {
      * @param  {Number|Array} v 滑动到位置，传入数组标示指定滑块的上下范围
      */
     slideTo : function(v){
-      this.set('value',v);
+      this.set(&#39;value&#39;,v);
     },
     //绑定事件
     bindUI : function(){
       var _self = this,
-        el = _self.get('el');
-      el.find('.x-slider-handle').on('click',function(ev){
+        el = _self.get(&#39;el&#39;);
+      el.find(&#39;.x-slider-handle&#39;).on(&#39;click&#39;,function(ev){
         ev.preventDefault();
       });
-      el.on('mousedown',function(ev){
+      el.on(&#39;mousedown&#39;,function(ev){
         var sender = $(ev.target),
           offset = el.offset();
-        if(sender.hasClass('x-slider-handle')){
+        if(sender.hasClass(&#39;x-slider-handle&#39;)){
           ev.preventDefault();
           _self._handleDrag(ev);
         }else{
@@ -185,15 +185,15 @@ define('bui/slider/slider',['bui/common'],function (require) {
     //根据容器位置确定滑块的位置
     _slideByOffset : function(offset,anim){
       var _self = this,
-        curVal = _self.get('value'),
+        curVal = _self.get(&#39;value&#39;),
         value = _self._formatValue(offset);
       if(curVal === value || (BUI.isArray(value) &amp;&amp; BUI.Array.equals(value,curVal))){ //当前值如果等于变化值，不处理
         return;
       }
       if(anim){
-        _self.set('value',value);
+        _self.set(&#39;value&#39;,value);
       }else{
-        _self.setInternal('value',value);
+        _self.setInternal(&#39;value&#39;,value);
         _self._setValue(value,false);
       }
     },
@@ -201,11 +201,11 @@ define('bui/slider/slider',['bui/common'],function (require) {
     _handleDrag : function(ev){
       
       var _self = this,
-        isVertical = _self.get('isVertical'),
+        isVertical = _self.get(&#39;isVertical&#39;),
         handleEl = $(ev.target),
         pos = handleEl.position();
       if(ev.which == 1){
-        _self.set('draging',{
+        _self.set(&#39;draging&#39;,{
             elX: pos.left,
             elY: isVertical ?(pos.top + handleEl.height()) : (pos.top),
             startX : ev.pageX,
@@ -218,7 +218,7 @@ define('bui/slider/slider',['bui/common'],function (require) {
 </span>       * @private
        */
       function mouseMove(e){
-        var draging = _self.get('draging');
+        var draging = _self.get(&#39;draging&#39;);
         if(draging){
           e.preventDefault();
           var endX = e.pageX,
@@ -234,15 +234,15 @@ define('bui/slider/slider',['bui/common'],function (require) {
 </span>       * @private
        */
       function registEvent(){
-          $(doc).on('mousemove',mouseMove);
-          $(doc).on('mouseup',mouseUp);
+          $(doc).on(&#39;mousemove&#39;,mouseMove);
+          $(doc).on(&#39;mouseup&#39;,mouseUp);
       }
 <span id='BUI-Slider-Slider-method-unregistEvent'>      /**
 </span>       * @private
        */
       function unregistEvent(){
-          $(doc).off('mousemove',mouseMove);
-          $(doc).off('mouseup',mouseUp);
+          $(doc).off(&#39;mousemove&#39;,mouseMove);
+          $(doc).off(&#39;mouseup&#39;,mouseUp);
       }
 
       
@@ -251,7 +251,7 @@ define('bui/slider/slider',['bui/common'],function (require) {
        */
       function mouseUp(e){
         if(e.which == 1){
-          _self.set('draging',false);
+          _self.set(&#39;draging&#39;,false);
           unregistEvent();
         }
       }
@@ -259,11 +259,11 @@ define('bui/slider/slider',['bui/common'],function (require) {
     },
     _getCalcValue : function(offset){
       var _self = this,
-        el = _self.get('el'),
-        max = _self.get('max'),
-        min = _self.get('min'),
-        step = _self.get('step'),
-        isVertical = _self.get('isVertical'),
+        el = _self.get(&#39;el&#39;),
+        max = _self.get(&#39;max&#39;),
+        min = _self.get(&#39;min&#39;),
+        step = _self.get(&#39;step&#39;),
+        isVertical = _self.get(&#39;isVertical&#39;),
         total = isVertical ? el.height() : el.width(),
         pos,
         calValue;
@@ -285,7 +285,7 @@ define('bui/slider/slider',['bui/common'],function (require) {
     },
     _formatValue : function(offset){
       var _self = this,
-        curVal = _self.get('value'),
+        curVal = _self.get(&#39;value&#39;),
         calValue = _self._getCalcValue(offset);
       if(BUI.isNumber(curVal)){
         return calValue;
@@ -309,8 +309,8 @@ define('bui/slider/slider',['bui/common'],function (require) {
     //设置值
     _setValue : function(value,anim){
       var _self = this,
-        min = _self.get('min'),
-        max = _self.get('max'),
+        min = _self.get(&#39;min&#39;),
+        max = _self.get(&#39;max&#39;),
         total = max - min,
         start,
         end;
@@ -325,11 +325,11 @@ define('bui/slider/slider',['bui/common'],function (require) {
         end = parsePercet(value[1] - min,total);
       }
       _self._setRange(start,end,anim);
-      _self.fire('change',{value : value});
+      _self.fire(&#39;change&#39;,{value : value});
     },
     //设置范围
     _setRange : function(start,end,anim){
-      this.get('view').setRange(start,end,anim);
+      this.get(&#39;view&#39;).setRange(start,end,anim);
     }
 
   },{
@@ -377,7 +377,7 @@ define('bui/slider/slider',['bui/common'],function (require) {
        */
       handleTpl : {
         view :true,
-        value : '&lt;span&gt;&lt;/span&gt;'
+        value : &#39;&lt;span&gt;&lt;/span&gt;&#39;
       },
 <span id='BUI-Slider-Slider-property-isVertical'>      /**
 </span>       * 是否垂直
@@ -401,7 +401,7 @@ define('bui/slider/slider',['bui/common'],function (require) {
        */
       backTpl : {
         view : true,
-        value : '&lt;div&gt;&lt;/div&gt;'
+        value : &#39;&lt;div&gt;&lt;/div&gt;&#39;
       },
       xview : {
         value : SliderView
@@ -415,7 +415,7 @@ define('bui/slider/slider',['bui/common'],function (require) {
 
     }
   },{
-    xclass : 'slider'
+    xclass : &#39;slider&#39;
   });
   return Slider;
 });</pre>

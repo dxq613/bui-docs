@@ -21,23 +21,23 @@
  * @ignore
  */
 
-define('bui/list/domlist',['bui/common'],function (require) {
-  'use strict';
+define(&#39;bui/list/domlist&#39;,[&#39;bui/common&#39;],function (require) {
+  &#39;use strict&#39;;
 
-  var BUI = require('bui/common'),
+  var BUI = require(&#39;bui/common&#39;),
     Selection = BUI.Component.UIBase.Selection,
-    FIELD_PREFIX = 'data-',
+    FIELD_PREFIX = &#39;data-&#39;,
     List = BUI.Component.UIBase.List;
 
   function getItemStatusCls(name ,self) {
     var _self = self,
-      itemCls = _self.get('itemCls'),
-      itemStatusCls = _self.get('itemStatusCls');
+      itemCls = _self.get(&#39;itemCls&#39;),
+      itemStatusCls = _self.get(&#39;itemStatusCls&#39;);
 
     if(itemStatusCls &amp;&amp; itemStatusCls[name]){
       return itemStatusCls[name];
     }
-    return itemCls + '-' + name;
+    return itemCls + &#39;-&#39; + name;
   }
 
 <span id='BUI-List-DomList-View'>  /**
@@ -61,8 +61,8 @@ define('bui/list/domlist',['bui/common'],function (require) {
     clearControl : function(){
       var _self = this,
         listEl = _self.getItemContainer(),
-        itemCls = _self.get('itemCls');
-      listEl.find('.'+itemCls).remove();
+        itemCls = _self.get(&#39;itemCls&#39;);
+      listEl.find(&#39;.&#39;+itemCls).remove();
     },
 <span id='BUI-List-DomList-View-method-addItem'>    /**
 </span>     * 添加选项
@@ -120,11 +120,11 @@ define('bui/list/domlist',['bui/common'],function (require) {
      * @protected
      */
     getItemContainer : function  () {
-      var container = this.get('itemContainer');
+      var container = this.get(&#39;itemContainer&#39;);
       if(container.length){
         return container;
       }
-      return this.get('el');
+      return this.get(&#39;el&#39;);
     },
 <span id='BUI-List-DomList-View-method-getItemTpl'>    /**
 </span>     * 获取记录的模板,itemTpl 和 数据item 合并产生的模板
@@ -132,8 +132,8 @@ define('bui/list/domlist',['bui/common'],function (require) {
      */
     getItemTpl : function  (item,index) {
       var _self = this,
-        render = _self.get('itemTplRender'),
-        itemTpl = _self.get('itemTpl');  
+        render = _self.get(&#39;itemTplRender&#39;),
+        itemTpl = _self.get(&#39;itemTpl&#39;);  
       if(render){
         return render(item,index);
       }
@@ -144,12 +144,12 @@ define('bui/list/domlist',['bui/common'],function (require) {
     _createItem : function(item,index){
       var _self = this,
         listEl = _self.getItemContainer(),
-        itemCls = _self.get('itemCls'),
-        dataField = _self.get('dataField'),
+        itemCls = _self.get(&#39;itemCls&#39;),
+        dataField = _self.get(&#39;dataField&#39;),
         tpl = _self.getItemTpl(item,index),
         node = $(tpl);
       if(index !== undefined){
-        var target = listEl.find('.'+itemCls)[index];
+        var target = listEl.find(&#39;.&#39;+itemCls)[index];
         if(target){
           node.insertBefore(target);
         }else{
@@ -180,7 +180,7 @@ define('bui/list/domlist',['bui/common'],function (require) {
     setItemStatusCls : function(name,element,value){
       var _self = this,
         cls = _self.getItemStatusCls(name),
-        method = value ? 'addClass' : 'removeClass';
+        method = value ? &#39;addClass&#39; : &#39;removeClass&#39;;
       if(element){
         $(element)[method](cls);
       }
@@ -206,7 +206,7 @@ define('bui/list/domlist',['bui/common'],function (require) {
       var _self = this;
 
       element = element || _self.findElement(item);
-      _self.setItemStatusCls('selected',element,selected);
+      _self.setItemStatusCls(&#39;selected&#39;,element,selected);
     },
 <span id='BUI-List-DomList-View-method-getAllElements'>    /**
 </span>     * 获取所有列表项的DOM结构
@@ -214,9 +214,9 @@ define('bui/list/domlist',['bui/common'],function (require) {
      */
     getAllElements : function(){
       var _self = this,
-        itemCls = _self.get('itemCls'),
-        el = _self.get('el');
-      return el.find('.' + itemCls);
+        itemCls = _self.get(&#39;itemCls&#39;),
+        el = _self.get(&#39;el&#39;);
+      return el.find(&#39;.&#39; + itemCls);
     },
 <span id='BUI-List-DomList-View-method-getItemByElement'>    /**
 </span>     * 获取DOM结构中的数据
@@ -225,7 +225,7 @@ define('bui/list/domlist',['bui/common'],function (require) {
      */
     getItemByElement : function(element){
       var _self = this,
-        dataField = _self.get('dataField');
+        dataField = _self.get(&#39;dataField&#39;);
       return $(element).data(dataField);
     },
 <span id='BUI-List-DomList-View-method-getFirstElementByStatus'>    /**
@@ -236,8 +236,8 @@ define('bui/list/domlist',['bui/common'],function (require) {
     getFirstElementByStatus : function(name){
       var _self = this,
         cls = _self.getItemStatusCls(name),
-        el = _self.get('el');
-      return el.find('.' + cls)[0];
+        el = _self.get(&#39;el&#39;);
+      return el.find(&#39;.&#39; + cls)[0];
     },
 <span id='BUI-List-DomList-View-method-getElementsByStatus'>    /**
 </span>     * 根据状态获取DOM
@@ -246,8 +246,8 @@ define('bui/list/domlist',['bui/common'],function (require) {
     getElementsByStatus : function(status){
       var _self = this,
         cls = _self.getItemStatusCls(status),
-        el = _self.get('el');
-      return el.find('.' + cls);
+        el = _self.get(&#39;el&#39;);
+      return el.find(&#39;.&#39; + cls);
     },
 <span id='BUI-List-DomList-View-method-getSelectedElements'>    /**
 </span>     * 通过样式查找DOM元素
@@ -256,9 +256,9 @@ define('bui/list/domlist',['bui/common'],function (require) {
      */
     getSelectedElements : function(){
       var _self = this,
-        cls = _self.getItemStatusCls('selected'),
-        el = _self.get('el');
-      return el.find('.' + cls);
+        cls = _self.getItemStatusCls(&#39;selected&#39;),
+        el = _self.get(&#39;el&#39;);
+      return el.find(&#39;.&#39; + cls);
     },
 <span id='BUI-List-DomList-View-method-findElement'>    /**
 </span>     * 查找指定的项的DOM结构
@@ -285,7 +285,7 @@ define('bui/list/domlist',['bui/common'],function (require) {
      */
     isElementSelected : function(element){
       var _self = this,
-        cls = _self.getItemStatusCls('selected');
+        cls = _self.getItemStatusCls(&#39;selected&#39;);
       return element &amp;&amp; $(element).hasClass(cls);
     }
   };
@@ -293,13 +293,13 @@ define('bui/list/domlist',['bui/common'],function (require) {
   //转换成Object
   function parseItem(element,self){
     var attrs = element.attributes,
-      itemStatusFields = self.get('itemStatusFields'),
+      itemStatusFields = self.get(&#39;itemStatusFields&#39;),
       item = {};
 
     BUI.each(attrs,function(attr){
       var name = attr.nodeName;
       if(name.indexOf(FIELD_PREFIX) !== -1){
-        name = name.replace(FIELD_PREFIX,'');
+        name = name.replace(FIELD_PREFIX,&#39;&#39;);
         item[name] = attr.nodeValue;
       }
     });
@@ -333,7 +333,7 @@ define('bui/list/domlist',['bui/common'],function (require) {
      */
     dataField : {
         view:true,
-        value:'data-item'
+        value:&#39;data-item&#39;
     },
 <span id='BUI-List-DomList-property-itemContainer'>    /**
 </span>     * 选项所在容器，如果未设定，使用 el
@@ -347,26 +347,26 @@ define('bui/list/domlist',['bui/common'],function (require) {
 </span>     * 选项状态对应的选项值
      * 
      *   - 此字段用于将选项记录的值跟显示的DOM状态相对应
-     *   - 例如：下面记录中 &lt;code&gt; checked : true &lt;/code&gt;，可以使得此记录对应的DOM上应用对应的状态(默认为 'list-item-checked')
-     *     &lt;pre&gt;&lt;code&gt;{id : '1',text : 1,checked : true}&lt;/code&gt;&lt;/pre&gt;
+     *   - 例如：下面记录中 &lt;code&gt; checked : true &lt;/code&gt;，可以使得此记录对应的DOM上应用对应的状态(默认为 &#39;list-item-checked&#39;)
+     *     &lt;pre&gt;&lt;code&gt;{id : &#39;1&#39;,text : 1,checked : true}&lt;/code&gt;&lt;/pre&gt;
      *   - 当更改DOM的状态时，记录中对应的字段属性也会跟着变化
      * &lt;pre&gt;&lt;code&gt;
      *   var list = new List.SimpleList({
-     *   render : '#t1',
-     *   idField : 'id', //自定义样式名称
+     *   render : &#39;#t1&#39;,
+     *   idField : &#39;id&#39;, //自定义样式名称
      *   itemStatusFields : {
-     *     checked : 'checked',
-     *     disabled : 'disabled'
+     *     checked : &#39;checked&#39;,
+     *     disabled : &#39;disabled&#39;
      *   },
-     *   items : [{id : '1',text : '1',checked : true},{id : '2',text : '2',disabled : true}]
+     *   items : [{id : &#39;1&#39;,text : &#39;1&#39;,checked : true},{id : &#39;2&#39;,text : &#39;2&#39;,disabled : true}]
      * });
      * list.render(); //列表渲染后，会自动带有checked,和disabled对应的样式
      *
-     * var item = list.getItem('1');
-     * list.hasStatus(item,'checked'); //true
+     * var item = list.getItem(&#39;1&#39;);
+     * list.hasStatus(item,&#39;checked&#39;); //true
      *
-     * list.setItemStatus(item,'checked',false);
-     * list.hasStatus(item,'checked');  //false
+     * list.setItemStatus(item,&#39;checked&#39;,false);
+     * list.hasStatus(item,&#39;checked&#39;);  //false
      * item.checked;                    //false
      * 
      * &lt;/code&gt;&lt;/pre&gt;
@@ -383,7 +383,14 @@ define('bui/list/domlist',['bui/common'],function (require) {
      */
     itemCls : {
       view : true
-    },        
+    }, 
+<span id='BUI-List-DomList-property-cancelSelected'>    /**
+</span>     * 是否允许取消选中，在多选情况下默认允许取消，单选情况下不允许取消,注意此属性只有单选情况下生效
+     * @type {Boolean}
+     */
+    cancelSelected : {
+      value : false
+    },   
 <span id='BUI-List-DomList-property-textGetter'>    /**
 </span>     * 获取项的文本，默认获取显示的文本
      * @type {Object}
@@ -396,16 +403,16 @@ define('bui/list/domlist',['bui/common'],function (require) {
 </span>     * 默认的加载控件内容的配置,默认值：
      * &lt;pre&gt;
      *  {
-     *   property : 'items',
-     *   dataType : 'json'
+     *   property : &#39;items&#39;,
+     *   dataType : &#39;json&#39;
      * }
      * &lt;/pre&gt;
      * @type {Object}
      */
     defaultLoaderCfg  : {
       value : {
-        property : 'items',
-        dataType : 'json'
+        property : &#39;items&#39;,
+        dataType : &#39;json&#39;
       }
     },
     events : {
@@ -417,7 +424,7 @@ define('bui/list/domlist',['bui/common'],function (require) {
          * @param {Object} e.item 渲染DOM对应的选项
          * @param {HTMLElement} e.element 渲染的DOM对象
          */
-        'itemrendered' : true,
+        &#39;itemrendered&#39; : true,
 <span id='BUI-List-DomList-event-itemremoved'>        /**
 </span>         * @event
          * 删除选项
@@ -425,7 +432,7 @@ define('bui/list/domlist',['bui/common'],function (require) {
          * @param {Object} e.item 删除DOM对应的选项
          * @param {HTMLElement} e.element 删除的DOM对象
          */
-        'itemremoved' : true,
+        &#39;itemremoved&#39; : true,
 <span id='BUI-List-DomList-event-itemupdated'>        /**
 </span>         * @event
          * 更新选项
@@ -433,22 +440,22 @@ define('bui/list/domlist',['bui/common'],function (require) {
          * @param {Object} e.item 更新DOM对应的选项
          * @param {HTMLElement} e.element 更新的DOM对象
          */
-        'itemupdated' : true,
+        &#39;itemupdated&#39; : true,
 <span id='BUI-List-DomList-event-itemsshow'>        /**
 </span>        * 设置记录时，所有的记录显示完毕后触发
         * @event
         */
-        'itemsshow' : false,
+        &#39;itemsshow&#39; : false,
 <span id='BUI-List-DomList-event-beforeitemsshow'>        /**
 </span>        * 设置记录后，所有的记录显示前触发
         * @event:
         */
-        'beforeitemsshow' : false,
+        &#39;beforeitemsshow&#39; : false,
 <span id='BUI-List-DomList-event-itemsclear'>        /**
 </span>        * 清空所有记录，DOM清理完成后
         * @event
         */
-        'itemsclear' : false,
+        &#39;itemsclear&#39; : false,
 <span id='BUI-List-DomList-event-itemdblclick'>        /**
 </span>         * 双击是触发
         * @event
@@ -457,12 +464,12 @@ define('bui/list/domlist',['bui/common'],function (require) {
         * @param {HTMLElement} e.element 选项的DOM对象
         * @param {HTMLElement} e.domTarget 点击的元素
         */
-        'itemdblclick' : false,
+        &#39;itemdblclick&#39; : false,
 <span id='BUI-List-DomList-event-beforeitemsclear'>        /**
 </span>        * 清空所有Dom前触发
         * @event
         */
-        'beforeitemsclear' : false
+        &#39;beforeitemsclear&#39; : false
          
       } 
     }
@@ -472,9 +479,9 @@ define('bui/list/domlist',['bui/common'],function (require) {
     items : function(el){
       var _self = this,
         rst = [],
-        itemCls = _self.get('itemCls'),
-        dataField = _self.get('dataField'),
-        elements = el.find('.' + itemCls);
+        itemCls = _self.get(&#39;itemCls&#39;),
+        dataField = _self.get(&#39;dataField&#39;),
+        elements = el.find(&#39;.&#39; + itemCls);
       if(!elements.length){
         elements = el.children();
         elements.addClass(itemCls);
@@ -484,7 +491,7 @@ define('bui/list/domlist',['bui/common'],function (require) {
         rst.push(item);
         $(element).data(dataField,item);
       });
-      //_self.setInternal('items',rst);
+      //_self.setInternal(&#39;items&#39;,rst);
       return rst;
     }
   };
@@ -495,19 +502,19 @@ define('bui/list/domlist',['bui/common'],function (require) {
     _uiSetItems : function (items) {
       var _self = this;
       //使用srcNode 的方式，不同步
-      if(_self.get('srcNode') &amp;&amp; !_self.get('rendered')){
+      if(_self.get(&#39;srcNode&#39;) &amp;&amp; !_self.get(&#39;rendered&#39;)){
         return;
       }
       this.setItems(items);
     },
     __bindUI : function(){
       var _self = this,
-        selectedEvent = _self.get('selectedEvent'),
-        itemCls = _self.get('itemCls'),
-        itemContainer = _self.get('view').getItemContainer();
+        selectedEvent = _self.get(&#39;selectedEvent&#39;),
+        itemCls = _self.get(&#39;itemCls&#39;),
+        itemContainer = _self.get(&#39;view&#39;).getItemContainer();
 
-      itemContainer.delegate('.'+itemCls,'click',function(ev){
-        if(_self.get('disabled')){ //控件禁用后，阻止事件
+      itemContainer.delegate(&#39;.&#39;+itemCls,&#39;click&#39;,function(ev){
+        if(_self.get(&#39;disabled&#39;)){ //控件禁用后，阻止事件
           return;
         }
         var itemEl = $(ev.currentTarget),
@@ -515,14 +522,14 @@ define('bui/list/domlist',['bui/common'],function (require) {
         if(_self.isItemDisabled(item,itemEl)){ //禁用状态下阻止选中
           return;
         }
-        var rst = _self.fire('itemclick',{item:item,element : itemEl[0],domTarget:ev.target,domEvent : ev});
-        if(rst !== false &amp;&amp; selectedEvent == 'click' &amp;&amp; _self.isItemSelectable(item)){
+        var rst = _self.fire(&#39;itemclick&#39;,{item:item,element : itemEl[0],domTarget:ev.target,domEvent : ev});
+        if(rst !== false &amp;&amp; selectedEvent == &#39;click&#39; &amp;&amp; _self.isItemSelectable(item)){
           setItemSelectedStatus(item,itemEl); 
         }
       });
-      if(selectedEvent !== 'click'){ //如果选中事件不等于click，则进行监听选中
-        itemContainer.delegate('.'+itemCls,selectedEvent,function(ev){
-          if(_self.get('disabled')){ //控件禁用后，阻止事件
+      if(selectedEvent !== &#39;click&#39;){ //如果选中事件不等于click，则进行监听选中
+        itemContainer.delegate(&#39;.&#39;+itemCls,selectedEvent,function(ev){
+          if(_self.get(&#39;disabled&#39;)){ //控件禁用后，阻止事件
             return;
           }
           var itemEl = $(ev.currentTarget),
@@ -537,8 +544,8 @@ define('bui/list/domlist',['bui/common'],function (require) {
         });
       }
 
-      itemContainer.delegate('.' + itemCls,'dblclick',function(ev){
-        if(_self.get('disabled')){ //控件禁用后，阻止事件
+      itemContainer.delegate(&#39;.&#39; + itemCls,&#39;dblclick&#39;,function(ev){
+        if(_self.get(&#39;disabled&#39;)){ //控件禁用后，阻止事件
           return;
         }
         var itemEl = $(ev.currentTarget),
@@ -546,11 +553,11 @@ define('bui/list/domlist',['bui/common'],function (require) {
         if(_self.isItemDisabled(item,itemEl)){ //禁用状态下阻止选中
           return;
         }
-        _self.fire('itemdblclick',{item:item,element : itemEl[0],domTarget:ev.target});
+        _self.fire(&#39;itemdblclick&#39;,{item:item,element : itemEl[0],domTarget:ev.target});
       });
       
       function setItemSelectedStatus(item,itemEl){
-        var multipleSelect = _self.get('multipleSelect'),
+        var multipleSelect = _self.get(&#39;multipleSelect&#39;),
           isSelected;
         isSelected = _self.isItemSelected(item,itemEl);
         if(!isSelected){
@@ -560,9 +567,11 @@ define('bui/list/domlist',['bui/common'],function (require) {
           _self.setItemSelected(item,true,itemEl);
         }else if(multipleSelect){
           _self.setItemSelected(item,false,itemEl);
-        }           
+        }else if(_self.get(&#39;cancelSelected&#39;)){
+          _self.setSelected(null); //选中空记录
+        }      
       }
-      _self.on('itemrendered itemupdated',function(ev){
+      _self.on(&#39;itemrendered itemupdated&#39;,function(ev){
         var item = ev.item,
           element = ev.element;
         _self._syncItemStatus(item,element);
@@ -575,10 +584,10 @@ define('bui/list/domlist',['bui/common'],function (require) {
     //同步选项状态
     _syncItemStatus : function(item,element){
       var _self = this,
-        itemStatusFields = _self.get('itemStatusFields');
+        itemStatusFields = _self.get(&#39;itemStatusFields&#39;);
       BUI.each(itemStatusFields,function(v,k){
         if(item[v] != null){
-          _self.get('view').setItemStatusCls(k,element,item[v]);
+          _self.get(&#39;view&#39;).setItemStatusCls(k,element,item[v]);
         }
       });
     },
@@ -591,7 +600,7 @@ define('bui/list/domlist',['bui/common'],function (require) {
      */
     getStatusValue : function(item,status){
       var _self = this,
-        itemStatusFields = _self.get('itemStatusFields'),
+        itemStatusFields = _self.get(&#39;itemStatusFields&#39;),
         field = itemStatusFields[status];
       return item[field];
     },
@@ -611,7 +620,7 @@ define('bui/list/domlist',['bui/common'],function (require) {
      */
     getStatusField : function(status){
       var _self = this,
-        itemStatusFields = _self.get('itemStatusFields');
+        itemStatusFields = _self.get(&#39;itemStatusFields&#39;);
       return itemStatusFields[status];
     },
 <span id='BUI-List-DomList-method-setStatusValue'>    /**
@@ -623,7 +632,7 @@ define('bui/list/domlist',['bui/common'],function (require) {
      */
     setStatusValue : function(item,status,value){
       var _self = this,
-        itemStatusFields = _self.get('itemStatusFields'),
+        itemStatusFields = _self.get(&#39;itemStatusFields&#39;),
         field = itemStatusFields[status];
       if(field){
         item[field] = value;
@@ -635,10 +644,10 @@ define('bui/list/domlist',['bui/common'],function (require) {
      */
     getItemText : function(item){
       var _self = this,
-          textGetter = _self.get('textGetter');
+          textGetter = _self.get(&#39;textGetter&#39;);
       if(!item)
       {
-          return '';
+          return &#39;&#39;;
       }
       if(textGetter){
         return textGetter(item);
@@ -653,15 +662,15 @@ define('bui/list/domlist',['bui/common'],function (require) {
      */
     removeItem : function (item) {
       var _self = this,
-        items = _self.get('items'),
+        items = _self.get(&#39;items&#39;),
         element = _self.findElement(item),
         index;
       index = BUI.Array.indexOf(item,items);
       if(index !== -1){
         items.splice(index, 1);
       }
-      _self.get('view').removeItem(item,element);
-      _self.fire('itemremoved',{item:item,domTarget: $(element)[0],element : element});
+      _self.get(&#39;view&#39;).removeItem(item,element);
+      _self.fire(&#39;itemremoved&#39;,{item:item,domTarget: $(element)[0],element : element});
     },
 <span id='global-method-addItemAt'>    /**
 </span>     * 在指定位置添加选项,选项值为一个对象
@@ -671,7 +680,7 @@ define('bui/list/domlist',['bui/common'],function (require) {
      */
     addItemAt : function(item,index) {
       var _self = this,
-        items = _self.get('items');
+        items = _self.get(&#39;items&#39;);
       if(index === undefined) {
           index = items.length;
       }
@@ -688,8 +697,8 @@ define('bui/list/domlist',['bui/common'],function (require) {
      */
     addItemToView : function(item,index){
       var _self = this,
-        element = _self.get('view').addItem(item,index);
-      _self.fire('itemrendered',{item:item,domTarget : $(element)[0],element : element});
+        element = _self.get(&#39;view&#39;).addItem(item,index);
+      _self.fire(&#39;itemrendered&#39;,{item:item,domTarget : $(element)[0],element : element});
       return element;
     },
 <span id='global-method-updateItem'>    /**
@@ -699,30 +708,30 @@ define('bui/list/domlist',['bui/common'],function (require) {
      */
     updateItem : function(item){
       var _self = this,
-        element =  _self.get('view').updateItem(item);
-      _self.fire('itemupdated',{item : item,domTarget : $(element)[0],element : element});
+        element =  _self.get(&#39;view&#39;).updateItem(item);
+      _self.fire(&#39;itemupdated&#39;,{item : item,domTarget : $(element)[0],element : element});
     },
 <span id='BUI-List-DomList-method-setItems'>    /**
 </span>     * 设置列表记录
      * &lt;pre&gt;&lt;code&gt;
      *   list.setItems(items);
      *   //等同 
-     *   list.set('items',items);
+     *   list.set(&#39;items&#39;,items);
      * &lt;/code&gt;&lt;/pre&gt;
      * @param {Array} items 列表记录
      */
     setItems : function(items){
       var _self = this;
       if(items != _self.getItems()){
-        _self.setInternal('items',items);
+        _self.setInternal(&#39;items&#39;,items);
       }
       //清理子控件
       _self.clearControl();
-      _self.fire('beforeitemsshow');
+      _self.fire(&#39;beforeitemsshow&#39;);
       BUI.each(items,function(item,index){
         _self.addItemToView(item,index);
       });
-      _self.fire('itemsshow');
+      _self.fire(&#39;itemsshow&#39;);
     },
 <span id='global-method-getItems'>    /**
 </span>     * 获取所有选项
@@ -732,7 +741,7 @@ define('bui/list/domlist',['bui/common'],function (require) {
      */
     getItems : function () {
       
-      return this.get('items');
+      return this.get(&#39;items&#39;);
     },
 <span id='BUI-List-DomList-method-getItemByElement'>     /**
 </span>     * 获取DOM结构中的数据
@@ -741,7 +750,7 @@ define('bui/list/domlist',['bui/common'],function (require) {
      * @return {Object} 该项对应的值
      */
     getItemByElement : function(element){
-      return this.get('view').getItemByElement(element);
+      return this.get(&#39;view&#39;).getItemByElement(element);
     },
 <span id='BUI-List-DomList-method-getSelected'>    /**
 </span>     * 获取选中的第一项,
@@ -752,24 +761,24 @@ define('bui/list/domlist',['bui/common'],function (require) {
      */
     getSelected : function(){ //this.getSelection()[0] 的方式效率太低
       var _self = this,
-        element = _self.get('view').getFirstElementByStatus('selected');
+        element = _self.get(&#39;view&#39;).getFirstElementByStatus(&#39;selected&#39;);
         return _self.getItemByElement(element) || null;
     },
 <span id='BUI-List-DomList-method-getItemsByStatus'>    /**
 </span>     * 根据状态获取选项
      * &lt;pre&gt;&lt;code&gt;
      *   //设置状态
-     *   list.setItemStatus(item,'active');
+     *   list.setItemStatus(item,&#39;active&#39;);
      *   
-     *   //获取'active'状态的选项
-     *   list.getItemsByStatus('active');
+     *   //获取&#39;active&#39;状态的选项
+     *   list.getItemsByStatus(&#39;active&#39;);
      * &lt;/code&gt;&lt;/pre&gt;
      * @param  {String} status 状态名
      * @return {Array}  选项组集合
      */
     getItemsByStatus : function(status){
       var _self = this,
-        elements = _self.get('view').getElementsByStatus(status),
+        elements = _self.get(&#39;view&#39;).getElementsByStatus(status),
         rst = [];
       BUI.each(elements,function(element){
         rst.push(_self.getItemByElement(element));
@@ -779,9 +788,9 @@ define('bui/list/domlist',['bui/common'],function (require) {
 <span id='BUI-List-DomList-method-findElement'>    /**
 </span>     * 查找指定的项的DOM结构
      * &lt;pre&gt;&lt;code&gt;
-     *   var item = list.getItem('2'); //获取选项
+     *   var item = list.getItem(&#39;2&#39;); //获取选项
      *   var element = list.findElement(item);
-     *   $(element).addClass('xxx');
+     *   $(element).addClass(&#39;xxx&#39;);
      * &lt;/code&gt;&lt;/pre&gt;
      * @param  {Object} item 
      * @return {HTMLElement} element
@@ -791,14 +800,14 @@ define('bui/list/domlist',['bui/common'],function (require) {
       if(BUI.isString(item)){
         item = _self.getItem(item);
       }
-      return this.get('view').findElement(item);
+      return this.get(&#39;view&#39;).findElement(item);
     },
     findItemByField : function(field,value){
       var _self = this,
-        items = _self.get('items'),
+        items = _self.get(&#39;items&#39;),
         result = null;
       BUI.each(items,function(item){
-        if(item[field] != null &amp;&amp; item[field] == value){//会出现false == '','0' == false的情况
+        if(item[field] != null &amp;&amp; item[field] == value){//会出现false == &#39;&#39;,&#39;0&#39; == false的情况
             result = item;
             return false;
         }
@@ -813,8 +822,8 @@ define('bui/list/domlist',['bui/common'],function (require) {
     setItemSelectedStatus : function(item,selected,element){
       var _self = this;
       element = element || _self.findElement(item);
-      //_self.get('view').setItemSelected(item,selected,element);
-      _self.setItemStatus(item,'selected',selected,element);
+      //_self.get(&#39;view&#39;).setItemSelected(item,selected,element);
+      _self.setItemStatus(item,&#39;selected&#39;,selected,element);
       //_self.afterSelected(item,selected,element);
     },
 <span id='global-method-setAllSelection'>    /**
@@ -829,7 +838,7 @@ define('bui/list/domlist',['bui/common'],function (require) {
 <span id='BUI-List-DomList-method-isItemSelected'>    /**
 </span>     * 选项是否被选中
      * &lt;pre&gt;&lt;code&gt;
-     *   var item = list.getItem('2');
+     *   var item = list.getItem(&#39;2&#39;);
      *   if(list.isItemSelected(item)){
      *     //do something
      *   }
@@ -842,12 +851,12 @@ define('bui/list/domlist',['bui/common'],function (require) {
       var _self = this;
       element = element || _self.findElement(item);
 
-      return _self.get('view').isElementSelected(element);
+      return _self.get(&#39;view&#39;).isElementSelected(element);
     },
 <span id='BUI-List-DomList-method-isItemDisabled'>    /**
 </span>     * 是否选项被禁用
      * &lt;pre&gt;&lt;code&gt;
-     * var item = list.getItem('2');
+     * var item = list.getItem(&#39;2&#39;);
      * if(list.isItemDisabled(item)){ //如果选项禁用
      *   //do something
      * }
@@ -856,13 +865,13 @@ define('bui/list/domlist',['bui/common'],function (require) {
      * @return {Boolean} 选项是否禁用
      */
     isItemDisabled : function(item,element){
-      return this.hasStatus(item,'disabled',element);
+      return this.hasStatus(item,&#39;disabled&#39;,element);
     },
 <span id='BUI-List-DomList-method-setItemDisabled'>    /**
 </span>     * 设置选项禁用
      * &lt;pre&gt;&lt;code&gt;
-     * var item = list.getItem('2');
-     * list.setItemDisabled(item,true);//设置选项禁用，会在DOM上添加 itemCls + 'disabled'的样式
+     * var item = list.getItem(&#39;2&#39;);
+     * list.setItemDisabled(item,true);//设置选项禁用，会在DOM上添加 itemCls + &#39;disabled&#39;的样式
      * list.setItemDisabled(item,false); //取消禁用，可以用{@link #itemStatusCls} 来替换样式
      * &lt;/code&gt;&lt;/pre&gt;
      * @param {Object} item 选项
@@ -874,7 +883,7 @@ define('bui/list/domlist',['bui/common'],function (require) {
         //清除选择
         _self.setItemSelected(item,false);
       }*/
-      _self.setItemStatus(item,'disabled',disabled);
+      _self.setItemStatus(item,&#39;disabled&#39;,disabled);
     },
 <span id='global-method-getSelection'>    /**
 </span>     * 获取选中的项的值
@@ -884,7 +893,7 @@ define('bui/list/domlist',['bui/common'],function (require) {
      */
     getSelection : function(){
       var _self = this,
-        elements = _self.get('view').getSelectedElements(),
+        elements = _self.get(&#39;view&#39;).getSelectedElements(),
         rst = [];
       BUI.each(elements,function(elem){
         rst.push(_self.getItemByElement(elem));
@@ -897,19 +906,19 @@ define('bui/list/domlist',['bui/common'],function (require) {
      * 清除者列表项的DOM
      */
     clearControl : function(){
-      this.fire('beforeitemsclear');
-      this.get('view').clearControl();
-      this.fire('itemsclear');
+      this.fire(&#39;beforeitemsclear&#39;);
+      this.get(&#39;view&#39;).clearControl();
+      this.fire(&#39;itemsclear&#39;);
     },
 <span id='BUI-List-DomList-method-hasStatus'>    /**
 </span>     * 选项是否存在某种状态
      * &lt;pre&gt;&lt;code&gt;
-     * var item = list.getItem('2');
-     * list.setItemStatus(item,'active',true);
-     * list.hasStatus(item,'active'); //true
+     * var item = list.getItem(&#39;2&#39;);
+     * list.setItemStatus(item,&#39;active&#39;,true);
+     * list.hasStatus(item,&#39;active&#39;); //true
      *
-     * list.setItemStatus(item,'active',false);
-     * list.hasStatus(item,'false'); //true
+     * list.setItemStatus(item,&#39;active&#39;,false);
+     * list.hasStatus(item,&#39;false&#39;); //true
      * &lt;/code&gt;&lt;/pre&gt;
      * @param {*} item 选项
      * @param {String} status 状态名称，如selected,hover,open等等
@@ -926,17 +935,17 @@ define('bui/list/domlist',['bui/common'],function (require) {
         return _self.getStatusValue(item,status);
       }*/
       element = element || _self.findElement(item);
-      return _self.get('view').hasStatus(status,element);
+      return _self.get(&#39;view&#39;).hasStatus(status,element);
     },
 <span id='BUI-List-DomList-method-setItemStatus'>    /**
 </span>     * 设置选项状态,可以设置任何自定义状态
      * &lt;pre&gt;&lt;code&gt;
-     * var item = list.getItem('2');
-     * list.setItemStatus(item,'active',true);
-     * list.hasStatus(item,'active'); //true
+     * var item = list.getItem(&#39;2&#39;);
+     * list.setItemStatus(item,&#39;active&#39;,true);
+     * list.hasStatus(item,&#39;active&#39;); //true
      *
-     * list.setItemStatus(item,'active',false);
-     * list.hasStatus(item,'false'); //true
+     * list.setItemStatus(item,&#39;active&#39;,false);
+     * list.hasStatus(item,&#39;false&#39;); //true
      * &lt;/code&gt;&lt;/pre&gt;
      * @param {*} item 选项
      * @param {String} status 状态名称
@@ -949,17 +958,17 @@ define('bui/list/domlist',['bui/common'],function (require) {
         element = element || _self.findElement(item);
       }
       
-      if(!_self.isItemDisabled(item,element) || status === 'disabled'){ //禁用后，阻止添加任何状态变化
+      if(!_self.isItemDisabled(item,element) || status === &#39;disabled&#39;){ //禁用后，阻止添加任何状态变化
         if(item){
-          if(status === 'disabled' &amp;&amp; value){ //禁用，同时清理其他状态
+          if(status === &#39;disabled&#39; &amp;&amp; value){ //禁用，同时清理其他状态
             _self.clearItemStatus(item);
           }
           _self.setStatusValue(item,status,value);
-          _self.get('view').setItemStatusCls(status,element,value);
-          _self.fire('itemstatuschange',{item : item,status : status,value : value,element : element});
+          _self.get(&#39;view&#39;).setItemStatusCls(status,element,value);
+          _self.fire(&#39;itemstatuschange&#39;,{item : item,status : status,value : value,element : element});
         }
         
-        if(status === 'selected'){ //处理选中
+        if(status === &#39;selected&#39;){ //处理选中
           _self.afterSelected(item,value,element);
         }
       }
@@ -971,7 +980,7 @@ define('bui/list/domlist',['bui/common'],function (require) {
      */
     clearItemStatus : function(item,status,element){
       var _self = this,
-        itemStatusFields = _self.get('itemStatusFields');
+        itemStatusFields = _self.get(&#39;itemStatusFields&#39;);
       element = element || _self.findElement(item);
         
       if(status){
@@ -980,11 +989,11 @@ define('bui/list/domlist',['bui/common'],function (require) {
         BUI.each(itemStatusFields,function(v,k){
           _self.setItemStatus(item,k,false,element);
         });
-        if(!itemStatusFields['selected']){
+        if(!itemStatusFields[&#39;selected&#39;]){
           _self.setItemSelected(item,false);
         }
         //移除hover状态
-        _self.setItemStatus(item,'hover',false);
+        _self.setItemStatus(item,&#39;hover&#39;,false);
       }
       
     }

@@ -20,15 +20,15 @@
  * @ignore
  */
 
-define('bui/form/basefield',['bui/common','bui/form/tips','bui/form/valid','bui/form/remote'],function (require){
+define(&#39;bui/form/basefield&#39;,[&#39;bui/common&#39;,&#39;bui/form/tips&#39;,&#39;bui/form/valid&#39;,&#39;bui/form/remote&#39;],function (require){
 
-  var BUI = require('bui/common'),
+  var BUI = require(&#39;bui/common&#39;),
     Component = BUI.Component,
-    TipItem = require('bui/form/tips').Item,
-    Valid = require('bui/form/valid'),
-    Remote = require('bui/form/remote'),
-    CLS_FIELD_ERROR = BUI.prefix + 'form-field-error',
-    DATA_ERROR = 'data-error';
+    TipItem = require(&#39;bui/form/tips&#39;).Item,
+    Valid = require(&#39;bui/form/valid&#39;),
+    Remote = require(&#39;bui/form/remote&#39;),
+    CLS_FIELD_ERROR = BUI.prefix + &#39;form-field-error&#39;,
+    DATA_ERROR = &#39;data-error&#39;;
 
 <span id='BUI-Form-FieldView'>  /**
 </span>   * 字段视图类
@@ -39,19 +39,19 @@ define('bui/form/basefield',['bui/common','bui/form/tips','bui/form/valid','bui/
     //渲染DOM
     renderUI : function(){
       var _self = this,
-        control = _self.get('control');
+        control = _self.get(&#39;control&#39;);
 
       if(!control){
-        var controlTpl = _self.get('controlTpl'),
+        var controlTpl = _self.get(&#39;controlTpl&#39;),
           container = _self.getControlContainer();
           
         if(controlTpl){
           var control = $(controlTpl).appendTo(container);
-          _self.set('control',control);
+          _self.set(&#39;control&#39;,control);
         }
       }else{
         //var controlContainer = control.parent();
-        _self.set('controlContainer',control.parent());
+        _self.set(&#39;controlContainer&#39;,control.parent());
       }
     },
 <span id='BUI-Form-FieldView-method-clearErrors'>    /**
@@ -60,12 +60,12 @@ define('bui/form/basefield',['bui/common','bui/form/tips','bui/form/valid','bui/
      */
     clearErrors : function(){
       var _self = this,
-        msgEl = _self.get('msgEl');
+        msgEl = _self.get(&#39;msgEl&#39;);
       if(msgEl){
         msgEl.remove();
-        _self.set('msgEl',null);
+        _self.set(&#39;msgEl&#39;,null);
       }
-      _self.get('el').removeClass(CLS_FIELD_ERROR);
+      _self.get(&#39;el&#39;).removeClass(CLS_FIELD_ERROR);
     },
 <span id='BUI-Form-FieldView-method-showError'>    /**
 </span>     * 显示错误信息
@@ -74,14 +74,14 @@ define('bui/form/basefield',['bui/common','bui/form/tips','bui/form/valid','bui/
      */
     showError : function(msg,errorTpl){
       var _self = this,
-        control = _self.get('control'),
+        control = _self.get(&#39;control&#39;),
         errorMsg = BUI.substitute(errorTpl,{error : msg}),
         el = $(errorMsg);
       //_self.clearErrorMsg();
       
       el.appendTo(control.parent());
-      _self.set('msgEl',el);
-      _self.get('el').addClass(CLS_FIELD_ERROR);
+      _self.set(&#39;msgEl&#39;,el);
+      _self.get(&#39;el&#39;).addClass(CLS_FIELD_ERROR);
     },
 <span id='BUI-Form-FieldView-method-getControlContainer'>    /**
 </span>     * @internal 获取控件的容器
@@ -89,8 +89,8 @@ define('bui/form/basefield',['bui/common','bui/form/tips','bui/form/valid','bui/
      */
     getControlContainer : function(){
       var _self = this,
-        el = _self.get('el'),
-        controlContainer = _self.get('controlContainer');
+        el = _self.get(&#39;el&#39;),
+        controlContainer = _self.get(&#39;controlContainer&#39;);
       if(controlContainer){
         if(BUI.isString(controlContainer)){
           controlContainer = el.find(controlContainer);
@@ -110,7 +110,7 @@ define('bui/form/basefield',['bui/common','bui/form/tips','bui/form/valid','bui/
     //设置名称
     _uiSetName : function(v){
       var _self = this;
-      _self.get('control').attr('name',v);
+      _self.get(&#39;control&#39;).attr(&#39;name&#39;,v);
     }
   },
   {
@@ -126,33 +126,34 @@ define('bui/form/basefield',['bui/common','bui/form/tips','bui/form/valid','bui/
 </span>   * 表单字段基类
    * @class BUI.Form.Field
    * @mixins BUI.Form.Remote
+   * @mixins BUI.Form.Valid
    * @extends BUI.Component.Controller
    */
   var field = Component.Controller.extend([Remote,Valid],{
-
+    isField : true,
     initializer : function(){
       var _self = this;
-      _self.on('afterRenderUI',function(){
-        var tip = _self.get('tip');
+      _self.on(&#39;afterRenderUI&#39;,function(){
+        var tip = _self.get(&#39;tip&#39;);
         if(tip){
           tip.trigger = _self.getTipTigger();
           tip.autoRender = true;
           tip = new TipItem(tip);
-          _self.set('tip',tip);
+          _self.set(&#39;tip&#39;,tip);
         }
       });
     },
     //绑定事件
     bindUI : function(){
       var _self = this,
-        validEvent = _self.get('validEvent'),
-        changeEvent = _self.get('changeEvent'),
-        firstValidEvent = _self.get('firstValidEvent'),
+        validEvent = _self.get(&#39;validEvent&#39;),
+        changeEvent = _self.get(&#39;changeEvent&#39;),
+        firstValidEvent = _self.get(&#39;firstValidEvent&#39;),
         innerControl = _self.getInnerControl();
 
       //选择框只使用 select事件
-      if(innerControl.is('select')){
-        validEvent = 'change';
+      if(innerControl.is(&#39;select&#39;)){
+        validEvent = &#39;change&#39;;
       }
       //验证事件
       innerControl.on(validEvent,function(){
@@ -162,7 +163,7 @@ define('bui/form/basefield',['bui/common','bui/form/tips','bui/form/valid','bui/
       if(firstValidEvent){
         //未发生验证时，首次获取焦点/丢失焦点/点击，进行验证
         innerControl.on(firstValidEvent,function(){
-          if(!_self.get('hasValid')){
+          if(!_self.get(&#39;hasValid&#39;)){
             var value = _self.getControlValue(innerControl);
             _self.validControl(value);
           }
@@ -170,13 +171,13 @@ define('bui/form/basefield',['bui/common','bui/form/tips','bui/form/valid','bui/
       }
       
 
-      //本来是监听控件的change事件，但是，如果控件还未触发change,但是通过get('value')来取值，则会出现错误，
+      //本来是监听控件的change事件，但是，如果控件还未触发change,但是通过get(&#39;value&#39;)来取值，则会出现错误，
       //所以当通过验证时，即触发改变事件
       _self.on(changeEvent,function(){
         _self.onValid();
       });
 
-      _self.on('remotecomplete',function (ev) {
+      _self.on(&#39;remotecomplete&#39;,function (ev) {
         _self._setError(ev.error);
       });
 
@@ -191,12 +192,12 @@ define('bui/form/basefield',['bui/common','bui/form/tips','bui/form/valid','bui/
 
       value = _self.parseValue(value);
       if(!_self.isCurrentValue(value)){
-        _self.setInternal('value',value);
+        _self.setInternal(&#39;value&#39;,value);
         _self.onChange();
       }
     },
     onChange : function () {
-      this.fire('change');
+      this.fire(&#39;change&#39;);
     },
 <span id='BUI-Form-Field-method-isCurrentValue'>    /**
 </span>     * @protected
@@ -205,16 +206,16 @@ define('bui/form/basefield',['bui/common','bui/form/tips','bui/form/valid','bui/
      * @return {Boolean}  是否当前值
      */
     isCurrentValue : function (value) {
-      return value == this.get('value');
+      return value == this.get(&#39;value&#39;);
     },
     //清理错误信息
     _clearError : function(){
-      this.set('error',null);
-      this.get('view').clearErrors();
+      this.set(&#39;error&#39;,null);
+      this.get(&#39;view&#39;).clearErrors();
     },
     //设置错误信息
     _setError : function(msg){
-      this.set('error',msg);
+      this.set(&#39;error&#39;,msg);
       this.showErrors();
     },
 
@@ -234,7 +235,7 @@ define('bui/form/basefield',['bui/common','bui/form/tips','bui/form/valid','bui/
      * 获取内部控件的容器
      */
     getControlContainer : function(){
-      return this.get('view').getControlContainer();
+      return this.get(&#39;view&#39;).getControlContainer();
     },
 <span id='BUI-Form-Field-method-getRemoteParams'>    /**
 </span>     * 获取异步验证的参数，对于表单字段域而言，是{[name] : [value]}
@@ -245,7 +246,7 @@ define('bui/form/basefield',['bui/common','bui/form/tips','bui/form/valid','bui/
     getRemoteParams : function  () {
       var _self = this,
         rst = {};
-      rst[_self.get('name')] = _self.getControlValue();
+      rst[_self.get(&#39;name&#39;)] = _self.getControlValue();
       return rst;
     },
 <span id='BUI-Form-Field-method-setControlValue'>    /**
@@ -279,20 +280,20 @@ define('bui/form/basefield',['bui/common','bui/form/tips','bui/form/valid','bui/
       var _self = this, 
         errorMsg;
         value = value || _self.getControlValue(),
-        preError = _self.get('error');
+        preError = _self.get(&#39;error&#39;);
       errorMsg = _self.getValidError(value);
-      _self.setInternal('hasValid',true);
+      _self.setInternal(&#39;hasValid&#39;,true);
       if (errorMsg) {
           _self._setError(errorMsg);
-          _self.fire('error', {msg:errorMsg, value:value});
+          _self.fire(&#39;error&#39;, {msg:errorMsg, value:value});
           if(preError !== errorMsg){//验证错误信息改变，说明验证改变
-            _self.fire('validchange',{ valid : false });
+            _self.fire(&#39;validchange&#39;,{ valid : false });
           }
       } else {
           _self._clearError();
-          _self.fire('valid');
+          _self.fire(&#39;valid&#39;);
           if(preError){//如果以前存在错误，那么验证结果改变
-            _self.fire('validchange',{ valid : true });
+            _self.fire(&#39;validchange&#39;,{ valid : true });
           }
       }
       
@@ -324,17 +325,17 @@ define('bui/form/basefield',['bui/common','bui/form/tips','bui/form/valid','bui/
      */
     isValid : function(){
       var _self = this;
-      if(!_self.get('hasValid')){
+      if(!_self.get(&#39;hasValid&#39;)){
         _self.validControl();
       }
-      return !_self.get('error');
+      return !_self.get(&#39;error&#39;);
     },
 <span id='BUI-Form-Field-method-getError'>    /**
 </span>     * 获取验证出错信息
      * @return {String} 出错信息
      */
     getError : function(){
-      return this.get('error');
+      return this.get(&#39;error&#39;);
     },
 <span id='BUI-Form-Field-method-getErrors'>    /**
 </span>     * 获取验证出错信息集合
@@ -354,8 +355,8 @@ define('bui/form/basefield',['bui/common','bui/form/tips','bui/form/valid','bui/
     clearErrors : function(reset){
       var _self = this;
       _self._clearError();
-      if(reset &amp;&amp; _self.getControlValue()!= _self.get('value')){
-        _self.setControlValue(_self.get('value'));
+      if(reset &amp;&amp; _self.getControlValue()!= _self.get(&#39;value&#39;)){
+        _self.setControlValue(_self.get(&#39;value&#39;));
       }
     },
 <span id='BUI-Form-Field-method-getInnerControl'>    /**
@@ -364,7 +365,7 @@ define('bui/form/basefield',['bui/common','bui/form/tips','bui/form/valid','bui/
      * @return {jQuery|BUI.Component.Controller} 
      */
     getInnerControl : function(){
-      return this.get('view').get('control');
+      return this.get(&#39;view&#39;).get(&#39;control&#39;);
     },
 <span id='BUI-Form-Field-method-getTipTigger'>    /**
 </span>     * 提示信息按照此元素对齐
@@ -377,7 +378,7 @@ define('bui/form/basefield',['bui/common','bui/form/tips','bui/form/valid','bui/
     //析构函数
     destructor : function(){
       var _self = this,
-        tip = _self.get('tip');
+        tip = _self.get(&#39;tip&#39;);
       if(tip &amp;&amp; tip.destroy){
         tip.destroy();
       }
@@ -389,13 +390,19 @@ define('bui/form/basefield',['bui/common','bui/form/tips','bui/form/valid','bui/
     setInnerWidth : function(width){
       var _self = this,
         innerControl = _self.getInnerControl(),
+        siblings = innerControl.siblings(),
         appendWidth = innerControl.outerWidth() - innerControl.width();
+
+      BUI.each(siblings,function(dom){
+        appendWidth += $(dom).outerWidth();
+      });
+      
       innerControl.width(width - appendWidth);
     },
     //重置 提示信息是否可见
     _resetTip :function(){
       var _self = this,
-        tip = _self.get('tip');
+        tip = _self.get(&#39;tip&#39;);
       if(tip){
         tip.resetVisible();
       }
@@ -410,9 +417,9 @@ define('bui/form/basefield',['bui/common','bui/form/tips','bui/form/valid','bui/
     //设置值
     _uiSetValue : function(v){
       var _self = this;
-      //v = v ? v.toString() : '';
+      //v = v ? v.toString() : &#39;&#39;;
       _self.setControlValue(v);
-      if(_self.get('rendered')){
+      if(_self.get(&#39;rendered&#39;)){
         _self.validControl();
         _self.onChange();
       } 
@@ -422,9 +429,9 @@ define('bui/form/basefield',['bui/common','bui/form/tips','bui/form/valid','bui/
     _uiSetDisabled : function(v){
       var _self = this,
         innerControl = _self.getInnerControl(),
-        children = _self.get('children');
-      innerControl.attr('disabled',v);
-      if(_self.get('rendered')){
+        children = _self.get(&#39;children&#39;);
+      innerControl.attr(&#39;disabled&#39;,v);
+      if(_self.get(&#39;rendered&#39;)){
         if(v){//控件不可用，清除错误
           _self.clearErrors();
         }
@@ -434,13 +441,13 @@ define('bui/form/basefield',['bui/common','bui/form/tips','bui/form/valid','bui/
       }
 
       BUI.each(children,function(child){
-        child.set('disabled',v);
+        child.set(&#39;disabled&#39;,v);
       });
 
     },
     _uiSetWidth : function(v){
       var _self = this;
-      if(v != null &amp;&amp; _self.get('forceFit')){
+      if(v != null &amp;&amp; _self.get(&#39;forceFit&#39;)){
         _self.setInnerWidth(v);
       }
     }
@@ -472,20 +479,20 @@ define('bui/form/basefield',['bui/common','bui/form/tips','bui/form/valid','bui/
        * @type {String}
        */
       changeEvent : {
-        value : 'valid'
+        value : &#39;valid&#39;
       },
 <span id='BUI-Form-Field-property-firstValidEvent'>      /**
 </span>       * 未发生验证时，首次获取/丢失焦点，进行验证
        */
       firstValidEvent : {
-        value : 'blur'
+        value : &#39;blur&#39;
       },
 <span id='BUI-Form-Field-property-validEvent'>      /**
 </span>       * 表单元素或者控件触发此事件时，触发验证
        * @type {String}
        */
       validEvent : {
-        value : 'keyup change'
+        value : &#39;keyup change&#39;
       },
 <span id='BUI-Form-Field-property-name'>      /**
 </span>       * 字段的name值
@@ -537,7 +544,7 @@ define('bui/form/basefield',['bui/common','bui/form/tips','bui/form/valid','bui/
        */
       controlTpl : {
         view : true,
-        value : '&lt;input type=&quot;text&quot;/&gt;'
+        value : &#39;&lt;input type=&quot;text&quot;/&gt;&#39;
       },
       events: {
         value : {
@@ -568,7 +575,7 @@ define('bui/form/basefield',['bui/common','bui/form/tips','bui/form/valid','bui/
         }  
       },
       tpl: {
-        value : '&lt;label&gt;{label}&lt;/label&gt;'
+        value : &#39;&lt;label&gt;{label}&lt;/label&gt;&#39;
       },
       xview : {
         value : fieldView 
@@ -576,24 +583,24 @@ define('bui/form/basefield',['bui/common','bui/form/tips','bui/form/valid','bui/
     },
     PARSER : {
       control : function(el){
-        var control = el.find('input,select,textarea');
+        var control = el.find(&#39;input,select,textarea&#39;);
         if(control.length){
           return control;
         }
         return el;
       },
       disabled : function(el){
-        return !!el.attr('disabled');
+        return !!el.attr(&#39;disabled&#39;);
       },
       value : function(el){
         var _self = this,
-          selector = 'select,input,textarea',
-          value = _self.get('value');
+          selector = &#39;select,input,textarea&#39;,
+          value = _self.get(&#39;value&#39;);
         if(!value){
           if(el.is(selector)){
             value = el.val();
-            if(!value &amp;&amp; el.is('select')){
-              value = el.attr('value');
+            if(!value &amp;&amp; el.is(&#39;select&#39;)){
+              value = el.attr(&#39;value&#39;);
             }
           }else{
             value = el.find(selector).val(); 
@@ -604,13 +611,13 @@ define('bui/form/basefield',['bui/common','bui/form/tips','bui/form/valid','bui/
       },
       name : function(el){
         var _self = this,
-          selector = 'select,input,textarea',
-          name = _self.get('name');
+          selector = &#39;select,input,textarea&#39;,
+          name = _self.get(&#39;name&#39;);
         if(!name){
           if(el.is(selector)){
-            name = el.attr('name');
+            name = el.attr(&#39;name&#39;);
           }else{
-            name = el.find(selector).attr('name'); 
+            name = el.find(selector).attr(&#39;name&#39;); 
           }
           
         }
@@ -619,7 +626,7 @@ define('bui/form/basefield',['bui/common','bui/form/tips','bui/form/valid','bui/
       
     }
   },{
-    xclass:'form-field'
+    xclass:&#39;form-field&#39;
   });
 
   field.View = fieldView;

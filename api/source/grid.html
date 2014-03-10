@@ -21,46 +21,46 @@
  * @author dxq613@gmail.com
  */
 
-define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/grid/header','bui/grid/column'],function (require) {
+define(&#39;bui/grid/grid&#39;,[&#39;bui/common&#39;,&#39;bui/mask&#39;,&#39;bui/toolbar&#39;,&#39;bui/list&#39;,&#39;bui/grid/header&#39;,&#39;bui/grid/column&#39;],function (require) {
 
-  var BUI = require('bui/common'),
-    Mask = require('bui/mask'),
+  var BUI = require(&#39;bui/common&#39;),
+    Mask = require(&#39;bui/mask&#39;),
     UA = BUI.UA,
     Component = BUI.Component,
-    toolbar = require('bui/toolbar'),
-    List = require('bui/list'),
-    Header = require('bui/grid/header'),
-    Column = require('bui/grid/column');
+    toolbar = require(&#39;bui/toolbar&#39;),
+    List = require(&#39;bui/list&#39;),
+    Header = require(&#39;bui/grid/header&#39;),
+    Column = require(&#39;bui/grid/column&#39;);
 
   function isPercent(str){
     if(BUI.isString(str)){
-      return str.indexOf('%') !== -1;
+      return str.indexOf(&#39;%&#39;) !== -1;
     }
     return false;
   }
 
   var PREFIX = BUI.prefix,
-    CLS_GRID_HEADER_CONTAINER = PREFIX + 'grid-header-container',
-    CLS_GRID_BODY = PREFIX + 'grid-body',
-    CLS_GRID_WITH = PREFIX + 'grid-width',
-    CLS_GRID_HEIGHT = PREFIX + 'grid-height',
-    CLS_GRID_BORDER = PREFIX + 'grid-border',
-    CLS_GRID_TBAR = PREFIX + 'grid-tbar',
-    CLS_GRID_BBAR = PREFIX + 'grid-bbar',
-    CLS_BUTTON_BAR= PREFIX + 'grid-button-bar',
-    CLS_GRID_STRIPE = PREFIX + 'grid-strip',
-    CLS_GRID_ROW = PREFIX + 'grid-row',
-    CLS_ROW_ODD = PREFIX + 'grid-row-odd',
-    CLS_ROW_EVEN = PREFIX + 'grid-row-even',
-    CLS_ROW_FIRST = PREFIX + 'grid-row-first',
-    CLS_GRID_CELL = PREFIX + 'grid-cell',
-    CLS_GRID_CELL_INNER = PREFIX + 'grid-cell-inner',
-    CLS_TD_PREFIX = 'grid-td-',
-    CLS_CELL_TEXT = PREFIX + 'grid-cell-text',
-    CLS_CELL_EMPTY = PREFIX + 'grid-cell-empty',
-    CLS_SCROLL_WITH = '17',
-    CLS_HIDE = PREFIX + 'hidden',
-    ATTR_COLUMN_FIELD = 'data-column-field',
+    CLS_GRID_HEADER_CONTAINER = PREFIX + &#39;grid-header-container&#39;,
+    CLS_GRID_BODY = PREFIX + &#39;grid-body&#39;,
+    CLS_GRID_WITH = PREFIX + &#39;grid-width&#39;,
+    CLS_GRID_HEIGHT = PREFIX + &#39;grid-height&#39;,
+    CLS_GRID_BORDER = PREFIX + &#39;grid-border&#39;,
+    CLS_GRID_TBAR = PREFIX + &#39;grid-tbar&#39;,
+    CLS_GRID_BBAR = PREFIX + &#39;grid-bbar&#39;,
+    CLS_BUTTON_BAR= PREFIX + &#39;grid-button-bar&#39;,
+    CLS_GRID_STRIPE = PREFIX + &#39;grid-strip&#39;,
+    CLS_GRID_ROW = PREFIX + &#39;grid-row&#39;,
+    CLS_ROW_ODD = PREFIX + &#39;grid-row-odd&#39;,
+    CLS_ROW_EVEN = PREFIX + &#39;grid-row-even&#39;,
+    CLS_ROW_FIRST = PREFIX + &#39;grid-row-first&#39;,
+    CLS_GRID_CELL = PREFIX + &#39;grid-cell&#39;,
+    CLS_GRID_CELL_INNER = PREFIX + &#39;grid-cell-inner&#39;,
+    CLS_TD_PREFIX = &#39;grid-td-&#39;,
+    CLS_CELL_TEXT = PREFIX + &#39;grid-cell-text&#39;,
+    CLS_CELL_EMPTY = PREFIX + &#39;grid-cell-empty&#39;,
+    CLS_SCROLL_WITH = &#39;17&#39;,
+    CLS_HIDE = PREFIX + &#39;hidden&#39;,
+    ATTR_COLUMN_FIELD = &#39;data-column-field&#39;,
     WIDTH_BORDER = 2,
     HEIGHT_BAR_PADDING = 1;  
 
@@ -83,9 +83,9 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
     //设置 body和table的标签
     renderUI : function(){
       var _self = this,
-        el = _self.get('el'),
-        bodyEl = el.find('.' + CLS_GRID_BODY);
-      _self.set('bodyEl',bodyEl);
+        el = _self.get(&#39;el&#39;),
+        bodyEl = el.find(&#39;.&#39; + CLS_GRID_BODY);
+      _self.set(&#39;bodyEl&#39;,bodyEl);
       _self._setTableTpl();
     },
 <span id='global-method-getItemTpl'>    /**
@@ -95,22 +95,22 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
     getItemTpl : function  (record,index) {
       var _self = this,
         columns =  _self._getColumns(),
-        tbodyEl = _self.get('tbodyEl'),
-        rowTpl = _self.get('rowTpl'),
+        tbodyEl = _self.get(&#39;tbodyEl&#39;),
+        rowTpl = _self.get(&#39;rowTpl&#39;),
         oddCls = index % 2 === 0 ? CLS_ROW_ODD : CLS_ROW_EVEN,
         cellsTpl = [],
         rowEl;
 
       BUI.each(columns, function (column) {
-        var dataIndex = column.get('dataIndex');
+        var dataIndex = column.get(&#39;dataIndex&#39;);
         cellsTpl.push(_self._getCellTpl(column, dataIndex, record,index));
       });
 
-      if(_self.get('useEmptyCell')){
+      if(_self.get(&#39;useEmptyCell&#39;)){
         cellsTpl.push(_self._getEmptyCellTpl());
       }
 
-      rowTpl = BUI.substitute(rowTpl,{cellsTpl:cellsTpl.join(''), oddCls:oddCls});
+      rowTpl = BUI.substitute(rowTpl,{cellsTpl:cellsTpl.join(&#39;&#39;), oddCls:oddCls});
       return rowTpl;
     },
 <span id='BUI-Grid-GridView-method-findRow'>    /**
@@ -130,34 +130,34 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
      */
     findCell : function(id,rowEl){
       var cls = CLS_TD_PREFIX + id;
-        return rowEl.find('.' + cls);
+        return rowEl.find(&#39;.&#39; + cls);
     },
 <span id='BUI-Grid-GridView-method-resetHeaderRow'>    /**
 </span>     * 重新创建表格的首行，一般在表格初始化完成后，或者列发生改变时
      */
     resetHeaderRow:function () {
-      if(!this.get('useHeaderRow')){
+      if(!this.get(&#39;useHeaderRow&#39;)){
         return;
       }
       var _self = this,
-        headerRowEl = _self.get('headerRowEl'),
-        tbodyEl = _self.get('tbodyEl');
+        headerRowEl = _self.get(&#39;headerRowEl&#39;),
+        tbodyEl = _self.get(&#39;tbodyEl&#39;);
       if(headerRowEl){
         headerRowEl.remove();
       }
       headerRowEl = _self._createHeaderRow();
       headerRowEl.prependTo(tbodyEl);
-      _self.set('headerRowEl', headerRowEl);
+      _self.set(&#39;headerRowEl&#39;, headerRowEl);
     },
 <span id='global-method-resetColumnsWidth'>    /**
-</span>     * when header's column width changed, column in this component changed followed
+</span>     * when header&#39;s column width changed, column in this component changed followed
      * @ignore
      */
     resetColumnsWidth:function (column,width) {
       var _self = this,
-        headerRowEl = _self.get('headerRowEl'),
-        cell = _self.findCell(column.get('id'), headerRowEl);
-      width = width || column.get('width');
+        headerRowEl = _self.get(&#39;headerRowEl&#39;),
+        cell = _self.findCell(column.get(&#39;id&#39;), headerRowEl);
+      width = width || column.get(&#39;width&#39;);
       if (cell) {
         cell.width(width);
       }
@@ -165,16 +165,16 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
     },
     //set table width
     setTableWidth:function (columnsWidth) {
-      if(!columnsWidth &amp;&amp; isPercent(this.get('width'))){
-        this.get('tableEl').width('100%');
+      if(!columnsWidth &amp;&amp; isPercent(this.get(&#39;width&#39;))){
+        this.get(&#39;tableEl&#39;).width(&#39;100%&#39;);
         return;
       }
       var _self = this,
         width = _self._getInnerWidth(),
-        height = _self.get('height'),
-        tableEl = _self.get('tableEl'),
-        forceFit = _self.get('forceFit'),
-        headerRowEl = _self.get('headerRowEl');
+        height = _self.get(&#39;height&#39;),
+        tableEl = _self.get(&#39;tableEl&#39;),
+        forceFit = _self.get(&#39;forceFit&#39;),
+        headerRowEl = _self.get(&#39;headerRowEl&#39;);
       //使用百分比的宽度，不进行计算
       if(!isPercent(columnsWidth)){
         
@@ -199,7 +199,7 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
      */
     setBodyWidth : function(width){
       var _self = this,
-        bodyEl = _self.get('bodyEl');
+        bodyEl = _self.get(&#39;bodyEl&#39;);
       width = width || _self._getInnerWidth();
       bodyEl.width(width);
 
@@ -210,12 +210,12 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
      */
     setBodyHeight : function(height){
       var _self = this,
-        bodyEl = _self.get('bodyEl'),
+        bodyEl = _self.get(&#39;bodyEl&#39;),
         bodyHeight = height,
         siblings = bodyEl.siblings();
 
       BUI.each(siblings,function(item){
-        if($(item).css('display') !== 'none'){
+        if($(item).css(&#39;display&#39;) !== &#39;none&#39;){
           bodyHeight -= $(item).outerHeight();
         }
       });
@@ -224,10 +224,10 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
     //show or hide column
     setColumnVisible:function (column) {
       var _self = this,
-        hide = !column.get('visible'),
-        colId = column.get('id'),
-        tbodyEl = _self.get('tbodyEl'),
-        cells = $('.' + CLS_TD_PREFIX + colId,tbodyEl);
+        hide = !column.get(&#39;visible&#39;),
+        colId = column.get(&#39;id&#39;),
+        tbodyEl = _self.get(&#39;tbodyEl&#39;),
+        cells = $(&#39;.&#39; + CLS_TD_PREFIX + colId,tbodyEl);
       if (hide) {
         cells.hide();
       } else {
@@ -249,8 +249,8 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
         element = _self.findElement(record);
 
         BUI.each(columns,function(column){
-          var cellEl = _self.findCell(column.get('id'),$(element)),
-            innerEl = cellEl.find('.' + CLS_GRID_CELL_INNER),
+          var cellEl = _self.findCell(column.get(&#39;id&#39;),$(element)),
+            innerEl = cellEl.find(&#39;.&#39; + CLS_GRID_CELL_INNER),
             textTpl = _self._getCellText(column,record,index);
           innerEl.html(textTpl);
         });
@@ -262,21 +262,21 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
      */
     showEmptyText : function(){
       var _self = this,
-        bodyEl = _self.get('bodyEl'),
-        emptyDataTpl = _self.get('emptyDataTpl'),
-        emptyEl = _self.get('emptyEl');
+        bodyEl = _self.get(&#39;bodyEl&#39;),
+        emptyDataTpl = _self.get(&#39;emptyDataTpl&#39;),
+        emptyEl = _self.get(&#39;emptyEl&#39;);
       if(emptyEl){
         emptyEl.remove();
       }
       var emptyEl = $(emptyDataTpl).appendTo(bodyEl);
-      _self.set('emptyEl',emptyEl);
+      _self.set(&#39;emptyEl&#39;,emptyEl);
     },
 <span id='BUI-Grid-GridView-method-clearEmptyText'>    /**
 </span>     * 清除没有数据时的提示信息
      */
     clearEmptyText : function(){
        var _self = this,
-        emptyEl = _self.get('emptyEl');
+        emptyEl = _self.get(&#39;emptyEl&#39;);
       if(emptyEl){
         emptyEl.remove();
       }
@@ -285,8 +285,8 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
     _createHeaderRow:function () {
       var _self = this,
           columns = _self._getColumns(),
-          tbodyEl = _self.get('tbodyEl'),
-          rowTpl = _self.get('headerRowTpl'),
+          tbodyEl = _self.get(&#39;tbodyEl&#39;),
+          rowTpl = _self.get(&#39;headerRowTpl&#39;),
           rowEl,
           cellsTpl = [];
 
@@ -295,35 +295,35 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
       });
 
       //if this component set width,add a empty column to fit row width
-      if(_self.get('useEmptyCell')){
+      if(_self.get(&#39;useEmptyCell&#39;)){
         cellsTpl.push(_self._getEmptyCellTpl());
       }
-      rowTpl = BUI.substitute(rowTpl,{cellsTpl:cellsTpl.join('')});
+      rowTpl = BUI.substitute(rowTpl,{cellsTpl:cellsTpl.join(&#39;&#39;)});
       rowEl = $(rowTpl).appendTo(tbodyEl);
       return rowEl;
     },
-    //get the sum of the columns' width
+    //get the sum of the columns&#39; width
     _getColumnsWidth:function () {
       var _self = this,
-        columns = _self.get('columns'),
+        columns = _self.get(&#39;columns&#39;),
         totalWidth = 0;
 
       BUI.each(columns, function (column) {
-          if (column.get('visible')) {
-              totalWidth += column.get('el').outerWidth();
+          if (column.get(&#39;visible&#39;)) {
+              totalWidth += column.get(&#39;el&#39;).outerWidth();
           }
       });
       return totalWidth;
     },
     //获取列集合
     _getColumns : function(){
-      return this.get('columns');
+      return this.get(&#39;columns&#39;);
     },
     //get cell text by record and column
     _getCellText:function (column, record,index) {
         var _self = this,
-          dataIndex = column.get('dataIndex'),
-          textTpl = column.get('cellTpl') || _self.get('cellTextTpl'),
+          dataIndex = column.get(&#39;dataIndex&#39;),
+          textTpl = column.get(&#39;cellTpl&#39;) || _self.get(&#39;cellTextTpl&#39;),
           text = _self._getCellInnerText(column,dataIndex, record,index);
         return BUI.substitute(textTpl,{text:text, tips:_self._getTips(column, dataIndex, record)});
     },
@@ -331,48 +331,48 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
       //renderer 时发生错误可能性很高
       try{
         var _self = this,
-          renderer = column.get('renderer'),
+          renderer = column.get(&#39;renderer&#39;),
           text = renderer ? renderer(record[dataIndex], record,index) : record[dataIndex];
-        return text == null ? '' : text;
+        return text == null ? &#39;&#39; : text;
       }catch(ex){
-        throw 'column:' + column.get('title') +' fomat error!';
+        throw &#39;column:&#39; + column.get(&#39;title&#39;) +&#39; fomat error!&#39;;
       }
     },
     //get cell template by config and record
     _getCellTpl:function (column, dataIndex, record,index) {
       var _self = this,
         cellText = _self._getCellText(column, record,index),
-        cellTpl = _self.get('cellTpl');
+        cellTpl = _self.get(&#39;cellTpl&#39;);
       return BUI.substitute(cellTpl,{
-        elCls : column.get('elCls'),
-        id:column.get('id'),
+        elCls : column.get(&#39;elCls&#39;),
+        id:column.get(&#39;id&#39;),
         dataIndex:dataIndex,
         cellText:cellText,
-        hideCls:!column.get('visible') ? CLS_HIDE : ''
+        hideCls:!column.get(&#39;visible&#39;) ? CLS_HIDE : &#39;&#39;
       });
     },
     //获取空白单元格的模板
     _getEmptyCellTpl:function () {
-      return '&lt;td class=&quot;' + CLS_GRID_CELL + ' ' + CLS_CELL_EMPTY + '&quot;&gt;&amp;nbsp;&lt;/td&gt;';
+      return &#39;&lt;td class=&quot;&#39; + CLS_GRID_CELL + &#39; &#39; + CLS_CELL_EMPTY + &#39;&quot;&gt;&amp;nbsp;&lt;/td&gt;&#39;;
     },
     //获取空白行单元格模板
     _getHeaderCellTpl:function (column) {
       var _self = this,
-        headerCellTpl = _self.get('headerCellTpl');
+        headerCellTpl = _self.get(&#39;headerCellTpl&#39;);
       return BUI.substitute(headerCellTpl,{
-        id:column.get('id'),
-        width:column.get('width'),
-        hideCls:!column.get('visible') ? CLS_HIDE : ''
+        id:column.get(&#39;id&#39;),
+        width:column.get(&#39;width&#39;),
+        hideCls:!column.get(&#39;visible&#39;) ? CLS_HIDE : &#39;&#39;
       });
     },
     //获取表格内宽度
     _getInnerWidth : function(){
-      return getInnerWidth(this.get('width'));
+      return getInnerWidth(this.get(&#39;width&#39;));
     },
     //get cell tips
     _getTips:function (column, dataIndex, record) {
-      var showTip = column.get('showTip'),
-          value = '';
+      var showTip = column.get(&#39;showTip&#39;),
+          value = &#39;&#39;;
       if (showTip) {
         value = record[dataIndex];
         if (BUI.isFunction(showTip)) {
@@ -384,7 +384,7 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
     //设置单元格边框
     _uiSetInnerBorder : function(v){
       var _self = this,
-        el = _self.get('el');
+        el = _self.get(&#39;el&#39;);
       if(v){
         el.addClass(CLS_GRID_BORDER);
       }else{
@@ -394,48 +394,48 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
     //设置表格模板
     _setTableTpl : function(tpl){
       var _self = this,
-        bodyEl = _self.get('bodyEl');
+        bodyEl = _self.get(&#39;bodyEl&#39;);
 
-      tpl = tpl || _self.get('tableTpl');
+      tpl = tpl || _self.get(&#39;tableTpl&#39;);
       $(tpl).appendTo(bodyEl);
-      var tableEl = bodyEl.find('table'),
-        tbodyEl = bodyEl.find('tbody');
+      var tableEl = bodyEl.find(&#39;table&#39;),
+        tbodyEl = bodyEl.find(&#39;tbody&#39;);
         //headerRowEl = _self._createHeaderRow();
             
-      _self.set('tableEl',tableEl);
-      _self.set('tbodyEl',tbodyEl);
-      //_self.set('headerRowEl', headerRowEl);
-      _self.set('itemContainer',tbodyEl);
-      _self._setTableCls(_self.get('tableCls'));
+      _self.set(&#39;tableEl&#39;,tableEl);
+      _self.set(&#39;tbodyEl&#39;,tbodyEl);
+      //_self.set(&#39;headerRowEl&#39;, headerRowEl);
+      _self.set(&#39;itemContainer&#39;,tbodyEl);
+      _self._setTableCls(_self.get(&#39;tableCls&#39;));
     },
     //设置table上的样式
     _uiSetTableCls : function(v){
       this._setTableCls(v);
     },
-    //when set grid's height,the scroll can effect the width of its body and header
+    //when set grid&#39;s height,the scroll can effect the width of its body and header
     _uiSetHeight:function (h) {
       var _self = this,
-        bodyEl = _self.get('bodyEl');
-      _self.get('el').height(h);
-      _self.get('el').addClass(CLS_GRID_HEIGHT);
+        bodyEl = _self.get(&#39;bodyEl&#39;);
+      _self.get(&#39;el&#39;).height(h);
+      _self.get(&#39;el&#39;).addClass(CLS_GRID_HEIGHT);
 
     },
     _uiSetWidth:function (w) {
       var _self = this;
-      _self.get('el').width(w);
+      _self.get(&#39;el&#39;).width(w);
       _self.setBodyWidth(_self._getInnerWidth(w));
-      _self.get('el').addClass(CLS_GRID_WITH);
+      _self.get(&#39;el&#39;).addClass(CLS_GRID_WITH);
       
     },
     _uiSetStripeRows : function(v){
       var _self = this,
-        method = v ? 'addClass' : 'removeClass';
-      _self.get('el')[method](CLS_GRID_STRIPE);
+        method = v ? &#39;addClass&#39; : &#39;removeClass&#39;;
+      _self.get(&#39;el&#39;)[method](CLS_GRID_STRIPE);
     },
     _setTableCls : function(cls){
       var _self = this,
-        tableEl = _self.get('tableEl');
-      tableEl.attr('class',cls);
+        tableEl = _self.get(&#39;tableEl&#39;);
+      tableEl.attr(&#39;class&#39;,cls);
     }
   },{
     ATTRS : {
@@ -447,7 +447,7 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
       emptyEl : {}
     }
   },{
-    xclass : 'grid-view'
+    xclass : &#39;grid-view&#39;
   });
 
 <span id='BUI-Grid-Grid'>  /**
@@ -463,34 +463,34 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
    * &lt;/p&gt;
    *
    * &lt;pre&gt;&lt;code&gt;
-   *  BUI.use(['bui/grid','bui/data'],function(Grid,Data){
+   *  BUI.use([&#39;bui/grid&#39;,&#39;bui/data&#39;],function(Grid,Data){
    *    var Grid = Grid,
    *      Store = Data.Store,
    *      columns = [{  //声明列模型
-   *          title : '表头1(20%)',
-   *          dataIndex :'a',
-   *          width:'20%'
+   *          title : &#39;表头1(20%)&#39;,
+   *          dataIndex :&#39;a&#39;,
+   *          width:&#39;20%&#39;
    *        },{
-   *          id: '123',
-   *          title : '表头2(30%)',
-   *          dataIndex :'b',
-   *          width:'30%'
+   *          id: &#39;123&#39;,
+   *          title : &#39;表头2(30%)&#39;,
+   *          dataIndex :&#39;b&#39;,
+   *          width:&#39;30%&#39;
    *        },{
-   *          title : '表头3(50%)',
-   *          dataIndex : 'c',
-   *          width:'50%'
+   *          title : &#39;表头3(50%)&#39;,
+   *          dataIndex : &#39;c&#39;,
+   *          width:&#39;50%&#39;
    *      }],
-   *      data = [{a:'123'},{a:'cdd',b:'edd'},{a:'1333',c:'eee',d:2}]; //显示的数据
+   *      data = [{a:&#39;123&#39;},{a:&#39;cdd&#39;,b:&#39;edd&#39;},{a:&#39;1333&#39;,c:&#39;eee&#39;,d:2}]; //显示的数据
    *
    *    var store = new Store({
    *        data : data,
    *        autoLoad:true
    *      }),
    *       grid = new Grid.Grid({
-   *         render:'#grid',
-   *         width:'100%',//这个属性一定要设置
+   *         render:&#39;#grid&#39;,
+   *         width:&#39;100%&#39;,//这个属性一定要设置
    *         columns : columns,
-   *         idField : 'a',
+   *         idField : &#39;a&#39;,
    *         store : store
    *       });
    *
@@ -508,10 +508,10 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
      */
     initializer : function(){
         var _self = this,
-            render = _self.get('render'),
-            width = _self.get('width');
+            render = _self.get(&#39;render&#39;),
+            width = _self.get(&#39;width&#39;);
         if(!width){
-            _self.set('width',$(render).width());
+            _self.set(&#39;width&#39;,$(render).width());
         }
     },
 <span id='global-method-createDom'>    /**
@@ -522,17 +522,17 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
       var _self = this;
 
       // 提前,中途设置宽度时会失败！！
-      if (_self.get('width')) {
-          _self.get('el').addClass(CLS_GRID_WITH);
+      if (_self.get(&#39;width&#39;)) {
+          _self.get(&#39;el&#39;).addClass(CLS_GRID_WITH);
       }
 
-      if (_self.get('height')) {
-        _self.get('el').addClass(CLS_GRID_HEIGHT);
+      if (_self.get(&#39;height&#39;)) {
+        _self.get(&#39;el&#39;).addClass(CLS_GRID_HEIGHT);
       }
 
       //因为内部的边距影响header的forceFit计算，所以必须在header计算forceFit前置此项
-      if(_self.get('innerBorder')){
-          _self.get('el').addClass(CLS_GRID_BORDER);
+      if(_self.get(&#39;innerBorder&#39;)){
+          _self.get(&#39;el&#39;).addClass(CLS_GRID_BORDER);
       } 
     },
 <span id='global-method-renderUI'>    /**
@@ -544,7 +544,7 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
       _self._initHeader();
       _self._initBars();
       _self._initLoadMask();
-      _self.get('view').resetHeaderRow();
+      _self.get(&#39;view&#39;).resetHeaderRow();
     },
 <span id='BUI-Grid-Grid-method-bindUI'>    /**
 </span>     * @private
@@ -559,9 +559,9 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
 </span>     * 添加列
      * &lt;pre&gt;&lt;code&gt;
      *   //添加到最后
-     *   grid.addColumn({title : 'new column',dataIndex : 'new',width:100});
+     *   grid.addColumn({title : &#39;new column&#39;,dataIndex : &#39;new&#39;,width:100});
      *   //添加到最前
-     *   grid.addColumn({title : 'new column',dataIndex : 'new',width:100},0);
+     *   grid.addColumn({title : &#39;new column&#39;,dataIndex : &#39;new&#39;,width:100},0);
      * &lt;/code&gt;&lt;/pre&gt;
      * @param {Object|BUI.Grid.Column} column 列的配置，列类的定义 {@link BUI.Grid.Column}
      * @param {Number} index 添加到的位置
@@ -569,13 +569,13 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
      */
     addColumn : function(column, index){
       var _self = this,
-        header = _self.get('header');
+        header = _self.get(&#39;header&#39;);
 
       if(header){
         column = header.addColumn(column, index);
       }else{
         column = new Column(column);
-        _self.get('columns').splice(index,0,column);
+        _self.get(&#39;columns&#39;).splice(index,0,column);
       }  
       return column;
     },
@@ -600,17 +600,17 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
 </span>     * 使用索引或者id查找列
      * &lt;pre&gt;&lt;code&gt;
      *  //设置列的id,否则会自动生成
-     *  {id : '1',title : '表头',dataIndex : 'a'}
+     *  {id : &#39;1&#39;,title : &#39;表头&#39;,dataIndex : &#39;a&#39;}
      *  //获取列
-     *  var column = grid.findColumn('id');
+     *  var column = grid.findColumn(&#39;id&#39;);
      *  //操作列
-     *  column.set('visible',false);
+     *  column.set(&#39;visible&#39;,false);
      * &lt;/code&gt;&lt;/pre&gt;
      * @param {String|Number} id|index  文本值代表编号，数字代表索引
      */
     findColumn : function(id){
       var _self = this,
-        header = _self.get('header');
+        header = _self.get(&#39;header&#39;);
       if(BUI.isNumber(id)){
         return header.getColumnByIndex(id);
       }else{
@@ -621,19 +621,19 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
 </span>     * 使用字段名查找列
      * &lt;pre&gt;&lt;code&gt;
      * //设置列dataIndex
-     *  {id : '1',title : '表头',dataIndex : 'a'}
+     *  {id : &#39;1&#39;,title : &#39;表头&#39;,dataIndex : &#39;a&#39;}
      *  //获取列
-     *  var column = grid.findColumnByField('a');
+     *  var column = grid.findColumnByField(&#39;a&#39;);
      *  //操作列
-     *  column.set('visible',false);
+     *  column.set(&#39;visible&#39;,false);
      * &lt;/code&gt;&lt;/pre&gt;
      * @param {String} field 列的字段名 dataIndex
      */
     findColumnByField : function(field){
       var _self = this,
-        header = _self.get('header');
+        header = _self.get(&#39;header&#39;);
       return header.getColumn(function(column){
-        return column.get('dataIndex') === field;
+        return column.get(&#39;dataIndex&#39;) === field;
       });
     },
 <span id='BUI-Grid-Grid-method-findCell'>    /**
@@ -652,7 +652,7 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
             rowEl = _self.findRow(record);
         }
         if (rowEl) {
-            return _self.get('view').findCell(id, rowEl);
+            return _self.get(&#39;view&#39;).findCell(id, rowEl);
         }
         return null;
     },
@@ -664,19 +664,19 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
      */
     findRow:function (record) {
         var _self = this;
-        return _self.get('view').findRow(record);
+        return _self.get(&#39;view&#39;).findRow(record);
     },
 <span id='BUI-Grid-Grid-method-removeColumn'>    /**
 </span>     * 移除列
      * &lt;pre&gt;&lt;code&gt;
-     *   var column = grid.findColumn('id');
+     *   var column = grid.findColumn(&#39;id&#39;);
      *   grid.removeColumn(column);
      * &lt;/code&gt;&lt;/pre&gt;
      * @param {BUI.Grid.Column} column 要移除的列
      */
     removeColumn:function (column) {
       var _self = this;
-        _self.get('header').removeColumn(column);
+        _self.get(&#39;header&#39;).removeColumn(column);
     },
 <span id='BUI-Grid-Grid-method-showData'>    /**
 </span>     * 显示数据,当不使用store时，可以单独显示数据
@@ -688,7 +688,7 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
      */
     showData : function(data){
       var _self = this;
-      _self.set('items',data);
+      _self.set(&#39;items&#39;,data);
     },
 <span id='BUI-Grid-Grid-method-resetColumns'>    /**
 </span>     * 重置列，当列发生改变时同步DOM和数据
@@ -696,9 +696,9 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
      */
     resetColumns:function () {
       var _self = this,
-          store = _self.get('store');
+          store = _self.get(&#39;store&#39;);
       //recreate the header row
-      _self.get('view').resetHeaderRow();
+      _self.get(&#39;view&#39;).resetHeaderRow();
       //show data
       if (store) {
           _self.onLoad();
@@ -707,70 +707,70 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
     //when body scrolled,the other component of grid also scrolled
     _bindScrollEvent:function () {
       var _self = this,
-        el = _self.get('el'),
-        bodyEl = el.find('.' + CLS_GRID_BODY),
-        header = _self.get('header');
+        el = _self.get(&#39;el&#39;),
+        bodyEl = el.find(&#39;.&#39; + CLS_GRID_BODY),
+        header = _self.get(&#39;header&#39;);
 
-      bodyEl.on('scroll', function () {
+      bodyEl.on(&#39;scroll&#39;, function () {
         var left = bodyEl.scrollLeft(),
             top = bodyEl.scrollTop();
         header.scrollTo({left:left, top:top});
-        _self.fire('scroll', {scrollLeft:left, scrollTop:top,bodyWidth : bodyEl.width(),bodyHeight : bodyEl.height()});
+        _self.fire(&#39;scroll&#39;, {scrollLeft:left, scrollTop:top,bodyWidth : bodyEl.width(),bodyHeight : bodyEl.height()});
       });
     },
     //bind header event,when column changed,followed this component
     _bindHeaderEvent:function () {
         var _self = this,
-          header = _self.get('header'),
-          view = _self.get('view'),
-          store = _self.get('store');
-        header.on('afterWidthChange', function (e) {
+          header = _self.get(&#39;header&#39;),
+          view = _self.get(&#39;view&#39;),
+          store = _self.get(&#39;store&#39;);
+        header.on(&#39;afterWidthChange&#39;, function (e) {
           var sender = e.target;
           if (sender !== header) {
               view.resetColumnsWidth(sender);
           }
         });
 
-        header.on('afterSortStateChange', function (e) {
+        header.on(&#39;afterSortStateChange&#39;, function (e) {
           var column = e.target,
               val = e.newVal;
           if (val &amp;&amp; store) {
-            store.sort(column.get('dataIndex'), column.get('sortState'));
+            store.sort(column.get(&#39;dataIndex&#39;), column.get(&#39;sortState&#39;));
           }
         });
 
-        header.on('afterVisibleChange', function (e) {
+        header.on(&#39;afterVisibleChange&#39;, function (e) {
           var sender = e.target;
           if (sender !== header) {
             view.setColumnVisible(sender);
-            _self.fire('columnvisiblechange',{column:sender});
+            _self.fire(&#39;columnvisiblechange&#39;,{column:sender});
           }
         });
 
-        header.on('click', function (e) {
+        header.on(&#39;click&#39;, function (e) {
           var sender = e.target;
           if (sender !== header) {
-            _self.fire('columnclick',{column:sender,domTarget:e.domTarget});
+            _self.fire(&#39;columnclick&#39;,{column:sender,domTarget:e.domTarget});
           }
         });
 
-        header.on('forceFitWidth', function () {
-          if (_self.get('rendered')) {
+        header.on(&#39;forceFitWidth&#39;, function () {
+          if (_self.get(&#39;rendered&#39;)) {
               _self.resetColumns();
           }
         });
 
-        header.on('add', function (e) {
-          if (_self.get('rendered')) {
-            _self.fire('columnadd',{column:e.column,index:e.index});
+        header.on(&#39;add&#39;, function (e) {
+          if (_self.get(&#39;rendered&#39;)) {
+            _self.fire(&#39;columnadd&#39;,{column:e.column,index:e.index});
               _self.resetColumns();
           }
         });
 
-        header.on('remove', function (e) {
-          if (_self.get('rendered')) {
+        header.on(&#39;remove&#39;, function (e) {
+          if (_self.get(&#39;rendered&#39;)) {
             _self.resetColumns();
-            _self.fire('columnremoved',{column:e.column,index:e.index});
+            _self.fire(&#39;columnremoved&#39;,{column:e.column,index:e.index});
           }
         });
 
@@ -783,53 +783,53 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
     //绑定记录DOM相关的事件
     _bindItemsEvent : function(){
       var _self = this,
-        store = _self.get('store');
+        store = _self.get(&#39;store&#39;);
 
-      _self.on('itemsshow',function(){
-        _self.fire('aftershow');
+      _self.on(&#39;itemsshow&#39;,function(){
+        _self.fire(&#39;aftershow&#39;);
       });
 
-      _self.on('itemsclear',function(){
-        _self.fire('clear');
+      _self.on(&#39;itemsclear&#39;,function(){
+        _self.fire(&#39;clear&#39;);
       });
 
-      _self.on('itemclick',function(ev){
+      _self.on(&#39;itemclick&#39;,function(ev){
         var target = ev.domTarget,
           record = ev.item,
-          cell = $(target).closest('.' + CLS_GRID_CELL),
-          rowEl = $(target).closest('.' + CLS_GRID_ROW),
+          cell = $(target).closest(&#39;.&#39; + CLS_GRID_CELL),
+          rowEl = $(target).closest(&#39;.&#39; + CLS_GRID_ROW),
           rst; //用于是否阻止事件触发
 
         if(cell.length){
-          rst = _self.fire('cellclick', {record:record, row:rowEl[0], cell:cell[0], field:cell.attr(ATTR_COLUMN_FIELD), domTarget:target,domEvent:ev.domEvent});
+          rst = _self.fire(&#39;cellclick&#39;, {record:record, row:rowEl[0], cell:cell[0], field:cell.attr(ATTR_COLUMN_FIELD), domTarget:target,domEvent:ev.domEvent});
         }
 
         if(rst === false){
           return rst;
         }
 
-        return _self.fire('rowclick', {record:record, row:rowEl[0], domTarget:target});
+        return _self.fire(&#39;rowclick&#39;, {record:record, row:rowEl[0], domTarget:target});
           
       });
 
-      _self.on('itemunselected',function(ev){
-        _self.fire('rowunselected',getEventObj(ev));
+      _self.on(&#39;itemunselected&#39;,function(ev){
+        _self.fire(&#39;rowunselected&#39;,getEventObj(ev));
       });
 
-      _self.on('itemselected',function(ev){
-        _self.fire('rowselected',getEventObj(ev));
+      _self.on(&#39;itemselected&#39;,function(ev){
+        _self.fire(&#39;rowselected&#39;,getEventObj(ev));
       });
 
-      _self.on('itemrendered',function(ev){
-        _self.fire('rowcreated',getEventObj(ev));
+      _self.on(&#39;itemrendered&#39;,function(ev){
+        _self.fire(&#39;rowcreated&#39;,getEventObj(ev));
       });
       
-      _self.on('itemremoved',function(ev){
-        _self.fire('rowremoved',getEventObj(ev));
+      _self.on(&#39;itemremoved&#39;,function(ev){
+        _self.fire(&#39;rowremoved&#39;,getEventObj(ev));
       });
 
-      _self.on('itemupdated',function(ev){
-        _self.fire('rowupdated',getEventObj(ev));
+      _self.on(&#39;itemupdated&#39;,function(ev){
+        _self.fire(&#39;rowupdated&#39;,getEventObj(ev));
       });
 
       function getEventObj(ev){
@@ -839,36 +839,36 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
     //获取表格内部的宽度，受边框的影响，
     //内部的宽度不能等于表格宽度
     _getInnerWidth : function(width){
-      width = width || this.get('width');
+      width = width || this.get(&#39;width&#39;);
       return getInnerWidth(width);
     },
     //init header,if there is not a header property in config,instance it
     _initHeader:function () {
       var _self = this,
-        header = _self.get('header'),
-        container = _self.get('el').find('.'+ CLS_GRID_HEADER_CONTAINER);
+        header = _self.get(&#39;header&#39;),
+        container = _self.get(&#39;el&#39;).find(&#39;.&#39;+ CLS_GRID_HEADER_CONTAINER);
       if (!header) {
         header = new Header({
-          columns:_self.get('columns'),
-          tableCls:_self.get('tableCls'),
-          forceFit:_self.get('forceFit'),
+          columns:_self.get(&#39;columns&#39;),
+          tableCls:_self.get(&#39;tableCls&#39;),
+          forceFit:_self.get(&#39;forceFit&#39;),
           width:_self._getInnerWidth(),
           render: container,
           parent : _self
         }).render();
         //_self.addChild(header);
-        _self.set('header', header);
+        _self.set(&#39;header&#39;, header);
       }
     },
     //初始化 上下工具栏
     _initBars:function () {
       var _self = this,
-          bbar = _self.get('bbar'),
-          tbar = _self.get('tbar');
-      _self._initBar(bbar, CLS_GRID_BBAR, 'bbar');
-      _self._initBar(tbar, CLS_GRID_TBAR, 'tbar');
+          bbar = _self.get(&#39;bbar&#39;),
+          tbar = _self.get(&#39;tbar&#39;);
+      _self._initBar(bbar, CLS_GRID_BBAR, &#39;bbar&#39;);
+      _self._initBar(tbar, CLS_GRID_TBAR, &#39;tbar&#39;);
     },
-    //set bar's elCls to identify top bar or bottom bar
+    //set bar&#39;s elCls to identify top bar or bottom bar
     _initBar:function (bar, cls, name) {
       var _self = this,
         store = null,
@@ -876,12 +876,12 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
       if (bar) {
         //未指定xclass,同时不是Controller时
         if(!bar.xclass &amp;&amp; !(bar instanceof Component.Controller)){
-          bar.xclass = 'bar';
+          bar.xclass = &#39;bar&#39;;
           bar.children = bar.children || [];
 
           if(bar.items){
             bar.children.push({
-                xclass : 'bar',
+                xclass : &#39;bar&#39;,
                 defaultChildClass : &quot;bar-item-button&quot;,
                 elCls : CLS_BUTTON_BAR,
                 children : bar.items
@@ -891,9 +891,9 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
 
           // modify by fuzheng
           if(bar.pagingBar){
-            store = _self.get('store');
+            store = _self.get(&#39;store&#39;);
             pagingBarCfg = {
-              xclass : 'pagingbar',
+              xclass : &#39;pagingbar&#39;,
               store : store,
               pageSize : store.pageSize
             };
@@ -904,11 +904,11 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
           }
         }
         if (bar.xclass) {
-          var barContainer = _self.get('el').find('.' + cls);
+          var barContainer = _self.get(&#39;el&#39;).find(&#39;.&#39; + cls);
           barContainer.show();
           bar.render = barContainer;
           //bar.parent=_self;
-          bar.elTagName = 'div';
+          bar.elTagName = &#39;div&#39;;
           bar.autoRender = true;
           bar = _self.addChild(bar); //Component.create(bar).create();
         }
@@ -916,43 +916,43 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
       }
       return bar;
     },
-    //when set 'loadMask = true' ,create a loadMask instance
+    //when set &#39;loadMask = true&#39; ,create a loadMask instance
     _initLoadMask:function () {
       var _self = this,
-        loadMask = _self.get('loadMask');
+        loadMask = _self.get(&#39;loadMask&#39;);
       if (loadMask &amp;&amp; !loadMask.show) {
-        loadMask = new BUI.Mask.LoadMask({el:_self.get('el')});
-        _self.set('loadMask', loadMask);
+        loadMask = new BUI.Mask.LoadMask({el:_self.get(&#39;el&#39;)});
+        _self.set(&#39;loadMask&#39;, loadMask);
       }
     },
     //调整宽度时，调整内部控件宽度
     _uiSetWidth:function (w) {
       var _self = this;
-      if (_self.get('rendered')) {
+      if (_self.get(&#39;rendered&#39;)) {
         if(!isPercent(w)){
-          _self.get('header').set('width', _self._getInnerWidth(w));
+          _self.get(&#39;header&#39;).set(&#39;width&#39;, _self._getInnerWidth(w));
         }else{
-          _self.get('header').set('width','100%');
+          _self.get(&#39;header&#39;).set(&#39;width&#39;,&#39;100%&#39;);
         }
         
       }
-      _self.get('view').setTableWidth();
+      _self.get(&#39;view&#39;).setTableWidth();
     },
     //设置自适应宽度
     _uiSetForceFit:function (v) {
       var _self = this;
-      _self.get('header').set('forceFit', v);
+      _self.get(&#39;header&#39;).set(&#39;forceFit&#39;, v);
     },
-    //when set grid's height,the scroll can effect the width of its body and header
+    //when set grid&#39;s height,the scroll can effect the width of its body and header
     _uiSetHeight:function (h,obj) {
       var _self = this,
-        header = _self.get('header');
-      _self.get('view').setBodyHeight(h);
-      if (_self.get('rendered')) {
-        if (_self.get('forceFit') &amp;&amp; !obj.prevVal) {
+        header = _self.get(&#39;header&#39;);
+      _self.get(&#39;view&#39;).setBodyHeight(h);
+      if (_self.get(&#39;rendered&#39;)) {
+        if (_self.get(&#39;forceFit&#39;) &amp;&amp; !obj.prevVal) {
           header.forceFitColumns();
           //强迫对齐时，由未设置高度改成设置高度，增加了17像素的滚动条宽度，所以重置表格宽度
-          _self.get('view').setTableWidth();
+          _self.get(&#39;view&#39;).setTableWidth();
         }
         header.setTableWidth();
       }
@@ -964,13 +964,13 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
      */
     onLoad : function(){
       var _self = this,
-        store = _self.get('store');
+        store = _self.get(&#39;store&#39;);
       grid.superclass.onLoad.call(this);
-      if(_self.get('emptyDataTpl')){ //初始化的时候不显示空白数据的文本
+      if(_self.get(&#39;emptyDataTpl&#39;)){ //初始化的时候不显示空白数据的文本
         if(store &amp;&amp; store.getCount() == 0){
-          _self.get('view').showEmptyText();
+          _self.get(&#39;view&#39;).showEmptyText();
         }else{
-          _self.get('view').clearEmptyText();
+          _self.get(&#39;view&#39;).clearEmptyText();
         }
       }
     }
@@ -988,23 +988,23 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
 </span>       * @see {BUI.Grid.Grid#tbar}
        * &lt;pre&gt;&lt;code&gt;
        * grid = new Grid.Grid({
-       *    render:'#grid',
+       *    render:&#39;#grid&#39;,
        *    columns : columns,
        *    width : 700,
        *    forceFit : true,
        *    tbar:{ //添加、删除
        *        items : [{
-       *          btnCls : 'button button-small',
-       *          text : '&lt;i class=&quot;icon-plus&quot;&gt;&lt;/i&gt;添加',
+       *          btnCls : &#39;button button-small&#39;,
+       *          text : &#39;&lt;i class=&quot;icon-plus&quot;&gt;&lt;/i&gt;添加&#39;,
        *          listeners : {
-       *            'click' : addFunction
+       *            &#39;click&#39; : addFunction
        *          }
        *        },
        *        {
-       *          btnCls : 'button button-small',
-       *          text : '&lt;i class=&quot;icon-remove&quot;&gt;&lt;/i&gt;删除',
+       *          btnCls : &#39;button button-small&#39;,
+       *          text : &#39;&lt;i class=&quot;icon-remove&quot;&gt;&lt;/i&gt;删除&#39;,
        *          listeners : {
-       *            'click' : delFunction
+       *            &#39;click&#39; : delFunction
        *          }
        *        }]
        *    },
@@ -1038,7 +1038,7 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
 </span>       * 强迫列自适应宽度，如果列宽度大于Grid整体宽度，等比例缩减，否则等比例增加
        * &lt;pre&gt;&lt;code&gt;
        *  var grid = new Grid.Grid({
-       *    render:'#grid',
+       *    render:&#39;#grid&#39;,
        *    columns : columns,
        *    width : 700,
        *    forceFit : true, //自适应宽度
@@ -1050,10 +1050,10 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
 <span id='BUI-Grid-Grid-property-forceFit'>      /**
 </span>       * 强迫列自适应宽度，如果列宽度大于Grid整体宽度，等比例缩减，否则等比例增加
        * &lt;pre&gt;&lt;code&gt;
-       *  grid.set('forceFit',true);
+       *  grid.set(&#39;forceFit&#39;,true);
        * &lt;/code&gt;&lt;/pre&gt;
        * @type {Boolean}
-       * @default 'false'
+       * @default &#39;false&#39;
        */
       forceFit:{
         sync:false,
@@ -1063,11 +1063,11 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
 </span>       * 数据为空时，显示的提示内容
        * &lt;pre&gt;&lt;code&gt;
        *  var grid = new Grid({
-       *   render:'#J_Grid4',
+       *   render:&#39;#J_Grid4&#39;,
        *   columns : columns,
        *   store : store,
-       *   emptyDataTpl : '&amp;lt;div class=&quot;centered&quot;&amp;gt;&amp;lt;img alt=&quot;Crying&quot; src=&quot;http://img03.taobaocdn.com/tps/i3/T1amCdXhXqXXXXXXXX-60-67.png&quot;&amp;gt;&amp;lt;h2&amp;gt;查询的数据不存在&amp;lt;/h2&amp;gt;&amp;lt;/div&amp;gt;',
-       *   width:'100%'
+       *   emptyDataTpl : &#39;&amp;lt;div class=&quot;centered&quot;&amp;gt;&amp;lt;img alt=&quot;Crying&quot; src=&quot;http://img03.taobaocdn.com/tps/i3/T1amCdXhXqXXXXXXXX-60-67.png&quot;&amp;gt;&amp;lt;h2&amp;gt;查询的数据不存在&amp;lt;/h2&amp;gt;&amp;lt;/div&amp;gt;&#39;,
+       *   width:&#39;100%&#39;
        *
        * });
        * 
@@ -1085,7 +1085,7 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
        */
       headerRowTpl:{
         view:true,
-        value:'&lt;tr class=&quot;' + PREFIX + 'grid-header-row&quot;&gt;{cellsTpl}&lt;/tr&gt;'
+        value:&#39;&lt;tr class=&quot;&#39; + PREFIX + &#39;grid-header-row&quot;&gt;{cellsTpl}&lt;/tr&gt;&#39;
       },
 <span id='BUI-Grid-Grid-property-headerCellTpl'>      /**
 </span>       * 表格首行记录的单元格模板
@@ -1094,41 +1094,41 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
        */
       headerCellTpl:{
         view:true,
-        value:'&lt;td class=&quot;{hideCls} ' + CLS_TD_PREFIX + '{id}&quot; width=&quot;{width}&quot; style=&quot;height:0&quot;&gt;&lt;/td&gt;'
+        value:&#39;&lt;td class=&quot;{hideCls} &#39; + CLS_TD_PREFIX + &#39;{id}&quot; width=&quot;{width}&quot; style=&quot;height:0&quot;&gt;&lt;/td&gt;&#39;
       },
 <span id='BUI-Grid-Grid-property-rowTpl'>      /**
 </span>       * 表格数据行的模板
        * @type {String}
-       * @default  &lt;pre&gt;'&amp;lt;tr class=&quot;' + CLS_GRID_ROW + ' {{oddCls}}&quot;&amp;gt;{{cellsTpl}}&amp;lt;/tr&amp;gt;'&lt;/pre&gt;
+       * @default  &lt;pre&gt;&#39;&amp;lt;tr class=&quot;&#39; + CLS_GRID_ROW + &#39; {{oddCls}}&quot;&amp;gt;{{cellsTpl}}&amp;lt;/tr&amp;gt;&#39;&lt;/pre&gt;
        */
       rowTpl:{
         view:true,
-        value:'&lt;tr class=&quot;' + CLS_GRID_ROW + ' {oddCls}&quot;&gt;{cellsTpl}&lt;/tr&gt;'
+        value:&#39;&lt;tr class=&quot;&#39; + CLS_GRID_ROW + &#39; {oddCls}&quot;&gt;{cellsTpl}&lt;/tr&gt;&#39;
       },
 <span id='BUI-Grid-Grid-property-cellTpl'>      /**
 </span>       * 单元格的模板
        * @type {String}
        * &lt;pre&gt;
-       *     '&amp;lt;td  class=&quot;' + CLS_GRID_CELL + ' grid-td-{{id}}&quot; data-column-id=&quot;{{id}}&quot; data-column-field = {{dataIndex}}&amp;gt;'+
-       *        '&amp;lt;div class=&quot;' + CLS_GRID_CELL_INNER + '&quot; &amp;gt;{{cellText}}&amp;lt;/div&amp;gt;'+
-       *    '&amp;lt;/td&amp;gt;'
+       *     &#39;&amp;lt;td  class=&quot;&#39; + CLS_GRID_CELL + &#39; grid-td-{{id}}&quot; data-column-id=&quot;{{id}}&quot; data-column-field = {{dataIndex}}&amp;gt;&#39;+
+       *        &#39;&amp;lt;div class=&quot;&#39; + CLS_GRID_CELL_INNER + &#39;&quot; &amp;gt;{{cellText}}&amp;lt;/div&amp;gt;&#39;+
+       *    &#39;&amp;lt;/td&amp;gt;&#39;
        *&lt;/pre&gt;
        */
       cellTpl:{
         view:true,
-        value:'&lt;td  class=&quot;{elCls} {hideCls} ' + CLS_GRID_CELL + ' ' + CLS_TD_PREFIX + '{id}&quot; data-column-id=&quot;{id}&quot; data-column-field = &quot;{dataIndex}&quot; &gt;' +
-            '&lt;div class=&quot;' + CLS_GRID_CELL_INNER + '&quot; &gt;{cellText}&lt;/div&gt;' +
-            '&lt;/td&gt;'
+        value:&#39;&lt;td  class=&quot;{elCls} {hideCls} &#39; + CLS_GRID_CELL + &#39; &#39; + CLS_TD_PREFIX + &#39;{id}&quot; data-column-id=&quot;{id}&quot; data-column-field = &quot;{dataIndex}&quot; &gt;&#39; +
+            &#39;&lt;div class=&quot;&#39; + CLS_GRID_CELL_INNER + &#39;&quot; &gt;{cellText}&lt;/div&gt;&#39; +
+            &#39;&lt;/td&gt;&#39;
 
       },
 <span id='BUI-Grid-Grid-property-cellTextTpl'>      /**
 </span>       * 单元格文本的模板
-       * @default &amp;lt;span class=&quot;' + CLS_CELL_TEXT + ' &quot; title = &quot;{{tips}}&quot;&amp;gt;{{text}}&amp;lt;/span&amp;gt;
+       * @default &amp;lt;span class=&quot;&#39; + CLS_CELL_TEXT + &#39; &quot; title = &quot;{{tips}}&quot;&amp;gt;{{text}}&amp;lt;/span&amp;gt;
        * @type {String}
        */
       cellTextTpl:{
         view:true,
-        value:'&lt;span class=&quot;' + CLS_CELL_TEXT + ' &quot; title = &quot;{tips}&quot;&gt;{text}&lt;/span&gt;'
+        value:&#39;&lt;span class=&quot;&#39; + CLS_CELL_TEXT + &#39; &quot; title = &quot;{tips}&quot;&gt;{text}&lt;/span&gt;&#39;
       },
 <span id='BUI-Grid-Grid-property-events'>      /**
 </span>       * 事件集合
@@ -1140,14 +1140,14 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
 </span>           * 显示完数据触发
            * @event
            */
-          'aftershow' : false,
+          &#39;aftershow&#39; : false,
 <span id='BUI-Grid-Grid-event-clear'>           /**
 </span>           * 表格的数据清理完成后
            * @event
            */
-          'clear' : false,
+          &#39;clear&#39; : false,
 <span id='BUI-Grid-Grid-event-cellclick'>          /**
-</span>           * 点击单元格时触发,如果return false,则会阻止 'rowclick' ,'rowselected','rowunselected'事件
+</span>           * 点击单元格时触发,如果return false,则会阻止 &#39;rowclick&#39; ,&#39;rowselected&#39;,&#39;rowunselected&#39;事件
            * @event
            * @param {jQuery.Event} e  事件对象
            * @param {Object} e.record 此行的记录
@@ -1157,7 +1157,7 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
            * @param {HTMLElement} e.domTarget 点击的DOM
            * @param {jQuery.Event} e.domEvent 点击的jQuery事件
            */
-          'cellclick' : false,
+          &#39;cellclick&#39; : false,
 <span id='BUI-Grid-Grid-event-columnclick'>          /**
 </span>           * 点击表头
            * @event 
@@ -1165,16 +1165,16 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
            * @param {BUI.Grid.Column} e.column 列对象
            * @param {HTMLElement} e.domTarget 点击的DOM
            */
-          'columnclick' : false,
+          &#39;columnclick&#39; : false,
 <span id='BUI-Grid-Grid-event-rowclick'>          /**
-</span>           * 点击行时触发，如果return false,则会阻止'rowselected','rowunselected'事件
+</span>           * 点击行时触发，如果return false,则会阻止&#39;rowselected&#39;,&#39;rowunselected&#39;事件
            * @event
            * @param {jQuery.Event} e  事件对象
            * @param {Object} e.record 此行的记录
            * @param {HTMLElement} e.row 点击行对应的DOM
            * @param {HTMLElement} e.domTarget 点击的DOM
            */
-          'rowclick' : false,
+          &#39;rowclick&#39; : false,
 <span id='BUI-Grid-Grid-event-rowcreated'>          /**
 </span>           * 当一行数据显示在表格中后触发
            * @event
@@ -1183,7 +1183,7 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
            * @param {HTMLElement} e.row 行对应的DOM
            * @param {HTMLElement} e.domTarget 此事件中等于行对应的DOM
            */
-          'rowcreated' : false,
+          &#39;rowcreated&#39; : false,
 <span id='BUI-Grid-Grid-event-rowremoved'>          /**
 </span>           * 移除一行的DOM后触发
            * @event
@@ -1192,7 +1192,7 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
            * @param {HTMLElement} e.row 行对应的DOM
            * @param {HTMLElement} e.domTarget 此事件中等于行对应的DOM
            */
-          'rowremoved' : false,
+          &#39;rowremoved&#39; : false,
 <span id='BUI-Grid-Grid-event-rowselected'>          /**
 </span>           * 选中一行时触发
            * @event
@@ -1201,7 +1201,7 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
            * @param {HTMLElement} e.row 行对应的DOM
            * @param {HTMLElement} e.domTarget 此事件中等于行对应的DOM
            */
-          'rowselected' : false,
+          &#39;rowselected&#39; : false,
 <span id='BUI-Grid-Grid-event-rowunselected'>          /**
 </span>           * 清除选中一行时触发，只有多选情况下触发
            * @event
@@ -1210,7 +1210,7 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
            * @param {HTMLElement} e.row 行对应的DOM
            * @param {HTMLElement} e.domTarget 此事件中等于行对应的DOM
            */
-          'rowunselected' : false,
+          &#39;rowunselected&#39; : false,
 <span id='BUI-Grid-Grid-event-scroll'>          /**
 </span>           * 表格内部发生滚动时触发
            * @event
@@ -1220,7 +1220,7 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
            * @param {Number} e.bodyWidth 表格内部的宽度
            * @param {Number} e.bodyHeight 表格内部的高度
            */
-          'scroll' : false
+          &#39;scroll&#39; : false
         }
       },
 <span id='BUI-Grid-Grid-property-stripeRows'>      /**
@@ -1249,12 +1249,12 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
        * tbar:{
        *     items:[
        *         {
-       *             text:'命令一' //默认是按钮
+       *             text:&#39;命令一&#39; //默认是按钮
        *             
        *         },
        *         {
-       *             xtype:'text',
-       *             text:'文本'
+       *             xtype:&#39;text&#39;,
+       *             text:&#39;文本&#39;
        *         }
        *     ],
        *     pagingBar:true
@@ -1266,12 +1266,12 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
 <span id='BUI-Grid-Grid-cfg-tableCls'>      /**
 </span>       * 可以附加到表格上的样式.
        * @cfg {String} tableCls
-       * @default 'bui-grid-table' this css cannot be overridden
+       * @default &#39;bui-grid-table&#39; this css cannot be overridden
        */
       tableCls:{
         view : true,
         sync : false,
-        value:PREFIX + 'grid-table'
+        value:PREFIX + &#39;grid-table&#39;
       },
 <span id='BUI-Grid-Grid-property-tableTpl'>      /**
 </span>       * 表体的模板
@@ -1280,12 +1280,12 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
        */
       tableTpl : {
         view:true,
-        value:'&lt;table cellspacing=&quot;0&quot; cellpadding=&quot;0&quot; &gt;' +
-            '&lt;tbody&gt;&lt;/tbody&gt;' +
-            '&lt;/table&gt;'
+        value:&#39;&lt;table cellspacing=&quot;0&quot; cellpadding=&quot;0&quot; &gt;&#39; +
+            &#39;&lt;tbody&gt;&lt;/tbody&gt;&#39; +
+            &#39;&lt;/table&gt;&#39;
       },
       tpl : {
-        value : '&lt;div class=&quot;'+CLS_GRID_TBAR+'&quot; style=&quot;display:none&quot;&gt;&lt;/div&gt;&lt;div class=&quot;'+CLS_GRID_HEADER_CONTAINER+'&quot;&gt;&lt;/div&gt;&lt;div class=&quot;'+CLS_GRID_BODY+'&quot;&gt;&lt;/div&gt;&lt;div style=&quot;display:none&quot; class=&quot;' + CLS_GRID_BBAR + '&quot;&gt;&lt;/div&gt;'
+        value : &#39;&lt;div class=&quot;&#39;+CLS_GRID_TBAR+&#39;&quot; style=&quot;display:none&quot;&gt;&lt;/div&gt;&lt;div class=&quot;&#39;+CLS_GRID_HEADER_CONTAINER+&#39;&quot;&gt;&lt;/div&gt;&lt;div class=&quot;&#39;+CLS_GRID_BODY+&#39;&quot;&gt;&lt;/div&gt;&lt;div style=&quot;display:none&quot; class=&quot;&#39; + CLS_GRID_BBAR + &#39;&quot;&gt;&lt;/div&gt;&#39;
       },
 <span id='BUI-Grid-Grid-cfg-innerBorder'>      /**
 </span>       * 单元格左右之间是否出现边框
@@ -1296,7 +1296,7 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
 </span>       * 单元格左右之间是否出现边框
        * &lt;pre&gt;&lt;code&gt;
        *   var  grid = new Grid.Grid({
-       *     render:'#grid',
+       *     render:&#39;#grid&#39;,
        *     innerBorder: false, // 默认为true
        *     columns : columns,
        *     store : store
@@ -1336,7 +1336,7 @@ define('bui/grid/grid',['bui/common','bui/mask','bui/toolbar','bui/list','bui/gr
       }
     }
   },{
-    xclass : 'grid'
+    xclass : &#39;grid&#39;
   });
 
   grid.View = gridView;

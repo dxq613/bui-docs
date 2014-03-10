@@ -21,42 +21,42 @@
  * @ignore
  */
 
-define('bui/overlay/message',['bui/overlay/dialog'],function (require) {
-  var Dialog = require('bui/overlay/dialog'),
+define(&#39;bui/overlay/message&#39;,[&#39;bui/overlay/dialog&#39;],function (require) {
+  var Dialog = require(&#39;bui/overlay/dialog&#39;),
 	  PREFIX = BUI.prefix,
     iconText ={
-        info : 'i',
-        error : '×',
-        success : '&lt;i class=&quot;icon-ok icon-white&quot;&gt;&lt;/i&gt;',
-        question : '?',
-        warning: '!'
+        info : &#39;i&#39;,
+        error : &#39;×&#39;,
+        success : &#39;&lt;i class=&quot;icon-ok icon-white&quot;&gt;&lt;/i&gt;&#39;,
+        question : &#39;?&#39;,
+        warning: &#39;!&#39;
     };
 
 <span id='BUI-Overlay-Message'>  /**
 </span>   * 消息框类，一般不直接创建对象，而是调用其Alert和Confirm方法
    * &lt;pre&gt;&lt;code&gt;
-   ** BUI.use('bui/overlay',function(overlay){
+   ** BUI.use(&#39;bui/overlay&#39;,function(overlay){
    * 
-   *    BUI.Message.Alert('这只是简单的提示信息','info');
-   *    BUI.Message.Alert('这只是简单的成功信息','success');
-   *    BUI.Message.Alert('这只是简单的警告信息','warning');
-   *    BUI.Message.Alert('这只是简单的错误信息','error');
-   *    BUI.Message.Alert('这只是简单的询问信息','question');
+   *    BUI.Message.Alert(&#39;这只是简单的提示信息&#39;,&#39;info&#39;);
+   *    BUI.Message.Alert(&#39;这只是简单的成功信息&#39;,&#39;success&#39;);
+   *    BUI.Message.Alert(&#39;这只是简单的警告信息&#39;,&#39;warning&#39;);
+   *    BUI.Message.Alert(&#39;这只是简单的错误信息&#39;,&#39;error&#39;);
+   *    BUI.Message.Alert(&#39;这只是简单的询问信息&#39;,&#39;question&#39;);
    *
    *    //回调函数
-   *    BUI.Message.Alert('点击触发回调函数',function() {
-   *         alert('执行回调');
-   *       },'error');
+   *    BUI.Message.Alert(&#39;点击触发回调函数&#39;,function() {
+   *         alert(&#39;执行回调&#39;);
+   *       },&#39;error&#39;);
    *       
    *    //复杂的提示信息
-   *    var msg = '&amp;lt;h2&amp;gt;上传失败，请上传10M以内的文件&amp;lt;/h2&amp;gt;'+
-   *       '&amp;lt;p class=&quot;auxiliary-text&quot;&amp;gt;如连续上传失败，请及时联系客服热线：0511-23883767834&amp;lt;/p&amp;gt;'+
-   *       '&amp;lt;p&amp;gt;&amp;lt;a href=&quot;#&quot;&amp;gt;返回list页面&amp;lt;/a&amp;gt; &amp;lt;a href=&quot;#&quot;&amp;gt;查看详情&amp;lt;/a&amp;gt;&amp;lt;/p&amp;gt;';
-   *     BUI.Message.Alert(msg,'error');
+   *    var msg = &#39;&amp;lt;h2&amp;gt;上传失败，请上传10M以内的文件&amp;lt;/h2&amp;gt;&#39;+
+   *       &#39;&amp;lt;p class=&quot;auxiliary-text&quot;&amp;gt;如连续上传失败，请及时联系客服热线：0511-23883767834&amp;lt;/p&amp;gt;&#39;+
+   *       &#39;&amp;lt;p&amp;gt;&amp;lt;a href=&quot;#&quot;&amp;gt;返回list页面&amp;lt;/a&amp;gt; &amp;lt;a href=&quot;#&quot;&amp;gt;查看详情&amp;lt;/a&amp;gt;&amp;lt;/p&amp;gt;&#39;;
+   *     BUI.Message.Alert(msg,&#39;error&#39;);
    *    //确认信息
-   *    BUI.Message.Confirm('确认要更改么？',function(){
-   *       alert('确认');
-   *     },'question');
+   *    BUI.Message.Confirm(&#39;确认要更改么？&#39;,function(){
+   *       alert(&#39;确认&#39;);
+   *     },&#39;question&#39;);
    * });
    * &lt;/code&gt;&lt;/pre&gt;
    * @class BUI.Overlay.Message
@@ -74,8 +74,8 @@ define('bui/overlay/message',['bui/overlay/dialog'],function (require) {
     },
     bindUI : function(){
       var _self = this,
-        body = _self.get('body');
-      _self.on('afterVisibleChange',function(ev){
+        body = _self.get(&#39;body&#39;);
+      _self.on(&#39;afterVisibleChange&#39;,function(ev){
         if(ev.newVal){
           if(BUI.UA.ie &lt; 8){
 <span id='global-property-outerWidth'>           /**
@@ -86,8 +86,8 @@ define('bui/overlay/message',['bui/overlay/dialog'],function (require) {
             if(BUI.UA.ie == 6){
               outerWidth = outerWidth &gt; 350 ? 350 : outerWidth;
             }
-            _self.get('header').width(outerWidth - 20);
-            _self.get('footer').width(outerWidth);
+            _self.get(&#39;header&#39;).width(outerWidth - 20);
+            _self.get(&#39;footer&#39;).width(outerWidth);
           }
         }
       });
@@ -95,10 +95,10 @@ define('bui/overlay/message',['bui/overlay/dialog'],function (require) {
     //根据模版设置内容
     _setContent : function(){
       var _self = this,
-        body = _self.get('body'),
-        contentTpl = BUI.substitute(_self.get('contentTpl'),{
-          msg : _self.get('msg'),
-          iconTpl : _self.get('iconTpl')
+        body = _self.get(&#39;body&#39;),
+        contentTpl = BUI.substitute(_self.get(&#39;contentTpl&#39;),{
+          msg : _self.get(&#39;msg&#39;),
+          iconTpl : _self.get(&#39;iconTpl&#39;)
         });
       body.empty();
 
@@ -106,14 +106,14 @@ define('bui/overlay/message',['bui/overlay/dialog'],function (require) {
     },
     //设置类型
     _uiSetIcon : function(v){
-       if (!this.get('rendered')) {
+       if (!this.get(&#39;rendered&#39;)) {
             return;
         }
         this._setContent();
     },
     //设置文本
     _uiSetMsg : function(v){
-       if (!this.get('rendered')) {
+       if (!this.get(&#39;rendered&#39;)) {
             return;
         }
         this._setContent();
@@ -156,8 +156,8 @@ define('bui/overlay/message',['bui/overlay/dialog'],function (require) {
          */
         getter:function(){
           var _self = this,
-            type = _self.get('icon');
-          return '&lt;div class=&quot;x-icon x-icon-' + type + '&quot;&gt;' + iconText[type] + '&lt;/div&gt;';
+            type = _self.get(&#39;icon&#39;);
+          return &#39;&lt;div class=&quot;x-icon x-icon-&#39; + type + &#39;&quot;&gt;&#39; + iconText[type] + &#39;&lt;/div&gt;&#39;;
         }
       },
 <span id='BUI-Overlay-Message-property-contentTpl'>      /**
@@ -166,11 +166,11 @@ define('bui/overlay/message',['bui/overlay/dialog'],function (require) {
        * @protected
        */
       contentTpl : {
-        value : '{iconTpl}&lt;div class=&quot;' + PREFIX + 'message-content&quot;&gt;{msg}&lt;/div&gt;'
+        value : &#39;{iconTpl}&lt;div class=&quot;&#39; + PREFIX + &#39;message-content&quot;&gt;{msg}&lt;/div&gt;&#39;
       }
     }
   },{
-    xclass : 'message',
+    xclass : &#39;message&#39;,
     priority : 0
   });
   
@@ -187,10 +187,10 @@ define('bui/overlay/message',['bui/overlay/dialog'],function (require) {
       icon = icon || defaultIcon;
       callback = callback || hide;
       showMessage({
-        'buttons': buttons,
-        'icon':icon,
-        'msg':msg,
-        'success' : callback
+        &#39;buttons&#39;: buttons,
+        &#39;icon&#39;:icon,
+        &#39;msg&#39;:msg,
+        &#39;success&#39; : callback
       });
     };
   }
@@ -198,8 +198,8 @@ define('bui/overlay/message',['bui/overlay/dialog'],function (require) {
   function showMessage(config){
     if(!singlelon){
       singlelon = new message({
-          icon:'info',
-          title:''
+          icon:&#39;info&#39;,
+          title:&#39;&#39;
       });
     }
     singlelon.set(config);
@@ -209,7 +209,7 @@ define('bui/overlay/message',['bui/overlay/dialog'],function (require) {
 
   function success(){
    var _self = this,
-      success = _self.get('success');
+      success = _self.get(&#39;success&#39;);
     if(success){
       success.call(_self);
       _self.hide();
@@ -222,21 +222,21 @@ define('bui/overlay/message',['bui/overlay/dialog'],function (require) {
 
   
   var Alert = messageFun([{
-          text:'确定',
-          elCls : 'button button-primary',
+          text:&#39;确定&#39;,
+          elCls : &#39;button button-primary&#39;,
           handler : success
         }
-      ],'info'),
+      ],&#39;info&#39;),
     Confirm = messageFun([{
-          text:'确定',
-          elCls : 'button button-primary',
+          text:&#39;确定&#39;,
+          elCls : &#39;button button-primary&#39;,
           handler : success
         },{
-            text:'取消',
-            elCls : 'button button-primary',
+            text:&#39;取消&#39;,
+            elCls : &#39;button button-primary&#39;,
             handler : hide
           }
-      ],'question');
+      ],&#39;question&#39;);
 
 <span id='BUI-Message'>  /**
 </span>   * 提示框静态类
@@ -257,9 +257,9 @@ define('bui/overlay/message',['bui/overlay/dialog'],function (require) {
 <span id='BUI-Message-static-method-Confirm'>  /**
 </span>   * 显示确认框
    * &lt;pre&gt;&lt;code&gt;
-   * BUI.Message.Confirm('确认要更改么？',function(){
-   *       alert('确认');
-   * },'question');
+   * BUI.Message.Confirm(&#39;确认要更改么？&#39;,function(){
+   *       alert(&#39;确认&#39;);
+   * },&#39;question&#39;);
    * &lt;/code&gt;&lt;/pre&gt;
    * @static
    * @method

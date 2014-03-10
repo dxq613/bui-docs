@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 提示信息
+ * @ignore
+ */
+
+define(&#39;bui/chart/tooltip&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#39;,&#39;bui/chart/plotitem&#39;],function (require) {
+	
+	var BUI = require(&#39;bui/common&#39;),
+		PlotItem = require(&#39;bui/chart/plotitem&#39;),
+		Util = require(&#39;bui/graphic&#39;).Util;
+
+	function min(x,y){
+		return x &gt; y ? y : x;
+	}
+	function max(x,y){
+		return x &gt; y ? x : y;
+	}
+
+
+<span id='BUI-Chart-Tooltip'>	/**
+</span>	 * @class BUI.Chart.Tooltip
+	 * 提示信息
+	 * @extends BUI.Chart.PlotItem
+	 */
+	var Tooltip = function(cfg){
+		Tooltip.superclass.constructor.call(this,cfg);
+	};
+
+	Tooltip.ATTRS = {
+		zIndex : {
+			value : 10
+		},
+		elCls : {
+			value : &#39;x-chart-tootip&#39;
+		},
+<span id='BUI-Chart-Tooltip-property-crosshairs'>		/**
+</span>		 * 是否贯穿整个坐标轴
+		 * @type {Boolean}
+		 */
+		crosshairs : {
+			value : false
+		},
+<span id='BUI-Chart-Tooltip-property-plotRange'>		/**
+</span>		 * 视图范围
+		 * @type {Object}
+		 */
+		plotRange : {
+
+		},
+<span id='BUI-Chart-Tooltip-property-shared'>		/**
+</span>		 * 多个数据序列是否共同用一个tooltip
+		 * @type {Boolean}
+		 */
+		shared : {
+			value : false
+		},
+<span id='BUI-Chart-Tooltip-property-offset'>		/**
+</span>		 * x轴上，移动到位置的偏移量
+		 * @type {Number}
+		 */
+		offset : {
+			value : 0
+		},
+		shadow : {
+
+		},
+<span id='BUI-Chart-Tooltip-property-title'>		/**
+</span>		 * 标题的配置信息
+		 * @type {Object}
+		 */
+		title : {
+			value : {
+				&#39;font-size&#39; : &#39;10&#39;,
+				&#39;text-anchor&#39; : &#39;start&#39;,
+				x : 5,
+				y : 15
+			}
+		},
+<span id='BUI-Chart-Tooltip-property-name'>		/**
+</span>		 * 数据序列名称的配置信息
+		 * @type {Object}
+		 */
+		name : {
+			value : {
+				&#39;font-size&#39; : &#39;12&#39;,
+				&#39;text-anchor&#39; : &#39;start&#39;
+			}
+		},
+<span id='BUI-Chart-Tooltip-property-value'>		/**
+</span>		 * 当前值的文本配置信息
+		 * @type {String}
+		 */
+		value : {
+			value : {
+				&#39;font-size&#39; : &#39;12&#39;,
+				&#39;font-weight&#39; :&#39;bold&#39;,
+				&#39;text-anchor&#39; : &#39;start&#39;
+			}
+		},
+		border : {
+			value : {
+				x : 0,
+				y : 0,
+				r : 3,
+				fill : &#39;#fff&#39;,
+				&#39;fill-opacity&#39; : .85
+			}
+		},
+		animate : {
+			value : true
+		},
+<span id='BUI-Chart-Tooltip-property-duration'>		/**
+</span>		 * 移动的动画时间
+		 * @type {Number}
+		 */
+		duration : {
+			value : 100
+		},
+<span id='BUI-Chart-Tooltip-property-pointRenderer'>		/**
+</span>		 * 用于格式化数据序列时使用
+		 * @type {Function}
+		 */
+		pointRenderer : {
+
+		},
+<span id='BUI-Chart-Tooltip-property-valueSuffix'>		/**
+</span>		 * 跟在value后面的后缀
+		 * @type {String}
+		 */
+		valueSuffix : {
+			value : &#39;&#39;
+		},
+		visible : {
+			value : false
+		},
+		items : [
+
+		]
+	};
+
+	BUI.extend(Tooltip,PlotItem);
+
+
+	BUI.augment(Tooltip,{
+
+		renderUI : function(){
+			var _self = this;
+
+			Tooltip.superclass.renderUI.call(_self);
+			_self._renderBorer();
+			_self._renderText();
+			_self._renderItemGroup();
+			_self._renderCrossLine();
+			
+		},
+		//渲染边框
+		_renderBorer : function(){
+			var _self = this,
+				bbox = _self.getBBox(),
+				rect = _self.addShape(&#39;rect&#39;,_self.get(&#39;border&#39;));
+			_self.set(&#39;borderShape&#39;,rect);
+		},
+		//渲染文本
+		_renderText : function(){
+			var _self = this,
+				title = _self.get(&#39;title&#39;);
+
+			_self.setTitle(title.text);
+
+		},
+		//渲染文本集合
+		_renderItemGroup : function(){
+			var _self = this,
+				items = _self.get(&#39;items&#39;),
+				group = _self.addGroup({
+					x : 8,
+					y : 30
+				});
+			_self.set(&#39;textGroup&#39;,group);
+			if(items){
+				_self.setItems(items);
+			}
+		},
+		//渲染贯穿纵坐标的线
+		_renderCrossLine : function(){
+			var _self = this,
+				crosshairs = _self.get(&#39;crosshairs&#39;),
+				shape,
+				plotRange = _self.get(&#39;plotRange&#39;);
+
+			if(crosshairs){
+
+				shape = _self.get(&#39;parent&#39;).addShape({
+					type : &#39;line&#39;,
+					visible : false,
+					zIndex : 3,
+					attrs : {
+						stroke : &#39;#C0C0C0&#39;,
+						x1 : 0,
+						y1 : plotRange.bl.y,
+						x2 : 0,
+						y2 : plotRange.tl.y
+					}
+				});
+
+				_self.set(&#39;crossShape&#39;,shape);
+			}
+		},
+<span id='BUI-Chart-Tooltip-method-setTitle'>		/**
+</span>		 * 设置title
+		 * @param {String} title 标题
+		 */
+		setTitle : function(text){
+			var _self = this,
+				titleShape = _self.get(&#39;titleShape&#39;),
+				title = _self.get(&#39;title&#39;),
+				cfg;
+			if(!titleShape){
+				title.text = text || &#39;&#39;;
+				titleShape = _self.addShape(&#39;text&#39;,title);
+				_self.set(&#39;titleShape&#39;,titleShape);
+			}
+			titleShape.attr(&#39;text&#39;,text);
+		},
+
+		getInnerBox : function(){
+			var _self = this,
+				textGroup = _self.get(&#39;textGroup&#39;),
+				bbx = textGroup.getBBox(),
+				rst = {};
+			rst.width = bbx.x + bbx.width + 8;
+			rst.height = bbx.height + bbx.y + 10;
+
+			return rst;
+		},
+<span id='BUI-Chart-Tooltip-method-setColor'>		/**
+</span>		 * 设置颜色
+		 * @param {String} color 颜色
+		 */
+		setColor : function(color){
+			var _self = this,
+				borderShape = _self.get(&#39;borderShape&#39;);
+			borderShape.attr(&#39;stroke&#39;,color);
+		},
+<span id='BUI-Chart-Tooltip-method-show'>		/**
+</span>		 * 显示
+		 */
+		show : function(){
+			var _self = this,
+				crossShape = _self.get(&#39;crossShape&#39;),
+				hideHandler = _self.get(&#39;hideHandler&#39;);
+			if(hideHandler){
+				clearTimeout(hideHandler);
+			}
+			Tooltip.superclass.show.call(_self);
+			crossShape &amp;&amp; crossShape.show();
+		},
+<span id='BUI-Chart-Tooltip-method-hide'>		/**
+</span>		 * 隐藏
+		 */
+		hide : function(){
+			var _self = this,
+				crossShape = _self.get(&#39;crossShape&#39;);
+
+			var hideHandler = setTimeout(function(){
+				Tooltip.superclass.hide.call(_self);
+				_self.set(&#39;hideHandler&#39;,null);
+			},500);
+			_self.set(&#39;hideHandler&#39;,hideHandler);
+			crossShape &amp;&amp; crossShape.hide();
+		},
+
+<span id='BUI-Chart-Tooltip-method-setPosition'>		/**
+</span>		 * 将tooltip的右下角移动到指定的位置，假设这个点已经在坐标轴内
+		 *
+		 *  - 默认移动到右下角
+		 *  - 如果左边到了坐标轴外，则将tooltip向右移动，按照右下角对齐
+		 *  - 如果右边到了坐标轴外，则左移,将右下边放到坐标轴边界上
+		 *  - 下面，上面出了坐标轴，做类似处理
+		 * @param {Number} x x坐标
+		 * @param {Number} y y坐标
+		 */
+		setPosition : function(x,y){
+			var _self = this,
+				plotRange = _self.get(&#39;plotRange&#39;),
+				offset = _self.get(&#39;offset&#39;),
+				crossShape = _self.get(&#39;crossShape&#39;),
+				bbox = _self.getBBox(),
+				after = true,
+				animate = _self.get(&#39;animate&#39;); //移动点落到tooltip的后面
+
+			var endx = x,
+				endy = y;
+
+			x = x - bbox.width - offset;
+			y = y - bbox.height;
+
+			if(plotRange){
+
+				if(!plotRange.isInRange(x,y)){
+					//如果顶部在外面
+					if(!plotRange.isInVertical(y)){
+						y = plotRange.tl.y;
+					}
+
+					if(!plotRange.isInHorizontal(x)){
+						x = max(plotRange.tl.x,endx) + offset;
+						after = false;
+					}
+				}
+			}
+
+			if(_self.get(&#39;x&#39;) != x || _self.get(&#39;y&#39;) != y){
+				if(animate &amp;&amp; Util.svg &amp;&amp; _self.get(&#39;visible&#39;)){
+					_self.animate({
+						x : x,
+						y : y
+					},_self.get(&#39;duration&#39;));
+				}
+				
+				_self.move(x,y);/**/
+
+				if(crossShape){
+					if(after){
+						crossShape.attr(&#39;transform&#39;,&#39;t&#39; + endx + &#39; 0&#39;);
+					}else{
+						crossShape.attr(&#39;transform&#39;,&#39;t&#39; + (x - offset) + &#39; 0&#39;);
+					}
+				}
+			}
+
+
+		},
+		//重置边框大小
+		resetBorder : function(){
+			var _self = this,
+				bbox = _self.getInnerBox(),
+				borderShape = _self.get(&#39;borderShape&#39;);
+
+			borderShape.attr({
+				width : bbox.width,
+				height : bbox.height
+			});
+		},
+<span id='BUI-Chart-Tooltip-method-addItem'>		/**
+</span>		 * @private
+		 * 添加一条信息
+		 */
+		addItem : function(item,index){
+			var _self = this,
+				textGroup = _self.get(&#39;textGroup&#39;),
+				group = textGroup.addGroup(),
+				name = _self.get(&#39;name&#39;),
+				value = _self.get(&#39;value&#39;),
+				y = index * 16,
+				cfg;
+
+			cfg = BUI.merge(name,{
+				x : 0,
+				y : y,
+				text : item.name + &#39;:&#39;,
+				&#39;fill&#39; : item.color
+			});
+
+		  var nameShape =	group.addShape(&#39;text&#39;,cfg),
+		  	width = nameShape.getBBox().width + 10,
+		  	valueSuffix = _self.get(&#39;valueSuffix&#39;),
+		  	itemValue;
+		  if(BUI.isArray(item.value)){
+		  	BUI.each(item.value,function(sub){
+		  		var subItem
+		  		if(BUI.isObject(sub)){
+		  			subItem = addValue(sub.text,sub);
+		  		}else{
+		  			subItem = addValue(sub);
+		  		}
+		  		width = width + subItem.getBBox().width;
+		  	});
+		  }else{
+		  	itemValue = valueSuffix ? item.value + &#39; &#39; + valueSuffix : item.value;
+		  	addValue(itemValue);
+		  }
+		  	
+		  function addValue (text,params){
+		  	var cfg = BUI.merge(value,{
+					x : width,
+					y : y,
+					text : text
+				},params);
+			  return group.addShape(&#39;text&#39;,cfg);
+		  }
+		  
+
+		},
+<span id='BUI-Chart-Tooltip-method-setItems'>		/**
+</span>		 * 设置显示的信息项
+		 *
+		 * - name : 序列的标题
+		 * - value : 序列的值
+		 * - color : 序列的颜色
+		 * 
+		 * @param {Array} items 信息列表
+		 */
+		setItems : function(items){
+			var _self = this;
+
+			_self.clearItems();
+			BUI.each(items,function(item,index){
+				_self.addItem(item,index);
+			});
+
+			if(items[0]){
+				_self.setColor(items[0].color);
+			}
+			_self.resetBorder();
+			//_self.set(&#39;items&#39;,items);
+		},
+<span id='BUI-Chart-Tooltip-method-clearItems'>		/**
+</span>		 * 清除所有的信息
+		 */
+		clearItems : function(){
+			var _self = this,
+				group = _self.get(&#39;textGroup&#39;);
+			group.clear();
+		},
+		remove : function(){
+
+			var _self = this,
+				crossShape = _self.get(&#39;crossShape&#39;);
+			crossShape &amp;&amp; crossShape.remove();
+			Tooltip.superclass.remove(this);
+		}
+
+	});
+
+	return Tooltip;
+
+});</pre>
+</body>
+</html>

@@ -20,9 +20,9 @@
  * @ignore
  */
 
-define('bui/form/row',['bui/common','bui/form/fieldcontainer'],function (require) {
-  var BUI = require('bui/common'),
-    FieldContainer = require('bui/form/fieldcontainer');
+define(&#39;bui/form/row&#39;,[&#39;bui/common&#39;,&#39;bui/form/fieldcontainer&#39;],function (require) {
+  var BUI = require(&#39;bui/common&#39;),
+    FieldContainer = require(&#39;bui/form/fieldcontainer&#39;);
 
 <span id='BUI-Form-Row'>  /**
 </span>   * @class BUI.Form.Row
@@ -34,27 +34,27 @@ define('bui/form/row',['bui/common','bui/form/fieldcontainer'],function (require
   },{
     ATTRS : {
       elCls : {
-        value : 'row'
+        value : &#39;row&#39;
       },
       defaultChildCfg:{
         value : {
-          tpl : ' &lt;label class=&quot;control-label&quot;&gt;{label}&lt;/label&gt;\
+          tpl : &#39; &lt;label class=&quot;control-label&quot;&gt;{label}&lt;/label&gt;\
                 &lt;div class=&quot;controls&quot;&gt;\
-                &lt;/div&gt;',
-          childContainer : '.controls',
+                &lt;/div&gt;&#39;,
+          childContainer : &#39;.controls&#39;,
           showOneError : true,
-          controlContainer : '.controls',
-          elCls : 'control-group span8',
-          errorTpl : '&lt;span class=&quot;valid-text&quot;&gt;&lt;span class=&quot;estate error&quot;&gt;&lt;span class=&quot;x-icon x-icon-mini x-icon-error&quot;&gt;!&lt;/span&gt;&lt;em&gt;{error}&lt;/em&gt;&lt;/span&gt;&lt;/span&gt;'
+          controlContainer : &#39;.controls&#39;,
+          elCls : &#39;control-group span8&#39;,
+          errorTpl : &#39;&lt;span class=&quot;valid-text&quot;&gt;&lt;span class=&quot;estate error&quot;&gt;&lt;span class=&quot;x-icon x-icon-mini x-icon-error&quot;&gt;!&lt;/span&gt;&lt;em&gt;{error}&lt;/em&gt;&lt;/span&gt;&lt;/span&gt;&#39;
         }
         
       },
       defaultChildClass : {
-        value : 'form-field-text'
+        value : &#39;form-field-text&#39;
       }
     }
   },{
-    xclass:'form-row'
+    xclass:&#39;form-row&#39;
   });
 
   return Row;

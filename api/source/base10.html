@@ -20,16 +20,16 @@
  * @ignore
  */
 
-define('bui/menu',['bui/common','bui/menu/menu','bui/menu/menuitem','bui/memu/contextmenu','bui/menu/popmenu','bui/menu/sidemenu'],function (require) {
+define(&#39;bui/menu&#39;,[&#39;bui/common&#39;,&#39;bui/menu/menu&#39;,&#39;bui/menu/menuitem&#39;,&#39;bui/memu/contextmenu&#39;,&#39;bui/menu/popmenu&#39;,&#39;bui/menu/sidemenu&#39;],function (require) {
   
-  var BUI = require('bui/common'),
-    Menu = BUI.namespace('Menu');
+  var BUI = require(&#39;bui/common&#39;),
+    Menu = BUI.namespace(&#39;Menu&#39;);
   BUI.mix(Menu,{
-    Menu : require('bui/menu/menu'),
-    MenuItem : require('bui/menu/menuitem'),
-    ContextMenu : require('bui/memu/contextmenu'),
-    PopMenu : require('bui/menu/popmenu'),
-    SideMenu : require('bui/menu/sidemenu')
+    Menu : require(&#39;bui/menu/menu&#39;),
+    MenuItem : require(&#39;bui/menu/menuitem&#39;),
+    ContextMenu : require(&#39;bui/memu/contextmenu&#39;),
+    PopMenu : require(&#39;bui/menu/popmenu&#39;),
+    SideMenu : require(&#39;bui/menu/sidemenu&#39;)
   });
 
   Menu.ContextMenuItem = Menu.ContextMenu.Item;

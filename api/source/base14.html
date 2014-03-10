@@ -20,14 +20,14 @@
  * @ignore
  */
 
-define('bui/select',['bui/common','bui/select/select','bui/select/combox','bui/select/suggest'],function (require) {
-  var BUI = require('bui/common'),
-    Select = BUI.namespace('Select');
+define(&#39;bui/select&#39;,[&#39;bui/common&#39;,&#39;bui/select/select&#39;,&#39;bui/select/combox&#39;,&#39;bui/select/suggest&#39;],function (require) {
+  var BUI = require(&#39;bui/common&#39;),
+    Select = BUI.namespace(&#39;Select&#39;);
 
   BUI.mix(Select,{
-    Select : require('bui/select/select'),
-    Combox : require('bui/select/combox'),
-    Suggest: require('bui/select/suggest')
+    Select : require(&#39;bui/select/select&#39;),
+    Combox : require(&#39;bui/select/combox&#39;),
+    Suggest: require(&#39;bui/select/suggest&#39;)
   });
   return Select;
 });</pre>

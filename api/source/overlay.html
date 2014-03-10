@@ -20,10 +20,10 @@
  * @ignore
  */
 
-define('bui/overlay/overlay',['bui/common'],function (require) {
-  var BUI = require('bui/common'),
+define(&#39;bui/overlay/overlay&#39;,[&#39;bui/common&#39;],function (require) {
+  var BUI = require(&#39;bui/common&#39;),
     Component =  BUI.Component,
-    CLS_ARROW = 'x-align-arrow',
+    CLS_ARROW = &#39;x-align-arrow&#39;,
     UIBase = Component.UIBase;
 
 <span id='BUI-Overlay-OverlayView'>  /**
@@ -44,19 +44,19 @@ define('bui/overlay/overlay',['bui/common'],function (require) {
    * &lt;p&gt;
    * &lt;img src=&quot;../assets/img/class-overlay.jpg&quot;/&gt;
    * &lt;/p&gt;
-   * xclass : 'overlay'
+   * xclass : &#39;overlay&#39;
    * ** 一般来说，overlay的子类，Dialog 、Message、ToolTip已经能够满足日常应用，但是使用overay更适合一些更加灵活的地方 **
    * ## 简单overlay
    * &lt;pre&gt;&lt;code&gt;
-   *   BUI.use('bui/overlay',function(Overlay){
+   *   BUI.use(&#39;bui/overlay&#39;,function(Overlay){
    *     //点击#btn，显示overlay
    *     var overlay = new Overlay.Overlay({
-   *       trigger : '#btn',
-   *       content : '这是内容',
+   *       trigger : &#39;#btn&#39;,
+   *       content : &#39;这是内容&#39;,
    *       align : {
-   *         points : ['bl','tl']
+   *         points : [&#39;bl&#39;,&#39;tl&#39;]
    *       }, //对齐方式
-   *       elCls : 'custom-cls', //自定义样式
+   *       elCls : &#39;custom-cls&#39;, //自定义样式
    *       autoHide : true //点击overlay外面，overlay 会自动隐藏
    *     });
    *
@@ -76,43 +76,43 @@ define('bui/overlay/overlay',['bui/common'],function (require) {
   var overlay = Component.Controller.extend([UIBase.Position,UIBase.Align,UIBase.Close,UIBase.AutoShow,UIBase.AutoHide],{
     renderUI : function(){
       var _self = this,
-        el = _self.get('el'),
-        arrowContainer = _self.get('arrowContainer'),
+        el = _self.get(&#39;el&#39;),
+        arrowContainer = _self.get(&#39;arrowContainer&#39;),
         container = arrowContainer ? el.one(arrowContainer) : el;
-      if(_self.get('showArrow')){
-        $(_self.get('arrowTpl')).appendTo(container);
+      if(_self.get(&#39;showArrow&#39;)){
+        $(_self.get(&#39;arrowTpl&#39;)).appendTo(container);
       }
     },
     show : function(){
       var _self = this,
-        effectCfg = _self.get('effect'),
-        el = _self.get('el'),
-		    visibleMode = _self.get('visibleMode'),
+        effectCfg = _self.get(&#39;effect&#39;),
+        el = _self.get(&#39;el&#39;),
+		    visibleMode = _self.get(&#39;visibleMode&#39;),
         effect = effectCfg.effect,
         duration = effectCfg.duration;
 
   	  
       //如果还未渲染，则先渲染控件
-      if(!_self.get('rendered')){
-        _self.set('visible',true);
+      if(!_self.get(&#39;rendered&#39;)){
+        _self.set(&#39;visible&#39;,true);
         _self.render();
-        _self.set('visible',false);
-        el = _self.get('el');
+        _self.set(&#39;visible&#39;,false);
+        el = _self.get(&#39;el&#39;);
       }
 
-      if(visibleMode === 'visibility'){
-        _self.set('visible',true);
-        el.css({display : 'none'});
+      if(visibleMode === &#39;visibility&#39;){
+        _self.set(&#39;visible&#39;,true);
+        el.css({display : &#39;none&#39;});
       }
       
       switch(effect){
-        case  'linear' :
+        case  &#39;linear&#39; :
           el.show(duration,callback);
           break;
-        case  'fade' :
+        case  &#39;fade&#39; :
           el.fadeIn(duration,callback);
           break;
-        case  'slide' :
+        case  &#39;slide&#39; :
           el.slideDown(duration,callback);
           break;
         default:
@@ -121,10 +121,10 @@ define('bui/overlay/overlay',['bui/common'],function (require) {
       }
 
       function callback(){
-        if(visibleMode === 'visibility'){
-          el.css({display : 'block'});
+        if(visibleMode === &#39;visibility&#39;){
+          el.css({display : &#39;block&#39;});
         }else{
-          _self.set('visible',true);
+          _self.set(&#39;visible&#39;,true);
         }
         if(effectCfg.callback){
           effectCfg.callback.call(_self);
@@ -134,19 +134,19 @@ define('bui/overlay/overlay',['bui/common'],function (require) {
     },
     hide : function(){
       var _self = this,
-        effectCfg = _self.get('effect'),
-        el = _self.get('el'),
+        effectCfg = _self.get(&#39;effect&#39;),
+        el = _self.get(&#39;el&#39;),
         effect = effectCfg.effect,
         duration = effectCfg.duration;
   	  
       switch(effect){
-        case 'linear':
+        case &#39;linear&#39;:
           el.hide(duration,callback);
           break;
-        case  'fade' :
+        case  &#39;fade&#39; :
           el.fadeOut(duration,callback);
           break;
-        case  'slide' :
+        case  &#39;slide&#39; :
           el.slideUp(duration,callback);
           break;
         default:
@@ -154,10 +154,10 @@ define('bui/overlay/overlay',['bui/common'],function (require) {
         break;
       }
       function callback(){
-        if(_self.get('visibleMode') === 'visibility'){
-          el.css({display : 'block'});
+        if(_self.get(&#39;visibleMode&#39;) === &#39;visibility&#39;){
+          el.css({display : &#39;block&#39;});
         }
-        _self.set('visible',false);
+        _self.set(&#39;visible&#39;,false);
         if(effectCfg.callback){
           effectCfg.callback.call(_self);
         }
@@ -166,27 +166,27 @@ define('bui/overlay/overlay',['bui/common'],function (require) {
     }
   },{
     ATTRS : 
-<span id='global-property-'>	/**
+<span id=''>	/**
 </span>	* @lends BUI.Overlay.Overlay#
   * @ignore 
 	**/	
 	{
-<span id='BUI-Overlay-Overlay-property-effect'>      /**
+<span id='-property-effect'>      /**
 </span>       * {Object} - 可选, 显示或隐藏时的特效支持, 对象包含以下配置
        * &lt;ol&gt;
-       * &lt;li&gt;effect:特效效果，'none(默认无特效)','linear(线性)',fade(渐变)','slide(滑动出现)'&lt;/li&gt;
+       * &lt;li&gt;effect:特效效果，&#39;none(默认无特效)&#39;,&#39;linear(线性)&#39;,fade(渐变)&#39;,&#39;slide(滑动出现)&#39;&lt;/li&gt;
        * &lt;li&gt;duration:时间间隔 &lt;/li&gt;
        * &lt;/ol&gt;
        * @type {Object}
        */
       effect:{
         value : {
-          effect : 'none',
+          effect : &#39;none&#39;,
           duration : 0,
           callback : null
         }
       },
-<span id='BUI-Overlay-Overlay-property-closeable'>      /**
+<span id='-property-closeable'>      /**
 </span>       * whether this component can be closed.
        * @default false
        * @type {Boolean}
@@ -195,18 +195,18 @@ define('bui/overlay/overlay',['bui/common'],function (require) {
       closeable:{
           value:false
       },
-<span id='BUI-Overlay-Overlay-cfg-showArrow'>      /**
+<span id='-cfg-showArrow'>      /**
 </span>       * 是否显示指向箭头，跟align属性的points相关
        * @cfg {Boolean} [showArrow = false]
        */
       showArrow : {
         value : false
       },
-<span id='BUI-Overlay-Overlay-cfg-arrowContainer'>      /**
+<span id='-cfg-arrowContainer'>      /**
 </span>       * 箭头放置在的位置，是一个选择器，例如 .arrow-wraper
        *     new Tip({ //可以设置整个控件的模板
-       *       arrowContainer : '.arrow-wraper',
-       *       tpl : '&lt;div class=&quot;arrow-wraper&quot;&gt;&lt;/div&gt;'
+       *       arrowContainer : &#39;.arrow-wraper&#39;,
+       *       tpl : &#39;&lt;div class=&quot;arrow-wraper&quot;&gt;&lt;/div&gt;&#39;
        *     });
        *     
        * @cfg {String} arrowContainer
@@ -214,25 +214,25 @@ define('bui/overlay/overlay',['bui/common'],function (require) {
       arrowContainer : {
         view : true
       },
-<span id='BUI-Overlay-Overlay-cfg-arrowTpl'>      /**
+<span id='-cfg-arrowTpl'>      /**
 </span>       * 指向箭头的模板
        * @cfg {Object} arrowTpl
        */
       arrowTpl : {
-        value : '&lt;s class=&quot;' + CLS_ARROW + '&quot;&gt;&lt;s class=&quot;' + CLS_ARROW + '-inner&quot;&gt;&lt;/s&gt;&lt;/s&gt;'
+        value : &#39;&lt;s class=&quot;&#39; + CLS_ARROW + &#39;&quot;&gt;&lt;s class=&quot;&#39; + CLS_ARROW + &#39;-inner&quot;&gt;&lt;/s&gt;&lt;/s&gt;&#39;
       },
-      visibleMode : {
-        value : 'visibility'
+<span id='-property-visibleMode'>      visibleMode : {
+</span>        value : &#39;visibility&#39;
       },
-      visible :{
-        value:false
+<span id='-property-visible'>      visible :{
+</span>        value:false
       },
-      xview : {
-        value : overlayView
+<span id='-property-xview'>      xview : {
+</span>        value : overlayView
       }
     }
   },{
-    xclass:'overlay'
+    xclass:&#39;overlay&#39;
   });
 
   overlay.View = overlayView;

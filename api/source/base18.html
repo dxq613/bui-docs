@@ -20,15 +20,15 @@
  * @ignore
  */
 
-define('bui/editor',['bui/common','bui/form','bui/editor/editor','bui/editor/record','bui/editor/dialog'],function (require) {
-  var BUI = require('bui/common'),
-    Form = require('bui/form'),
-    Editor = BUI.namespace('Editor');
+define(&#39;bui/editor&#39;,[&#39;bui/common&#39;,&#39;bui/form&#39;,&#39;bui/editor/editor&#39;,&#39;bui/editor/record&#39;,&#39;bui/editor/dialog&#39;],function (require) {
+  var BUI = require(&#39;bui/common&#39;),
+    Form = require(&#39;bui/form&#39;),
+    Editor = BUI.namespace(&#39;Editor&#39;);
 
   BUI.mix(Editor,{
-    Editor : require('bui/editor/editor'),
-    RecordEditor : require('bui/editor/record'),
-    DialogEditor : require('bui/editor/dialog')
+    Editor : require(&#39;bui/editor/editor&#39;),
+    RecordEditor : require(&#39;bui/editor/record&#39;),
+    DialogEditor : require(&#39;bui/editor/dialog&#39;)
   });
   return Editor;
 });</pre>

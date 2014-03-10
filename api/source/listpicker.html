@@ -20,26 +20,26 @@
  * @ignore
  */
 
-define('bui/picker/listpicker',['bui/picker/picker','bui/list'],function (require) {
+define(&#39;bui/picker/listpicker&#39;,[&#39;bui/picker/picker&#39;,&#39;bui/list&#39;],function (require) {
 
-  var List = require('bui/list'),
-    Picker = require('bui/picker/picker'),
+  var List = require(&#39;bui/list&#39;),
+    Picker = require(&#39;bui/picker/picker&#39;),
 <span id='BUI-Picker-ListPicker'>    /**
-</span>     * 列表选择器,xclass = 'list-picker'
+</span>     * 列表选择器,xclass = &#39;list-picker&#39;
      * &lt;pre&gt;&lt;code&gt;
-     * BUI.use(['bui/picker'],function(Picker){
+     * BUI.use([&#39;bui/picker&#39;],function(Picker){
      *
      * var items = [
-     *       {text:'选项1',value:'a'},
-     *       {text:'选项2',value:'b'},
-     *      {text:'选项3',value:'c'}
+     *       {text:&#39;选项1&#39;,value:&#39;a&#39;},
+     *       {text:&#39;选项2&#39;,value:&#39;b&#39;},
+     *      {text:&#39;选项3&#39;,value:&#39;c&#39;}
      *     ],
      *   picker = new Picker.ListPicker({
-     *     trigger : '#show',  
-     *     valueField : '#hide', //如果需要列表返回的value，放在隐藏域，那么指定隐藏域
+     *     trigger : &#39;#show&#39;,  
+     *     valueField : &#39;#hide&#39;, //如果需要列表返回的value，放在隐藏域，那么指定隐藏域
      *     width:100,  //指定宽度
      *     children : [{
-     *        elCls:'bui-select-list',
+     *        elCls:&#39;bui-select-list&#39;,
      *        items : items
      *     }] //配置picker内的列表
      *   });
@@ -52,8 +52,8 @@ define('bui/picker/listpicker',['bui/picker/picker','bui/list'],function (requir
     listPicker = Picker.extend({
       initializer : function(){
         var _self = this,
-          children = _self.get('children'),
-          list = _self.get('list');
+          children = _self.get(&#39;children&#39;),
+          list = _self.get(&#39;list&#39;);
         if(!list){
           children.push({
 
@@ -66,18 +66,18 @@ define('bui/picker/listpicker',['bui/picker/picker','bui/list'],function (requir
        * @param {String} val 设置值
        */
       setSelectedValue : function(val){
-        val = val ? val.toString() : '';
-        if(!this.get('isInit')){
+        val = val ? val.toString() : &#39;&#39;;
+        if(!this.get(&#39;isInit&#39;)){
           this._initControl();
         }
         var _self = this,
-          list = _self.get('list'),
+          list = _self.get(&#39;list&#39;),
           selectedValue = _self.getSelectedValue();
         if(val !== selectedValue &amp;&amp; list.getCount()){
-          if(list.get('multipleSelect')){
+          if(list.get(&#39;multipleSelect&#39;)){
             list.clearSelection();
           }
-          list.setSelectionByField(val.split(','));
+          list.setSelectionByField(val.split(&#39;,&#39;));
         }   
       },
 <span id='global-method-onChange'>      /**
@@ -86,44 +86,44 @@ define('bui/picker/listpicker',['bui/picker/picker','bui/list'],function (requir
        */
       onChange : function(selText,selValue,ev){
         var _self = this,
-          curTrigger = _self.get('curTrigger');
-        //curTrigger &amp;&amp; curTrigger.trigger('change'); //触发改变事件
-        _self.fire('selectedchange',{value : selValue,text : selText,curTrigger : curTrigger,item : ev.item});
+          curTrigger = _self.get(&#39;curTrigger&#39;);
+        //curTrigger &amp;&amp; curTrigger.trigger(&#39;change&#39;); //触发改变事件
+        _self.fire(&#39;selectedchange&#39;,{value : selValue,text : selText,curTrigger : curTrigger,item : ev.item});
       },
 <span id='BUI-Picker-ListPicker-method-getSelectedValue'>      /**
-</span>       * 获取选中的值，多选状态下，值以','分割
+</span>       * 获取选中的值，多选状态下，值以&#39;,&#39;分割
        * @return {String} 选中的值
        */
       getSelectedValue : function(){
-        if(!this.get('isInit')){
+        if(!this.get(&#39;isInit&#39;)){
           this._initControl();
         }
-        return this.get('list').getSelectionValues().join(',');
+        return this.get(&#39;list&#39;).getSelectionValues().join(&#39;,&#39;);
       },
 <span id='BUI-Picker-ListPicker-method-getSelectedText'>      /**
-</span>       * 获取选中项的文本，多选状态下，文本以','分割
+</span>       * 获取选中项的文本，多选状态下，文本以&#39;,&#39;分割
        * @return {String} 选中的文本
        */
       getSelectedText : function(){
-        if(!this.get('isInit')){
+        if(!this.get(&#39;isInit&#39;)){
           this._initControl();
         }
-        return this.get('list').getSelectionText().join(',');
+        return this.get(&#39;list&#39;).getSelectionText().join(&#39;,&#39;);
       }
     },{
       ATTRS : {
 <span id='BUI-Picker-ListPicker-property-defaultChildClass'>        /**
-</span>         * 默认子控件的样式,默认为'simple-list'
+</span>         * 默认子控件的样式,默认为&#39;simple-list&#39;
          * @type {String}
          * @override
          */
         defaultChildClass:{
-          value : 'simple-list'
+          value : &#39;simple-list&#39;
         },
 <span id='BUI-Picker-ListPicker-property-list'>        /**
 </span>         * 选择的列表
          * &lt;pre&gt;&lt;code&gt;
-         *  var list = picker.get('list');
+         *  var list = picker.get(&#39;list&#39;);
          *  list.getSelected();
          * &lt;/code&gt;&lt;/pre&gt;
          * @type {BUI.List.SimpleList}
@@ -131,7 +131,7 @@ define('bui/picker/listpicker',['bui/picker/picker','bui/list'],function (requir
          */
         list : {
           getter:function(){
-            return this.get('children')[0];
+            return this.get(&#39;children&#39;)[0];
           }
         }
 <span id='BUI-Picker-ListPicker-event-selectedchange'>        /**
@@ -145,7 +145,7 @@ define('bui/picker/listpicker',['bui/picker/picker','bui/list'],function (requir
          */
       }
     },{
-      xclass : 'list-picker'
+      xclass : &#39;list-picker&#39;
     });
 
   return listPicker;

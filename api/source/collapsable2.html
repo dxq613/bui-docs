@@ -21,9 +21,9 @@
  * @ignore
  */
 
-define('bui/layout/collapsable',['bui/common'],function (require) {
+define(&#39;bui/layout/collapsable&#39;,[&#39;bui/common&#39;],function (require) {
 
-	var BUI = require('bui/common');
+	var BUI = require(&#39;bui/common&#39;);
 	
 <span id='BUI-Layout-Collapsable'>	/**
 </span>	 * @class BUI.Layout.Collapsable
@@ -63,9 +63,9 @@ define('bui/layout/collapsable',['bui/common'],function (require) {
 		//绑定展开折叠事件
 		bindCollapseEvent : function(){
 			var _self = this,
-				triggerCls = _self.get('triggerCls'),
-				el = _self.get('container');
-			el.delegate('.' + triggerCls,'click',function(ev){
+				triggerCls = _self.get(&#39;triggerCls&#39;),
+				el = _self.get(&#39;container&#39;);
+			el.delegate(&#39;.&#39; + triggerCls,&#39;click&#39;,function(ev){
 				var sender = $(ev.currentTarget),
 					item = _self.getItemByElement(sender);
 				_self.toggleCollapse(item);
@@ -77,7 +77,7 @@ define('bui/layout/collapsable',['bui/common'],function (require) {
 		 */
 		getExpandedItem : function(){
 			return this.getItemBy(function(item){
-				return !item.get('collapsed')
+				return !item.get(&#39;collapsed&#39;)
 			});
 		},
 <span id='BUI-Layout-Collapsable-method-expandItem'>		/**
@@ -86,11 +86,11 @@ define('bui/layout/collapsable',['bui/common'],function (require) {
 		 */
 		expandItem : function(item){
 			var _self = this,
-				duration = _self.get('duration'),
+				duration = _self.get(&#39;duration&#39;),
 				range = _self.getCollapsedRange(item),
 				activeItem;
-			if(item.get('collapsed')){
-				if(_self.get('accordion')){ //如果是互斥的收缩，将展开的收缩掉
+			if(item.get(&#39;collapsed&#39;)){
+				if(_self.get(&#39;accordion&#39;)){ //如果是互斥的收缩，将展开的收缩掉
 					activeItem = _self.getExpandedItem();
 					if(activeItem){
 						_self.beforeCollapsed(activeItem,range);
@@ -123,11 +123,11 @@ define('bui/layout/collapsable',['bui/common'],function (require) {
 		 */
 		collapseItem : function(item){
 			var _self = this,
-				duration = _self.get('duration'),
+				duration = _self.get(&#39;duration&#39;),
 				range = _self.getCollapsedRange(item),
 				nextItem;
-			if(!item.get('collapsed')){
-				if(_self.get('accordion')){ //如果是互斥的收缩，展开下一项
+			if(!item.get(&#39;collapsed&#39;)){
+				if(_self.get(&#39;accordion&#39;)){ //如果是互斥的收缩，展开下一项
 					nextItem = _self.getNextItem(item);
 					_self.beforeExpanded(nextItem,range);
 					nextItem.expand(range,duration,function(){
@@ -166,7 +166,7 @@ define('bui/layout/collapsable',['bui/common'],function (require) {
 		 */
 		toggleCollapse : function(item){
 			var _self = this;
-			if(item.get('collapsed')){
+			if(item.get(&#39;collapsed&#39;)){
 				_self.expandItem(item);
 			}else{
 				_self.collapseItem(item);

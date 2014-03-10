@@ -20,19 +20,19 @@
  * @ignore
  */
 
-define('bui/list/simplelist',['bui/common','bui/list/domlist','bui/list/keynav','bui/list/sortable'],function (require) {
+define(&#39;bui/list/simplelist&#39;,[&#39;bui/common&#39;,&#39;bui/list/domlist&#39;,&#39;bui/list/keynav&#39;,&#39;bui/list/sortable&#39;],function (require) {
 
 <span id='BUI'>  /**
 </span>   * @name BUI.List
    * @namespace 列表命名空间
    * @ignore
    */
-  var BUI = require('bui/common'),
+  var BUI = require(&#39;bui/common&#39;),
     UIBase = BUI.Component.UIBase,
-    DomList = require('bui/list/domlist'),
-    KeyNav = require('bui/list/keynav'),
-    Sortable = require('bui/list/sortable'),
-    CLS_ITEM = BUI.prefix + 'list-item';
+    DomList = require(&#39;bui/list/domlist&#39;),
+    KeyNav = require(&#39;bui/list/keynav&#39;),
+    Sortable = require(&#39;bui/list/sortable&#39;),
+    CLS_ITEM = BUI.prefix + &#39;list-item&#39;;
   
 <span id='BUI-List-SimpleListView'>  /**
 </span>   * @class BUI.List.SimpleListView
@@ -44,19 +44,19 @@ define('bui/list/simplelist',['bui/common','bui/list/domlist','bui/list/keynav',
     setElementHover : function(element,hover){
       var _self = this;
 
-      _self.setItemStatusCls('hover',element,hover);
+      _self.setItemStatusCls(&#39;hover&#39;,element,hover);
     }
 
   },{
     ATTRS : {
       itemContainer : {
         valueFn : function(){
-          return this.get('el').find(this.get('listSelector'));
+          return this.get(&#39;el&#39;).find(this.get(&#39;listSelector&#39;));
         }
       }
     }
   },{
-    xclass:'simple-list-view'
+    xclass:&#39;simple-list-view&#39;
   });
 
 <span id='BUI-List-SimpleList'>  /**
@@ -64,16 +64,16 @@ define('bui/list/simplelist',['bui/common','bui/list/domlist','bui/list/keynav',
    * &lt;p&gt;
    * &lt;img src=&quot;../assets/img/class-list.jpg&quot;/&gt;
    * &lt;/p&gt;
-   * xclass:'simple-list'
+   * xclass:&#39;simple-list&#39;
    * ## 显示静态数组的数据
    * 
    * ** 最简单的列表 **
    * &lt;pre&gt;&lt;code&gt;
    * 
-   * BUI.use('bui/list',function(List){
+   * BUI.use(&#39;bui/list&#39;,function(List){
    *   var list = new List.SimpleList({
-   *     render : '#t1',
-   *     items : [{value : '1',text : '1'},{value : '2',text : '2'}]
+   *     render : &#39;#t1&#39;,
+   *     items : [{value : &#39;1&#39;,text : &#39;1&#39;},{value : &#39;2&#39;,text : &#39;2&#39;}]
    *   });
    *   list.render();
    * });
@@ -83,10 +83,10 @@ define('bui/list/simplelist',['bui/common','bui/list/domlist','bui/list/keynav',
    * ** 自定义模板的列表 **
    *&lt;pre&gt;&lt;code&gt;
    * 
-   * BUI.use('bui/list',function(List){
+   * BUI.use(&#39;bui/list&#39;,function(List){
    *   var list = new List.SimpleList({
-   *     render : '#t1',
-   *     items : [{value : '1',text : '1'},{value : '2',text : '2'}]
+   *     render : &#39;#t1&#39;,
+   *     items : [{value : &#39;1&#39;,text : &#39;1&#39;},{value : &#39;2&#39;,text : &#39;2&#39;}]
    *   });
    *   list.render();
    * });
@@ -100,7 +100,7 @@ define('bui/list/simplelist',['bui/common','bui/list/domlist','bui/list/keynav',
    * @mixins BUI.Component.UIBase.Bindable
    */
   var  simpleList = BUI.Component.Controller.extend([DomList,UIBase.Bindable,KeyNav,Sortable],
-<span id='global-property-'>  /**
+<span id=''>  /**
 </span>   * @lends BUI.List.SimpleList.prototype
    * @ignore
    */
@@ -111,11 +111,11 @@ define('bui/list/simplelist',['bui/common','bui/list/domlist','bui/list/keynav',
      */
     bindUI : function(){
       var _self = this,
-        itemCls = _self.get('itemCls'),
-        itemContainer = _self.get('view').getItemContainer();
+        itemCls = _self.get(&#39;itemCls&#39;),
+        itemContainer = _self.get(&#39;view&#39;).getItemContainer();
 
-      itemContainer.delegate('.'+itemCls,'mouseover',function(ev){
-        if(_self.get('disabled')){ //控件禁用后，阻止事件
+      itemContainer.delegate(&#39;.&#39;+itemCls,&#39;mouseover&#39;,function(ev){
+        if(_self.get(&#39;disabled&#39;)){ //控件禁用后，阻止事件
           return;
         }
         var element = ev.currentTarget,
@@ -124,28 +124,28 @@ define('bui/list/simplelist',['bui/common','bui/list/domlist','bui/list/keynav',
           return;
         }
         
-        /*if(_self.get('highlightedStatus') === 'hover'){
+        /*if(_self.get(&#39;highlightedStatus&#39;) === &#39;hover&#39;){
           _self.setHighlighted(item,element)
         }else{
-          _self.setItemStatus(item,'hover',true,element);
+          _self.setItemStatus(item,&#39;hover&#39;,true,element);
         }*/
-        _self.get('view').setElementHover(element,true);
+        _self.get(&#39;view&#39;).setElementHover(element,true);
 
-      }).delegate('.'+itemCls,'mouseout',function(ev){
-        if(_self.get('disabled')){ //控件禁用后，阻止事件
+      }).delegate(&#39;.&#39;+itemCls,&#39;mouseout&#39;,function(ev){
+        if(_self.get(&#39;disabled&#39;)){ //控件禁用后，阻止事件
           return;
         }
         var sender = $(ev.currentTarget);
-        _self.get('view').setElementHover(sender,false);
+        _self.get(&#39;view&#39;).setElementHover(sender,false);
       });
     },
-<span id='BUI-List-SimpleList-method-onAdd'>    /**
+<span id='-method-onAdd'>    /**
 </span>     * 添加
      * @protected
      */
     onAdd : function(e){
       var _self = this,
-        store = _self.get('store'),
+        store = _self.get(&#39;store&#39;),
         item = e.record;
       if(_self.getCount() == 0){ //初始为空时，列表跟Store不同步
         _self.setItems(store.getResult());
@@ -154,7 +154,7 @@ define('bui/list/simplelist',['bui/common','bui/list/domlist','bui/list/keynav',
       }
       
     },
-<span id='BUI-List-SimpleList-method-onRemove'>    /**
+<span id='-method-onRemove'>    /**
 </span>     * 删除
     * @protected
     */
@@ -163,43 +163,43 @@ define('bui/list/simplelist',['bui/common','bui/list/domlist','bui/list/keynav',
         item = e.record;
       _self.removeItem(item);
     },
-<span id='BUI-List-SimpleList-method-onUpdate'>    /**
+<span id='-method-onUpdate'>    /**
 </span>     * 更新
     * @protected
     */
     onUpdate : function(e){
       this.updateItem(e.record);
     },
-<span id='BUI-List-SimpleList-method-onLocalSort'>    /**
+<span id='-method-onLocalSort'>    /**
 </span>    * 本地排序
     * @protected
     */
     onLocalSort : function(e){
-      if(this.get('frontSortable')){
+      if(this.get(&#39;frontSortable&#39;)){
         this.sort(e.field ,e.direction);
       }else{
         this.onLoad(e);
       }
     },
-<span id='BUI-List-SimpleList-method-onLoad'>    /**
+<span id='-method-onLoad'>    /**
 </span>     * 加载数据
      * @protected
      */
     onLoad:function(){
       var _self = this,
-        store = _self.get('store'),
+        store = _self.get(&#39;store&#39;),
         items = store.getResult();
-      _self.set('items',items);
+      _self.set(&#39;items&#39;,items);
     }
   },{
     ATTRS : 
-<span id='global-property-'>    /**
+<span id=''>    /**
 </span>     * @lends BUI.List.SimpleList#
      * @ignore
      */
     {
 
-<span id='BUI-List-SimpleList-property-frontSortable'>      /**
+<span id='-property-frontSortable'>      /**
 </span>       * 排序的时候是否直接进行DOM的排序，不重新生成DOM，&lt;br&gt;
        * 在可展开的表格插件，TreeGrid等控件中不要使用此属性
        * @type {Boolean}
@@ -208,7 +208,7 @@ define('bui/list/simplelist',['bui/common','bui/list/domlist','bui/list/keynav',
       frontSortable : {
         value : false
       },
-<span id='BUI-List-SimpleList-property-items'>      /**
+<span id='-property-items'>      /**
 </span>       * 选项集合
        * @protected
        * @type {Array}
@@ -217,75 +217,75 @@ define('bui/list/simplelist',['bui/common','bui/list/domlist','bui/list/keynav',
         view:true,
         value : []
       },
-<span id='BUI-List-SimpleList-cfg-itemCl'>      /**
+<span id='-cfg-itemCl'>      /**
 </span>       * 选项的样式，用来获取子项
        * &lt;pre&gt;&lt;code&gt;
        * var list = new List.SimpleList({
-       *   render : '#t1',
-       *   itemCls : 'my-item', //自定义样式名称
-       *   items : [{id : '1',text : '1',type : '0'},{id : '2',text : '2',type : '1'}]
+       *   render : &#39;#t1&#39;,
+       *   itemCls : &#39;my-item&#39;, //自定义样式名称
+       *   items : [{id : &#39;1&#39;,text : &#39;1&#39;,type : &#39;0&#39;},{id : &#39;2&#39;,text : &#39;2&#39;,type : &#39;1&#39;}]
        * });
        * list.render();
        * &lt;/code&gt;&lt;/pre&gt;
-       * @cfg {Object} [itemCl='list-item']
+       * @cfg {Object} [itemCl=&#39;list-item&#39;]
        */
       itemCls : {
         view:true,
         value : CLS_ITEM
       },
-<span id='BUI-List-SimpleList-cfg-idField'>      /**
+<span id='-cfg-idField'>      /**
 </span>       * 选项的默认id字段
        * &lt;pre&gt;&lt;code&gt;
        * var list = new List.SimpleList({
-       *   render : '#t1',
-       *   idField : 'id', //自定义选项 id 字段
-       *   items : [{id : '1',text : '1',type : '0'},{id : '2',text : '2',type : '1'}]
+       *   render : &#39;#t1&#39;,
+       *   idField : &#39;id&#39;, //自定义选项 id 字段
+       *   items : [{id : &#39;1&#39;,text : &#39;1&#39;,type : &#39;0&#39;},{id : &#39;2&#39;,text : &#39;2&#39;,type : &#39;1&#39;}]
        * });
        * list.render();
        *
-       * list.getItem('1'); //使用idField指定的字段进行查找
+       * list.getItem(&#39;1&#39;); //使用idField指定的字段进行查找
        * &lt;/code&gt;&lt;/pre&gt;
-       * @cfg {String} [idField = 'value']
+       * @cfg {String} [idField = &#39;value&#39;]
        */
       idField : {
-        value : 'value'
+        value : &#39;value&#39;
       },
-<span id='BUI-List-SimpleList-property-listSelector'>      /**
+<span id='-property-listSelector'>      /**
 </span>       * 列表的选择器，将列表项附加到此节点
        * @protected
        * @type {Object}
        */
       listSelector:{
         view:true,
-        value:'ul'
+        value:&#39;ul&#39;
       },
-<span id='BUI-List-SimpleList-cfg-itemTpl'>      /**
+<span id='-cfg-itemTpl'>      /**
 </span>       * 列表项的默认模板。
        *&lt;pre&gt;&lt;code&gt;
        * var list = new List.SimpleList({
-       *   itemTpl : '&amp;lt;li id=&quot;{value}&quot;&amp;gt;{text}&amp;lt;/li&amp;gt;', //列表项的模板
-       *   idField : 'value',
-       *   render : '#t1',
-       *   items : [{value : '1',text : '1'},{value : '2',text : '2'}]
+       *   itemTpl : &#39;&amp;lt;li id=&quot;{value}&quot;&amp;gt;{text}&amp;lt;/li&amp;gt;&#39;, //列表项的模板
+       *   idField : &#39;value&#39;,
+       *   render : &#39;#t1&#39;,
+       *   items : [{value : &#39;1&#39;,text : &#39;1&#39;},{value : &#39;2&#39;,text : &#39;2&#39;}]
        * });
        * list.render();
        * &lt;/code&gt;&lt;/pre&gt;
-       * @cfg {String} [itemTpl ='&amp;lt;li role=&quot;option&quot; class=&quot;bui-list-item&quot; data-value=&quot;{value}&quot;&amp;gt;{text}&amp;lt;/li&amp;gt;']
+       * @cfg {String} [itemTpl =&#39;&amp;lt;li role=&quot;option&quot; class=&quot;bui-list-item&quot; data-value=&quot;{value}&quot;&amp;gt;{text}&amp;lt;/li&amp;gt;&#39;]
        */
       
       itemTpl :{
         view : true,
-        value : '&lt;li role=&quot;option&quot; class=&quot;' + CLS_ITEM + '&quot;&gt;{text}&lt;/li&gt;'
+        value : &#39;&lt;li role=&quot;option&quot; class=&quot;&#39; + CLS_ITEM + &#39;&quot;&gt;{text}&lt;/li&gt;&#39;
       },
-      tpl : {
-        value:'&lt;ul&gt;&lt;/ul&gt;'
+<span id='-property-tpl'>      tpl : {
+</span>        value:&#39;&lt;ul&gt;&lt;/ul&gt;&#39;
       },
-      xview:{
-        value : simpleListView
+<span id='-property-xview'>      xview:{
+</span>        value : simpleListView
       }
     }
   },{
-    xclass : 'simple-list',
+    xclass : &#39;simple-list&#39;,
     prority : 0
   });
 

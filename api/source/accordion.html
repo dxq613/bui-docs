@@ -20,13 +20,13 @@
  * @ignore
  */
 
-define('bui/layout/accordion',['bui/common','bui/layout/abstract','bui/layout/tabitem','bui/layout/collapsable'],function (require) {
+define(&#39;bui/layout/accordion&#39;,[&#39;bui/common&#39;,&#39;bui/layout/abstract&#39;,&#39;bui/layout/tabitem&#39;,&#39;bui/layout/collapsable&#39;],function (require) {
 	
-	var CLS_ITEM = 'x-layout-item-accordion',
-		BUI = require('bui/common'),
-		Abstract = require('bui/layout/abstract'),
-		Item = require('bui/layout/tabitem'),
-		Collapsable = require('bui/layout/collapsable');
+	var CLS_ITEM = &#39;x-layout-item-accordion&#39;,
+		BUI = require(&#39;bui/common&#39;),
+		Abstract = require(&#39;bui/layout/abstract&#39;),
+		Item = require(&#39;bui/layout/tabitem&#39;),
+		Collapsable = require(&#39;bui/layout/collapsable&#39;);
 
 <span id='BUI-Layout-Accordion'>	/**
 </span>	 * @class BUI.Layout.Accordion
@@ -38,30 +38,30 @@ define('bui/layout/accordion',['bui/common','bui/layout/abstract','bui/layout/ta
 				control = new BUI.Component.Controller({
 				width:600,
 				height:500,
-				render : '#J_Layout',
-				elCls : 'layout-test',
+				render : &#39;#J_Layout&#39;,
+				elCls : &#39;layout-test&#39;,
 				children : [{
 					layout : {
-						title : '标签一'
+						title : &#39;标签一&#39;
 					},
-					xclass : 'controller',
+					xclass : &#39;controller&#39;,
 					content : &quot;一&quot;
 				},{
-					xclass : 'controller',
+					xclass : &#39;controller&#39;,
 					layout : {
-						title : '标签二'
+						title : &#39;标签二&#39;
 					},
-					content : '二'
+					content : &#39;二&#39;
 				},{
-					xclass : 'controller',
+					xclass : &#39;controller&#39;,
 					layout : {
-						title : '标签三'
+						title : &#39;标签三&#39;
 					},
 					content : &quot;三&quot;
 				},{
-					xclass : 'controller',
+					xclass : &#39;controller&#39;,
 					layout : {
-						title : '标签四'
+						title : &#39;标签四&#39;
 					},
 					content : &quot;四&quot;
 				}],
@@ -89,28 +89,28 @@ define('bui/layout/accordion',['bui/common','bui/layout/abstract','bui/layout/ta
 		 * @type {String}
 		 */
 		wraperCls : {
-			value : 'x-accordion-body'
+			value : &#39;x-accordion-body&#39;
 		},
 <span id='BUI-Layout-Accordion-property-titleCls'>		/**
 </span>		 * 放置title内容的class样式
 		 * @type {String}
 		 */
 		titleCls : {
-			value : 'x-accordion-title'
+			value : &#39;x-accordion-title&#39;
 		},
 <span id='BUI-Layout-Accordion-property-triggerCls'>		/**
 </span>		 * 触发展开折叠的样式
 		 * @type {String}
 		 */
 		triggerCls : {
-			value : 'x-accordion-title'
+			value : &#39;x-accordion-title&#39;
 		},
 <span id='BUI-Layout-Accordion-property-layoutEvents'>		/**
 </span>		 * 控件的的那些事件会引起重新布局
 		 * @type {Array}
 		 */
 		layoutEvents : {
-			value : ['afterAddChild','afterRemoveChild']
+			value : [&#39;afterAddChild&#39;,&#39;afterRemoveChild&#39;]
 		},
 <span id='BUI-Layout-Accordion-property-duration'>		/**
 </span>		 * 动画的持续时间
@@ -127,7 +127,7 @@ define('bui/layout/accordion',['bui/common','bui/layout/abstract','bui/layout/ta
 			value : true
 		},
 		itemTpl : {
-			value : '&lt;div class=&quot;' + CLS_ITEM + '&quot;&gt;&lt;div class=&quot;x-accordion-title&quot;&gt;{title}&lt;s class=&quot;x-expand-button&quot;&gt;&lt;/s&gt;&lt;/div&gt;&lt;div class=&quot;x-accordion-body&quot;&gt;&lt;/div&gt;&lt;/div&gt;'
+			value : &#39;&lt;div class=&quot;&#39; + CLS_ITEM + &#39;&quot;&gt;&lt;div class=&quot;x-accordion-title&quot;&gt;{title}&lt;s class=&quot;x-expand-button&quot;&gt;&lt;/s&gt;&lt;/div&gt;&lt;div class=&quot;x-accordion-body&quot;&gt;&lt;/div&gt;&lt;/div&gt;&#39;
 		}
 
 	};
@@ -181,9 +181,9 @@ define('bui/layout/accordion',['bui/common','bui/layout/abstract','bui/layout/ta
 		 */
 		getCollapsedRange : function(){
 			var _self = this,
-				container = _self.get('container'),
+				container = _self.get(&#39;container&#39;),
 				outerHeight = container.height(),
-				titleEls = container.find('.' + _self.get('titleCls')),
+				titleEls = container.find(&#39;.&#39; + _self.get(&#39;titleCls&#39;)),
 				bodyHeight = outerHeight;
 			BUI.each(titleEls,function(element){
 				bodyHeight -= $(element).outerHeight();

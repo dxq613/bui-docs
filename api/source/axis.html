@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 坐标轴的入口文件
+ * @ignore
+ */
+
+define(&#39;bui/chart/axis&#39;,[&#39;bui/common&#39;,&#39;bui/chart/baseaxis&#39;,&#39;bui/chart/categoryaxis&#39;,
+  &#39;bui/chart/numberaxis&#39;,&#39;bui/chart/timeaxis&#39;,&#39;bui/chart/circleaxis&#39;,&#39;bui/chart/radiusaxis&#39;],function (require) {
+	
+	var BUI = require(&#39;bui/common&#39;),
+		Axis = require(&#39;bui/chart/baseaxis&#39;);
+
+	Axis.Category = require(&#39;bui/chart/categoryaxis&#39;);
+
+	Axis.Number = require(&#39;bui/chart/numberaxis&#39;);
+
+  Axis.Time = require(&#39;bui/chart/timeaxis&#39;);
+
+	Axis.Auto = require(&#39;bui/chart/axis/auto&#39;);
+
+  Axis.Circle = require(&#39;bui/chart/circleaxis&#39;);
+
+  Axis.Radius = require(&#39;bui/chart/radiusaxis&#39;);
+
+	return Axis;
+});</pre>
+</body>
+</html>

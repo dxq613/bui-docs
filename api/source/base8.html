@@ -20,16 +20,16 @@
  * @ignore
  */
 ;(function(){
-var BASE = 'bui/list/';
-define('bui/list',['bui/common',BASE + 'list',BASE + 'listitem',BASE + 'simplelist',BASE + 'listbox'],function (r) {
-  var BUI = r('bui/common'),
-    List = BUI.namespace('List');
+var BASE = &#39;bui/list/&#39;;
+define(&#39;bui/list&#39;,[&#39;bui/common&#39;,BASE + &#39;list&#39;,BASE + &#39;listitem&#39;,BASE + &#39;simplelist&#39;,BASE + &#39;listbox&#39;],function (r) {
+  var BUI = r(&#39;bui/common&#39;),
+    List = BUI.namespace(&#39;List&#39;);
 
   BUI.mix(List,{
-    List : r(BASE + 'list'),
-    ListItem : r(BASE + 'listitem'),
-    SimpleList : r(BASE + 'simplelist'),
-    Listbox : r(BASE + 'listbox')
+    List : r(BASE + &#39;list&#39;),
+    ListItem : r(BASE + &#39;listitem&#39;),
+    SimpleList : r(BASE + &#39;simplelist&#39;),
+    Listbox : r(BASE + &#39;listbox&#39;)
   });
 
   BUI.mix(List,{

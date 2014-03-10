@@ -20,16 +20,12 @@
  * @fileoverview 文件上传按钮,使用input[type=file]
  * @author: 索丘 zengyue.yezy@alibaba-inc.com
  **/
+define(&#39;bui/uploader/button/htmlButton&#39;, [&#39;bui/uploader/button/base&#39;], function(require) {
 
-
-define('bui/uploader/button/htmlButton', ['bui/uploader/button/base'], function(require) {
-
-  var BUI = require('bui/common'),
+  var BUI = require(&#39;bui/common&#39;),
     Component = BUI.Component,
-    ButtonBase = require('bui/uploader/button/base'),
+    ButtonBase = require(&#39;bui/uploader/button/base&#39;),
     UA = BUI.UA;
-
-  
 
   var HtmlButtonView = Component.View.extend([ButtonBase.View], {
 
@@ -56,10 +52,10 @@ define('bui/uploader/button/htmlButton', ['bui/uploader/button/base'], function(
      */
     _createInput: function() {
       var _self = this,
-        buttonCls = _self.get('buttonCls'),
-        buttonEl = _self.get('el').find('.' + buttonCls),
-        inputTpl = _self.get('inputTpl'),
-        name = _self.get('name'),
+        buttonCls = _self.get(&#39;buttonCls&#39;),
+        buttonEl = _self.get(&#39;el&#39;).find(&#39;.&#39; + buttonCls),
+        inputTpl = _self.get(&#39;inputTpl&#39;),
+        name = _self.get(&#39;name&#39;),
         fileInput;
 
       inputTpl = BUI.substitute(inputTpl, {
@@ -68,19 +64,20 @@ define('bui/uploader/button/htmlButton', ['bui/uploader/button/base'], function(
 
       buttonEl.append(inputTpl);
 
-      fileInput = buttonEl.find('input');
+      fileInput = buttonEl.find(&#39;input&#39;);
 
       //TODO:IE6下只有通过脚本和内联样式才能控制按钮大小
       if(UA.ie == 6){
-        fileInput.css('fontSize','400px');
+        fileInput.css(&#39;fontSize&#39;,&#39;400px&#39;);
       }
       _self._bindChangeHandler(fileInput);
 
-      _self.set('fileInput', fileInput);
+      _self.set(&#39;fileInput&#39;, fileInput);
 
-      _self.setMultiple(_self.get('multiple'));
-      _self.setDisabled(_self.get('disabled'));
-      _self.setFilter(_self.get('filter'));
+      //因为每选中一次文件后，input[type=file]都会重新生成一遍，所以需要重新设置这些属性
+      _self._uiSetMultiple(_self.get(&#39;multiple&#39;));
+      _self._uiSetDisabled(_self.get(&#39;disabled&#39;));
+      _self._uiSetFilter(_self.get(&#39;filter&#39;));
     },
 <span id='BUI-Uploader-Button-HtmlButton-method-_bindChangeHandler'>    /**
 </span>     * 绑定input[type=file]的文件选中事件
@@ -88,7 +85,7 @@ define('bui/uploader/button/htmlButton', ['bui/uploader/button/base'], function(
     _bindChangeHandler: function(fileInput) {
       var _self = this;
       //上传框的值改变后触发
-      $(fileInput).on('change', function(ev){
+      $(fileInput).on(&#39;change&#39;, function(ev){
         var value = $(this).val(),
           oFiles = ev.target.files,
           files = [];
@@ -96,12 +93,12 @@ define('bui/uploader/button/htmlButton', ['bui/uploader/button/base'], function(
         //IE取不到files
         if(oFiles){
           BUI.each(oFiles, function(v){
-            files.push(_self._getFile({'name': v.name, 'type': v.type, 'size': v.size, file:v, input: fileInput}));
+            files.push(_self._getFile({&#39;name&#39;: v.name, &#39;type&#39;: v.type, &#39;size&#39;: v.size, file:v, input: fileInput}));
           });
         }else{
-          files.push(_self._getFile({'name': value, input: fileInput}));
+          files.push(_self._getFile({&#39;name&#39;: value, input: fileInput}));
         }
-        _self.fire('change', {
+        _self.fire(&#39;change&#39;, {
           files: files,
           input: this
         });
@@ -110,43 +107,43 @@ define('bui/uploader/button/htmlButton', ['bui/uploader/button/base'], function(
     },
     reset: function () {
       var _self = this,
-        fileInput = _self.get('fileInput');
+        fileInput = _self.get(&#39;fileInput&#39;);
 
       //移除表单上传域容器
       fileInput.parent().remove();
-      _self.set('fileInput', null);
+      _self.set(&#39;fileInput&#39;, null);
       //重新创建表单上传域
       _self._createInput();
       return _self;
     },
-<span id='BUI-Uploader-Button-HtmlButton-method-setMultiple'>    /**
+<span id='global-method-_uiSetMultiple'>    /**
 </span>     * 设置上传组件的禁用
-     * @protected
+     * @ignore
      * @param {Boolean} multiple 是否禁用
      * @return {Boolean}
      */
-    setMultiple : function(multiple){
+    _uiSetMultiple : function(multiple){
       var _self = this,
-        fileInput = _self.get('fileInput');
+        fileInput = _self.get(&#39;fileInput&#39;);
 
       if(!fileInput || !fileInput.length){
         return false;
       };
       if(multiple){
-        fileInput.attr('multiple', 'multiple');
+        fileInput.attr(&#39;multiple&#39;, &#39;multiple&#39;);
       }
       else{
-        fileInput.removeAttr('multiple');
+        fileInput.removeAttr(&#39;multiple&#39;);
       }
       return multiple;
     },
-<span id='global-method-setDisabled'>    /**
+<span id='global-method-_uiSetDisabled'>    /**
 </span>     * @protected
      * @ignore
      */
-    setDisabled: function(v){
+    _uiSetDisabled: function(v){
       var _self = this,
-        fileInput = _self.get('fileInput');
+        fileInput = _self.get(&#39;fileInput&#39;);
       if (v) {
         fileInput.hide();
       }
@@ -154,21 +151,21 @@ define('bui/uploader/button/htmlButton', ['bui/uploader/button/base'], function(
         fileInput.show();
       }
     },
-<span id='global-method-setFilter'>    /**
+<span id='global-method-_uiSetFilter'>    /**
 </span>     * 设置上传文件的类型
      * @ignore
      * @protected
      * @param {*} filter 可上传文件的类型
      */
-    setFilter: function(v){
+    _uiSetFilter: function(v){
       var _self = this,
-        fileInput = _self.get('fileInput'),
+        fileInput = _self.get(&#39;fileInput&#39;),
         filter = _self.getFilter(v);
       if(!fileInput || !fileInput.length){
         return false;
       };
       //accept是html5的属性，所以ie8以下是不支持的
-      filter.type &amp;&amp; fileInput.attr('accept', filter.type);
+      filter.type &amp;&amp; fileInput.attr(&#39;accept&#39;, filter.type);
       return filter;
     }
   },{
@@ -179,7 +176,7 @@ define('bui/uploader/button/htmlButton', ['bui/uploader/button/base'], function(
        */
       inputTpl: {
         view: true,
-        value: '&lt;div class=&quot;file-input-wrapper&quot;&gt;&lt;input type=&quot;file&quot; name=&quot;{name}&quot; hidefocus=&quot;true&quot; class=&quot;file-input&quot; /&gt;&lt;/div&gt;'
+        value: &#39;&lt;div class=&quot;file-input-wrapper&quot;&gt;&lt;input type=&quot;file&quot; name=&quot;{name}&quot; hidefocus=&quot;true&quot; class=&quot;file-input&quot; /&gt;&lt;/div&gt;&#39;
       },
 <span id='BUI-Uploader-Button-HtmlButton-property-fileInput'>      /**
 </span>       * 对应的表单上传域
@@ -194,9 +191,9 @@ define('bui/uploader/button/htmlButton', ['bui/uploader/button/base'], function(
        */
       name : {
         view: true,
-        value : 'Filedata',
+        value : &#39;Filedata&#39;,
         setter : function(v) {
-            v &amp;&amp; this.get('fileInput') &amp;&amp; $(this.get('fileInput')).attr('name', v);
+            v &amp;&amp; this.get(&#39;fileInput&#39;) &amp;&amp; $(this.get(&#39;fileInput&#39;)).attr(&#39;name&#39;, v);
           return v;
         }
       },
@@ -205,7 +202,7 @@ define('bui/uploader/button/htmlButton', ['bui/uploader/button/base'], function(
       }
     }
   }, {
-    xclass: 'uploader-htmlButton'
+    xclass: &#39;uploader-htmlButton&#39;
   });
 
   return HtmlButton;

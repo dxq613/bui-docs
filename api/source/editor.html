@@ -21,11 +21,11 @@
  * @author dxq613@gmail.com
  */
 
-define('bui/editor/editor',['bui/common','bui/overlay','bui/editor/mixin'],function (require) {
-  var BUI = require('bui/common'),
-    Overlay = require('bui/overlay').Overlay
-    CLS_TIPS = 'x-editor-tips',
-    Mixin = require('bui/editor/mixin');
+define(&#39;bui/editor/editor&#39;,[&#39;bui/common&#39;,&#39;bui/overlay&#39;,&#39;bui/editor/mixin&#39;],function (require) {
+  var BUI = require(&#39;bui/common&#39;),
+    Overlay = require(&#39;bui/overlay&#39;).Overlay
+    CLS_TIPS = &#39;x-editor-tips&#39;,
+    Mixin = require(&#39;bui/editor/mixin&#39;);
 
 <span id='BUI-Editor-Editor'>  /**
 </span>   * @class BUI.Editor.Editor
@@ -37,7 +37,7 @@ define('bui/editor/editor',['bui/common','bui/overlay','bui/editor/mixin'],funct
    * &lt;/p&gt;
    * &lt;pre&gt;&lt;code&gt;
    * var editor = new Editor.Editor({
-   *   trigger : '.edit-text',
+   *   trigger : &#39;.edit-text&#39;,
    *   field : {
    *     rules : {
    *       required : true
@@ -50,18 +50,18 @@ define('bui/editor/editor',['bui/common','bui/overlay','bui/editor/mixin'],funct
     bindUI : function(){
       var _self = this,
         innerControl = _self.getInnerControl();
-      _self.on('validchange',function(ev){
-        if(!_self.isValid() &amp;&amp; _self.get('visible')){
+      _self.on(&#39;validchange&#39;,function(ev){
+        if(!_self.isValid() &amp;&amp; _self.get(&#39;visible&#39;)){
           _self._showError(_self.getErrors());
         }else{
           _self._hideError();
         }
       });
-      _self.on('hide',function(){
+      _self.on(&#39;hide&#39;,function(){
         _self._hideError();
       });
 
-      _self.on('show',function(){
+      _self.on(&#39;show&#39;,function(){
         if(!_self.isValid()){
           _self._showError(_self.getErrors());
         }
@@ -69,35 +69,35 @@ define('bui/editor/editor',['bui/common','bui/overlay','bui/editor/mixin'],funct
     },
     _initOverlay : function(){
       var _self = this,
-        tooltip = _self.get('tooltip'),
+        tooltip = _self.get(&#39;tooltip&#39;),
         overlay = new Overlay(tooltip);
       overlay.render();
-      _self.set('overlay',overlay);
+      _self.set(&#39;overlay&#39;,overlay);
       return overlay;
     },
     //获取显示错误列表
     _getErrorList : function(){
       var _self = this,
-        overlay = _self.get('overlay');
-      return overlay &amp;&amp; overlay.get('children')[0];
+        overlay = _self.get(&#39;overlay&#39;);
+      return overlay &amp;&amp; overlay.get(&#39;children&#39;)[0];
     },
     _showError : function(errors){
       var _self = this,
-        overlay = _self.get('overlay') || _self._initOverlay(),
+        overlay = _self.get(&#39;overlay&#39;) || _self._initOverlay(),
         list = _self._getErrorList(),
-        align = _self.get('errorAlign'),
+        align = _self.get(&#39;errorAlign&#39;),
         items = BUI.Array.map(errors,function(text){
           return {error : text};
         });
-      list.set('items',items);
-      align.node = _self.get('el');
-      overlay.set('align',align);
+      list.set(&#39;items&#39;,items);
+      align.node = _self.get(&#39;el&#39;);
+      overlay.set(&#39;align&#39;,align);
       overlay.show();
     },
     //隐藏错误
     _hideError : function(){
       var _self = this,
-        overlay = _self.get('overlay');
+        overlay = _self.get(&#39;overlay&#39;);
       overlay &amp;&amp; overlay.hide();
     },
 <span id='BUI-Editor-Editor-method-getSourceValue'>    /**
@@ -108,8 +108,8 @@ define('bui/editor/editor',['bui/common','bui/overlay','bui/editor/mixin'],funct
      */
     getSourceValue : function(){
       var _self = this,
-        trigger = _self.get('curTrigger'),
-        parser = _self.get('parser'),
+        trigger = _self.get(&#39;curTrigger&#39;),
+        parser = _self.get(&#39;parser&#39;),
         text = trigger.text();
       if(parser){
         text = parser.call(this,text,trigger);
@@ -123,7 +123,7 @@ define('bui/editor/editor',['bui/common','bui/overlay','bui/editor/mixin'],funct
      */
     updateSource : function(text){
       var _self = this,
-        trigger = _self.get('curTrigger');
+        trigger = _self.get(&#39;curTrigger&#39;);
       if(trigger &amp;&amp; trigger.length){
         text = _self._formatText(text);
         trigger.text(text);
@@ -132,7 +132,7 @@ define('bui/editor/editor',['bui/common','bui/overlay','bui/editor/mixin'],funct
     //格式化文本
     _formatText : function(text){
       var _self = this,
-        formatter = _self.get('formatter');
+        formatter = _self.get(&#39;formatter&#39;);
       if(formatter){
         text = formatter.call(_self,text);
       }
@@ -143,7 +143,7 @@ define('bui/editor/editor',['bui/common','bui/overlay','bui/editor/mixin'],funct
       if(v != null){
         var innerControl = _self.getInnerControl();
         if(innerControl.set){
-          innerControl.set('width',v);
+          innerControl.set(&#39;width&#39;,v);
         }
       }
     }
@@ -156,7 +156,7 @@ define('bui/editor/editor',['bui/common','bui/overlay','bui/editor/mixin'],funct
        * @type {String}
        */
       innerValueField : {
-        value : 'value'
+        value : &#39;value&#39;
       },
 <span id='BUI-Editor-Editor-property-emptyValue'>      /**
 </span>       * 空值的数据，清空编辑器时使用
@@ -164,7 +164,7 @@ define('bui/editor/editor',['bui/common','bui/overlay','bui/editor/mixin'],funct
        * @type {*}
        */
       emptyValue : {
-        value : ''
+        value : &#39;&#39;
       },
 <span id='BUI-Editor-Editor-property-autoHide'>      /**
 </span>       * 是否自动隐藏
@@ -180,7 +180,7 @@ define('bui/editor/editor',['bui/common','bui/overlay','bui/editor/mixin'],funct
        * @type {String}
        */
       controlCfgField : {
-        value : 'field'
+        value : &#39;field&#39;
       },
 <span id='BUI-Editor-Editor-property-defaultChildCfg'>      /**
 </span>       * 默认的字段域配置项
@@ -188,9 +188,9 @@ define('bui/editor/editor',['bui/common','bui/overlay','bui/editor/mixin'],funct
        */
       defaultChildCfg : {
         value : {
-          tpl : '',
+          tpl : &#39;&#39;,
           forceFit : true,
-          errorTpl : ''//
+          errorTpl : &#39;&#39;//
         }
       },
 <span id='BUI-Editor-Editor-cfg-tooltip'>      /**
@@ -201,15 +201,15 @@ define('bui/editor/editor',['bui/common','bui/overlay','bui/editor/mixin'],funct
         valueFn : function(){
           return  {
             children : [{
-              xclass : 'simple-list',
-              itemTpl : '&lt;li&gt;&lt;span class=&quot;x-icon x-icon-mini x-icon-error&quot; title=&quot;{error}&quot;&gt;!&lt;/span&gt;&amp;nbsp;&lt;span&gt;{error}&lt;/span&gt;&lt;/li&gt;'
+              xclass : &#39;simple-list&#39;,
+              itemTpl : &#39;&lt;li&gt;&lt;span class=&quot;x-icon x-icon-mini x-icon-error&quot; title=&quot;{error}&quot;&gt;!&lt;/span&gt;&amp;nbsp;&lt;span&gt;{error}&lt;/span&gt;&lt;/li&gt;&#39;
             }],
             elCls : CLS_TIPS
           };
         }
       },
       defaultChildClass : {
-        value : 'form-field'
+        value : &#39;form-field&#39;
       },
 <span id='BUI-Editor-Editor-property-align'>      /**
 </span>       * 编辑器跟所编辑内容的对齐方式
@@ -217,7 +217,7 @@ define('bui/editor/editor',['bui/common','bui/overlay','bui/editor/mixin'],funct
        */
       align : {
         value : {
-          points: ['tl','tl']
+          points: [&#39;tl&#39;,&#39;tl&#39;]
         }
       },
 <span id='BUI-Editor-Editor-cfg-parser'>      /**
@@ -246,7 +246,7 @@ define('bui/editor/editor',['bui/common','bui/overlay','bui/editor/mixin'],funct
        */
       errorAlign : {
         value : {
-          points: ['bl','tl'],
+          points: [&#39;bl&#39;,&#39;tl&#39;],
           offset : [0,10]
         }
       },
@@ -266,7 +266,7 @@ define('bui/editor/editor',['bui/common','bui/overlay','bui/editor/mixin'],funct
       }
     }
   },{
-    xclass : 'editor'
+    xclass : &#39;editor&#39;
   });
 
   return editor;

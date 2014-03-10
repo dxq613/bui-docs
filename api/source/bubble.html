@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 气泡图
+ * @ignore
+ */
+
+define(&#39;bui/chart/bubbleseries&#39;,[&#39;bui/chart/cartesianseries&#39;],function (require) {
+  
+  var BUI = require(&#39;bui/common&#39;),
+    Cartesian = require(&#39;bui/chart/cartesianseries&#39;),
+    ActiveGroup = require(&#39;bui/chart/activedgroup&#39;),
+    Util = require(&#39;bui/graphic&#39;).Util;
+
+<span id='BUI-Chart-Series-Bubble'>  /**
+</span>   * @class BUI.Chart.Series.Bubble
+   * 冒泡图
+   */
+  var Bubble = function(cfg){
+    Bubble.superclass.constructor.call(this,cfg);
+  };
+
+  Bubble.ATTRS = {
+    elCls : {
+      value : &#39;x-chart-bubble&#39;
+    },
+    type : {
+      value : &#39;buble&#39;
+    },
+<span id='BUI-Chart-Series-Bubble-property-circle'>    /**
+</span>     * 气泡的配置信息
+     * @type {Object}
+     */
+    circle : {
+      shared : false,
+      value : {
+        
+      }
+    },
+<span id='BUI-Chart-Series-Bubble-property-activeCircle'>    /**
+</span>     * 激活气泡的状态
+     * @type {Object}
+     */
+    activeCircle : {
+      value : {
+      }
+    },
+    animate : {
+      value : true
+    },
+    stickyTracking : {
+      value : false
+    }
+  };
+
+  BUI.extend(Bubble,Cartesian);
+
+  BUI.mixin(Bubble,[ActiveGroup]);
+
+  BUI.augment(Bubble,{
+
+<span id='BUI-Chart-Series-Bubble-method-processColor'>    /**
+</span>     * @protected
+     * 处理颜色
+     */
+    processColor : function(){
+      var _self = this,
+        color = _self.get(&#39;color&#39;);
+      if(color){
+        var  circle = _self.get(&#39;circle&#39;);
+        if(circle){
+          Util.trySet(circle,&#39;stroke&#39;,color);
+          Util.trySet(circle,&#39;fill&#39;,color);
+        }
+      }
+    },
+    renderUI : function(){
+      Bubble.superclass.renderUI.call(this);
+      this._renderGroup();
+    },
+    //渲染圆
+    draw : function(points){
+      var _self = this;
+      
+      BUI.each(points,function(point){
+        _self.addBubble(point);
+      });
+    },
+<span id='BUI-Chart-Series-Bubble-method-changeShapes'>    /**
+</span>     * @protected
+     * 内部图形发生改变
+     */
+    changeShapes : function(){
+      var _self = this,
+        points = _self.getPoints(),
+        items = _self.getItems();
+
+      BUI.each(items,function(item,index){
+        var point = points[index];
+        item.animate({
+          cx : point.x,
+          cy : point.y
+        },_self.get(&#39;changeDuration&#39;));
+        item.set(&#39;point&#39;,point);
+      });
+
+    },
+<span id='BUI-Chart-Series-Bubble-method-getItems'>    /**
+</span>     * 获取内部的圆
+     * @return {Array} 图形圆的集合
+     */
+    getItems : function(){
+      return this.get(&#39;group&#39;).get(&#39;children&#39;);
+    },
+<span id='BUI-Chart-Series-Bubble-method-getActiveItems'>    /**
+</span>     * @protected
+     * 获取可以被激活的元素
+     * @return {BUI.Chart.Actived[]} 可以被激活的元素集合
+     */
+    getActiveItems : function(){
+      return this.getItems();
+    },
+    _renderGroup : function(){
+      var _self = this,
+        group = _self.addGroup();
+      _self.set(&#39;group&#39;,group);
+    },
+    //设置激活状态
+    setItemActived : function(item,actived){
+      var _self = this,
+        circle = _self.get(&#39;circle&#39;),
+        activedCfg = _self.get(&#39;activeCircle&#39;);
+      if(actived){
+        item.attr(activedCfg);
+        item.set(&#39;actived&#39;,true);
+      }else{
+        item.attr(circle);
+        item.set(&#39;actived&#39;,false);
+      }
+    },
+    //获取当前定位的点
+    getTrackingInfo : function(){
+      var _self = this,
+        activedCircle = _self.getActived();
+      return activedCircle &amp;&amp; activedCircle.get(&#39;point&#39;);
+    },
+<span id='BUI-Chart-Series-Bubble-method-isItemActived'>    /**
+</span>     * @protected
+     * 是否激活
+     * @param {BUI.Chart.Actived} item 可以被激活的元素
+     * @return {BUI.Chart.Actived[]} 可以被激活的元素集合
+     */
+    isItemActived : function(item){
+      return item.get(&#39;actived&#39;);
+    },
+    //添加冒泡
+    addBubble : function(point){
+      var _self = this,
+        circle = _self.get(&#39;circle&#39;),
+        r = 5, //默认5
+        radius,
+        cfg = BUI.mix({},circle),
+        shape;
+      if(point.obj){
+        r = point.obj[&#39;r&#39;];
+      }
+      if(point.arr){
+        r = point.arr[2];
+      }
+      radius = _self._getRadius(r);
+      
+      cfg.cx = point.x;
+      cfg.cy = point.y;
+      if(_self.get(&#39;animate&#39;) &amp;&amp; Util.svg){
+        cfg.r = 0;
+        shape = _self.get(&#39;group&#39;).addShape(&#39;circle&#39;,cfg);
+        shape.animate({
+          r : radius
+        },_self.get(&#39;duration&#39;));
+      }else{
+        cfg.r = radius;
+        shape = _self.get(&#39;group&#39;).addShape(&#39;circle&#39;,cfg);
+      }
+
+      shape.set(&#39;point&#39;,point);
+      
+    },
+    _getRadius : function(r){
+      return Math.pow(r,.75);
+    },
+     //鼠标hover
+    onMouseOver : function(){
+      var _self = this
+      
+      _self.get(&#39;group&#39;).on(&#39;mouseover&#39;,function(ev){
+        var target = ev.target,
+          shape = target.shape;
+        _self.setItemActived(shape,true);
+      });
+    }, 
+    //鼠标hover
+    onMouseOut : function(){
+      var _self = this
+      
+      _self.get(&#39;group&#39;).on(&#39;mouseout&#39;,function(ev){
+        var target = ev.target,
+          shape = target.shape;
+        _self.setItemActived(shape,false);
+      });
+    }
+  });
+
+  return Bubble;
+});</pre>
+</body>
+</html>

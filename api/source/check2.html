@@ -20,15 +20,15 @@
  * @ignore
  */
 
-define('bui/form/group/check',['bui/form/group/base'],function (require) {
-  var Group = require('bui/form/group/base');
+define(&#39;bui/form/group/check&#39;,[&#39;bui/form/group/base&#39;],function (require) {
+  var Group = require(&#39;bui/form/group/base&#39;);
 
   function getFieldName (self) {
     var firstField = self.getFieldAt(0);
     if(firstField){
-      return firstField.get('name');
+      return firstField.get(&#39;name&#39;);
     }
-    return '';
+    return &#39;&#39;;
   }
 <span id='BUI-Form-Group-Check'>  /**
 </span>   * @class BUI.Form.Group.Check
@@ -38,9 +38,9 @@ define('bui/form/group/check',['bui/form/group/base'],function (require) {
   var Check = Group.extend({
     bindUI : function(){
       var _self = this;
-      _self.on('change',function(ev){
+      _self.on(&#39;change&#39;,function(ev){
         var name = getFieldName(_self),
-          range = _self.get('range'),
+          range = _self.get(&#39;range&#39;),
           record = _self.getRecord(),
           value = record[name],
           max = range[1];
@@ -59,14 +59,14 @@ define('bui/form/group/check',['bui/form/group/base'],function (require) {
         if(enable){
           field.enable();
         }else{
-          if(!field.get('checked')){
+          if(!field.get(&#39;checked&#39;)){
             field.disable();
           }
         }
       });
     },
     _uiSetRange : function(v){
-      this.addRule('checkRange',v);
+      this.addRule(&#39;checkRange&#39;,v);
     }
 
   },{
@@ -90,7 +90,7 @@ define('bui/form/group/check',['bui/form/group/base'],function (require) {
       }
     }
   },{
-    xclass : 'form-group-check'
+    xclass : &#39;form-group-check&#39;
   });
 
   return Check;

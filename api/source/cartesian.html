@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 在x,y坐标轴中渲染的数据序列
+ * @ignore
+ */
+
+define(&#39;bui/chart/cartesianseries&#39;,[&#39;bui/chart/baseseries&#39;,&#39;bui/graphic&#39;],function (require) {
+
+  var BUI = require(&#39;bui/common&#39;),
+    BaseSeries = require(&#39;bui/chart/baseseries&#39;),
+    Util = require(&#39;bui/graphic&#39;).Util;
+
+   function date2number(value){
+    if(BUI.isNumber(value)){
+      return value;
+    }
+    if(BUI.isString(value)){
+      value = value.replace(/&#39;-&#39;/ig,&#39;/&#39;);
+      value = new Date(value).getTime();
+    }else if(BUI.isDate(value)){
+      value = value.getTime();
+    }
+    return value;
+  }
+
+<span id='BUI-Chart-Series-Cartesian'>  /**
+</span>   * @class BUI.Chart.Series.Cartesian
+   * 使用坐标轴的数据序列，此类是一个抽象类，不要直接初始化
+   * @extends BUI.Chart.Series
+   */
+  function Cartesian(cfg){
+    Cartesian.superclass.constructor.call(this,cfg);
+  }
+
+  Cartesian.ATTRS = {
+
+<span id='BUI-Chart-Series-Cartesian-property-xAxis'>    /**
+</span>     * x坐标轴
+     * @type {BUI.Chart.Axis}
+     */
+    xAxis : {
+
+    },
+<span id='BUI-Chart-Series-Cartesian-property-yAxis'>    /**
+</span>     * y坐标轴
+     * @type {BUI.Chart.Axis}
+     */
+    yAxis : {
+
+    },
+    pointsCache : {
+      shared : false,
+      value : {}
+    }
+
+  };
+
+  BUI.extend(Cartesian,BaseSeries);
+
+  BUI.augment(Cartesian,{
+
+<span id='BUI-Chart-Series-Cartesian-method-getPoint'>    /**
+</span>     * 获取坐标点
+     * @param  {*} x x坐标系上的值
+     * @param  {*} y y坐标系上的值
+     * @return {Object}  坐标点
+     */
+    getPoint : function(x,y){
+      var _self = this,
+        xAxis = _self.get(&#39;xAxis&#39;),
+        yAxis = _self.get(&#39;yAxis&#39;),
+        yValue = _self.parseYValue(y),
+        point = {};
+
+      if(xAxis.get(&#39;type&#39;) == &#39;time&#39;){
+        x = date2number(x);
+      }
+      //圆形坐标轴，一般用于雷达图
+      if(_self.isInCircle()){
+        
+        point = yAxis.getPointByAngle(x,yValue);
+      }else{
+        point.x = xAxis.getOffset(x);
+        point.y = yAxis.getOffset(yValue);
+      }
+
+      BUI.mix(point,{
+        yValue : yValue,
+        xValue : x,
+        value : y
+      });
+
+      return point;
+    },
+<span id='BUI-Chart-Series-Cartesian-method-getPointByObject'>    /**
+</span>     * 根据对象获取值
+     * @protected
+     * @return {Object} 点的集合
+     */
+    getPointByObject : function(item,index){
+      var _self = this,
+        xField = _self.get(&#39;xField&#39;),
+        yField = _self.get(&#39;yField&#39;),
+        point = _self.getPoint(item[xField],item[yField]);
+
+      point.value = item[yField];
+      point.xValue = item[xField];
+      point.yValue = _self.parseYValue(item[yField]);
+      point.obj = item; //如果是记录
+      
+      return point;
+    },
+<span id='BUI-Chart-Series-Cartesian-method-getPointByValue'>    /**
+</span>     * @protected
+     * 根据指定的值获取点的信息
+     * @param  {Number} value 在x轴上的值
+     * @return {Object} 点的信息
+     */
+    getPointByValue : function(xValue,value){
+
+      return this.getPoint(xValue,value);
+    },
+<span id='BUI-Chart-Series-Cartesian-method-parseYValue'>    /**
+</span>     * @protected
+     * 转换显示的值，一般用于层叠的数据序列中
+     */
+    parseYValue : function(value){
+      return value;
+    },
+<span id='BUI-Chart-Series-Cartesian-method-snapEqual'>    /**
+</span>     * @protected
+     * 判断是否近似相等
+     */
+    snapEqual : function(value1,value2){
+      var _self = this;
+      
+      if(BUI.isString(value1)){
+        return value1 == value2;
+      }
+      var pointInterval = _self.get(&#39;pointInterval&#39;);
+      if(pointInterval){
+        return Math.abs(value1 - value2) &lt; pointInterval / 2;
+      }
+
+      return value1 == value2;
+      
+    },
+<span id='BUI-Chart-Series-Cartesian-method-isInCircle'>    /**
+</span>     * 是否使用圆形坐标轴作为x轴
+     * @return {Boolean} 
+     */
+    isInCircle : function(){
+      return this.get(&#39;xAxis&#39;).get(&#39;type&#39;) == &#39;circle&#39;;
+    },
+<span id='BUI-Chart-Series-Cartesian-method-getCircleCenter'>    /**
+</span>     * @protected
+     * 如果使用圆形坐标轴，则返回中心节点
+     */
+    getCircleCenter : function(){
+      var _self = this,
+        xAxis = _self.get(&#39;xAxis&#39;),
+        rst = null;
+      if(xAxis.get(&#39;type&#39;) == &#39;circle&#39;){
+        rst = xAxis.getCenter();
+      }
+      return rst;
+    },
+    getCircle : function(){
+      return this.isInCircle() ? this.get(&#39;xAxis&#39;) : null;
+    },
+<span id='BUI-Chart-Series-Cartesian-method-getData'>    /**
+</span>     * 获取对应坐标轴上的数据，一般用于计算坐标轴
+     * @return {Array} 
+     */
+    getData : function(type){
+      var _self = this,
+        data = _self.get(&#39;data&#39;),
+        pointsCache = _self.get(&#39;pointsCache&#39;),
+        first = data[0],
+        rst = [];
+
+      type = type || &#39;yAxis&#39;;
+      if(pointsCache[type]){
+        return pointsCache[type];
+      }
+      //如果是x轴，并且指定了开始节点
+      if(type == &#39;xAxis&#39; &amp;&amp; _self.get(&#39;pointStart&#39;) != null){
+        var pointStart = _self.get(&#39;pointStart&#39;),
+          pointInterval = _self.get(&#39;pointInterval&#39;);
+          rst.push(pointStart);
+          rst.push(pointStart + (data.length - 1) * pointInterval);
+      }else{ 
+        var xField = _self.get(&#39;xField&#39;),
+          yField = _self.get(&#39;yField&#39;);
+
+        //遍历所有节点
+        BUI.each(data,function(item){
+          //数字和字符串直接填入
+          if(BUI.isNumber(item) || BUI.isString(item)){
+            rst.push(item);
+          }else if(BUI.isArray(item)){ //数组，0标示x,1标示y
+            var value = type == &#39;yAxis&#39; ? item[1] : item[0];
+            rst.push(value);
+          }else if(item){ //根据xField,yField取值
+            var value = type == &#39;yAxis&#39; ? item[yField] : item[xField];
+            rst.push(value);
+          }
+        });
+      }
+
+      pointsCache[type] = rst;
+      return rst;
+      
+    },
+<span id='BUI-Chart-Series-Cartesian-method-getPointByIndex'>    /**
+</span>     * 根据索引获取值
+     * @protected
+     * @return {Object} 点的集合
+     */
+    getPointByIndex : function(value,index){
+      var _self = this,
+        xAxis = _self.get(&#39;xAxis&#39;),
+        yAxis = _self.get(&#39;yAxis&#39;),
+        x,
+        yValue = _self.parseYValue(value),
+        y = yAxis.getOffset(yValue),
+        originValue,
+        xValue;
+
+      if(xAxis.get(&#39;type&#39;) == &#39;number&#39; || xAxis.get(&#39;type&#39;) == &#39;time&#39;){
+
+        var pointStart = _self.get(&#39;pointStart&#39;),
+          pointInterval = _self.get(&#39;pointInterval&#39;);
+        x = xAxis.getOffset(pointStart + pointInterval * index);
+      }else{
+        x = xAxis.getOffsetByIndex(index);
+      }
+
+      if(_self.isInCircle()){
+        return _self.getPoint(x,value);
+      }
+
+      originValue = xAxis.getValue(x);
+      if(pointInterval){
+        originValue = Util.tryFixed(originValue,pointInterval);
+      }
+      return {
+        x : x,
+        y : y,
+        xValue : originValue,
+        yValue : yValue,
+        value : value
+      };
+    },
+<span id='BUI-Chart-Series-Cartesian-method-getTrackingInfo'>    /**
+</span>     * 获取鼠标移动与该series的焦点
+     */
+    getTrackingInfo : function(point){
+      var _self = this,
+        xAxis = _self.get(&#39;xAxis&#39;),
+        xValue;
+
+      if(_self.isInCircle()){
+        var angle = xAxis.getCircleAngle(point.x,point.y);
+
+        xValue = xAxis.getValue(angle);
+      }else{
+        xValue = xAxis.getValue(point.x);
+      }
+      return _self.findPointByValue(xValue);
+    },
+<span id='BUI-Chart-Series-Cartesian-method-getBaseValue'>    /**
+</span>     * 获取最底层的点的值
+     * @return {Number} 最底层点的值
+     */
+    getBaseValue : function(){
+      var _self = this,
+        yAxis = _self.get(&#39;yAxis&#39;),
+        value0 = yAxis.getOffset(0) || yAxis.getStartOffset();
+      return value0;
+    }
+
+  });
+
+  return Cartesian;
+
+});</pre>
+</body>
+</html>

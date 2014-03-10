@@ -19,16 +19,16 @@
 </span> * @fileOverview 表单字段的容器扩展
  * @ignore
  */
-define('bui/form/fieldcontainer',['bui/common','bui/form/field','bui/form/groupvalid'],function (require) {
-  var BUI = require('bui/common'),
-    Field = require('bui/form/field'),
-    GroupValid = require('bui/form/groupvalid'),
+define(&#39;bui/form/fieldcontainer&#39;,[&#39;bui/common&#39;,&#39;bui/form/field&#39;,&#39;bui/form/groupvalid&#39;],function (require) {
+  var BUI = require(&#39;bui/common&#39;),
+    Field = require(&#39;bui/form/field&#39;),
+    GroupValid = require(&#39;bui/form/groupvalid&#39;),
     PREFIX = BUI.prefix;
 
-  var FIELD_XCLASS = 'form-field',
+  var FIELD_XCLASS = &#39;form-field&#39;,
     CLS_FIELD = PREFIX + FIELD_XCLASS,
-    CLS_GROUP = PREFIX + 'form-group',
-    FIELD_TAGS = 'input,select,textarea';
+    CLS_GROUP = PREFIX + &#39;form-group&#39;,
+    FIELD_TAGS = &#39;input,select,textarea&#39;;
 
   function isField(node){
     return node.is(FIELD_TAGS);
@@ -44,7 +44,7 @@ define('bui/form/fieldcontainer',['bui/common','bui/form/field','bui/form/groupv
       if(isField(node)){
         return [node];
       }
-      var cls = node.attr('class');
+      var cls = node.attr(&#39;class&#39;);
       if(cls &amp;&amp; (cls.indexOf(CLS_GROUP) !== -1 || cls.indexOf(CLS_FIELD) !== -1)){
         return [node];
       }
@@ -71,21 +71,21 @@ define('bui/form/fieldcontainer',['bui/common','bui/form/field','bui/form/groupv
       syncUI : function(){
         var _self = this,
           fields = _self.getFields(),
-          validators = _self.get('validators');
+          validators = _self.get(&#39;validators&#39;);
 
         BUI.each(fields,function(field){
-          var name = field.get('name');
+          var name = field.get(&#39;name&#39;);
           if(validators[name]){
-            field.set('validator',validators[name]);
+            field.set(&#39;validator&#39;,validators[name]);
           }
         });
         BUI.each(validators,function(item,key){
           //按照ID查找
-          if(key.indexOf('#') == 0){
-            var id = key.replace('#',''),
+          if(key.indexOf(&#39;#&#39;) == 0){
+            var id = key.replace(&#39;#&#39;,&#39;&#39;),
               child = _self.getChild(id,true);
             if(child){
-              child.set('validator',item);
+              child.set(&#39;validator&#39;,item);
             }
           }
         });
@@ -97,7 +97,7 @@ define('bui/form/fieldcontainer',['bui/common','bui/form/field','bui/form/groupv
        */
       getDecorateElments : function(){
         var _self = this,
-          el = _self.get('el');
+          el = _self.get(&#39;el&#39;);
         var items = getDecorateChilds(el,el);
         return items;
       },
@@ -109,24 +109,24 @@ define('bui/form/fieldcontainer',['bui/common','bui/form/field','bui/form/groupv
       findXClassByNode : function(childNode, ignoreError){
 
 
-        if(childNode.attr('type') === 'checkbox'){
-          return FIELD_XCLASS + '-checkbox';
+        if(childNode.attr(&#39;type&#39;) === &#39;checkbox&#39;){
+          return FIELD_XCLASS + &#39;-checkbox&#39;;
         }
 
-        if(childNode.attr('type') === 'radio'){
-          return FIELD_XCLASS + '-radio';
+        if(childNode.attr(&#39;type&#39;) === &#39;radio&#39;){
+          return FIELD_XCLASS + &#39;-radio&#39;;
         }
 
-        if(childNode.attr('type') === 'number'){
-          return FIELD_XCLASS + '-number';
+        if(childNode.attr(&#39;type&#39;) === &#39;number&#39;){
+          return FIELD_XCLASS + &#39;-number&#39;;
         }
 
-        if(childNode.hasClass('calendar')){
-          return FIELD_XCLASS + '-date';
+        if(childNode.hasClass(&#39;calendar&#39;)){
+          return FIELD_XCLASS + &#39;-date&#39;;
         }
 
         if(childNode[0].tagName == &quot;SELECT&quot;){
-          return FIELD_XCLASS + '-select';
+          return FIELD_XCLASS + &#39;-select&#39;;
         }
 
         if(isField(childNode)){
@@ -144,7 +144,7 @@ define('bui/form/fieldcontainer',['bui/common','bui/form/field','bui/form/groupv
           rst = {},
           fields = _self.getFields();
         BUI.each(fields,function(field){
-          var name = field.get('name'),
+          var name = field.get(&#39;name&#39;),
             value = _self._getFieldValue(field);
 
           if(!rst[name]){//没有值，直接赋值
@@ -166,10 +166,10 @@ define('bui/form/fieldcontainer',['bui/common','bui/form/field','bui/form/groupv
       getFields : function(name){
         var _self = this,
           rst = [],
-          children = _self.get('children');
+          children = _self.get(&#39;children&#39;);
         BUI.each(children,function(item){
           if(item instanceof Field){
-            if(!name || item.get('name') == name){
+            if(!name || item.get(&#39;name&#39;) == name){
               rst.push(item);
             }
           }else if(item.getFields){
@@ -189,7 +189,7 @@ define('bui/form/fieldcontainer',['bui/common','bui/form/field','bui/form/groupv
           rst = null;
 
         BUI.each(fields,function(field){
-          if(field.get('name') === name){
+          if(field.get(&#39;name&#39;) === name){
             rst = field;
             return false;
           }
@@ -219,22 +219,22 @@ define('bui/form/fieldcontainer',['bui/common','bui/form/field','bui/form/groupv
       //设置字段域的值
       _setFieldValue : function(field,value){
         //如果字段不可用，则不能设置值
-        if(field.get('disabled')){
+        if(field.get(&#39;disabled&#39;)){
           return;
         }
         //如果是可勾选的
         if(field instanceof Field.Check){
-          var fieldValue = field.get('value');
+          var fieldValue = field.get(&#39;value&#39;);
           if(value &amp;&amp; (fieldValue === value || (BUI.isArray(value) &amp;&amp; BUI.Array.contains(fieldValue,value)))){
-            field.set('checked',true);
+            field.set(&#39;checked&#39;,true);
           }else{
-            field.set('checked',false);
+            field.set(&#39;checked&#39;,false);
           }
         }else{
           if(value == null){
-            value = '';
+            value = &#39;&#39;;
           }
-          field.set('value',value);
+          field.set(&#39;value&#39;,value);
         }
       },
 <span id='BUI-Form-FieldContainer-method-getFieldValue'>      /**
@@ -263,8 +263,8 @@ define('bui/form/fieldcontainer',['bui/common','bui/form/field','bui/form/groupv
       },
       //获取字段域的值
       _getFieldValue : function(field){
-        if(!(field instanceof Field.Check) || field.get('checked')){
-          return field.get('value');
+        if(!(field instanceof Field.Check) || field.get(&#39;checked&#39;)){
+          return field.get(&#39;value&#39;);
         }
         return null;
       },
@@ -284,7 +284,7 @@ define('bui/form/fieldcontainer',['bui/common','bui/form/field','bui/form/groupv
           fields = _self.getFields();
 
         BUI.each(fields,function(field){
-          var name = field.get('name');
+          var name = field.get(&#39;name&#39;);
           _self._setFieldValue(field,record[name]);
         });
       },
@@ -297,7 +297,7 @@ define('bui/form/fieldcontainer',['bui/common','bui/form/field','bui/form/groupv
           fields = _self.getFields();
 
         BUI.each(fields,function(field){
-          var name = field.get('name');
+          var name = field.get(&#39;name&#39;);
           if(record.hasOwnProperty(name)){
             _self._setFieldValue(field,record[name]);
           }
@@ -317,10 +317,10 @@ define('bui/form/fieldcontainer',['bui/common','bui/form/field','bui/form/groupv
       //禁用控件
       _uiSetDisabled : function(v){
         var _self = this,
-          children = _self.get('children');
+          children = _self.get(&#39;children&#39;);
 
         BUI.each(children,function(item){
-          item.set('disabled',v);
+          item.set(&#39;disabled&#39;,v);
         });
       }
     },
@@ -341,7 +341,7 @@ define('bui/form/fieldcontainer',['bui/common','bui/form/field','bui/form/groupv
 <span id='BUI-Form-FieldContainer-property-validators'>        /**
 </span>         * 内部元素的验证函数，可以使用2中选择器
          * &lt;ol&gt;
-         *   &lt;li&gt;id: 使用以'#'为前缀的选择器，可以查找字段或者分组，添加联合校验&lt;/li&gt;
+         *   &lt;li&gt;id: 使用以&#39;#&#39;为前缀的选择器，可以查找字段或者分组，添加联合校验&lt;/li&gt;
          *   &lt;li&gt;name: 不使用任何前缀，没查找表单字段&lt;/li&gt;
          * &lt;/ol&gt;
          * @type {Object}
@@ -355,16 +355,16 @@ define('bui/form/fieldcontainer',['bui/common','bui/form/field','bui/form/groupv
 </span>         * 默认的加载控件内容的配置,默认值：
          * &lt;pre&gt;
          *  {
-         *   property : 'children',
-         *   dataType : 'json'
+         *   property : &#39;children&#39;,
+         *   dataType : &#39;json&#39;
          * }
          * &lt;/pre&gt;
          * @type {Object}
          */
         defaultLoaderCfg  : {
           value : {
-            property : 'children',
-            dataType : 'json'
+            property : &#39;children&#39;,
+            dataType : &#39;json&#39;
           }
         },
         disabled : {
@@ -378,7 +378,7 @@ define('bui/form/fieldcontainer',['bui/common','bui/form/field','bui/form/groupv
         }
       }
     },{
-      xclass : 'form-field-container'
+      xclass : &#39;form-field-container&#39;
     }
   ); 
   container.View = containerView;

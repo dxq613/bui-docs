@@ -20,9 +20,9 @@
  * @ignore
  */
 
-define('bui/form/horizontal',['bui/common','bui/form/form'],function (require) {
-  var BUI = require('bui/common'),
-    Form = require('bui/form/form');
+define(&#39;bui/form/horizontal&#39;,[&#39;bui/common&#39;,&#39;bui/form/form&#39;],function (require) {
+  var BUI = require(&#39;bui/common&#39;),
+    Form = require(&#39;bui/form/form&#39;);
 
 <span id='BUI-Form-HForm'>  /**
 </span>   * @class BUI.Form.HForm
@@ -38,34 +38,34 @@ define('bui/form/horizontal',['bui/common','bui/form/form'],function (require) {
      */
     getDefaultButtonBarCfg : function(){
       var _self = this,
-        buttons = _self.get('buttons');
+        buttons = _self.get(&#39;buttons&#39;);
       return {
         autoRender : true,
-        elCls : 'actions-bar toolbar row',
-        tpl : '&lt;div class=&quot;form-actions span21 offset3&quot;&gt;&lt;/div&gt;',
-        childContainer : '.form-actions',
-        render : _self.get('el'),
+        elCls : &#39;actions-bar toolbar row&#39;,
+        tpl : &#39;&lt;div class=&quot;form-actions span21 offset3&quot;&gt;&lt;/div&gt;&#39;,
+        childContainer : &#39;.form-actions&#39;,
+        render : _self.get(&#39;el&#39;),
         items : buttons,
-        defaultChildClass : 'bar-item-button'
+        defaultChildClass : &#39;bar-item-button&#39;
       };
     }
   },{
     ATTRS : {
       defaultChildClass : {
-        value : 'form-row'
+        value : &#39;form-row&#39;
       },
       errorTpl : {
-        value : '&lt;span class=&quot;valid-text&quot;&gt;&lt;span class=&quot;estate error&quot;&gt;&lt;span class=&quot;x-icon x-icon-mini x-icon-error&quot;&gt;!&lt;/span&gt;&lt;em&gt;{error}&lt;/em&gt;&lt;/span&gt;&lt;/span&gt;'
+        value : &#39;&lt;span class=&quot;valid-text&quot;&gt;&lt;span class=&quot;estate error&quot;&gt;&lt;span class=&quot;x-icon x-icon-mini x-icon-error&quot;&gt;!&lt;/span&gt;&lt;em&gt;{error}&lt;/em&gt;&lt;/span&gt;&lt;/span&gt;&#39;
       },
       elCls : {
-        value : 'form-horizontal'
+        value : &#39;form-horizontal&#39;
       }
     },
     PARSER : {
       
     }
   },{
-    xclass : 'form-horizontal'
+    xclass : &#39;form-horizontal&#39;
   });
   return Horizontal;
 });</pre>

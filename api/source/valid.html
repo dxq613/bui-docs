@@ -20,10 +20,10 @@
  * @ignore
  */
 
-define('bui/form/valid',['bui/common','bui/form/rules'],function (require) {
+define(&#39;bui/form/valid&#39;,[&#39;bui/common&#39;,&#39;bui/form/rules&#39;],function (require) {
 
-  var BUI = require('bui/common'),
-    Rules = require('bui/form/rules');
+  var BUI = require(&#39;bui/common&#39;),
+    Rules = require(&#39;bui/form/rules&#39;);
 
 <span id='BUI-Form-ValidView'>  /**
 </span>   * @class BUI.Form.ValidView
@@ -42,10 +42,10 @@ define('bui/form/valid',['bui/common','bui/form/rules'],function (require) {
      */
     getErrorsContainer : function(){
       var _self = this,
-        errorContainer = _self.get('errorContainer');
+        errorContainer = _self.get(&#39;errorContainer&#39;);
       if(errorContainer){
         if(BUI.isString(errorContainer)){
-          return _self.get('el').find(errorContainer);
+          return _self.get(&#39;el&#39;).find(errorContainer);
         }
         return errorContainer;
       }
@@ -57,14 +57,14 @@ define('bui/form/valid',['bui/common','bui/form/rules'],function (require) {
     showErrors : function(errors){
       var _self = this,
         errorsContainer = _self.getErrorsContainer(),
-        errorTpl = _self.get('errorTpl');     
+        errorTpl = _self.get(&#39;errorTpl&#39;);     
       _self.clearErrors(); 
 
-      if(!_self.get('showError')){
+      if(!_self.get(&#39;showError&#39;)){
         return ;
       }
       //如果仅显示第一条错误记录
-      if(_self.get('showOneError')){
+      if(_self.get(&#39;showOneError&#39;)){
         if(errors &amp;&amp; errors.length){
           _self.showError(errors[0],errorTpl,errorsContainer);
         }
@@ -158,7 +158,7 @@ define('bui/form/valid',['bui/common','bui/form/rules'],function (require) {
      */
     errorTpl : {
       view : true,
-      value : '&lt;span class=&quot;x-field-error&quot;&gt;&lt;span class=&quot;x-icon x-icon-mini x-icon-error&quot;&gt;!&lt;/span&gt;&lt;label class=&quot;x-field-error-text&quot;&gt;{error}&lt;/label&gt;&lt;/span&gt;'
+      value : &#39;&lt;span class=&quot;x-field-error&quot;&gt;&lt;span class=&quot;x-icon x-icon-mini x-icon-error&quot;&gt;!&lt;/span&gt;&lt;label class=&quot;x-field-error-text&quot;&gt;{error}&lt;/label&gt;&lt;/span&gt;&#39;
     },
 <span id='BUI-Form-Valid-property-showError'>    /**
 </span>     * 显示错误
@@ -189,10 +189,10 @@ define('bui/form/valid',['bui/common','bui/form/rules'],function (require) {
     __bindUI : function(){
       var _self = this;
       //监听是否禁用
-      _self.on('afterDisabledChange',function(ev){
+      _self.on(&#39;afterDisabledChange&#39;,function(ev){
         var disabled = ev.newVal;
         if(disabled){
-          _self.clearErrors(false);
+          _self.clearErrors(false,false);
         }else{
           _self.valid();
         }
@@ -243,8 +243,8 @@ define('bui/form/valid',['bui/common','bui/form/rules'],function (require) {
     //获取验证错误信息
     _getValidMessages : function(){
       var _self = this,
-        defaultMessages = _self.get('defaultMessages'),
-        messages = _self.get('messages');
+        defaultMessages = _self.get(&#39;defaultMessages&#39;),
+        messages = _self.get(&#39;messages&#39;);
       return BUI.merge(defaultMessages,messages);
     },
 <span id='BUI-Form-Valid-method-getValidError'>    /**
@@ -255,16 +255,16 @@ define('bui/form/valid',['bui/common','bui/form/rules'],function (require) {
      */
     getValidError : function(value){
       var _self = this,
-        validator = _self.get('validator'),
+        validator = _self.get(&#39;validator&#39;),
         error = null;
 
-      error = _self.validRules(_self.get('defaultRules'),value) || _self.validRules(_self.get('rules'),value);
+      error = _self.validRules(_self.get(&#39;defaultRules&#39;),value) || _self.validRules(_self.get(&#39;rules&#39;),value);
 
       if(!error){
         if(_self.parseValue){
           value = _self.parseValue(value);
         }
-        error = validator ? validator.call(this,value) : '';
+        error = validator ? validator.call(this,value) : &#39;&#39;;
       }
 
       return error;
@@ -278,28 +278,36 @@ define('bui/form/valid',['bui/common','bui/form/rules'],function (require) {
     },
 <span id='BUI-Form-Valid-method-showErrors'>    /**
 </span>     * 显示错误
-     * @param {Array} 显示错误
+     * @param {Array} errors 显示错误
      */
     showErrors : function(errors){
       var _self = this,
         errors = errors || _self.getErrors();
-      _self.get('view').showErrors(errors);
+      _self.get(&#39;view&#39;).showErrors(errors);
     },
 <span id='BUI-Form-Valid-method-clearErrors'>    /**
 </span>     * 清除错误
+     * @param {Boolean} reset 清除错误时是否重置
+     * @param {Boolean} deep 是否清理子控件的错误 
      */
-    clearErrors : function(deep){
+    clearErrors : function(reset,deep){
       deep = deep == null ? true : deep;
       var _self = this,
-        children = _self.get('children');
+        children = _self.get(&#39;children&#39;);
       if(deep){
         BUI.each(children,function(item){
-          item.clearErrors &amp;&amp; item.clearErrors();
+          if(item.clearErrors){
+            if(item.field){
+              item.clearErrors(reset);
+            }else{
+              item.clearErrors(deep,reset);
+            }
+          }
         });
       }
       
-      _self.set('error',null);
-      _self.get('view').clearErrors();
+      _self.set(&#39;error&#39;,null);
+      _self.get(&#39;view&#39;).clearErrors();
     },
 <span id='BUI-Form-Valid-method-addRule'>    /**
 </span>     * 添加验证规则
@@ -307,18 +315,18 @@ define('bui/form/valid',['bui/common','bui/form/rules'],function (require) {
      * @param {*} [value] 规则进行校验的进行对比的值，如max : 10 
      * @param {String} [message] 出错信息,可以使模板
      * &lt;ol&gt;
-     *   &lt;li&gt;如果 value 是单个值，例如最大值 value = 10,那么模板可以写成： '输入值不能大于{0}!'&lt;/li&gt;
-     *   &lt;li&gt;如果 value 是个复杂对象，数组时，按照索引，对象时按照 key 阻止。如：value= {max:10,min:5} ，则'输入值不能大于{max},不能小于{min}'&lt;/li&gt;
+     *   &lt;li&gt;如果 value 是单个值，例如最大值 value = 10,那么模板可以写成： &#39;输入值不能大于{0}!&#39;&lt;/li&gt;
+     *   &lt;li&gt;如果 value 是个复杂对象，数组时，按照索引，对象时按照 key 阻止。如：value= {max:10,min:5} ，则&#39;输入值不能大于{max},不能小于{min}&#39;&lt;/li&gt;
      * &lt;/ol&gt;
-     *         var field = form.getField('name');
-     *         field.addRule('required',true);
+     *         var field = form.getField(&#39;name&#39;);
+     *         field.addRule(&#39;required&#39;,true);
      *
-     *         field.addRule('max',10,'不能大于{0}');
+     *         field.addRule(&#39;max&#39;,10,&#39;不能大于{0}&#39;);
      */
     addRule : function(name,value,message){
       var _self = this,
-        rules = _self.get('rules'),
-        messages = _self.get('messages');
+        rules = _self.get(&#39;rules&#39;),
+        messages = _self.get(&#39;messages&#39;);
       rules[name] = value;
       if(message){
         messages[name] = message;
@@ -329,7 +337,7 @@ define('bui/form/valid',['bui/common','bui/form/rules'],function (require) {
 </span>     * 添加多个验证规则
      * @param {Object} rules 多个验证规则
      * @param {Object} [messages] 验证规则的出错信息
-     *         var field = form.getField('name');
+     *         var field = form.getField(&#39;name&#39;);
      *         field.addRules({
      *           required : true,
      *           max : 10
@@ -346,12 +354,12 @@ define('bui/form/valid',['bui/common','bui/form/rules'],function (require) {
 <span id='BUI-Form-Valid-method-removeRule'>    /**
 </span>     * 移除指定名称的验证规则
      * @param  {String} name 验证规则名称
-     *         var field = form.getField('name');
-     *         field.remove('required');   
+     *         var field = form.getField(&#39;name&#39;);
+     *         field.remove(&#39;required&#39;);   
      */
     removeRule : function(name){
       var _self = this,
-        rules = _self.get('rules');
+        rules = _self.get(&#39;rules&#39;);
       delete rules[name];
     },
 <span id='BUI-Form-Valid-method-clearRules'>    /**
@@ -359,7 +367,7 @@ define('bui/form/valid',['bui/common','bui/form/rules'],function (require) {
      */
     clearRules : function(){
       var _self = this;
-      _self.set('rules',{});
+      _self.set(&#39;rules&#39;,{});
     }
   };
 

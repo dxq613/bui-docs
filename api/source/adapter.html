@@ -34,7 +34,7 @@ window.define = window.define || function(name,depends,fun){
     depends = [];
   }
   if(depends &amp;&amp; !KISSY.Node){
-    depends.unshift('core');
+    depends.unshift(&#39;core&#39;);
   }
 
   function require(name){
@@ -66,7 +66,7 @@ var adapterCallback = function(){
     NLP = S.Node.prototype;
 
   window.jQuery = window.jQuery || (function () {
-    'use strict';
+    &#39;use strict&#39;;
     function excuteDuration(self,fn,speed, easing,callback){
       var params = getDurationParams(speed, easing,callback);
 
@@ -105,16 +105,16 @@ var adapterCallback = function(){
       var doc = element.ownerDocument,
           body = doc.body,
           parent,
-          positionStyle = $(element).css('position'),
-          skipStatic = positionStyle == 'fixed' || positionStyle == 'absolute';
+          positionStyle = $(element).css(&#39;position&#39;),
+          skipStatic = positionStyle == &#39;fixed&#39; || positionStyle == &#39;absolute&#39;;
 
       if (!skipStatic) {
-          return element.nodeName.toLowerCase() == 'html' ? null : element.parentNode;
+          return element.nodeName.toLowerCase() == &#39;html&#39; ? null : element.parentNode;
       }
 
       for (parent = element.parentNode; parent &amp;&amp; parent != body; parent = parent.parentNode) {
-          positionStyle = $(parent).css('position');
-          if (positionStyle != 'static') {
+          positionStyle = $(parent).css(&#39;position&#39;);
+          if (positionStyle != &#39;static&#39;) {
               return parent;
           }
       }
@@ -185,7 +185,7 @@ var adapterCallback = function(){
 </span>       * 判断是否符合指定的选择器
        */
       is : function(selector){
-        var splits = selector.split(','),
+        var splits = selector.split(&#39;,&#39;),
           rst = false;
         for (var i = 0; i &lt; splits.length; i++) {
           if(!rst &amp;&amp; splits[i]){
@@ -271,7 +271,7 @@ var adapterCallback = function(){
         S.each(elements,function(elem){
           var val = S.one(elem).val(),
             name = elem.name||elem.id,
-            obj = val == null ? {name:  name, value: ''} : S.isArray(val) ?
+            obj = val == null ? {name:  name, value: &#39;&#39;} : S.isArray(val) ?
             S.map( val, function(val, i){
               return {name: name, value: val};
             }) :
@@ -285,14 +285,14 @@ var adapterCallback = function(){
     });
 
     //由于 kissy的动画单位和参数位置跟 jquery的不一致
-    var durationMethods = ['fadeIn','fadeOut','fadeToggle','slideDown','slideUp','slideToggle','show','hide'];
+    var durationMethods = [&#39;fadeIn&#39;,&#39;fadeOut&#39;,&#39;fadeToggle&#39;,&#39;slideDown&#39;,&#39;slideUp&#39;,&#39;slideToggle&#39;,&#39;show&#39;,&#39;hide&#39;];
     S.each(durationMethods,function(fnName){
       wrapNode.prototype[fnName] = function(speed, easing,callback){
         excuteDuration(this,NLP[fnName],speed,easing,callback);
       };
     });
     //jquery上的很多DOM的方法在kissy的Node上不支持
-    var domMethods = ['change','blur','focus','select'];
+    var domMethods = [&#39;change&#39;,&#39;blur&#39;,&#39;focus&#39;,&#39;select&#39;];
     S.each(domMethods,function(fnName){
       wrapNode.prototype[fnName] = function(){
         var el = this[0];
@@ -308,7 +308,7 @@ var adapterCallback = function(){
     });
 
     //由于返回的对象的类型是S.Node，所以要更改类型
-    var nodeMethods = ['children','parent','next','prev','siblings','closest'];
+    var nodeMethods = [&#39;children&#39;,&#39;parent&#39;,&#39;next&#39;,&#39;prev&#39;,&#39;siblings&#39;,&#39;closest&#39;];
     S.each(nodeMethods,function(fnName){
       wrapNode.prototype[fnName] = function(selector){
         return new wrapNode(DOM[fnName](this[0],selector));
@@ -386,7 +386,7 @@ var adapterCallback = function(){
   return KISSY;
 };
 
-define('bui/adapter',['core'],adapterCallback);
+define(&#39;bui/adapter&#39;,[&#39;core&#39;],adapterCallback);
 if(KISSY.Node){
   adapterCallback();
 }
@@ -396,7 +396,7 @@ KISSY.config({
     name:&quot;bui&quot;,
     tag:&quot;201312251606&quot;,
     path:&quot;http://g.tbcdn.cn/fi&quot;,
-    charset:'utf-8'
+    charset:&#39;utf-8&#39;
   }]
 });</pre>
 </body>

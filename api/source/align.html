@@ -23,9 +23,9 @@
  */
 
 
-define('bui/component/uibase/align',['bui/ua'],function (require) {
-    var UA = require('bui/ua'),
-        CLS_ALIGN_PREFIX ='x-align-',
+define(&#39;bui/component/uibase/align&#39;,[&#39;bui/ua&#39;],function (require) {
+    var UA = require(&#39;bui/ua&#39;),
+        CLS_ALIGN_PREFIX =&#39;x-align-&#39;,
         win = window;
 
     // var ieMode = document.documentMode || UA.ie;
@@ -59,16 +59,16 @@ define('bui/component/uibase/align',['bui/ua'],function (require) {
         var doc = element.ownerDocument,
             body = doc.body,
             parent,
-            positionStyle = $(element).css('position'),
-            skipStatic = positionStyle == 'fixed' || positionStyle == 'absolute';
+            positionStyle = $(element).css(&#39;position&#39;),
+            skipStatic = positionStyle == &#39;fixed&#39; || positionStyle == &#39;absolute&#39;;
 
         if (!skipStatic) {
-            return element.nodeName.toLowerCase() == 'html' ? null : element.parentNode;
+            return element.nodeName.toLowerCase() == &#39;html&#39; ? null : element.parentNode;
         }
 
         for (parent = element.parentNode; parent &amp;&amp; parent != body; parent = parent.parentNode) {
-            positionStyle = $(parent).css('position');
-            if (positionStyle != 'static') {
+            positionStyle = $(parent).css(&#39;position&#39;);
+            if (positionStyle != &#39;static&#39;) {
                 return parent;
             }
         }
@@ -103,7 +103,7 @@ define('bui/component/uibase/align',['bui/ua'],function (require) {
                 // body may have overflow set on it, yet we still get the entire
                 // viewport. In some browsers, el.offsetParent may be
                 // document.documentElement, so check for that too.
-                (el != body &amp;&amp; el != documentElement &amp;&amp; $(el).css('overflow') != 'visible')) {
+                (el != body &amp;&amp; el != documentElement &amp;&amp; $(el).css(&#39;overflow&#39;) != &#39;visible&#39;)) {
                 var pos = $(el).offset();
                 // add border
                 pos.left += el.clientLeft;
@@ -119,7 +119,7 @@ define('bui/component/uibase/align',['bui/ua'],function (require) {
             }
         }
 
-        // Clip by window's viewport.
+        // Clip by window&#39;s viewport.
         scrollX = $(win).scrollLeft();
         scrollY = $(win).scrollTop();
         visibleRect.left = Math.max(visibleRect.left, scrollX);
@@ -180,7 +180,7 @@ define('bui/component/uibase/align',['bui/ua'],function (require) {
         }
 
         // Left edge inside and right edge outside viewport, try to resize it.
-        if (overflow['resizeWidth'] &amp;&amp;
+        if (overflow[&#39;resizeWidth&#39;] &amp;&amp;
             pos.left &gt;= visibleRect.left &amp;&amp;
             pos.left + size.width &gt; visibleRect.right) {
             size.width -= (pos.left + size.width) - visibleRect.right;
@@ -198,7 +198,7 @@ define('bui/component/uibase/align',['bui/ua'],function (require) {
         }
 
         // Top edge inside and bottom edge outside viewport, try to resize it.
-        if (overflow['resizeHeight'] &amp;&amp;
+        if (overflow[&#39;resizeHeight&#39;] &amp;&amp;
             pos.top &gt;= visibleRect.top &amp;&amp;
             pos.top + size.height &gt; visibleRect.bottom) {
             size.height -= (pos.top + size.height) - visibleRect.bottom;
@@ -252,8 +252,8 @@ define('bui/component/uibase/align',['bui/ua'],function (require) {
          * &lt;pre&gt;&lt;code&gt;
          *  var overlay = new Overlay( {  
          *       align :{
-         *         node: null,         // 参考元素, falsy 或 window 为可视区域, 'trigger' 为触发元素, 其他为指定元素
-         *         points: ['cc','cc'], // ['tr', 'tl'] 表示 overlay 的 tl 与参考节点的 tr 对齐
+         *         node: null,         // 参考元素, falsy 或 window 为可视区域, &#39;trigger&#39; 为触发元素, 其他为指定元素
+         *         points: [&#39;cc&#39;,&#39;cc&#39;], // [&#39;tr&#39;, &#39;tl&#39;] 表示 overlay 的 tl 与参考节点的 tr 对齐
          *         offset: [0, 0]      // 有效值为 [n, m]
          *       }
          *     }); 
@@ -266,11 +266,11 @@ define('bui/component/uibase/align',['bui/ua'],function (require) {
          * @field
          * &lt;code&gt;
          *   var align =  {
-         *        node: null,         // 参考元素, falsy 或 window 为可视区域, 'trigger' 为触发元素, 其他为指定元素
-         *        points: ['cc','cc'], // ['tr', 'tl'] 表示 overlay 的 tl 与参考节点的 tr 对齐
+         *        node: null,         // 参考元素, falsy 或 window 为可视区域, &#39;trigger&#39; 为触发元素, 其他为指定元素
+         *        points: [&#39;cc&#39;,&#39;cc&#39;], // [&#39;tr&#39;, &#39;tl&#39;] 表示 overlay 的 tl 与参考节点的 tr 对齐
          *        offset: [0, 0]      // 有效值为 [n, m]
          *     };
-         *   overlay.set('align',align);
+         *   overlay.set(&#39;align&#39;,align);
          * &lt;/code&gt;
          */
         align:{
@@ -310,15 +310,15 @@ define('bui/component/uibase/align',['bui/ua'],function (require) {
         x = region.left;
         y = region.top;
 
-        if (V === 'c') {
+        if (V === &#39;c&#39;) {
             y += h / 2;
-        } else if (V === 'b') {
+        } else if (V === &#39;b&#39;) {
             y += h;
         }
 
-        if (H === 'c') {
+        if (H === &#39;c&#39;) {
             x += w / 2;
-        } else if (H === 'r') {
+        } else if (H === &#39;r&#39;) {
             x += w;
         }
 
@@ -327,26 +327,26 @@ define('bui/component/uibase/align',['bui/ua'],function (require) {
 
     //清除对齐的css样式
     function clearAlignCls(el){
-        var cls = el.attr('class'),
-            regex = new RegExp('\s?'+CLS_ALIGN_PREFIX+'[a-z]{2}-[a-z]{2}','ig'),
+        var cls = el.attr(&#39;class&#39;),
+            regex = new RegExp(&#39;\s?&#39;+CLS_ALIGN_PREFIX+&#39;[a-z]{2}-[a-z]{2}&#39;,&#39;ig&#39;),
             arr = regex.exec(cls);
         if(arr){
-            el.removeClass(arr.join(' '));
+            el.removeClass(arr.join(&#39; &#39;));
         }
     }
 
     Align.prototype =
     {
         _uiSetAlign:function (v,ev) {
-            var alignCls = '',
+            var alignCls = &#39;&#39;,
                 el,   
                 selfAlign; //points 的第二个参数，是自己对齐于其他节点的的方式
             if (v &amp;&amp; v.points) {
                 this.align(v.node, v.points, v.offset, v.overflow);
-                this.set('cachePosition',null);
-                el = this.get('el');
+                this.set(&#39;cachePosition&#39;,null);
+                el = this.get(&#39;el&#39;);
                 clearAlignCls(el);
-                selfAlign = v.points.join('-');
+                selfAlign = v.points.join(&#39;-&#39;);
                 alignCls = CLS_ALIGN_PREFIX + selfAlign;
                 el.addClass(alignCls);
                 /**/
@@ -367,7 +367,7 @@ define('bui/component/uibase/align',['bui/ua'],function (require) {
             overflow = overflow || {};
 
             var self = this,
-                el = self.get('el'),
+                el = self.get(&#39;el&#39;),
                 fail = 0,
             // 当前节点可以被放置的显示区域
                 visibleRect = getVisibleRectForElement(el[0]),
@@ -388,8 +388,8 @@ define('bui/component/uibase/align',['bui/ua'],function (require) {
                     fail = 1;
                     // 对齐位置反下
                     points = flip(points, /[lr]/ig, {
-                        l:'r',
-                        r:'l'
+                        l:&#39;r&#39;,
+                        r:&#39;l&#39;
                     });
                     // 偏移量也反下
                     offset = flipOffset(offset, 0);
@@ -400,8 +400,8 @@ define('bui/component/uibase/align',['bui/ua'],function (require) {
                     fail = 1;
                     // 对齐位置反下
                     points = flip(points, /[tb]/ig, {
-                        t:'b',
-                        b:'t'
+                        t:&#39;b&#39;,
+                        b:&#39;t&#39;
                     });
                     // 偏移量也反下
                     offset = flipOffset(offset, 1);
@@ -432,19 +432,19 @@ define('bui/component/uibase/align',['bui/ua'],function (require) {
 
             // 新区域位置发生了变化
             if (newElRegion.left != elRegion.left) {
-                self.setInternal('x', null);
-                self.get('view').setInternal('x', null);
-                self.set('x', newElRegion.left);
+                self.setInternal(&#39;x&#39;, null);
+                self.get(&#39;view&#39;).setInternal(&#39;x&#39;, null);
+                self.set(&#39;x&#39;, newElRegion.left);
             }
 
             if (newElRegion.top != elRegion.top) {
                 // https://github.com/kissyteam/kissy/issues/190
                 // 相对于屏幕位置没变，而 left/top 变了
-                // 例如 &lt;div 'relative'&gt;&lt;el absolute&gt;&lt;/div&gt;
+                // 例如 &lt;div &#39;relative&#39;&gt;&lt;el absolute&gt;&lt;/div&gt;
                 // el.align(div)
-                self.setInternal('y', null);
-                self.get('view').setInternal('y', null);
-                self.set('y', newElRegion.top);
+                self.setInternal(&#39;y&#39;, null);
+                self.get(&#39;view&#39;).setInternal(&#39;y&#39;, null);
+                self.set(&#39;y&#39;, newElRegion.top);
             }
 
             // 新区域高宽发生了变化
@@ -461,16 +461,16 @@ define('bui/component/uibase/align',['bui/ua'],function (require) {
 <span id='BUI-Component-UIBase-Align-method-center'>        /**
 </span>         * 对齐到元素的中间，查看属性 {@link BUI.Component.UIBase.Align#property-align} .
          * &lt;pre&gt;&lt;code&gt;
-         *  control.center('#t1'); //控件处于容器#t1的中间位置
+         *  control.center(&#39;#t1&#39;); //控件处于容器#t1的中间位置
          * &lt;/code&gt;&lt;/pre&gt;
          * @param {undefined|String|HTMLElement|jQuery} node
          * 
          */
         center:function (node) {
             var self = this;
-            self.set('align', {
+            self.set(&#39;align&#39;, {
                 node:node,
-                points:['cc', 'cc'],
+                points:[&#39;cc&#39;, &#39;cc&#39;],
                 offset:[0, 0]
             });
             return self;

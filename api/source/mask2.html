@@ -21,21 +21,21 @@
  * @ignore
  */
 
-define('bui/mask/mask',['bui/common'],function (require) {
+define(&#39;bui/mask/mask&#39;,[&#39;bui/common&#39;],function (require) {
 
-    var BUI = require('bui/common'),
-      Mask = BUI.namespace('Mask'),
+    var BUI = require(&#39;bui/common&#39;),
+      Mask = BUI.namespace(&#39;Mask&#39;),
       UA = BUI.UA,
-      CLS_MASK = BUI.prefix + 'ext-mask',
-      CLS_MASK_MSG = CLS_MASK + '-msg';
+      CLS_MASK = BUI.prefix + &#39;ext-mask&#39;,
+      CLS_MASK_MSG = CLS_MASK + &#39;-msg&#39;;
 
     BUI.mix(Mask,
 <span id='BUI-Mask'>    /**
 </span>    * 屏蔽层
     * &lt;pre&gt;&lt;code&gt;
-    * BUI.use('bui/mask',function(Mask){
-    *   Mask.maskElement('#domId'); //屏蔽dom
-    *   Mask.unmaskElement('#domId'); //解除DOM屏蔽
+    * BUI.use(&#39;bui/mask&#39;,function(Mask){
+    *   Mask.maskElement(&#39;#domId&#39;); //屏蔽dom
+    *   Mask.unmaskElement(&#39;#domId&#39;); //解除DOM屏蔽
     * });
     * &lt;/code&gt;&lt;/pre&gt;
     * @class BUI.Mask
@@ -48,25 +48,25 @@ define('bui/mask/mask',['bui/common'],function (require) {
          * @param {String} [msg] 屏蔽元素时显示的文本
          * @param {String} [msgCls] 显示文本应用的样式
          * &lt;pre&gt;&lt;code&gt;
-         *   BUI.Mask.maskElement('#domId');
+         *   BUI.Mask.maskElement(&#39;#domId&#39;);
          *   
          * &lt;/code&gt;&lt;/pre&gt;
          */
         maskElement:function (element, msg, msgCls) {
             var maskedEl = $(element),
-                maskDiv = $('.' + CLS_MASK, maskedEl),
+                maskDiv = $(&#39;.&#39; + CLS_MASK, maskedEl),
                 tpl = null,
                 msgDiv = null,
                 top = null,
                 left = null;
             if (!maskDiv.length) {
-                maskDiv = $('&lt;div class=&quot;' + CLS_MASK + '&quot;&gt;&lt;/div&gt;').appendTo(maskedEl);
-                maskedEl.addClass('x-masked-relative x-masked');
+                maskDiv = $(&#39;&lt;div class=&quot;&#39; + CLS_MASK + &#39;&quot;&gt;&lt;/div&gt;&#39;).appendTo(maskedEl);
+                maskedEl.addClass(&#39;x-masked-relative x-masked&#39;);
                 if (UA.ie === 6) {
                     maskDiv.height(maskedEl.height());
                 }
                 if (msg) {
-                    tpl = ['&lt;div class=&quot;' + CLS_MASK_MSG + '&quot;&gt;&lt;div&gt;', msg, '&lt;/div&gt;&lt;/div&gt;'].join('');
+                    tpl = [&#39;&lt;div class=&quot;&#39; + CLS_MASK_MSG + &#39;&quot;&gt;&lt;div&gt;&#39;, msg, &#39;&lt;/div&gt;&lt;/div&gt;&#39;].join(&#39;&#39;);
                     msgDiv = $(tpl).appendTo(maskedEl);
                     if (msgCls) {
                         msgDiv.addClass(msgCls);
@@ -77,7 +77,7 @@ define('bui/mask/mask',['bui/common'],function (require) {
 
                         msgDiv.css({ left:left, top:top });
                     } catch (ex) {
-                        BUI.log('mask error occurred');
+                        BUI.log(&#39;mask error occurred&#39;);
                     }
                 }
             }
@@ -85,22 +85,22 @@ define('bui/mask/mask',['bui/common'],function (require) {
         },
 <span id='BUI-Mask-method-unmaskElement'>        /**
 </span>         * @description 解除元素的屏蔽
-         * @param {String|HTMLElement} 屏蔽的元素
+         * @param {String|HTMLElement} element 屏蔽的元素
          * &lt;pre&gt;&lt;code&gt;
-         * BUI.Mask.unmaskElement('#domId');
+         * BUI.Mask.unmaskElement(&#39;#domId&#39;);
          * &lt;/code&gt;&lt;/pre&gt;
          */
         unmaskElement:function (element) {
             var maskedEl = $(element),
-                msgEl = maskedEl.children('.' + CLS_MASK_MSG),
-                maskDiv = maskedEl.children('.' + CLS_MASK);
+                msgEl = maskedEl.children(&#39;.&#39; + CLS_MASK_MSG),
+                maskDiv = maskedEl.children(&#39;.&#39; + CLS_MASK);
             if (msgEl) {
                 msgEl.remove();
             }
             if (maskDiv) {
                 maskDiv.remove();
             }
-            maskedEl.removeClass('x-masked-relative x-masked');
+            maskedEl.removeClass(&#39;x-masked-relative x-masked&#39;);
 
         }
     });

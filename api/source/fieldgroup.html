@@ -21,14 +21,14 @@
  * @ignore
  */
 
-define('bui/form/fieldgroup',['bui/common','bui/form/group/base','bui/form/group/range','bui/form/group/check','bui/form/group/select'],function (require) {
-  var BUI = require('bui/common'),
-    Group = require('bui/form/group/base');
+define(&#39;bui/form/fieldgroup&#39;,[&#39;bui/common&#39;,&#39;bui/form/group/base&#39;,&#39;bui/form/group/range&#39;,&#39;bui/form/group/check&#39;,&#39;bui/form/group/select&#39;],function (require) {
+  var BUI = require(&#39;bui/common&#39;),
+    Group = require(&#39;bui/form/group/base&#39;);
 
   BUI.mix(Group,{
-    Range : require('bui/form/group/range'),
-    Check : require('bui/form/group/check'),
-    Select : require('bui/form/group/select')
+    Range : require(&#39;bui/form/group/range&#39;),
+    Check : require(&#39;bui/form/group/check&#39;),
+    Select : require(&#39;bui/form/group/select&#39;)
   });
   return Group;
 });</pre>

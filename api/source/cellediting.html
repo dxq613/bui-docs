@@ -20,10 +20,10 @@
  * @ignore
  */
 
-define('bui/grid/plugins/cellediting',['bui/grid/plugins/editing'],function (require) {
-  var Editing = require('bui/grid/plugins/editing'),
-    CLS_BODY = BUI.prefix + 'grid-body',
-    CLS_CELL = BUI.prefix + 'grid-cell';
+define(&#39;bui/grid/plugins/cellediting&#39;,[&#39;bui/grid/plugins/editing&#39;],function (require) {
+  var Editing = require(&#39;bui/grid/plugins/editing&#39;),
+    CLS_BODY = BUI.prefix + &#39;grid-body&#39;,
+    CLS_CELL = BUI.prefix + &#39;grid-cell&#39;;
 
 <span id='BUI-Grid-Plugins-CellEditing'>  /**
 </span>   * @class BUI.Grid.Plugins.CellEditing
@@ -37,7 +37,7 @@ define('bui/grid/plugins/cellediting',['bui/grid/plugins/editing'],function (req
   CellEditing.ATTRS = {
 <span id='BUI-Grid-Plugins-CellEditing-cfg-triggerCls'>    /**
 </span>     * 触发编辑样式，为空时默认点击整行都会触发编辑
-     * @cfg {String} [triggerCls = 'bui-grid-cell']
+     * @cfg {String} [triggerCls = &#39;bui-grid-cell&#39;]
      */
     triggerCls : {
       value : CLS_CELL
@@ -54,13 +54,13 @@ define('bui/grid/plugins/cellediting',['bui/grid/plugins/editing'],function (req
      */ 
     getEditorCfgs : function(fields){
       var _self = this,
-        grid = _self.get('grid'),
-        bodyNode = grid.get('el').find('.' + CLS_BODY),
+        grid = _self.get(&#39;grid&#39;),
+        bodyNode = grid.get(&#39;el&#39;).find(&#39;.&#39; + CLS_BODY),
         rst = [];
       BUI.each(fields,function(field){
         var cfg = {field : field,changeSourceEvent : null,hideExceptNode : bodyNode,autoUpdate : false,preventHide : false,editableFn : field.editableFn};
-        if(field.xtype === 'checkbox'){
-          cfg.innerValueField = 'checked';
+        if(field.xtype === &#39;checkbox&#39;){
+          cfg.innerValueField = &#39;checked&#39;;
         }
         rst.push(cfg);
       });
@@ -78,11 +78,11 @@ define('bui/grid/plugins/cellediting',['bui/grid/plugins/editing'],function (req
         return null;
       }
       var  _self = this,
-        editors = _self.get('editors'),
+        editors = _self.get(&#39;editors&#39;),
         editor = null;
 
       BUI.each(editors,function(item){
-        if(item.get('field').get('name') === field){
+        if(item.get(&#39;field&#39;).get(&#39;name&#39;) === field){
           editor = item;
           return false;
         }
@@ -102,7 +102,7 @@ define('bui/grid/plugins/cellediting',['bui/grid/plugins/editing'],function (req
       _self._makeEnable(editor,options);
     },
     _makeEnable : function(editor,options){
-      var editableFn = editor.get('editableFn'),
+      var editableFn = editor.get(&#39;editableFn&#39;),
         field,
         enable,
         record;
@@ -112,16 +112,16 @@ define('bui/grid/plugins/cellediting',['bui/grid/plugins/editing'],function (req
         if(record &amp;&amp; field){
           enable = editableFn(record[field],record);
           if(enable){
-            editor.get('field').enable();
+            editor.get(&#39;field&#39;).enable();
           }else{
-            editor.get('field').disable();
+            editor.get(&#39;field&#39;).disable();
           }
         }
         
       }
     },
     resetWidth : function(editor,width){
-      editor.set('width',width);
+      editor.set(&#39;width&#39;,width);
     },
 <span id='BUI-Grid-Plugins-CellEditing-method-updateRecord'>    /**
 </span>     * 更新数据
@@ -132,7 +132,7 @@ define('bui/grid/plugins/cellediting',['bui/grid/plugins/editing'],function (req
     updateRecord : function(store,record,editor){
       var _self = this,
           value = editor.getValue(),
-          fieldName = editor.get('field').get('name'),
+          fieldName = editor.get(&#39;field&#39;).get(&#39;name&#39;),
           preValue = record[fieldName];
         value = BUI.isDate(value) ? value.getTime() : value;
         if(preValue !== value){
@@ -157,9 +157,9 @@ define('bui/grid/plugins/cellediting',['bui/grid/plugins/editing'],function (req
     getFields : function(){
       var rst = [],
         _self = this,
-        editors = _self.get('editors');
+        editors = _self.get(&#39;editors&#39;);
       BUI.each(editors,function(editor){
-        rst.push(editor.get('field'));
+        rst.push(editor.get(&#39;field&#39;));
       });
       return rst;
     },
@@ -172,9 +172,9 @@ define('bui/grid/plugins/cellediting',['bui/grid/plugins/editing'],function (req
     getEditValue : function(options){
       if(options.record &amp;&amp; options.field){
         var value = options.record[options.field];
-        return value == null ? '' : value;
+        return value == null ? &#39;&#39; : value;
       }
-      return '';
+      return &#39;&#39;;
     }
   });
 

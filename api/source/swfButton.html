@@ -20,20 +20,20 @@
  * @fileoverview flash上传按钮
  * @author: zengyue.yezy
  **/
-define('bui/uploader/button/swfButton',['bui/common', './base','./swfButton/ajbridge'], function (require) {
+define(&#39;bui/uploader/button/swfButton&#39;,[&#39;bui/common&#39;, &#39;./base&#39;,&#39;./swfButton/ajbridge&#39;], function (require) {
 
-  var BUI = require('bui/common'),
+  var BUI = require(&#39;bui/common&#39;),
     Component = BUI.Component,
-    ButtonBase = require('bui/uploader/button/base'),
+    ButtonBase = require(&#39;bui/uploader/button/base&#39;),
     baseUrl = getBaseUrl(),
-    SWF = require('bui/uploader/button/swfButton/ajbridge');
+    SWF = require(&#39;bui/uploader/button/swfButton/ajbridge&#39;);
 
   function getBaseUrl(){
     if(window.seajs){
       return seajs.pluginSDK ? seajs.pluginSDK.util.loaderDir : seajs.data.base;
     }
     else if(window.KISSY){
-      return KISSY.Config.packages['bui'].base;
+      return KISSY.Config.packages[&#39;bui&#39;].base;
     }
   }
 
@@ -57,30 +57,37 @@ define('bui/uploader/button/swfButton',['bui/common', './base','./swfButton/ajbr
     },
     bindUI: function(){
       var _self = this,
-        swfUploader = _self.get('swfUploader');
+        swfUploader = _self.get(&#39;swfUploader&#39;);
 
-      swfUploader.on('contentReady', function(ev){
-        _self.fire('swfReady', {swfUploader: swfUploader});
-        swfUploader.on('fileSelect', function(ev){
+      swfUploader.on(&#39;contentReady&#39;, function(ev){
+        _self.fire(&#39;swfReady&#39;, {swfUploader: swfUploader});
+        swfUploader.on(&#39;fileSelect&#39;, function(ev){
           var fileList = ev.fileList,
             files = [];
           BUI.each(fileList, function(file){
             files.push(_self._getFile(file));
           });
-          _self.fire('change', {files: files});
+          _self.fire(&#39;change&#39;, {files: files});
         });
 
-        _self.setMultiple(_self.get('multiple'));
-        _self.setFilter(_self.get('filter'));
+      });
+    },
+    syncUI: function(){
+      var _self = this,
+        swfUploader = _self.get(&#39;swfUploader&#39;);
+      //因为swf加载是个异步的过程，所以加载完后要同步下属性
+      swfUploader.on(&#39;contentReady&#39;, function(ev){
+        _self._uiSetMultiple(_self.get(&#39;multiple&#39;));
+        _self._uiSetFilter(_self.get(&#39;filter&#39;));
       });
     },
     _initSwfUploader: function(){
       var _self = this,
-        buttonCls = _self.get('buttonCls'),
-        buttonEl = _self.get('el').find('.' + buttonCls),
-        flashCfg = _self.get('flash'),
-        flashUrl = _self.get('flashUrl'),
-        swfTpl = _self.get('swfTpl'),
+        buttonCls = _self.get(&#39;buttonCls&#39;),
+        buttonEl = _self.get(&#39;el&#39;).find(&#39;.&#39; + buttonCls),
+        flashCfg = _self.get(&#39;flash&#39;),
+        flashUrl = _self.get(&#39;flashUrl&#39;),
+        swfTpl = _self.get(&#39;swfTpl&#39;),
         swfEl = $(swfTpl).appendTo(buttonEl),
         swfUploader;
       BUI.mix(flashCfg, {
@@ -88,36 +95,38 @@ define('bui/uploader/button/swfButton',['bui/common', './base','./swfButton/ajbr
         src: flashUrl
       });
       swfUploader = new SWF(flashCfg);
-      _self.set('swfEl', swfEl);
-      _self.set('swfUploader', swfUploader);
+      _self.set(&#39;swfEl&#39;, swfEl);
+      _self.set(&#39;swfUploader&#39;, swfUploader);
     },
-    setMultiple: function(v){
+    _uiSetMultiple: function(v){
       var _self = this,
-        swfUploader = _self.get('swfUploader');
+        swfUploader = _self.get(&#39;swfUploader&#39;);
       swfUploader &amp;&amp; swfUploader.multifile(v);
+      return v;
     },
-    setDisabled: function(v){
+    _uiSetDisabled: function(v){
       var _self = this,
-        swfEl = _self.get('swfEl');
+        swfEl = _self.get(&#39;swfEl&#39;);
       if(v){
         swfEl.hide();
       }
       else{
          swfEl.show();
       }
+      return v;
     },
     _convertFilter: function(v){
       var desc = v.desc,
         ext = [];
-      BUI.each(v.ext.split(','), function(item){
-        item &amp;&amp; ext.push('*' + item);
+      BUI.each(v.ext.split(&#39;,&#39;), function(item){
+        item &amp;&amp; ext.push(&#39;*&#39; + item);
       });
-      v.ext = ext.join(';');
+      v.ext = ext.join(&#39;;&#39;);
       return v;
     },
-    setFilter: function(v){
+    _uiSetFilter: function(v){
       var _self = this,
-        swfUploader = _self.get('swfUploader'),
+        swfUploader = _self.get(&#39;swfUploader&#39;),
         filter = _self._convertFilter(_self.getFilter(v));
       //flash里需要一个数组
       // console.log(BUI.JSON.stringify(filter));
@@ -130,13 +139,21 @@ define('bui/uploader/button/swfButton',['bui/common', './base','./swfButton/ajbr
       },
       swfUploader:{
       },
+<span id='BUI-Uploader-Button-SwfButton-property-flashUrl'>      /**
+</span>       * 上传uploader.swf的路径，默认为bui/uploader/uploader.swf
+       * @type {String} url
+       */
       flashUrl:{
-        value: baseUrl + 'uploader/uploader.swf'
+        value: baseUrl + &#39;uploader/uploader.swf&#39;
       },
+<span id='BUI-Uploader-Button-SwfButton-property-flash'>      /**
+</span>       * flash的配置参数，一般不需要修改
+       * @type {Object}
+       */
       flash:{
         value:{
           params:{
-            allowscriptaccess: 'always',
+            allowscriptaccess: &#39;always&#39;,
             bgcolor:&quot;#fff&quot;,
             wmode:&quot;transparent&quot;,
             flashvars: {
@@ -144,7 +161,8 @@ define('bui/uploader/button/swfButton',['bui/common', './base','./swfButton/ajbr
               hand:true,
               //启用按钮模式,激发鼠标事件
               btn:true,
-              jsEntry: 'BUI.AJBridge.eventHandler'
+              //这里flash全局的回调函数
+              jsEntry: &#39;BUI.AJBridge.eventHandler&#39;
             }
           }
         },
@@ -152,14 +170,14 @@ define('bui/uploader/button/swfButton',['bui/common', './base','./swfButton/ajbr
       },
       swfTpl:{
         view: true,
-        value: '&lt;div class=&quot;uploader-button-swf&quot;&gt;&lt;/div&gt;'
+        value: &#39;&lt;div class=&quot;uploader-button-swf&quot;&gt;&lt;/div&gt;&#39;
       },
       xview: {
         value: SwfButtonView
       }
     }
   }, {
-    xclass: 'uploader-swfButton'
+    xclass: &#39;uploader-swfButton&#39;
   });
 
   return SwfButton;

@@ -22,9 +22,9 @@
  * @ignore
  */
 
-define('bui/component/uibase/mask',function (require) {
+define(&#39;bui/component/uibase/mask&#39;,function (require) {
 
-    var UA = require('bui/ua'),
+    var UA = require(&#39;bui/ua&#39;),
         
 <span id='global-property-'>        /**
 </span>         * 每组相同 prefixCls 的 position 共享一个遮罩
@@ -43,44 +43,44 @@ define('bui/component/uibase/mask',function (require) {
         ie6 = UA.ie == 6;
 
     function getMaskCls(self) {
-        return self.get('prefixCls') + 'ext-mask';
+        return self.get(&#39;prefixCls&#39;) + &#39;ext-mask&#39;;
     }
 
     function docWidth() {
-        return  ie6 ? BUI.docWidth() + 'px' : '100%';
+        return  ie6 ? BUI.docWidth() + &#39;px&#39; : &#39;100%&#39;;
     }
 
     function docHeight() {
-        return ie6 ? BUI.docHeight() + 'px' : '100%';
+        return ie6 ? BUI.docHeight() + &#39;px&#39; : &#39;100%&#39;;
     }
 
     function initMask(maskCls) {
-        var mask = $('&lt;div ' +
-            ' style=&quot;width:' + docWidth() + ';' +
-            'left:0;' +
-            'top:0;' +
-            'height:' + docHeight() + ';' +
-            'position:' + (ie6 ? 'absolute' : 'fixed') + ';&quot;' +
-            ' class=&quot;' +
+        var mask = $(&#39;&lt;div &#39; +
+            &#39; style=&quot;width:&#39; + docWidth() + &#39;;&#39; +
+            &#39;left:0;&#39; +
+            &#39;top:0;&#39; +
+            &#39;height:&#39; + docHeight() + &#39;;&#39; +
+            &#39;position:&#39; + (ie6 ? &#39;absolute&#39; : &#39;fixed&#39;) + &#39;;&quot;&#39; +
+            &#39; class=&quot;&#39; +
             maskCls +
-            '&quot;&gt;' +
-            (ie6 ? '&lt;' + 'iframe ' +
-                'style=&quot;position:absolute;' +
-                'left:' + '0' + ';' +
-                'top:' + '0' + ';' +
-                'background:white;' +
-                'width: expression(this.parentNode.offsetWidth);' +
-                'height: expression(this.parentNode.offsetHeight);' +
-                'filter:alpha(opacity=0);' +
-                'z-index:-1;&quot;&gt;&lt;/iframe&gt;' : '') +
-            '&lt;/div&gt;')
-            .prependTo('body');
+            &#39;&quot;&gt;&#39; +
+            (ie6 ? &#39;&lt;&#39; + &#39;iframe &#39; +
+                &#39;style=&quot;position:absolute;&#39; +
+                &#39;left:&#39; + &#39;0&#39; + &#39;;&#39; +
+                &#39;top:&#39; + &#39;0&#39; + &#39;;&#39; +
+                &#39;background:white;&#39; +
+                &#39;width: expression(this.parentNode.offsetWidth);&#39; +
+                &#39;height: expression(this.parentNode.offsetHeight);&#39; +
+                &#39;filter:alpha(opacity=0);&#39; +
+                &#39;z-index:-1;&quot;&gt;&lt;/iframe&gt;&#39; : &#39;&#39;) +
+            &#39;&lt;/div&gt;&#39;)
+            .prependTo(&#39;body&#39;);
 <span id='global-property-'>        /**
 </span>         * 点 mask 焦点不转移
          * @ignore
          */
        // mask.unselectable();
-        mask.on('mousedown', function (e) {
+        mask.on(&#39;mousedown&#39;, function (e) {
             e.preventDefault();
         });
         return mask;
@@ -107,8 +107,8 @@ define('bui/component/uibase/mask',function (require) {
                 zIndex,
                 maskCls = getMaskCls(self),
                 maskDesc = maskMap[maskCls],
-                maskShared = self.get('maskShared'),
-                mask = self.get('maskNode');
+                maskShared = self.get(&#39;maskShared&#39;),
+                mask = self.get(&#39;maskNode&#39;);
             if (!mask) {
                 if (maskShared) {
                     if (maskDesc) {
@@ -123,10 +123,10 @@ define('bui/component/uibase/mask',function (require) {
                 } else {
                     mask = initMask(maskCls);
                 }
-                self.setInternal('maskNode', mask);
+                self.setInternal(&#39;maskNode&#39;, mask);
             }
-            if (zIndex = self.get('zIndex')) {
-                mask.css('z-index', zIndex - 1);
+            if (zIndex = self.get(&#39;zIndex&#39;)) {
+                mask.css(&#39;z-index&#39;, zIndex - 1);
             }
             if (maskShared) {
                 maskDesc.num++;
@@ -134,15 +134,15 @@ define('bui/component/uibase/mask',function (require) {
             if (!maskShared || maskDesc.num == 1) {
                 mask.show();
             }
-            $('body').addClass('x-masked-relative');
+            $(&#39;body&#39;).addClass(&#39;x-masked-relative&#39;);
         },
 
         _maskExtHide:function () {
             var self = this,
                 maskCls = getMaskCls(self),
                 maskDesc = maskMap[maskCls],
-                maskShared = self.get('maskShared'),
-                mask = self.get('maskNode');
+                maskShared = self.get(&#39;maskShared&#39;),
+                mask = self.get(&#39;maskNode&#39;);
             if (maskShared &amp;&amp; maskDesc) {
                 maskDesc.num = Math.max(maskDesc.num - 1, 0);
                 if (maskDesc.num == 0) {
@@ -151,16 +151,16 @@ define('bui/component/uibase/mask',function (require) {
             } else if(mask){
                 mask.hide();
             }
-            $('body').removeClass('x-masked-relative');
+            $(&#39;body&#39;).removeClass(&#39;x-masked-relative&#39;);
         },
 
         __destructor:function () {
             var self = this,
-                maskShared = self.get('maskShared'),
-                mask = self.get('maskNode');
-            if (self.get('maskNode')) {
+                maskShared = self.get(&#39;maskShared&#39;),
+                mask = self.get(&#39;maskNode&#39;);
+            if (self.get(&#39;maskNode&#39;)) {
                 if (maskShared) {
-                    if (self.get('visible')) {
+                    if (self.get(&#39;visible&#39;)) {
                         self._maskExtHide();
                     }
                 } else {
@@ -186,8 +186,8 @@ define('bui/component/uibase/mask',function (require) {
          * &lt;pre&gt;&lt;code&gt;
          *   var overlay = new Overlay({ //显示overlay时，屏蔽body
          *     mask : true,
-         *     maskNode : 'body',
-         *     trigger : '#t1'
+         *     maskNode : &#39;body&#39;,
+         *     trigger : &#39;#t1&#39;
          *   });
          *   overlay.render();
          * &lt;/code&gt;&lt;/pre&gt;
@@ -206,8 +206,8 @@ define('bui/component/uibase/mask',function (require) {
          * &lt;pre&gt;&lt;code&gt;
          *   var overlay = new Overlay({ //显示overlay时，屏蔽body
          *     mask : true,
-         *     maskNode : 'body',
-         *     trigger : '#t1'
+         *     maskNode : &#39;body&#39;,
+         *     trigger : &#39;#t1&#39;
          *   });
          *   overlay.render();
          * &lt;/code&gt;&lt;/pre&gt;
@@ -236,14 +236,14 @@ define('bui/component/uibase/mask',function (require) {
 
         __bindUI:function () {
             var self = this,
-                view = self.get('view'),
+                view = self.get(&#39;view&#39;),
                 _maskExtShow = view._maskExtShow,
                 _maskExtHide = view._maskExtHide;
-            if (self.get('mask')) {
-                self.on('show',function(){
+            if (self.get(&#39;mask&#39;)) {
+                self.on(&#39;show&#39;,function(){
                     view._maskExtShow();
                 });
-                self.on('hide',function(){
+                self.on(&#39;hide&#39;,function(){
                     view._maskExtHide();
                 });
             }

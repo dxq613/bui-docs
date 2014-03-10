@@ -20,20 +20,20 @@
  * @ignore
  */
 
-define('bui/calendar/header',['bui/common'],function (require) {
+define(&#39;bui/calendar/header&#39;,[&#39;bui/common&#39;],function (require) {
   
-  var BUI = require('bui/common'),
+  var BUI = require(&#39;bui/common&#39;),
     PREFIX = BUI.prefix,
     Component = BUI.Component,
-    CLS_TEXT_YEAR = 'year-text',
-    CLS_TEXT_MONTH = 'month-text',
-    CLS_ARROW = 'x-datepicker-arrow',
-    CLS_PREV = 'x-datepicker-prev',
-    CLS_NEXT = 'x-datepicker-next';
+    CLS_TEXT_YEAR = &#39;year-text&#39;,
+    CLS_TEXT_MONTH = &#39;month-text&#39;,
+    CLS_ARROW = &#39;x-datepicker-arrow&#39;,
+    CLS_PREV = &#39;x-datepicker-prev&#39;,
+    CLS_NEXT = &#39;x-datepicker-next&#39;;
       
 <span id='BUI-Calendar-Header'>  /**
 </span>   * 日历控件显示选择年月
-   * xclass:'calendar-header'
+   * xclass:&#39;calendar-header&#39;
    * @class BUI.Calendar.Header
    * @private
    * @extends BUI.Component.Controller
@@ -42,9 +42,9 @@ define('bui/calendar/header',['bui/common'],function (require) {
 
     bindUI : function(){
       var _self = this,
-        el = _self.get('el');
+        el = _self.get(&#39;el&#39;);
 		
-      el.delegate('.' + CLS_ARROW,'click',function(e){
+      el.delegate(&#39;.&#39; + CLS_ARROW,&#39;click&#39;,function(e){
         e.preventDefault();
         var sender = $(e.currentTarget);
         if(sender.hasClass(CLS_NEXT)){
@@ -54,8 +54,8 @@ define('bui/calendar/header',['bui/common'],function (require) {
         }
       });
 
-      el.delegate('.x-datepicker-month','click',function(){
-        _self.fire('headerclick');
+      el.delegate(&#39;.x-datepicker-month&#39;,&#39;click&#39;,function(){
+        _self.fire(&#39;headerclick&#39;);
       });
 	  
     },
@@ -67,12 +67,12 @@ define('bui/calendar/header',['bui/common'],function (require) {
      */
     setMonth : function(year,month){
       var _self = this,
-        curYear = _self.get('year'),
-        curMonth = _self.get('month');
+        curYear = _self.get(&#39;year&#39;),
+        curMonth = _self.get(&#39;month&#39;);
       if(year !== curYear || month !== curMonth){
-        _self.set('year',year);
-        _self.set('month',month);
-        _self.fire('monthchange',{year:year,month:month});
+        _self.set(&#39;year&#39;,year);
+        _self.set(&#39;month&#39;,month);
+        _self.fire(&#39;monthchange&#39;,{year:year,month:month});
       }
     },
 <span id='global-method-nextMonth'>    /**
@@ -81,7 +81,7 @@ define('bui/calendar/header',['bui/common'],function (require) {
      */
     nextMonth : function(){
       var _self = this,
-        date = new Date(_self.get('year'),_self.get('month') + 1);
+        date = new Date(_self.get(&#39;year&#39;),_self.get(&#39;month&#39;) + 1);
 
       _self.setMonth(date.getFullYear(),date.getMonth());
     },
@@ -91,17 +91,17 @@ define('bui/calendar/header',['bui/common'],function (require) {
      */
     prevMonth : function(){
       var _self = this,
-        date = new Date(_self.get('year'),_self.get('month') - 1);
+        date = new Date(_self.get(&#39;year&#39;),_self.get(&#39;month&#39;) - 1);
 
        _self.setMonth(date.getFullYear(),date.getMonth());
     },
     _uiSetYear : function(v){
       var _self = this;
-      _self.get('el').find('.' + CLS_TEXT_YEAR).text(v);
+      _self.get(&#39;el&#39;).find(&#39;.&#39; + CLS_TEXT_YEAR).text(v);
     },
     _uiSetMonth : function(v){
         var _self = this;
-      _self.get('el').find('.' + CLS_TEXT_MONTH).text(v+1);
+      _self.get(&#39;el&#39;).find(&#39;.&#39; + CLS_TEXT_MONTH).text(v+1);
     }
 
   },{
@@ -120,7 +120,7 @@ define('bui/calendar/header',['bui/common'],function (require) {
       month:{
         sync:false,
         setter:function(v){
-          this.set('monthText',v+1);
+          this.set(&#39;monthText&#39;,v+1);
         }
       },
 <span id='BUI-Calendar-Header-property-monthText'>      /**
@@ -132,18 +132,18 @@ define('bui/calendar/header',['bui/common'],function (require) {
       },
       tpl:{
         view:true,
-        value:'&lt;div class=&quot;'+CLS_ARROW+' ' + CLS_PREV + '&quot;&gt;&lt;span class=&quot;icon icon-white icon-caret  icon-caret-left&quot;&gt;&lt;/span&gt;&lt;/div&gt;'+
-          '&lt;div class=&quot;x-datepicker-month&quot;&gt;'+
-            '&lt;div class=&quot;month-text-container&quot;&gt;'+
-              '&lt;span&gt;&lt;span class=&quot;year-text&quot;&gt;{year}&lt;/span&gt;年 &lt;span class=&quot;month-text&quot;&gt;{monthText}&lt;/span&gt;月&lt;/span&gt;'+
-              '&lt;span class=&quot;' + PREFIX + 'caret ' + PREFIX + 'caret-down&quot;&gt;&lt;/span&gt;'+
-            '&lt;/div&gt;'+
-          '&lt;/div&gt;' +
-          '&lt;div class=&quot;'+CLS_ARROW+' ' + CLS_NEXT + '&quot;&gt;&lt;span class=&quot;icon icon-white icon-caret  icon-caret-right&quot;&gt;&lt;/span&gt;&lt;/div&gt;'
+        value:&#39;&lt;div class=&quot;&#39;+CLS_ARROW+&#39; &#39; + CLS_PREV + &#39;&quot;&gt;&lt;span class=&quot;icon icon-white icon-caret  icon-caret-left&quot;&gt;&lt;/span&gt;&lt;/div&gt;&#39;+
+          &#39;&lt;div class=&quot;x-datepicker-month&quot;&gt;&#39;+
+            &#39;&lt;div class=&quot;month-text-container&quot;&gt;&#39;+
+              &#39;&lt;span&gt;&lt;span class=&quot;year-text&quot;&gt;{year}&lt;/span&gt;年 &lt;span class=&quot;month-text&quot;&gt;{monthText}&lt;/span&gt;月&lt;/span&gt;&#39;+
+              &#39;&lt;span class=&quot;&#39; + PREFIX + &#39;caret &#39; + PREFIX + &#39;caret-down&quot;&gt;&lt;/span&gt;&#39;+
+            &#39;&lt;/div&gt;&#39;+
+          &#39;&lt;/div&gt;&#39; +
+          &#39;&lt;div class=&quot;&#39;+CLS_ARROW+&#39; &#39; + CLS_NEXT + &#39;&quot;&gt;&lt;span class=&quot;icon icon-white icon-caret  icon-caret-right&quot;&gt;&lt;/span&gt;&lt;/div&gt;&#39;
       },
       elCls:{
         view:true,
-        value:'x-datepicker-header'
+        value:&#39;x-datepicker-header&#39;
       },
   	  events:{
     		value:{
@@ -154,12 +154,12 @@ define('bui/calendar/header',['bui/common'],function (require) {
            * @param {Number} e.year 年
            * @param {Number} e.month 月
            */
-    			'monthchange' : true
+    			&#39;monthchange&#39; : true
     		}
   	  }
     }
   },{
-    xclass:'calendar-header'
+    xclass:&#39;calendar-header&#39;
   });
 
   return header;

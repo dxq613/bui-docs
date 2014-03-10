@@ -20,15 +20,15 @@
  * @ignore
  */
 
-define('bui/toolbar',['bui/common','bui/toolbar/baritem','bui/toolbar/bar','bui/toolbar/pagingbar','bui/toolbar/numberpagingbar'],function (require) {
-  var BUI = require('bui/common'),
-    Toolbar = BUI.namespace('Toolbar');
+define(&#39;bui/toolbar&#39;,[&#39;bui/common&#39;,&#39;bui/toolbar/baritem&#39;,&#39;bui/toolbar/bar&#39;,&#39;bui/toolbar/pagingbar&#39;,&#39;bui/toolbar/numberpagingbar&#39;],function (require) {
+  var BUI = require(&#39;bui/common&#39;),
+    Toolbar = BUI.namespace(&#39;Toolbar&#39;);
 
   BUI.mix(Toolbar,{
-    BarItem : require('bui/toolbar/baritem'),
-    Bar : require('bui/toolbar/bar'),
-    PagingBar : require('bui/toolbar/pagingbar'),
-    NumberPagingBar : require('bui/toolbar/numberpagingbar')
+    BarItem : require(&#39;bui/toolbar/baritem&#39;),
+    Bar : require(&#39;bui/toolbar/bar&#39;),
+    PagingBar : require(&#39;bui/toolbar/pagingbar&#39;),
+    NumberPagingBar : require(&#39;bui/toolbar/numberpagingbar&#39;)
   });
   return Toolbar;
 });</pre>

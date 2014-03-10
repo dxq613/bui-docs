@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 作为圆的半径的坐标轴使用
+ * @ignore
+ */
+
+define(&#39;bui/chart/radiusaxis&#39;,[&#39;bui/common&#39;,&#39;bui/chart/numberaxis&#39;],function (require) {
+  
+  var BUI = require(&#39;bui/common&#39;),
+    NumberAxis = require(&#39;bui/chart/numberaxis&#39;);
+
+<span id='BUI-Chart-Axis-Radius'>  /**
+</span>   * @class BUI.Chart.Axis.Radius
+   * 圆的半径坐标轴
+   * @extends BUI.Chart.Axis.Number
+   */
+  var Radius = function(cfg){
+    Radius.superclass.constructor.call(this,cfg);
+  };
+
+  Radius.ATTRS = {
+
+<span id='BUI-Chart-Axis-Radius-property-circle'>    /**
+</span>     * 圆形坐标轴
+     * @type {BUI.Chart.Axis.Circle}
+     */
+    circle : {
+
+    },
+    position : {
+      value : &#39;left&#39;
+    },
+<span id='BUI-Chart-Axis-Radius-property-type'>    /**
+</span>     * 类型
+     * @type {String}
+     */
+    type : {
+      value : &#39;radius&#39;
+    }
+
+  };
+
+  BUI.extend(Radius,NumberAxis);
+
+  BUI.augment(Radius,{
+
+    beforeRenderUI : function(){
+      Radius.superclass.beforeRenderUI.call(this);
+      var _self = this,
+        circle = _self.get(&#39;circle&#39;);
+
+      _self.set(&#39;start&#39;,circle.getCenter());
+      _self.set(&#39;end&#39;,circle.getCirclePoint(0));
+    },
+<span id='BUI-Chart-Axis-Radius-method-getGridItemCfg'>    /**
+</span>     * 获取栅格项的配置信息，一般是起始点信息
+     * @protected
+     */
+    getGridItemCfg : function(offsetPoint){
+      var _self = this,
+          item = {},
+          points = [],
+          circle = _self.get(&#39;circle&#39;),
+          center = circle.getCenter(),
+          count = circle.getTicksCount(),
+          r = Math.abs(offsetPoint.y - center.y);
+
+      for(var i = 0; i &lt; count; i++){
+        var angle = circle.getOffsetByIndex(i),
+          point = circle.getCirclePoint(angle,r);
+        points.push(point);
+      }
+      
+      item.points = points;
+      item.r = r;
+      item.center = center;
+      return item;
+    },
+<span id='BUI-Chart-Axis-Radius-method-getPointByAngle'>    /**
+</span>     * 根据角度获取坐标点
+     * @param  {Number} angle 角度
+     * @param  {Number} value 值
+     * @return {Object} 坐标点 x,y
+     */
+    getPointByAngle : function(angle,value){
+      var _self = this,
+        circle = _self.get(&#39;circle&#39;),
+        center = circle.getCenter(),
+        offset = _self.getOffset(value);
+
+      return circle.getCirclePoint(angle,Math.abs(offset - center.y))
+    }
+  });
+
+  return Radius;
+});</pre>
+</body>
+</html>

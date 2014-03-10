@@ -20,10 +20,10 @@
  * @ignore
  */
 
-define('bui/layout/anchoritem',['bui/common','bui/layout/baseitem'],function (require) {
+define(&#39;bui/layout/anchoritem&#39;,[&#39;bui/common&#39;,&#39;bui/layout/baseitem&#39;],function (require) {
 
-	var BUI = require('bui/common'),
-		Base = require('bui/layout/baseitem');
+	var BUI = require(&#39;bui/common&#39;),
+		Base = require(&#39;bui/layout/baseitem&#39;);
 
 	//转换anchor的值
 	function parseValue(value,type){
@@ -31,11 +31,11 @@ define('bui/layout/anchoritem',['bui/common','bui/layout/baseitem'],function (re
 			if(value &gt; 0){ //大于0的正数，返回
 				return value;
 			}else{
-				return '{' + type + '}' + value;
+				return &#39;{&#39; + type + &#39;}&#39; + value;
 			}
 		}
-		if(BUI.isString(value) &amp;&amp; value.indexOf('-') == 0){
-			return '{' + type + '}' + value;
+		if(BUI.isString(value) &amp;&amp; value.indexOf(&#39;-&#39;) == 0){
+			return &#39;{&#39; + type + &#39;}&#39; + value;
 		}
 		return value;
 	}
@@ -51,14 +51,14 @@ define('bui/layout/anchoritem',['bui/common','bui/layout/baseitem'],function (re
 <span id='BUI-Layout-Item-Anchor-property-anchor'>		/**
 </span>		 * 锚定容器的方式，有以下几种方式：
 		 *
-		 *  - 默认方式： ['100%'] 宽度100%,高度auto
-		 *  - 指定宽高： ['100%','50%'] 宽100%, 高 100%
+		 *  - 默认方式： [&#39;100%&#39;] 宽度100%,高度auto
+		 *  - 指定宽高： [&#39;100%&#39;,&#39;50%&#39;] 宽100%, 高 100%
 		 *  - 指定数值:  [100,100] 宽高都是100
 		 *  - 指定负数:  [-100,-50] 容器宽度减去100,宽度高度减去 50
 		 * @type {Array}
 		 */
 		anchor : {
-			value : ['100%']
+			value : [&#39;100%&#39;]
 		}
 	};
 
@@ -74,13 +74,13 @@ define('bui/layout/anchoritem',['bui/common','bui/layout/baseitem'],function (re
 		 */
 		getLayoutAttrs : function(){
 			var _self = this,
-				anchor = _self.get('anchor'),
+				anchor = _self.get(&#39;anchor&#39;),
 				attrs = BUI.mix({},_self.getAttrVals()),
 				width = anchor[0],
 				height = anchor[1];
 
-			attrs.width = parseValue(width,'width');
-			attrs.height = parseValue(height,'height');
+			attrs.width = parseValue(width,&#39;width&#39;);
+			attrs.height = parseValue(height,&#39;height&#39;);
 
 			return attrs;
 		}

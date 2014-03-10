@@ -20,23 +20,23 @@
  * @ignore
  */
 ;(function(){
-var BASE = 'bui/form/';
-define('bui/form',['bui/common',BASE + 'fieldcontainer',BASE + 'form',BASE + 'row',BASE + 'fieldgroup',BASE + 'horizontal',BASE + 'rules',BASE + 'field',BASE + 'fieldgroup'],function (r) {
-  var BUI = r('bui/common'),
-    Form = BUI.namespace('Form'),
-    Tips = r(BASE + 'tips');
+var BASE = &#39;bui/form/&#39;;
+define(&#39;bui/form&#39;,[&#39;bui/common&#39;,BASE + &#39;fieldcontainer&#39;,BASE + &#39;form&#39;,BASE + &#39;row&#39;,BASE + &#39;fieldgroup&#39;,BASE + &#39;horizontal&#39;,BASE + &#39;rules&#39;,BASE + &#39;field&#39;,BASE + &#39;fieldgroup&#39;],function (r) {
+  var BUI = r(&#39;bui/common&#39;),
+    Form = BUI.namespace(&#39;Form&#39;),
+    Tips = r(BASE + &#39;tips&#39;);
 
   BUI.mix(Form,{
     Tips : Tips,
     TipItem : Tips.Item,
-    FieldContainer : r(BASE + 'fieldcontainer'),
-    Form : r(BASE + 'form'),
-    Row : r(BASE + 'row'),
-    Group : r(BASE + 'fieldgroup'),
-    HForm : r(BASE + 'horizontal'),
-    Rules : r(BASE + 'rules'),
-    Field : r(BASE + 'field'),
-    FieldGroup : r(BASE + 'fieldgroup')
+    FieldContainer : r(BASE + &#39;fieldcontainer&#39;),
+    Form : r(BASE + &#39;form&#39;),
+    Row : r(BASE + &#39;row&#39;),
+    Group : r(BASE + &#39;fieldgroup&#39;),
+    HForm : r(BASE + &#39;horizontal&#39;),
+    Rules : r(BASE + &#39;rules&#39;),
+    Field : r(BASE + &#39;field&#39;),
+    FieldGroup : r(BASE + &#39;fieldgroup&#39;)
   });
   return Form;
 });

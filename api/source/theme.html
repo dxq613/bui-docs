@@ -20,9 +20,9 @@
  * @fileoverview 文件上传主题的处理
  * @author 索丘 &lt;zengyue.yezy@alibaba-inc.com&gt;
  **/
-define('bui/uploader/theme',['bui/common'], function (require) {
+define(&#39;bui/uploader/theme&#39;,[&#39;bui/common&#39;], function (require) {
 
-  var BUI = require('bui/common');
+  var BUI = require(&#39;bui/common&#39;);
 
   var themes = {};
 
@@ -30,12 +30,38 @@ define('bui/uploader/theme',['bui/common'], function (require) {
 </span>   * 文件上传的主题设置
    * @class BUI.Uploader.Theme
    * @static
+   *
+   * &lt;pre&gt;&lt;code&gt;
+   * 默认自带的题有
+   * 
+   * //这个是默认的
+   * theme: &#39;defaultTheme&#39;
+   *
+   * //这个带图片预览的
+   * theme: &#39;imageView&#39;
+   * &lt;/pre&gt;&lt;/code&gt;
    */
   var Theme = {
 <span id='BUI-Uploader-Theme-method-addTheme'>    /**
 </span>     * 添加一个主题
      * @param {String} name   主题名称
      * @param {Object} 主题的配置
+     * 
+     * &lt;pre&gt;&lt;code&gt;
+     * @example
+     * // 添加一个主题模板
+     * Theme.addTheme(&#39;imageView&#39;, {
+     *  elCls: &#39;imageViewTheme&#39;,
+     *  queue:{
+     *    resultTpl: {
+     *      &#39;default&#39;: &#39;&amp;lt;div class=&quot;default&quot;&amp;gt;{name}&amp;lt;/div&amp;gt;&#39;,
+     *      &#39;success&#39;: &#39;&amp;lt;div class=&quot;success&quot;&amp;gt;&amp;lt;img src=&quot;{url}&quot; /&amp;gt;&amp;lt;/div&amp;gt;&#39;
+     *      &#39;error&#39;: &#39;&amp;lt;div class=&quot;error&quot;&amp;gt;&amp;lt;span title=&quot;{name}&quot;&amp;gt;{name}&amp;lt;/span&amp;gt;&amp;lt;span class=&quot;uploader-error&quot;&amp;gt;{msg}&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;&#39;,
+     *      &#39;progress&#39;: &#39;&amp;lt;div class=&quot;progress&quot;&amp;gt;&amp;lt;div class=&quot;bar&quot; style=&quot;width:{loadedPercent}%&quot;&amp;gt;&amp;lt;/div&amp;gt;&amp;lt;/div&amp;gt;&#39;
+     *    }
+     *  }
+     *});
+     * &lt;/code&gt;&lt;/pre&gt;
      */
     addTheme: function(name, config){
       themes[name] = config;
@@ -52,17 +78,17 @@ define('bui/uploader/theme',['bui/common'], function (require) {
   };
 
   //这个默认的主题
-  Theme.addTheme('default', {
-    elCls: 'defaultTheme'
+  Theme.addTheme(&#39;default&#39;, {
+    elCls: &#39;defaultTheme&#39;
   });
 
 
   //带图片预览的主题
-  Theme.addTheme('imageView', {
-    elCls: 'imageViewTheme',
+  Theme.addTheme(&#39;imageView&#39;, {
+    elCls: &#39;imageViewTheme&#39;,
     queue:{
       resultTpl: {
-        'success': '&lt;div class=&quot;success&quot;&gt;&lt;img src=&quot;{url}&quot; /&gt;&lt;/div&gt;'
+        &#39;success&#39;: &#39;&lt;div class=&quot;success&quot;&gt;&lt;img src=&quot;{url}&quot; /&gt;&lt;/div&gt;&#39;
       }
     }
   });

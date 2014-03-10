@@ -20,7 +20,7 @@
  * @author dxq613@gmail.com, yiminghe@gmail.com
  * @ignore
  */
-define('bui/toolbar/bar',function(){
+define(&#39;bui/toolbar/bar&#39;,function(){
 
 	var Component = BUI.Component,
     UIBase = Component.UIBase;
@@ -34,11 +34,11 @@ define('bui/toolbar/bar',function(){
 	var barView = Component.View.extend({
 
 		renderUI:function() {
-        var el = this.get('el');
-        el.attr('role', 'toolbar');
+        var el = this.get(&#39;el&#39;);
+        el.attr(&#39;role&#39;, &#39;toolbar&#39;);
            
-        if (!el.attr('id')) {
-            el.attr('id', BUI.guid('bar'));
+        if (!el.attr(&#39;id&#39;)) {
+            el.attr(&#39;id&#39;, BUI.guid(&#39;bar&#39;));
         }
     }
 	});
@@ -46,21 +46,21 @@ define('bui/toolbar/bar',function(){
 <span id='BUI-Toolbar-Bar'>	/**
 </span>	 * 工具栏
    * 可以放置按钮、文本、链接等，是分页栏的基类
-   * xclass : 'bar'
+   * xclass : &#39;bar&#39;
    * &lt;p&gt;
    * &lt;img src=&quot;../assets/img/class-toolbar.jpg&quot;/&gt;
    * &lt;/p&gt;
    * ## 按钮组
    * &lt;pre&gt;&lt;code&gt;
-   *   BUI.use('bui/toolbar',function(Toolbar){
+   *   BUI.use(&#39;bui/toolbar&#39;,function(Toolbar){
    *     var buttonGroup = new Toolbar.Bar({
-   *       elCls : 'button-group',
+   *       elCls : &#39;button-group&#39;,
    *       defaultChildCfg : {
-   *         elCls : 'button button-small'
+   *         elCls : &#39;button button-small&#39;
    *       },
-   *       children : [{content : '增加'},{content : '修改'},{content : '删除'}],
+   *       children : [{content : &#39;增加&#39;},{content : &#39;修改&#39;},{content : &#39;删除&#39;}],
    *       
-   *       render : '#b1'
+   *       render : &#39;#b1&#39;
    *     });
    *
    *     buttonGroup.render();
@@ -71,12 +71,12 @@ define('bui/toolbar/bar',function(){
    * @mixins BUI.Component.UIBase.ChildList
    */
 	var Bar = Component.Controller.extend([UIBase.ChildList],
-<span id='global-property-'>	 /**
+<span id=''>	 /**
 </span>	 * @lends BUI.Toolbar.Bar.prototype
    * @ignore 
 	 */	
 	{
-<span id='BUI-Toolbar-Bar-method-getItem'>		/**
+<span id='-method-getItem'>		/**
 </span>		* 通过id 获取项
 		* @param {String|Number} id the id of item 
 		* @return {BUI.Toolbar.BarItem}
@@ -86,22 +86,22 @@ define('bui/toolbar/bar',function(){
 		}
 	},{
 		ATTRS:
-<span id='global-property-'>    /** 
+<span id=''>    /** 
 </span>    * @lends BUI.Toolbar.Bar.prototype
     * @ignore
     */
 		{
-      elTagName :{
-          view : true,
-          value : 'ul'
+<span id='-property-elTagName'>      elTagName :{
+</span>          view : true,
+          value : &#39;ul&#39;
       },
-<span id='BUI-Toolbar-Bar-property-defaultChildClass'>      /**
+<span id='-property-defaultChildClass'>      /**
 </span>       * 默认子项的样式
        * @type {String}
        * @override
        */
       defaultChildClass: {
-        value : 'bar-item'
+        value : &#39;bar-item&#39;
       },
 <span id='global-property-focusable'>			/**
 </span>			* 获取焦点
@@ -120,7 +120,7 @@ define('bui/toolbar/bar',function(){
 			}
 		}
 	},{
-		xclass : 'bar',
+		xclass : &#39;bar&#39;,
 		priority : 1	
 	});
 

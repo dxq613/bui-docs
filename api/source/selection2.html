@@ -20,13 +20,13 @@
  * @ignore
  */
 
-define('bui/grid/plugins/selection',['bui/common'],function(require){
+define(&#39;bui/grid/plugins/selection&#39;,[&#39;bui/common&#39;],function(require){
 
-  var BUI = require('bui/common'),
+  var BUI = require(&#39;bui/common&#39;),
     PREFIX = BUI.prefix,
-    CLS_CHECKBOX = PREFIX + 'grid-checkBox',
-    CLS_CHECK_ICON = 'x-grid-checkbox',
-    CLS_RADIO = PREFIX + 'grid-radio';
+    CLS_CHECKBOX = PREFIX + &#39;grid-checkBox&#39;,
+    CLS_CHECK_ICON = &#39;x-grid-checkbox&#39;,
+    CLS_RADIO = PREFIX + &#39;grid-radio&#39;;
     
 <span id='BUI-Grid-Plugins-CheckSelection'>  /**
 </span>  * 选择行插件
@@ -36,11 +36,11 @@ define('bui/grid/plugins/selection',['bui/common'],function(require){
   *       autoLoad:true
   *     }),
   *     grid = new Grid.Grid({
-  *       render:'#grid',
+  *       render:&#39;#grid&#39;,
   *       columns : columns,
   *       itemStatusFields : { //设置数据跟状态的对应关系
-  *         selected : 'selected',
-  *         disabled : 'disabled'
+  *         selected : &#39;selected&#39;,
+  *         disabled : &#39;disabled&#39;
   *       },
   *       store : store,
   *       plugins : [Grid.Plugins.CheckSelection] // 插件形式引入多选表格
@@ -59,80 +59,80 @@ define('bui/grid/plugins/selection',['bui/common'],function(require){
   BUI.extend(checkSelection,BUI.Base);
 
   checkSelection.ATTRS = 
-<span id='global-property-'>  /**
+<span id=''>  /**
 </span>   * @lends BUI.Grid.Plugins.CheckSelection.prototype
    * @ignore
    */ 
   {
-<span id='BUI-Grid-Plugins-CheckSelection-property-width'>    /**
-</span>    * column's width which contains the checkbox
+<span id='-property-width'>    /**
+</span>    * column&#39;s width which contains the checkbox
     */
     width : {
       value : 40
     },
-<span id='BUI-Grid-Plugins-CheckSelection-property-column'>    /**
+<span id='-property-column'>    /**
 </span>    * @private
     */
     column : {
       
     },
-<span id='BUI-Grid-Plugins-CheckSelection-property-cellInner'>    /**
+<span id='-property-cellInner'>    /**
 </span>    * @private
-    * &lt;input  class=&quot;' + CLS_CHECKBOX + '&quot; type=&quot;checkbox&quot;&gt;
+    * &lt;input  class=&quot;&#39; + CLS_CHECKBOX + &#39;&quot; type=&quot;checkbox&quot;&gt;
     */
     cellInner : {
-      value : '&lt;div class=&quot;'+CLS_CHECKBOX+'-container&quot;&gt;&lt;span class=&quot;' + CLS_CHECK_ICON +'&quot;&gt;&lt;/span&gt;&lt;/div&gt;'
+      value : &#39;&lt;div class=&quot;&#39;+CLS_CHECKBOX+&#39;-container&quot;&gt;&lt;span class=&quot;&#39; + CLS_CHECK_ICON +&#39;&quot;&gt;&lt;/span&gt;&lt;/div&gt;&#39;
     }
   };
 
   BUI.augment(checkSelection, 
-<span id='global-property-'>  /**
+<span id=''>  /**
 </span>   * @lends BUI.Grid.Plugins.CheckSelection.prototype
    * @ignore
    */ 
   {
-    createDom : function(grid){
-      var _self = this;
+<span id='-method-createDom'>    createDom : function(grid){
+</span>      var _self = this;
       var cfg = {
-            title : '',
-            width : _self.get('width'),
+            title : &#39;&#39;,
+            width : _self.get(&#39;width&#39;),
             fixed : true,
             resizable:false,
             sortable : false,
-            tpl : '&lt;div class=&quot;' + PREFIX + 'grid-hd-inner&quot;&gt;' + _self.get('cellInner') + '',
-            cellTpl : _self.get('cellInner')
+            tpl : &#39;&lt;div class=&quot;&#39; + PREFIX + &#39;grid-hd-inner&quot;&gt;&#39; + _self.get(&#39;cellInner&#39;) + &#39;&#39;,
+            cellTpl : _self.get(&#39;cellInner&#39;)
         },
         checkColumn = grid.addColumn(cfg,0);
-      grid.set('multipleSelect',true);
-      _self.set('column',checkColumn);
+      grid.set(&#39;multipleSelect&#39;,true);
+      _self.set(&#39;column&#39;,checkColumn);
     },
-<span id='BUI-Grid-Plugins-CheckSelection-method-bindUI'>    /**
+<span id='-method-bindUI'>    /**
 </span>    * @private
     */
     bindUI : function(grid){
       var _self = this,
-        col = _self.get('column'),
-        colEl = col.get('el'),
-        checkBox = colEl.find('.' + CLS_CHECK_ICON);
-      checkBox.on('click',function(){
-        var checked = colEl.hasClass('checked');     
+        col = _self.get(&#39;column&#39;),
+        colEl = col.get(&#39;el&#39;),
+        checkBox = colEl.find(&#39;.&#39; + CLS_CHECK_ICON);
+      checkBox.on(&#39;click&#39;,function(){
+        var checked = colEl.hasClass(&#39;checked&#39;);     
         if(!checked){
           grid.setAllSelection();
-          colEl.addClass('checked');
+          colEl.addClass(&#39;checked&#39;);
         }else{
           grid.clearSelection();
-          colEl.removeClass('checked');
+          colEl.removeClass(&#39;checked&#39;);
         }
       });
-      grid.on('rowunselected',function(e){
+      grid.on(&#39;rowunselected&#39;,function(e){
         
-        colEl.removeClass('checked');
+        colEl.removeClass(&#39;checked&#39;);
       });
       
       //清除纪录时取全选
-      grid.on('clear',function(){
-        //checkBox.attr('checked',false);
-        colEl.removeClass('checked');
+      grid.on(&#39;clear&#39;,function(){
+        //checkBox.attr(&#39;checked&#39;,false);
+        colEl.removeClass(&#39;checked&#39;);
       });
     }
   });
@@ -149,28 +149,28 @@ define('bui/grid/plugins/selection',['bui/common'],function(require){
   BUI.extend(radioSelection,BUI.Base);
 
   radioSelection.ATTRS = 
-<span id='global-property-'>  /**
+<span id=''>  /**
 </span>   * @lends BUI.Grid.Plugins.RadioSelection#
    * @ignore
    */ 
   {
-<span id='BUI-Grid-Plugins-RadioSelection-property-width'>    /**
-</span>    * column's width which contains the checkbox
+<span id='-property-width'>    /**
+</span>    * column&#39;s width which contains the checkbox
     */
     width : {
       value : 40
     },
-<span id='BUI-Grid-Plugins-RadioSelection-property-column'>    /**
+<span id='-property-column'>    /**
 </span>    * @private
     */
     column : {
       
     },
-<span id='BUI-Grid-Plugins-RadioSelection-property-cellInner'>    /**
+<span id='-property-cellInner'>    /**
 </span>    * @private
     */
     cellInner : {
-      value : '&lt;div class=&quot;' + PREFIX + 'grid-radio-container&quot;&gt;&lt;input  class=&quot;' + CLS_RADIO + '&quot; type=&quot;radio&quot;&gt;&lt;/div&gt;'
+      value : &#39;&lt;div class=&quot;&#39; + PREFIX + &#39;grid-radio-container&quot;&gt;&lt;input  class=&quot;&#39; + CLS_RADIO + &#39;&quot; type=&quot;radio&quot;&gt;&lt;/div&gt;&#39;
     }
   };
 
@@ -178,35 +178,35 @@ define('bui/grid/plugins/selection',['bui/common'],function(require){
     createDom : function(grid){
       var _self = this;
       var cfg = {
-            title : '',
-            width : _self.get('width'),
+            title : &#39;&#39;,
+            width : _self.get(&#39;width&#39;),
             resizable:false,
             fixed : true,
             sortable : false,
-            cellTpl : _self.get('cellInner')
+            cellTpl : _self.get(&#39;cellInner&#39;)
         },
         column = grid.addColumn(cfg,0);
-      grid.set('multipleSelect',false);
-      _self.set('column',column);
+      grid.set(&#39;multipleSelect&#39;,false);
+      _self.set(&#39;column&#39;,column);
     },
-<span id='BUI-Grid-Plugins-RadioSelection-method-bindUI'>    /**
+<span id='-method-bindUI'>    /**
 </span>    * @private
     */
     bindUI : function(grid){
       var _self = this;
 
-      grid.on('rowselected',function(e){
+      grid.on(&#39;rowselected&#39;,function(e){
         _self._setRowChecked(e.row,true);
       });
 
-      grid.on('rowunselected',function(e){
+      grid.on(&#39;rowunselected&#39;,function(e){
         _self._setRowChecked(e.row,false);
       });
     },
     _setRowChecked : function(row,checked){
       var rowEl = $(row),
-        radio = rowEl.find('.' + CLS_RADIO);
-      radio.attr('checked',checked);
+        radio = rowEl.find(&#39;.&#39; + CLS_RADIO);
+      radio.attr(&#39;checked&#39;,checked);
     }
   });
 

@@ -20,11 +20,11 @@
  * @ignore
  */
 
-define('bui/layout/tabitem',['bui/common','bui/layout/baseitem'],function(require) {
+define(&#39;bui/layout/tabitem&#39;,[&#39;bui/common&#39;,&#39;bui/layout/baseitem&#39;],function(require) {
 
-	var BUI = require('bui/common'),
-		CLS_COLLAPSED = 'x-collapsed',
-		Base = require('bui/layout/baseitem');
+	var BUI = require(&#39;bui/common&#39;),
+		CLS_COLLAPSED = &#39;x-collapsed&#39;,
+		Base = require(&#39;bui/layout/baseitem&#39;);
 
 <span id='BUI-Layout-Item-Tab'>	/**
 </span>	 * @class BUI.Layout.Item.Tab
@@ -44,7 +44,7 @@ define('bui/layout/tabitem',['bui/common','bui/layout/baseitem'],function(requir
 			value : true
 		},
 		statusProperties : {
-			value : ['collapsed']
+			value : [&#39;collapsed&#39;]
 		}
 	};
 
@@ -57,11 +57,12 @@ define('bui/layout/tabitem',['bui/common','bui/layout/baseitem'],function(requir
 		 */
 		expand : function(bodyHeight,duration){
 			var _self = this,
-				el = _self.get('el'),
-				bodyEl = _self.get('bodyEl');
+				el = _self.get(&#39;el&#39;),
+				bodyEl = _self.get(&#39;bodyEl&#39;);
 			bodyEl.animate({height : bodyHeight},duration,function(){
-				_self.set('collapsed',false);
+				_self.set(&#39;collapsed&#39;,false);
 				el.removeClass(CLS_COLLAPSED);
+				_self.syncFit();
 			});
 		},
 <span id='BUI-Layout-Item-Tab-method-collapse'>		/**
@@ -69,10 +70,10 @@ define('bui/layout/tabitem',['bui/common','bui/layout/baseitem'],function(requir
 		 */
 		collapse : function(duration){
 			var _self = this,
-				el = _self.get('el'),
-				bodyEl = _self.get('bodyEl');
+				el = _self.get(&#39;el&#39;),
+				bodyEl = _self.get(&#39;bodyEl&#39;);
 			bodyEl.animate({height : 0},duration,function(){
-				_self.set('collapsed',true);
+				_self.set(&#39;collapsed&#39;,true);
 				el.addClass(CLS_COLLAPSED);
 			});
 		}

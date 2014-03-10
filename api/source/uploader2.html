@@ -20,16 +20,32 @@
  * @fileoverview 异步文件上传组件
  * @author 索丘 zengyue.yezy@alibaba-inc.com
  **/
-define('bui/uploader/uploader', ['bui/common', './theme', './factory', './validator'], function (require) {
+define(&#39;bui/uploader/uploader&#39;, [&#39;bui/common&#39;, &#39;./theme&#39;, &#39;./factory&#39;, &#39;./validator&#39;], function (require) {
 
-  var BUI = require('bui/common'),
+  var BUI = require(&#39;bui/common&#39;),
     Component = BUI.Component,
-    Theme = require('bui/uploader/theme'),
-    Factory = require('bui/uploader/factory'),
-    Validator = require('bui/uploader/validator');
+    Theme = require(&#39;bui/uploader/theme&#39;),
+    Factory = require(&#39;bui/uploader/factory&#39;),
+    Validator = require(&#39;bui/uploader/validator&#39;);
 
+  //上传类型的检测函数定义
+  var supportMap = {
+    ajax: function(){
+      return !!window.FormData;
+    },
+    //flash上传类型默认所有浏览器都支持
+    flash: function(){
+      return true;
+    },
+    iframe: function(){
+      return true;
+    }
+  }
 
-  var win = window;
+  //是否支持该上传类型
+  function isSupport(type){
+    return supportMap[type] &amp;&amp; supportMap[type]();
+  }
 
 <span id='BUI-Uploader-UploaderView'>  /**
 </span>   * Uploader的视图层
@@ -47,6 +63,21 @@ define('bui/uploader/uploader', ['bui/common', './theme', './factory', './valida
 </span>   * 文件上传组组件
    * @class BUI.Uploader.Uploader
    * @extends BUI.Component.Controller
+   * 
+   * &lt;pre&gt;&lt;code&gt;
+   *
+   * BUI.use(&#39;bui/uploader&#39;, function(Uploader){
+   *   var uploader = new Uploader.Uploader({
+   *     url: &#39;../upload.php&#39;
+   *   }).render();
+   *
+   *  uploader.on(&#39;success&#39;, function(ev){
+   *    //获取上传返回的结果
+   *    var result = ev.result;
+   *  })
+   * });
+   * 
+   * &lt;/code&gt;&lt;/pre&gt;
    */
   var Uploader = Component.Controller.extend({
     renderUI: function(){
@@ -65,27 +96,13 @@ define('bui/uploader/uploader', ['bui/common', './theme', './factory', './valida
       _self._bindUploaderCore();
       _self._bindQueue();
     },
-<span id='BUI-Uploader-Uploader-method-isSupportAjax'>    /**
-</span>     * 检测浏览器是否支持ajax类型上传方式
-     * @return {Boolean}
-     */
-    isSupportAjax: function(){
-      return !!win['FormData'];
-    },
-<span id='BUI-Uploader-Uploader-method-isSupportFlash'>    /**
-</span>     * 检测浏览器是否支持flash类型上传方式
-     * @return {Boolean}
-     */
-    isSupportFlash: function(){
-      return true;
-    },
 <span id='BUI-Uploader-Uploader-method-_initTheme'>    /**
 </span>     * @private
      * 初始化使用的主题
      */
     _initTheme: function(){
       var _self = this,
-        theme = Theme.getTheme(_self.get('theme')),
+        theme = Theme.getTheme(_self.get(&#39;theme&#39;)),
         attrVals = _self.getAttrVals();
       BUI.each(theme, function(value, name){
         if(attrVals[name] === undefined){
@@ -104,21 +121,18 @@ define('bui/uploader/uploader', ['bui/common', './theme', './factory', './valida
      */
     _initType: function(){
       var _self = this,
-        types = _self.get('types'),
-        type = _self.get('type');
+        types = _self.get(&#39;types&#39;),
+        type = _self.get(&#39;type&#39;);
       //没有设置时按最优处理，有则按设定的处理
       if(!type){
-        if(_self.isSupportAjax()){
-          type = types.AJAX;
-        }
-        else if(_self.isSupportFlash()){
-          type = types.FLASH;
-        }
-        else{
-          type = types.IFRAME;
-        }
+        BUI.each(types, function(item){
+          if(isSupport(item)){
+            type = item;
+            return false;
+          }
+        })
       }
-      _self.set('type', type);
+      _self.set(&#39;type&#39;, type);
     },
 <span id='BUI-Uploader-Uploader-method-_initValidator'>    /**
 </span>     * 初始化验证器
@@ -126,13 +140,13 @@ define('bui/uploader/uploader', ['bui/common', './theme', './factory', './valida
      */
     _initValidator: function(){
       var _self = this,
-        validator = _self.get('validator');
+        validator = _self.get(&#39;validator&#39;);
       if(!validator){
         validator = new Validator({
-          queue: _self.get('queue'),
-          rules: _self.get('rules')
+          queue: _self.get(&#39;queue&#39;),
+          rules: _self.get(&#39;rules&#39;)
         });
-        _self.set('validator', validator);
+        _self.set(&#39;validator&#39;, validator);
       }
     },
 <span id='BUI-Uploader-Uploader-method-_getUserConfig'>    /**
@@ -156,11 +170,11 @@ define('bui/uploader/uploader', ['bui/common', './theme', './factory', './valida
      */
     _renderUploaderType: function(){
       var _self = this,
-        type = _self.get('type'),
-        config = _self._getUserConfig(['url', 'data']);
+        type = _self.get(&#39;type&#39;),
+        config = _self._getUserConfig([&#39;url&#39;, &#39;data&#39;]);
       var uploaderType = Factory.createUploadType(type, config);
-      uploaderType.set('uploader', _self);
-      _self.set('uploaderType', uploaderType);
+      uploaderType.set(&#39;uploader&#39;, _self);
+      _self.set(&#39;uploaderType&#39;, uploaderType);
     },
 <span id='BUI-Uploader-Uploader-method-_renderButton'>    /**
 </span>     * 初始化Button
@@ -168,16 +182,16 @@ define('bui/uploader/uploader', ['bui/common', './theme', './factory', './valida
      */
     _renderButton: function(){
       var _self = this,
-        type = _self.get('type'),
-        el = _self.get('el'),
-        button = _self.get('button') || {};
+        type = _self.get(&#39;type&#39;),
+        el = _self.get(&#39;el&#39;),
+        button = _self.get(&#39;button&#39;) || {};
       if(!button.isController){
         button.render = el;
         button.autoRender = true;
         button = Factory.createButton(type, button);
-        _self.set('button', button);
+        _self.set(&#39;button&#39;, button);
       }
-      button.set('uploader', _self);
+      button.set(&#39;uploader&#39;, _self);
     },
 <span id='BUI-Uploader-Uploader-method-_renderQueue'>    /**
 </span>     * 初始化上传的对列
@@ -185,16 +199,16 @@ define('bui/uploader/uploader', ['bui/common', './theme', './factory', './valida
      */
     _renderQueue: function(){
       var _self = this,
-        el = _self.get('el'),
-        queue = _self.get('queue') || {};
+        el = _self.get(&#39;el&#39;),
+        queue = _self.get(&#39;queue&#39;) || {};
       if (!queue.isController) {
         queue.render = el;
         queue.autoRender = true;
         //queue.uploader = _self;
         queue = Factory.createQueue(queue);
-        _self.set('queue', queue);
+        _self.set(&#39;queue&#39;, queue);
       }
-      queue.set('uploader', _self);
+      queue.set(&#39;uploader&#39;, _self);
     },
 <span id='BUI-Uploader-Uploader-method-_bindButton'>    /**
 </span>     * 绑定button的事件
@@ -202,14 +216,14 @@ define('bui/uploader/uploader', ['bui/common', './theme', './factory', './valida
      */
     _bindButton: function () {
       var _self = this,
-        button = _self.get('button'),
-        queue = _self.get('queue'),
-        uploaderType = _self.get('uploaderType');
-      button.on('change', function(ev) {
+        button = _self.get(&#39;button&#39;),
+        queue = _self.get(&#39;queue&#39;),
+        uploaderType = _self.get(&#39;uploaderType&#39;);
+      button.on(&#39;change&#39;, function(ev) {
         var files = ev.files;
         //对添加的文件添加状态
         queue.addItems(files);
-        _self.fire('change', {items: files});
+        _self.fire(&#39;change&#39;, {items: files});
       });
     },
 <span id='BUI-Uploader-Uploader-method-_bindQueue'>    /**
@@ -218,21 +232,21 @@ define('bui/uploader/uploader', ['bui/common', './theme', './factory', './valida
      */
     _bindQueue: function () {
       var _self = this,
-        queue = _self.get('queue'),
-        validator = _self.get('validator');
+        queue = _self.get(&#39;queue&#39;),
+        validator = _self.get(&#39;validator&#39;);
 
       //渲染完了之后去设置文件状态
-      queue.on('itemrendered', function(ev){
+      queue.on(&#39;itemrendered&#39;, function(ev){
         var item = ev.item,
-          status = 'wait';
+          status = &#39;wait&#39;;
         if(!validator.valid(item)){
-          status = 'error';
+          status = &#39;error&#39;;
         }
         queue.updateFileStatus(item, status);
       });
 
-      queue.on('itemupdated', function(ev) {
-        var items = queue.getItemsByStatus('wait');
+      queue.on(&#39;itemupdated&#39;, function(ev) {
+        var items = queue.getItemsByStatus(&#39;wait&#39;);
         //如果有等待的文件则上传第1个
         if (items &amp;&amp; items.length) {
           _self.uploadFile(items[0]);
@@ -246,57 +260,60 @@ define('bui/uploader/uploader', ['bui/common', './theme', './factory', './valida
      */
     _bindUploaderCore: function () {
       var _self = this,
-        queue = _self.get('queue'),
-        uploaderType = _self.get('uploaderType');
+        queue = _self.get(&#39;queue&#39;),
+        uploaderType = _self.get(&#39;uploaderType&#39;);
 
       //start事件
-      uploaderType.on('start', function(ev){
+      uploaderType.on(&#39;start&#39;, function(ev){
         var item = ev.file;
         delete item.result;
-        _self.fire('start', {item: item});
+        _self.fire(&#39;start&#39;, {item: item});
       });
       //上传的progress事件
-      uploaderType.on('progress', function(ev){
+      uploaderType.on(&#39;progress&#39;, function(ev){
 
-        var curUploadItem = _self.get('curUploadItem'),
+        var curUploadItem = _self.get(&#39;curUploadItem&#39;),
           loaded = ev.loaded,
           total = ev.total;
-
         BUI.mix(curUploadItem.attr, {
-          loaded: loaded,
+          //文件总大小, 这里的单位是byte
           total: total,
+          //已经上传的大小
+          loaded: loaded,
+          //已经上传的百分比
           loadedPercent: loaded * 100 / total
         });
 
         //设置当前正处于的状态
-        queue.updateFileStatus(curUploadItem, 'progress');
+        queue.updateFileStatus(curUploadItem, &#39;progress&#39;);
 
-        _self.fire('progress', {item: curUploadItem, total: total, loaded: loaded});
+        _self.fire(&#39;progress&#39;, {item: curUploadItem, total: total, loaded: loaded});
       });
       //上传过程中的error事件，这时一般是当校验出错是才会出现
-      uploaderType.on('error', function(ev){
-        var curUploadItem = _self.get('curUploadItem'),
-          errorFn = _self.get('error'),
-          completeFn = _self.get('complete');
+      uploaderType.on(&#39;error&#39;, function(ev){
+        var curUploadItem = _self.get(&#39;curUploadItem&#39;),
+          errorFn = _self.get(&#39;error&#39;),
+          completeFn = _self.get(&#39;complete&#39;);
         //设置对列中完成的文件
-        queue.updateFileStatus(curUploadItem, 'error');
+        queue.updateFileStatus(curUploadItem, &#39;error&#39;);
 
         errorFn &amp;&amp; BUI.isFunction(errorFn) &amp;&amp; errorFn.call(_self);
-        _self.fire('error', {item: curUploadItem});
+        _self.fire(&#39;error&#39;, {item: curUploadItem});
 
         completeFn &amp;&amp; BUI.isFunction(completeFn) &amp;&amp; completeFn.call(_self);
-        _self.fire('complete', {item: curUploadItem});
+        _self.fire(&#39;complete&#39;, {item: curUploadItem});
 
-        _self.set('curUploadItem', null);
+        _self.set(&#39;curUploadItem&#39;, null);
       });
 
-      uploaderType.on('complete', function(ev){
-        var curUploadItem = _self.get('curUploadItem'),
+      //上传完成的事件
+      uploaderType.on(&#39;complete&#39;, function(ev){
+        var curUploadItem = _self.get(&#39;curUploadItem&#39;),
           result = ev.result,
-          isSuccess= _self.get('isSuccess'),
-          successFn = _self.get('success'),
-          errorFn = _self.get('error'),
-          completeFn = _self.get('complete');
+          isSuccess= _self.get(&#39;isSuccess&#39;),
+          successFn = _self.get(&#39;success&#39;),
+          errorFn = _self.get(&#39;error&#39;),
+          completeFn = _self.get(&#39;complete&#39;);
 
         // BUI.mix(curUploadItem.result, result);
         curUploadItem.result = result;
@@ -304,19 +321,19 @@ define('bui/uploader/uploader', ['bui/common', './theme', './factory', './valida
         if(isSuccess.call(_self, result)){
           //为了兼容原来只设置了itemTpl的情况
           BUI.mix(curUploadItem, result);
-          queue.updateFileStatus(curUploadItem, 'success');
+          queue.updateFileStatus(curUploadItem, &#39;success&#39;);
           successFn &amp;&amp; BUI.isFunction(successFn) &amp;&amp; successFn.call(_self, result);
-          _self.fire('success', {item: curUploadItem, result: result});
+          _self.fire(&#39;success&#39;, {item: curUploadItem, result: result});
         }
         else{
-          queue.updateFileStatus(curUploadItem, 'error');
+          queue.updateFileStatus(curUploadItem, &#39;error&#39;);
           errorFn &amp;&amp; BUI.isFunction(errorFn) &amp;&amp; errorFn.call(_self, result);
-          _self.fire('error', {item: curUploadItem, result: result});
+          _self.fire(&#39;error&#39;, {item: curUploadItem, result: result});
         }
 
         completeFn &amp;&amp; BUI.isFunction(completeFn) &amp;&amp; completeFn.call(_self, result);
-        _self.fire('complete', {item: curUploadItem, result: result});
-        _self.set('curUploadItem', null);
+        _self.fire(&#39;complete&#39;, {item: curUploadItem, result: result});
+        _self.set(&#39;curUploadItem&#39;, null);
 
         //重新上传其他等待的文件
         _self.uploadFiles();
@@ -328,16 +345,16 @@ define('bui/uploader/uploader', ['bui/common', './theme', './factory', './valida
      */
     uploadFile: function (item) {
       var _self = this,
-        queue = _self.get('queue'),
-        uploaderType = _self.get('uploaderType'),
-        curUploadItem = _self.get('curUploadItem');
+        queue = _self.get(&#39;queue&#39;),
+        uploaderType = _self.get(&#39;uploaderType&#39;),
+        curUploadItem = _self.get(&#39;curUploadItem&#39;);
 
       //如果有文件正等侍上传，而且上传组件当前处理空闲状态，才进行上传
       if (item &amp;&amp; !curUploadItem) {
         //设置正在上传的状态
-        _self.set('curUploadItem', item);
+        _self.set(&#39;curUploadItem&#39;, item);
         //更新文件的状态
-        queue.updateFileStatus(item, 'start');
+        queue.updateFileStatus(item, &#39;start&#39;);
         uploaderType.upload(item);
       }
     },
@@ -346,9 +363,9 @@ define('bui/uploader/uploader', ['bui/common', './theme', './factory', './valida
      */
     uploadFiles: function () {
       var _self = this,
-        queue = _self.get('queue'),
+        queue = _self.get(&#39;queue&#39;),
         //所有文件只有在wait状态才可以上传
-        items = queue.getItemsByStatus('wait');
+        items = queue.getItemsByStatus(&#39;wait&#39;);
 
       if (items &amp;&amp; items.length) {
         //开始进行对列中的上传
@@ -358,14 +375,14 @@ define('bui/uploader/uploader', ['bui/common', './theme', './factory', './valida
 <span id='BUI-Uploader-Uploader-method-cancel'>    /**
 </span>     * 取消正在上传的文件 
      */
-    cancel: function(){
+    cancel: function(item){
       var _self = this,
-        uploaderType = _self.get('uploaderType'),
-        curUploadItem = _self.get('curUploadItem');
+        uploaderType = _self.get(&#39;uploaderType&#39;);
+      item = item || _self.get(&#39;curUploadItem&#39;);
 
-      _self.fire('cancel', {item: curUploadItem});
+      _self.fire(&#39;cancel&#39;, {item: item});
       uploaderType.cancel();
-      _self.set('curUploadItem', null);
+      _self.set(&#39;curUploadItem&#39;, null);
     },
 <span id='BUI-Uploader-Uploader-method-isValid'>    /**
 </span>     * 校验是否通过
@@ -373,17 +390,32 @@ define('bui/uploader/uploader', ['bui/common', './theme', './factory', './valida
      */
     isValid: function(){
       var _self = this,
-        queue = _self.get('queue');
-      return queue.getItemsByStatus('success').length === queue.getItems().length;
+        queue = _self.get(&#39;queue&#39;);
+      return queue.getItemsByStatus(&#39;success&#39;).length === queue.getItems().length;
+    },
+<span id='BUI-Uploader-Uploader-method-_uiSetDisabled'>    /**
+</span>     * 设置是否disabled
+     * @private
+     */
+    _uiSetDisabled: function(v){
+      var _self = this,
+        button = _self.get(&#39;button&#39;);
+      button &amp;&amp; button.isController &amp;&amp; button.set(&#39;disabled&#39;, v);
+    },
+    _uiSetMultiple: function(v){
+      var _self = this,
+        button = _self.get(&#39;button&#39;);
+      button &amp;&amp; button.isController &amp;&amp; button.set(&#39;multiple&#39;, v);
     }
   }, {
     ATTRS: {
+<span id='BUI-Uploader-Uploader-property-types'>      /**
+</span>       * 上传的类型，会依次按这个顺序来检测，并选择第一个可用的
+       * @type {Array} 上传类型
+       * @default [&#39;ajax&#39;, &#39;flash&#39;, &#39;iframe&#39;]
+       */
       types: {
-        value: {
-          AJAX: 'ajax',
-          FLASH: 'flash',
-          IFRAME: 'iframe'
-        }
+        value: [&#39;ajax&#39;, &#39;flash&#39;, &#39;iframe&#39;]
       },
 <span id='BUI-Uploader-Uploader-property-type'>      /**
 </span>       * 上传的类型，有ajax,flash,iframe四种
@@ -396,28 +428,27 @@ define('bui/uploader/uploader', ['bui/common', './theme', './factory', './valida
        * @type {BUI.Uploader.Theme}
        */
       theme: {
-        value: 'default'
+        value: &#39;default&#39;
       },
 <span id='BUI-Uploader-Uploader-property-button'>      /**
 </span>       * 上传组件的button对像
        * @type {BUI.Uploader.Button}
        */
       button: {
-        setter: function(v){
-          var disabled = this.get('disabled');
-          if(v &amp;&amp; v.isController){
-            v.set('disabled', disabled);
-          }
-          return v;
-        }
       },
+<span id='BUI-Uploader-Uploader-property-disabled'>      /**
+</span>       * 上传组件是否可用
+       * @type {Boolean} disabled
+       */
       disabled: {
-        value: false,
-        setter: function(v){
-          var _self = this,
-            button = _self.get('button');
-          button &amp;&amp; button.isController &amp;&amp; button.set('disabled', true);
-        }
+        value: false
+      },
+<span id='BUI-Uploader-Uploader-property-multiple'>      /**
+</span>       * 是否支持多选
+       * @type {Boolean} multiple
+       */
+      multiple: {
+        value: true
       },
 <span id='BUI-Uploader-Uploader-property-queue'>      /**
 </span>       * 上传组件的上传对列
@@ -432,7 +463,7 @@ define('bui/uploader/uploader', ['bui/common', './theme', './factory', './valida
       uploadStatus: {
       },
 <span id='BUI-Uploader-Uploader-property-isSuccess'>      /**
-</span>       * 判断上传是否已经成功，默认判断返回的url中是否有url这个值
+</span>       * 判断上传是否已经成功，默认判断有返回，且返回的json中存在url这个字段
        * @type {Function}
        */
       isSuccess: {
@@ -449,12 +480,70 @@ define('bui/uploader/uploader', ['bui/common', './theme', './factory', './valida
        */
       validator: {
       },
+      events : {
+        value : {
+<span id='BUI-Uploader-Uploader-event-change'>          /**
+</span>           * 选中文件时
+           * @event
+           * @param {Object} e 事件对象
+           * @param {Array} e.items 选中的文件项
+           */
+          &#39;change&#39;: false,
+<span id='BUI-Uploader-Uploader-event-start'>          /**
+</span>           * 文件开始上传时
+           * @event
+           * @param {Object} e 事件对象
+           * @param {Object} e.item 当前上传的项
+           */
+          &#39;start&#39;: false,
+<span id='BUI-Uploader-Uploader-event-progress'>          /**
+</span>           * 文件正在上传时
+           * @event
+           * @param {Object} e 事件对象
+           * @param {Object} e.item 当前上传的项
+           * @param {Number} e.total 文件的总大小
+           * @param {Object} e.loaded 已经上传的大小
+           */
+          &#39;progress&#39;: false,
+<span id='BUI-Uploader-Uploader-event-success'>          /**
+</span>           * 文件上传成功时
+           * @event
+           * @param {Object} e 事件对象
+           * @param {Object} e.item 当前上传的项
+           * @param {Object} e.result 服务端返回的结果
+           */
+          &#39;success&#39;: false,
+<span id='BUI-Uploader-Uploader-event-error'>          /**
+</span>           * 文件上传失败时
+           * @event
+           * @param {Object} e 事件对象
+           * @param {Object} e.item 当前上传的项
+           * @param {Object} e.result 服务端返回的结果
+           */
+          &#39;error&#39;: false,
+<span id='BUI-Uploader-Uploader-event-complete'>          /**
+</span>           * 文件完成时，不管成功失败都会触发
+           * @event
+           * @param {Object} e 事件对象
+           * @param {Object} e.item 当前上传的项
+           * @param {Object} e.result 服务端返回的结果
+           */
+          &#39;complete&#39;: false,
+<span id='BUI-Uploader-Uploader-event-cancel'>          /**
+</span>           * 取消上传时
+           * @event
+           * @param {Object} e 事件对象
+           * @param {Object} e.item 当前取消的项
+           */
+          &#39;cancel&#39;: false
+        }
+      },
       xview: {
         value: UploaderView
       }
     }
   }, {
-    xclass: 'uploader'
+    xclass: &#39;uploader&#39;
   });
 
   return Uploader;

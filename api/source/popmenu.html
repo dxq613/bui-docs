@@ -21,11 +21,11 @@
  * @ignore
  */
 
-define('bui/menu/popmenu',['bui/common','bui/menu/menu'],function (require) {
+define(&#39;bui/menu/popmenu&#39;,[&#39;bui/common&#39;,&#39;bui/menu/menu&#39;],function (require) {
 
-  var BUI = require('bui/common'),
+  var BUI = require(&#39;bui/common&#39;),
     UIBase = BUI.Component.UIBase,
-    Menu = require('bui/menu/menu');
+    Menu = require(&#39;bui/menu/menu&#39;);
 
   var popMenuView =  BUI.Component.View.extend([UIBase.PositionView],{
     
@@ -34,7 +34,7 @@ define('bui/menu/popmenu',['bui/common','bui/menu/menu'],function (require) {
 <span id='BUI-Menu-PopMenu'>   /**
 </span>   * @class BUI.Menu.PopMenu
    * 上下文菜单，一般用于弹出菜单
-   * xclass:'pop-menu'
+   * xclass:&#39;pop-menu&#39;
    * @extends BUI.Menu.Menu
    * @mixins BUI.Component.UIBase.AutoShow
    * @mixins BUI.Component.UIBase.Position
@@ -54,12 +54,12 @@ define('bui/menu/popmenu',['bui/common','bui/menu/menu'],function (require) {
       },
       align : {
         value : {
-           points: ['bl','tl'], // ['tr', 'tl'] 表示 overlay 的 tl 与参考节点的 tr 对齐
+           points: [&#39;bl&#39;,&#39;tl&#39;], // [&#39;tr&#39;, &#39;tl&#39;] 表示 overlay 的 tl 与参考节点的 tr 对齐
            offset: [0, 0]      // 有效值为 [n, m]
         }
       },
       visibleMode : {
-        value : 'visibility'
+        value : &#39;visibility&#39;
       },
 <span id='BUI-Menu-PopMenu-property-autoHide'>      /**
 </span>       * 点击菜单外面，菜单隐藏
@@ -78,7 +78,7 @@ define('bui/menu/popmenu',['bui/common','bui/menu/menu'],function (require) {
       }
     }
   },{
-    xclass:'pop-menu'
+    xclass:&#39;pop-menu&#39;
   });
   
   return popMenu;

@@ -20,7 +20,9 @@
  * @author 剑平（明河）&lt;minghe36@126.com&gt;,紫英&lt;daxingplay@gmail.com&gt;
  * @ignore
  **/
-define('bui/uploader/type/base',function(require) {
+define(&#39;bui/uploader/type/base&#39;,[&#39;bui/common&#39;], function(require) {
+
+  var BUI = require(&#39;bui/common&#39;);
 <span id='BUI-Uploader-UploadType'>  /**
 </span>   * @class BUI.Uploader.UploadType
    *  上传方式类的基类，定义通用的事件和方法，一般不直接监听此类的事件
@@ -54,42 +56,38 @@ define('bui/uploader/type/base',function(require) {
     data: {
     },
     fileDataName: {
-      value: 'Filedata'
+      value: &#39;Filedata&#39;
+    },
+    events: {
+      value: {
+<span id='BUI-Uploader-UploadType-event-start'>        /**
+</span>         * 开始上传后触发
+         * @event
+         * @param {Object} e 事件对象
+         */
+        start: false,
+<span id='BUI-Uploader-UploadType-event-cancel'>        /**
+</span>         * 停止上传后触发
+         * @event
+         * @param {Object} e 事件对象
+         */
+        cancel: false,
+<span id='BUI-Uploader-UploadType-event-success'>        /**
+</span>         * 上传成功后触发
+         * @event
+         * @param {Object} e 事件对象
+         */
+        success: false,
+<span id='BUI-Uploader-UploadType-event-error'>        /**
+</span>         * 上传失败后触发
+         * @event
+         * @param {Object} e 事件对象
+         */
+        error: false
+      }
     }
   }
 
-  BUI.mix(UploadType, {
-<span id='BUI-Uploader-UploadType-property-event'>    /**
-</span>     * 事件列表
-     */
-    event : {
-<span id='BUI-Uploader-UploadType-event-START'>      /**
-</span>       * @event
-       * 开始上传后触发
-       *
-       */
-      START : 'start',
-<span id='BUI-Uploader-UploadType-event-CANCEL'>      /**
-</span>       * 停止上传后触发
-       * @event
-       */
-      CANCEL : 'cancel',
-<span id='BUI-Uploader-UploadType-event-SUCCESS'>      /**
-</span>       * 上传成功后触发
-       * @event
-       */
-      SUCCESS : 'success',
-<span id='BUI-Uploader-UploadType-event-ERROR'>      /**
-</span>       * 上传失败后触发
-       * @event
-       */
-      ERROR : 'error'
-    }
-  });
-
-  
-  
-  
   
   //继承于Base，属性getter和setter委托于Base处理
   BUI.extend(UploadType, BUI.Base, {
@@ -101,7 +99,7 @@ define('bui/uploader/type/base',function(require) {
      * Ajax需要File对像，
      * Iframe需要input[type=file]对像
      * 所以为了保持接口的一致性，这里的File对像不是浏览器原生的File对像，而是包含File和input的对像
-     * 类似{name: 'test.jpg', size: 1024, textSize: '1K', input: {}, file: File}
+     * 类似{name: &#39;test.jpg&#39;, size: 1024, textSize: &#39;1K&#39;, input: {}, file: File}
      */
     upload: function(File) {
     },
@@ -116,7 +114,7 @@ define('bui/uploader/type/base',function(require) {
      */
     _processResponse: function(responseText){
       var _self = this,
-        file = _self.get('file'),
+        file = _self.get(&#39;file&#39;),
         result;
       //格式化成json数据
       if(BUI.isString(responseText)){
@@ -129,7 +127,7 @@ define('bui/uploader/type/base',function(require) {
       }else if(BUI.isObject(responseText)){
         result = _self._fromUnicode(responseText);
       }
-      BUI.log('服务器端输出：' + BUI.JSON.stringify(result));
+      BUI.log(&#39;服务器端输出：&#39; + BUI.JSON.stringify(result));
       return result;
     },
 <span id='BUI-Uploader-UploadType-method-_fromUnicode'>    /**

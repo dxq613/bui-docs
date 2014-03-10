@@ -20,10 +20,10 @@
  * @ignore
  */
 
-define('bui/layout/viewport',['bui/common'],function (require) {
+define(&#39;bui/layout/viewport&#39;,[&#39;bui/common&#39;],function (require) {
 
-	var BUI = require('bui/common'),
-		CLS_VIEW_CONTAINER = 'x-viewport-container',
+	var BUI = require(&#39;bui/common&#39;),
+		CLS_VIEW_CONTAINER = &#39;x-viewport-container&#39;,
 		UA = BUI.UA,
 		win = window;
 
@@ -34,50 +34,50 @@ define('bui/layout/viewport',['bui/common'],function (require) {
 	 * ** 此控件通常跟布局控件一起使用： **
 	 * &lt;pre&gt;&lt;code&gt;
 	 * 	var port = new Viewport({
-				elCls : 'ext-border-layout',
+				elCls : &#39;ext-border-layout&#39;,
 				children : [{
 					layout : {
-						title : '顶部',
+						title : &#39;顶部&#39;,
 						collapsable : true,
-						region : 'north',
+						region : &#39;north&#39;,
 						height : 100
 					},
-					xclass : 'controller',
+					xclass : &#39;controller&#39;,
 					content : &quot;一&quot;
 				},{
-					xclass : 'controller',
+					xclass : &#39;controller&#39;,
 					layout : {
-						region : 'south',
-						title : '下部',
+						region : &#39;south&#39;,
+						title : &#39;下部&#39;,
 						collapsable : true,
 						height : 100
 					},
-					content : '二'
+					content : &#39;二&#39;
 				},{
-					xclass : 'controller',
+					xclass : &#39;controller&#39;,
 					layout : {
-						region : 'east',
-						title : '右侧',
+						region : &#39;east&#39;,
+						title : &#39;右侧&#39;,
 						collapsable : true,
 						width : 150
 					},
 					content : &quot;三&quot;
 				},{
-					xclass : 'controller',
+					xclass : &#39;controller&#39;,
 					layout : {
-						region : 'west',
-						title : '左侧',
+						region : &#39;west&#39;,
+						title : &#39;左侧&#39;,
 						collapsable : true,
 						width : 300
 					},
 					content : &quot;四&quot;
 				},{
-					xclass : 'controller',
+					xclass : &#39;controller&#39;,
 					layout : {
-						title : '居中',
-						region : 'center'
+						title : &#39;居中&#39;,
+						region : &#39;center&#39;
 					},
-					content : '居中'
+					content : &#39;居中&#39;
 				}],
 				plugins : [Border]
 			});
@@ -88,12 +88,12 @@ define('bui/layout/viewport',['bui/common'],function (require) {
 		renderUI : function(){
 			this.reset();
 			var _self = this,
-				render = _self.get('render');
+				render = _self.get(&#39;render&#39;);
 			$(render).addClass(CLS_VIEW_CONTAINER);
 		},
 		bindUI : function(){
 			var _self = this;
-			$(win).on('resize',BUI.wrapBehavior(_self,'onResize'));
+			$(win).on(&#39;resize&#39;,BUI.wrapBehavior(_self,&#39;onResize&#39;));
 		},
 		//窗口发生改变时
 		onResize : function(){
@@ -107,26 +107,26 @@ define('bui/layout/viewport',['bui/common'],function (require) {
 		 */
 		reset : function(){
 			var _self = this,
-				el = _self.get('el'),
+				el = _self.get(&#39;el&#39;),
 				viewportHeight = BUI.viewportHeight(), //ie6,7下问题
 				viewportWidth = BUI.viewportWidth(),
 				appendWidth = _self.getAppendWidth(),
 				appendHeight = _self.getAppendHeight();
-			_self.set('width',viewportWidth - appendWidth);
-			_self.set('height',viewportHeight - appendHeight);
+			_self.set(&#39;width&#39;,viewportWidth - appendWidth);
+			_self.set(&#39;height&#39;,viewportHeight - appendHeight);
 
 		},
 		destructor : function(){
-			$(win).off('resize',BUI.getWrapBehavior(this,'onResize'));
+			$(win).off(&#39;resize&#39;,BUI.getWrapBehavior(this,&#39;onResize&#39;));
 		}
 	},{
 		ATTRS : {
 			render : {
-				value : 'body'
+				value : &#39;body&#39;
 			}
 		}
 	},{
-		xclass : 'view-port'
+		xclass : &#39;view-port&#39;
 	});
 
 	return Viewport;

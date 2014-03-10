@@ -16,149 +16,153 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='global-property-'>/**
-</span> * @fileoverview flash上传方案，基于龙藏写的ajbridge内的uploader
- * @author 剑平（明河）&lt;minghe36@126.com&gt;
- * @ignore
+</span> * @ignore
+ * @fileoverview flash上传方案
+ * @author 
  **/
-define('bui/uploader/type/flash',['./base'], function (require) {
-    var LOG_PREFIX = '[uploader-FlashType]:';
+define(&#39;bui/uploader/type/flash&#39;,[&#39;./base&#39;], function (require) {
+    var LOG_PREFIX = &#39;[uploader-Flash]:&#39;;
 
-    var UploadType = require('bui/uploader/type/base');
+    var UploadType = require(&#39;bui/uploader/type/base&#39;);
 
-<span id='BUI-Uploader-FlashType'>    /**
-</span>     * @class BUI.Uploader.FlashType
-     * flash上传方案，基于龙藏写的ajbridge内的uploader
+    //获取链接绝对路径正则
+    var URI_SPLIT_REG = new RegExp(&#39;^([^?#]+)?(?:\\?([^#]*))?(?:#(.*))?$&#39;),
+        HOSTNAME_SPLIT_REG = new RegExp(&#39;^(?:([\\w\\d+.-]+):)?(?://([\\w\\d\\-\\u0100-\\uffff.+%]*))?.*$&#39;);
+
+<span id='BUI-Uploader-UploadType-Flash'>    /**
+</span>     * @class BUI.Uploader.UploadType.Flash
+     * flash上传方案
+     * 使用时要确认flash与提交的url是否跨越，如果跨越则需要设置crossdomain.xml
      * @extends BUI.Uploader.UploadType
      */
     function FlashType(config) {
         var _self = this;
         //调用父类构造函数
         FlashType.superclass.constructor.call(_self, config);
-        _self.isHasCrossdomain();
     }
 
-    BUI.mix(FlashType,{
-<span id='BUI-Uploader-FlashType-property-event'>        /**
-</span>         * 事件列表
-         */
-        event:BUI.merge(UploadType.event, {
-            //swf文件已经准备就绪
-            SWF_READY: 'swfReady',
-            //正在上传
-            PROGRESS:'progress'
-        })
-    });
-
     BUI.extend(FlashType, UploadType, {
-<span id='BUI-Uploader-FlashType-method-_initSwfUploader'>        /**
+<span id='BUI-Uploader-UploadType-Flash-method-_initSwfUploader'>        /**
 </span>         * 初始化
          */
         _initSwfUploader:function () {
-            var _self = this, swfUploader = _self.get('swfUploader');
+            var _self = this, swfUploader = _self.get(&#39;swfUploader&#39;);
             if(!swfUploader){
-                BUI.log(LOG_PREFIX + 'swfUploader对象为空！');
+                BUI.log(LOG_PREFIX + &#39;swfUploader对象为空！&#39;);
                 return false;
             }
-            //SWF 内容准备就绪
-            swfUploader.on('contentReady', function(ev){
-                _self.fire(FlashType.event.SWF_READY);
-            });
+            //初始化swf时swf已经ready，所以这里直接fire swfReady事件
+            _self.fire(&#39;swfReady&#39;);
+
+            //测试是否存在crossdomain.xml
+            _self._hasCrossdomain();
+
             //监听开始上传事件
-            swfUploader.on('uploadStart', function(ev){
-                var file = _self.get('file');
-                _self.fire(UploadType.event.START, {file: file});
+            swfUploader.on(&#39;uploadStart&#39;, function(ev){
+                var file = _self.get(&#39;file&#39;);
+                _self.fire(&#39;start&#39;, {file: file});
             });
             //监听文件正在上传事件
-            swfUploader.on('uploadProgress', function(ev){
+            swfUploader.on(&#39;uploadProgress&#39;, function(ev){
                 BUI.mix(ev, {
                     //已经读取的文件字节数
                     loaded:ev.bytesLoaded,
                     //文件总共字节数
                     total : ev.bytesTotal
                 });
-                BUI.log(LOG_PREFIX + '已经上传字节数为：' + ev.bytesLoaded);
-                _self.fire(FlashType.event.PROGRESS, { 'loaded':ev.loaded, 'total':ev.total });
+                BUI.log(LOG_PREFIX + &#39;已经上传字节数为：&#39; + ev.bytesLoaded);
+                _self.fire(&#39;progress&#39;, { &#39;loaded&#39;:ev.loaded, &#39;total&#39;:ev.total });
             });
             //监听文件上传完成事件
-            swfUploader.on('uploadCompleteData', function(ev){
-                var file = _self.get('file'),
+            swfUploader.on(&#39;uploadCompleteData&#39;, function(ev){
+                var file = _self.get(&#39;file&#39;),
                     result = _self._processResponse(ev.data);
-                _self.fire('complete', {result: result, file: file});
-                _self.set('file', null);
+                _self.fire(&#39;complete&#39;, {result: result, file: file});
+                _self.set(&#39;file&#39;, null);
             });
             //监听文件失败事件
-            swfUploader.on('uploadError',function(){
-                var file = _self.get('file');
-                _self.fire(FlashType.event.ERROR, {file: file});
-                _self.set('file', null);
+            swfUploader.on(&#39;uploadError&#39;,function(){
+                var file = _self.get(&#39;file&#39;);
+                _self.fire(&#39;error&#39;, {file: file});
+                _self.set(&#39;file&#39;, null);
             });
         },
-<span id='BUI-Uploader-FlashType-method-upload'>        /**
+<span id='BUI-Uploader-UploadType-Flash-method-upload'>        /**
 </span>         * 上传文件
          * @param {String} id 文件id
-         * @return {BUI.Uploader.FlashType}
+         * @return {BUI.Uploader.UploadType.Flash}
          * @chainable
          */
         upload:function (file) {
             var _self = this,
-                swfUploader = _self.get('swfUploader'),
-                url = _self.get('url'),
-                method = 'POST',
-                data = _self.get('data'),
-                name = _self.get('fileDataName');
+                swfUploader = _self.get(&#39;swfUploader&#39;),
+                url = _self.get(&#39;url&#39;),
+                method = &#39;POST&#39;,
+                data = _self.get(&#39;data&#39;),
+                name = _self.get(&#39;fileDataName&#39;);
             if(!file){
                 return;
             }
-            _self.set('file', file);
+            _self.set(&#39;file&#39;, file);
             swfUploader.upload(file.id, url, method, data, name);
             return _self;
         },
-<span id='BUI-Uploader-FlashType-method-cancel'>        /**
+<span id='BUI-Uploader-UploadType-Flash-method-cancel'>        /**
 </span>         * 停止上传文件
-         * @return {BUI.Uploader.FlashType}
+         * @return {BUI.Uploader.UploadType.Flash}
          * @chainable
          */
         cancel: function () {
             var _self = this,
-                swfUploader = _self.get('swfUploader'),
-                file = _self.get('file');
+                swfUploader = _self.get(&#39;swfUploader&#39;),
+                file = _self.get(&#39;file&#39;);
             if(file){
                 swfUploader.cancel(file.id);
-                _self.fire(FlashType.event.CANCEL, {file: file});
-                _self.set('file', null);
+                _self.fire(&#39;cancel&#39;, {file: file});
+                _self.set(&#39;file&#39;, null);
             }
             return _self;
         },
-        reset: function(){
-
-        },
-<span id='BUI-Uploader-FlashType-method-isHasCrossdomain'>        /**
+<span id='BUI-Uploader-UploadType-Flash-method-_hasCrossdomain'>        /**
 </span>         * 应用是否有flash跨域策略文件
+         * @private
+         * 2014-01-13 应该判断swf的路径上提交上传接口的路径是否同域
          */
-        isHasCrossdomain:function(){
-            var domain = location.hostname;
-             $.ajax({
-                 url:'http://' + domain + '/crossdomain.xml',
-                 dataType:&quot;xml&quot;,
-                 error:function(){
-                     BUI.log('缺少crossdomain.xml文件或该文件不合法！');
-                 }
-             });
+        _hasCrossdomain: function(){
+            var _self = this,
+
+                // http://g.tbcdn.cn/fi/bui/upload.php =&gt; [&#39;http://g.tbcdn.cn/fi/bui/upload.php&#39;, &#39;http&#39;, &#39;g.tbcdn.cn&#39;]
+                url = _self.get(&#39;url&#39;).match(HOSTNAME_SPLIT_REG) || [],
+                flashUrl = _self.get(&#39;swfUploader&#39;).get(&#39;src&#39;).match(HOSTNAME_SPLIT_REG) || [],
+                urlDomain = url[2],
+                flashUrlDomain = flashUrl[2];
+
+            //不同域时才去校验crossdomain
+            if(urlDomain &amp;&amp; flashUrlDomain &amp;&amp; urlDomain !== flashUrlDomain){
+                $.ajax({
+                    url: url[1] + &#39;://&#39; + urlDomain + &#39;/crossdomain.xml&#39;,
+                    dataType:&quot;xml&quot;,
+                    error:function(){
+                       BUI.log(&#39;缺少crossdomain.xml文件或该文件不合法！&#39;);
+                    }
+                });
+            }
         }
     }, {ATTRS:{
         uploader: {
             setter: function(v){
                 var _self = this;
-                if(v){
-                    var swfButton = v.get('button');
-                    swfButton.on('swfReady', function(ev){
-                        _self.set('swfUploader', ev.swfUploader);
+                if(v &amp;&amp; v.isController){
+                    //因为flash上传需要依赖swfButton，所以是要等flash加载完成后才可以初始化的
+                    var swfButton = v.get(&#39;button&#39;);
+                    swfButton.on(&#39;swfReady&#39;, function(ev){
+                        _self.set(&#39;swfUploader&#39;, ev.swfUploader);
                         _self._initSwfUploader();
                     });
                 }
             }
         },
-<span id='BUI-Uploader-FlashType-property-url'>        /**
+<span id='BUI-Uploader-UploadType-Flash-property-url'>        /**
 </span>         * 服务器端路径，留意flash必须是绝对路径
          */
         url:{
@@ -166,26 +170,48 @@ define('bui/uploader/type/flash',['./base'], function (require) {
                 var reg = /^http/;
                 //不是绝对路径拼接成绝对路径
                 if(!reg.test(v)){
-                     var href = location.href,uris = href.split('/'),newUris;
+                    //获取前面url部份
+                    //修复下如下链接问题：http://a.b.com/a.html?a=a/b/c#d/e/f =&gt; http://a.b.com/a.html
+                    var href = location.href.match(URI_SPLIT_REG) || [],
+                        path = href[1] || &#39;&#39;,
+                        uris = path.split(&#39;/&#39;),
+                        newUris;
                     newUris  = BUI.Array.filter(uris,function(item,i){
                         return i &lt; uris.length - 1;
                     });
-                    v = newUris.join('/') + '/' + v;
+                    v = newUris.join(&#39;/&#39;) + &#39;/&#39; + v;
                 }
                 return v;
             }
         },
         fileDataName: {
-            value: 'Filedata'
+            value: &#39;Filedata&#39;
         },
-<span id='BUI-Uploader-FlashType-property-swfUploader'>        /**
+<span id='BUI-Uploader-UploadType-Flash-property-swfUploader'>        /**
 </span>         * ajbridge的uploader组件的实例，必须参数
          */
         swfUploader:{},
-<span id='BUI-Uploader-FlashType-property-uploadingId'>        /**
+<span id='BUI-Uploader-UploadType-Flash-property-uploadingId'>        /**
 </span>         * 正在上传的文件id
          */
-        uploadingId : {}
+        uploadingId : {},
+<span id='BUI-Uploader-UploadType-Flash-property-events'>        /**
+</span>         * 事件列表
+         */
+        events:{
+            value: {
+                //swf文件已经准备就绪
+                swfReady: false,
+<span id='BUI-Uploader-UploadType-Flash-event-progress'>                /**
+</span>                 * 上传正在上传时
+                 * @event
+                 * @param {Object} e 事件对象
+                 * @param {Number} total 文件的总大小
+                 * @param {Number} loaded 已经上传的大小
+                 */
+                progress: false
+            }
+        }
     }});
     return FlashType;
 });</pre>

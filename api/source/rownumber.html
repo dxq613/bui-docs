@@ -15,9 +15,9 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">define('bui/grid/plugins/rownumber',function (require) {
+  <pre class="prettyprint lang-js">define(&#39;bui/grid/plugins/rownumber&#39;,function (require) {
 
-  var CLS_NUMBER = 'x-grid-rownumber';
+  var CLS_NUMBER = &#39;x-grid-rownumber&#39;;
 <span id='BUI-Grid-Plugins-RowNumber'>  /**
 </span>   * @class BUI.Grid.Plugins.RowNumber
    * 表格显示行序号的插件
@@ -31,7 +31,7 @@
   RowNumber.ATTRS = 
   {
 <span id='BUI-Grid-Plugins-RowNumber-property-width'>    /**
-</span>    * column's width which contains the row number
+</span>    * column&#39;s width which contains the row number
     */
     width : {
       value : 40
@@ -50,8 +50,8 @@
     createDom : function(grid){
       var _self = this;
       var cfg = {
-            title : '',
-            width : _self.get('width'),
+            title : &#39;&#39;,
+            width : _self.get(&#39;width&#39;),
             fixed : true,
             resizable:false,
             sortable : false,
@@ -59,7 +59,7 @@
             elCls : CLS_NUMBER
         },
         column = grid.addColumn(cfg,0);
-      _self.set('column',column);
+      _self.set(&#39;column&#39;,column);
     }
   });
   

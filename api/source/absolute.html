@@ -20,12 +20,12 @@
  * @ignore
  */
 
-define('bui/layout/absolute',['bui/common','bui/layout/abstract','bui/layout/absoluteitem'],function (require) {
+define(&#39;bui/layout/absolute&#39;,[&#39;bui/common&#39;,&#39;bui/layout/abstract&#39;,&#39;bui/layout/absoluteitem&#39;],function (require) {
 
-	var CLS_RELATIVE = 'x-layout-relative',
-		BUI = require('bui/common'),
-		Abstract = require('bui/layout/abstract'),
-		AbsoluteItem = require('bui/layout/absoluteitem');
+	var CLS_RELATIVE = &#39;x-layout-relative&#39;,
+		BUI = require(&#39;bui/common&#39;),
+		Abstract = require(&#39;bui/layout/abstract&#39;),
+		AbsoluteItem = require(&#39;bui/layout/absoluteitem&#39;);
 
 <span id='BUI-Layout-Absolute'>	/**
 </span>	 * @class BUI.Layout.Absolute
@@ -36,48 +36,48 @@ define('bui/layout/absolute',['bui/common','bui/layout/abstract','bui/layout/abs
 				control = new BUI.Component.Controller({
 				width:800,
 				height:500,
-				elCls : 'layout-test',
+				elCls : &#39;layout-test&#39;,
 				children : [{
 					layout : {
 						top : 0,
 						left : 0,
-						width:'100%',
-						elCls : 'north',
+						width:&#39;100%&#39;,
+						elCls : &#39;north&#39;,
 						height: 50
 					},
-					xclass : 'controller',
-					content : '一'
+					xclass : &#39;controller&#39;,
+					content : &#39;一&#39;
 				},{
-					xclass : 'controller',
+					xclass : &#39;controller&#39;,
 					layout : {
-						width:'20%',
-						height : '{height} - 100',
+						width:&#39;20%&#39;,
+						height : &#39;{height} - 100&#39;,
 						top:50,
-						elCls : 'east',
+						elCls : &#39;east&#39;,
 						left : 0
 					},
-					content : '二'
+					content : &#39;二&#39;
 				},{
-					xclass : 'controller',
+					xclass : &#39;controller&#39;,
 					layout : {
-						width:'80%',
-						height : '{height} - 100',
-						left : '20%',
+						width:&#39;80%&#39;,
+						height : &#39;{height} - 100&#39;,
+						left : &#39;20%&#39;,
 						top:50,
-						elCls : 'center'
+						elCls : &#39;center&#39;
 					},
-					content : '中间内容区'
+					content : &#39;中间内容区&#39;
 				},{
-					xclass : 'controller',
+					xclass : &#39;controller&#39;,
 					layout : {
 						bottom : 0,
 						left : 0,
-						width: '100%',
+						width: &#39;100%&#39;,
 						height:48,
-						elCls : 'south'
+						elCls : &#39;south&#39;
 					},
-					width:'100%',
-					content : '三'
+					width:&#39;100%&#39;,
+					content : &#39;三&#39;
 				}],
 				plugins : [layout]
 			});
@@ -108,7 +108,7 @@ define('bui/layout/absolute',['bui/common','bui/layout/abstract','bui/layout/abs
 
 		},
 		itemTpl : {
-			value : '&lt;div class=&quot;x-layout-item-absolute&quot;&gt;&lt;/div&gt;'
+			value : &#39;&lt;div class=&quot;x-layout-item-absolute&quot;&gt;&lt;/div&gt;&#39;
 		}
 	};
 

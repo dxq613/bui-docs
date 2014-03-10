@@ -20,8 +20,8 @@
  * @ignore
  */
 
-define('bui/form/remote',['bui/common'],function(require) {
-  var BUI = require('bui/common');
+define(&#39;bui/form/remote&#39;,[&#39;bui/common&#39;],function(require) {
+  var BUI = require(&#39;bui/common&#39;);
 
 <span id='BUI-Form-RemoteView'>  /**
 </span>   * @class BUI.Form.RemoteView
@@ -50,19 +50,19 @@ define('bui/form/remote',['bui/common'],function(require) {
     },
     _setLoading : function () {
       var _self = this,
-        loadingEl = _self.get('loadingEl'),
-        loadingTpl = _self.get('loadingTpl');
+        loadingEl = _self.get(&#39;loadingEl&#39;),
+        loadingTpl = _self.get(&#39;loadingTpl&#39;);
       if(!loadingEl){
         loadingEl = $(loadingTpl).appendTo(_self.getLoadingContainer());
-        _self.setInternal('loadingEl',loadingEl);
+        _self.setInternal(&#39;loadingEl&#39;,loadingEl);
       }
     },
     _clearLoading : function () {
       var _self = this,
-        loadingEl = _self.get('loadingEl');
+        loadingEl = _self.get(&#39;loadingEl&#39;);
       if(loadingEl){
         loadingEl.remove();
-        _self.setInternal('loadingEl',null);
+        _self.setInternal(&#39;loadingEl&#39;,null);
       }
     },
     _uiSetIsLoading : function (v) {
@@ -87,15 +87,15 @@ define('bui/form/remote',['bui/common'],function(require) {
 
 <span id='BUI-Form-Remote-property-defaultRemote'>    /**
 </span>     * 默认的异步请求配置项：
-     * method : 'GET',
+     * method : &#39;GET&#39;,
      * cache : true,
-     * dataType : 'text'
+     * dataType : &#39;text&#39;
      * @protected
      * @type {Object}
      */
     defaultRemote : {
       value : {
-        method : 'GET',
+        method : &#39;GET&#39;,
         cache : true,
         callback : function (data) {
           return data;
@@ -126,7 +126,7 @@ define('bui/form/remote',['bui/common'],function(require) {
      */
     loadingTpl : {
       view : true,
-      value : '&lt;img src=&quot;http://img02.taobaocdn.com/tps/i2/T1NU8nXCVcXXaHNz_X-16-16.gif&quot; alt=&quot;loading&quot;/&gt;'
+      value : &#39;&lt;img src=&quot;http://img02.taobaocdn.com/tps/i2/T1NU8nXCVcXXaHNz_X-16-16.gif&quot; alt=&quot;loading&quot;/&gt;&#39;
     },
 <span id='BUI-Form-Remote-property-isLoading'>    /**
 </span>     * 是否正在等待异步请求结果
@@ -142,13 +142,13 @@ define('bui/form/remote',['bui/common'],function(require) {
      *
      *        {
      *          remote : {
-     *            url : 'test.php',
-     *            dataType:'json',//默认为字符串
+     *            url : &#39;test.php&#39;,
+     *            dataType:&#39;json&#39;,//默认为字符串
      *            callback : function(data){
      *              if(data.success){ //data为默认返回的值
-     *                return ''  //返回值为空时，验证成功
+     *                return &#39;&#39;  //返回值为空时，验证成功
      *              }else{
-     *                return '验证失败，XX错误！' //显示返回的字符串为错误
+     *                return &#39;验证失败，XX错误！&#39; //显示返回的字符串为错误
      *              }
      *            }
      *          }
@@ -196,16 +196,16 @@ define('bui/form/remote',['bui/common'],function(require) {
     __bindUI : function(){
       var _self = this;
 
-      _self.on('valid',function (ev) {
-        if(_self.get('remote') &amp;&amp; _self.isValid()){
+      _self.on(&#39;valid&#39;,function (ev) {
+        if(_self.get(&#39;remote&#39;) &amp;&amp; _self.isValid()){
           var value = _self.getControlValue(),
             data = _self.getRemoteParams();
           _self._startRemote(data,value);
         }
       });
 
-      _self.on('error',function (ev) {
-        if(_self.get('remote')){
+      _self.on(&#39;error&#39;,function (ev) {
+        if(_self.get(&#39;remote&#39;)){
           _self._cancelRemote();
         }
       });
@@ -214,9 +214,9 @@ define('bui/form/remote',['bui/common'],function(require) {
     //开始异步请求
     _startRemote : function(data,value){
       var _self = this,
-        remoteHandler = _self.get('remoteHandler'),
-        cacheMap = _self.get('cacheMap'),
-        remoteDaly = _self.get('remoteDaly');
+        remoteHandler = _self.get(&#39;remoteHandler&#39;),
+        cacheMap = _self.get(&#39;cacheMap&#39;),
+        remoteDaly = _self.get(&#39;remoteDaly&#39;);
       if(remoteHandler){
         //如果前面已经发送过异步请求，取消掉
         _self._cancelRemote(remoteHandler);
@@ -228,10 +228,10 @@ define('bui/form/remote',['bui/common'],function(require) {
       //使用闭包进行异步请求
       function dalayFunc(){
         _self._remoteValid(data,remoteHandler,value);
-        _self.set('isLoading',true);
+        _self.set(&#39;isLoading&#39;,true);
       }
       remoteHandler = setTimeout(dalayFunc,remoteDaly);
-      _self.setInternal('remoteHandler',remoteHandler);
+      _self.setInternal(&#39;remoteHandler&#39;,remoteHandler);
       
     },
     _validResult : function(callback,data){
@@ -242,16 +242,16 @@ define('bui/form/remote',['bui/common'],function(require) {
     onRemoteComplete : function(error,data,remoteHandler){
       var _self = this;
       //确认当前返回的错误是当前请求的结果，防止覆盖后面的请求
-      if(remoteHandler == _self.get('remoteHandler')){
-          _self.fire('remotecomplete',{error : error,data : data});
-          _self.set('isLoading',false);
-          _self.setInternal('remoteHandler',null);
+      if(remoteHandler == _self.get(&#39;remoteHandler&#39;)){
+          _self.fire(&#39;remotecomplete&#39;,{error : error,data : data});
+          _self.set(&#39;isLoading&#39;,false);
+          _self.setInternal(&#39;remoteHandler&#39;,null);
       } 
     },
     _getOptions : function(data){
       var _self = this,
-        remote = _self.get('remote'),
-        defaultRemote = _self.get('defaultRemote'),
+        remote = _self.get(&#39;remote&#39;),
+        defaultRemote = _self.get(&#39;defaultRemote&#39;),
         options = BUI.merge(defaultRemote,remote,{data : data});
       return options;
     },
@@ -261,7 +261,7 @@ define('bui/form/remote',['bui/common'],function(require) {
     //异步请求
     _remoteValid : function(data,remoteHandler,value){
       var _self = this,
-        cacheMap = _self.get('cacheMap'),
+        cacheMap = _self.get(&#39;cacheMap&#39;),
         options = _self._getOptions(data);
       options.success = function (data) {
         var callback = options.callback,
@@ -274,7 +274,7 @@ define('bui/form/remote',['bui/common'],function(require) {
         _self.onRemoteComplete(errorThrown,null,remoteHandler);
       };
 
-      _self.fire('remotestart',{data : data});
+      _self.fire(&#39;remotestart&#39;,{data : data});
       $.ajax(options);
     },
 <span id='BUI-Form-Remote-method-getRemoteParams'>    /**
@@ -290,18 +290,18 @@ define('bui/form/remote',['bui/common'],function(require) {
 </span>     * 清楚异步验证的缓存
      */
     clearCache : function(){
-      this.set('cacheMap',{});
+      this.set(&#39;cacheMap&#39;,{});
     },
     //取消异步请求
     _cancelRemote : function(remoteHandler){
       var _self = this;
 
-      remoteHandler = remoteHandler || _self.get('remoteHandler');
+      remoteHandler = remoteHandler || _self.get(&#39;remoteHandler&#39;);
       if(remoteHandler){
         clearTimeout(remoteHandler);
-        _self.setInternal('remoteHandler',null);
+        _self.setInternal(&#39;remoteHandler&#39;,null);
       }
-      _self.set('isLoading',false);
+      _self.set(&#39;isLoading&#39;,false);
     }
 
   };

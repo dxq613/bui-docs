@@ -20,7 +20,7 @@
  * @ignore
  */
 
-define('bui/component/uibase/collapsable',function () {
+define(&#39;bui/component/uibase/collapsable&#39;,function () {
 
 <span id='BUI-Component-UIBase-CollapsableView'>  /**
 </span>  * 控件展开折叠的视图类
@@ -39,8 +39,8 @@ define('bui/component/uibase/collapsable',function () {
     //设置收缩样式
     _uiSetCollapsed : function(v){
       var _self = this,
-        cls = _self.getStatusCls('collapsed'),
-        el = _self.get('el');
+        cls = _self.getStatusCls(&#39;collapsed&#39;),
+        el = _self.get(&#39;el&#39;);
       if(v){
         el.addClass(cls);
       }else{
@@ -84,14 +84,14 @@ define('bui/component/uibase/collapsable',function () {
          * @param {Object} e 事件对象
          * @param {BUI.Component.Controller} target 控件
          */
-        'expanded' : true,
+        &#39;expanded&#39; : true,
 <span id='BUI-Component-UIBase-Collapsable-event-collapsed'>        /**
 </span>         * 控件折叠
          * @event
          * @param {Object} e 事件对象
          * @param {BUI.Component.Controller} target 控件
          */
-        'collapsed' : true
+        &#39;collapsed&#39; : true
       }
     }
   };
@@ -100,9 +100,9 @@ define('bui/component/uibase/collapsable',function () {
     _uiSetCollapsed : function(v){
       var _self = this;
       if(v){
-        _self.fire('collapsed');
+        _self.fire(&#39;collapsed&#39;);
       }else{
-        _self.fire('expanded');
+        _self.fire(&#39;expanded&#39;);
       }
     }
   };

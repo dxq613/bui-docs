@@ -25,7 +25,7 @@
 
 
 //控件类的管理器
-define('bui/component/manage',function(require){
+define(&#39;bui/component/manage&#39;,function(require){
 
     var uis = {
         // 不带前缀 prefixCls
@@ -79,10 +79,10 @@ define('bui/component/manage',function(require){
         var cs = $.trim(cls).split(/\s+/);
         for (var i = 0; i &lt; cs.length; i++) {
             if (cs[i]) {
-                cs[i] = this.get('prefixCls') + cs[i];
+                cs[i] = this.get(&#39;prefixCls&#39;) + cs[i];
             }
         }
-        return cs.join(' ');
+        return cs.join(&#39; &#39;);
     }
 
 

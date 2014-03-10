@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 图表控件
+ * @ignore
+ */
+define(&#39;bui/chart/chart&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#39;,&#39;bui/chart/plotback&#39;,&#39;bui/chart/theme&#39;],function (require) {
+  
+  var BUI = require(&#39;bui/common&#39;),
+    PlotBack = require(&#39;bui/chart/plotback&#39;),
+    Graphic = require(&#39;bui/graphic&#39;),
+    SeriesGroup = require(&#39;bui/chart/seriesgroup&#39;),
+    Theme = require(&#39;bui/chart/theme&#39;);
+
+  function mixIf(obj1,obj2){
+    var rst = {},
+      isMerge = false;
+    BUI.each(obj1,function(v,k){
+      rst[k] = obj2[k];
+      if(BUI.isObject(rst[k])){
+        BUI.mix(true,rst[k],obj1[k]);
+      }else{
+        rst[k] = obj1[k];
+      }
+      
+    });
+    if(!isMerge){
+      rst[&#39;lineCfg&#39;] = obj2[&#39;lineCfg&#39;];
+    }
+    return rst;
+
+  }
+
+<span id='BUI-Chart-Chart'>  /**
+</span>   * @class BUI.Chart.Chart
+   * 图，里面包括坐标轴、图例等图形
+   * @extends BUI.Component.Controller
+   */
+  var Chart = BUI.Component.Controller.extend({
+
+    renderUI : function(){
+      var _self = this;
+
+      _self.paint();
+    },
+<span id='BUI-Chart-Chart-method-clear'>    /**
+</span>     * 清除图形
+     */
+    clear : function(){
+      var _self = this,
+        canvas = _self.get(&#39;canvas&#39;);
+      canvas.destroy();
+      _self.set(&#39;isPaint&#39;,false);
+    },
+<span id='BUI-Chart-Chart-method-paint'>    /**
+</span>     * 绘制整个图
+     */
+    paint : function(){
+      var _self = this;
+      if(!_self.get(&#39;isPaint&#39;)){
+        _self._renderCanvas();
+        _self._renderPlot();
+        _self._renderTitle();
+        _self._renderSeries();
+        _self.get(&#39;canvas&#39;).sort();
+      }
+    },
+    //渲染画板
+    _renderCanvas : function(){
+      var _self = this,
+        el = _self.get(&#39;el&#39;),
+        width = _self.get(&#39;width&#39;) || el.width(),
+        height = _self.get(&#39;height&#39;) || el.height(),
+        canvas = new Graphic.Canvas({
+          width : width,
+          height :height,
+          render : el
+        });
+
+      _self.set(&#39;canvas&#39;,canvas);
+    },
+    //渲染背景、边框等
+    _renderPlot : function(){
+      var _self = this,
+        plotCfg = _self.get(&#39;plotCfg&#39;),
+        canvas = _self.get(&#39;canvas&#39;),
+        plotBack = canvas.addGroup(PlotBack,plotCfg),
+        plotRange = plotBack.get(&#39;plotRange&#39;);
+
+      _self.set(&#39;plotRange&#39;,plotRange);
+
+    },
+    //渲染title
+    _renderTitle : function(){
+      
+    },
+    _renderTooltip : function(){
+
+    },
+    _getDefaultType : function(){
+      var _self = this,
+        seriesOptions = _self.get(&#39;seriesOptions&#39;),
+        rst = &#39;line&#39;; //默认类型是线
+      BUI.each(seriesOptions,function(v,k){
+        rst = k.replace(&#39;Cfg&#39;,&#39;&#39;);
+        return false;
+      });
+      return rst;
+    },
+    //渲染数据图序列
+    _renderSeries : function(){
+      var _self = this,
+        theme = _self.get(&#39;theme&#39;),
+        cfg = {},
+        attrs = _self.getAttrVals(),
+        defaultType = _self._getDefaultType(),
+        seriesGroup;
+
+      BUI.each(attrs.series,function(item){
+        if(!item.type){
+          item.type = defaultType;
+        }
+      });
+      BUI.mix(true,cfg,theme,{
+        colors :  attrs.colors,
+        data : attrs.data,
+        plotRange : attrs.plotRange,
+        series : attrs.series,
+        seriesOptions : attrs.seriesOptions,
+        tooltip : attrs.tooltip,
+        legend : attrs.legend,
+        xAxis : attrs.xAxis,
+        yAxis : attrs.yAxis
+      });
+
+      /*cfg.seriesOptions = mixIf(attrs.seriesOptions,theme.seriesOptions);*/
+
+      seriesGroup = _self.get(&#39;canvas&#39;).addGroup(SeriesGroup,cfg);
+      _self.set(&#39;seriesGroup&#39;,seriesGroup);
+
+    },
+<span id='BUI-Chart-Chart-method-repaint'>    /**
+</span>     * 重绘整个图
+     */
+    repaint : function(){
+      var _self = this;
+
+      _self.clear();
+      _self.paint();
+    },
+    destructor : function(){
+      var _self = this;
+
+      _self.clear();
+    }
+  },{
+    ATTRS : {
+
+<span id='BUI-Chart-Chart-property-canvas'>      /**
+</span>       * 画板
+       * &lt;code&gt;
+       *  var canvas =  chart.get(&#39;canvas&#39;);
+       * &lt;/code&gt;
+       * @type {BUI.Graphic.Canvas}
+       */
+      canvas : {
+
+      },
+<span id='BUI-Chart-Chart-property-colors'>      /**
+</span>       * 数据图例默认的颜色顺序
+       * @type {Array}
+       */
+      colors : {
+
+      },
+<span id='BUI-Chart-Chart-property-data'>      /**
+</span>       * 显示的数据
+       * @type {Array}
+       */
+      data : {
+
+      },
+<span id='BUI-Chart-Chart-property-legend'>      /**
+</span>       * 标示每个图例颜色的配置项
+       * @type {Object}
+       */
+      legend : {
+
+      },
+<span id='BUI-Chart-Chart-property-menu'>      /**
+</span>       * 菜单的配置项
+       * @type {Object}
+       */
+      menu : {
+
+      },
+<span id='BUI-Chart-Chart-property-plotCfg'>      /**
+</span>       * 绘图的配置，包括背景、边框等配置信息
+       * @type {Object}
+       */
+      plotCfg : {
+
+      },
+<span id='BUI-Chart-Chart-property-plotRange'>      /**
+</span>       * @protected
+       * 绘制图形的区域
+       * @type {Object}
+       */
+      plotRange : {
+
+      },
+<span id='BUI-Chart-Chart-property-series'>      /**
+</span>       * 数据图序列集合
+       * @type {Array}
+       */
+      series : {
+
+      },
+<span id='BUI-Chart-Chart-property-seriesOptions'>      /**
+</span>       * 数据图序列默认的配置项
+       * @type {Object}
+       */
+      seriesOptions : {
+
+      },
+<span id='BUI-Chart-Chart-property-subTitle'>      /**
+</span>       * 子标题
+       * @type {String}
+       */
+      subTitle : {
+
+      },
+<span id='BUI-Chart-Chart-property-title'>      /**
+</span>       * 标题
+       * @type {String}
+       */
+      title : {
+
+      },
+<span id='BUI-Chart-Chart-property-tooltip'>      /**
+</span>       * 提示信息
+       * @type {Object}
+       */
+      tooltip : {
+
+      },
+<span id='BUI-Chart-Chart-property-xAxis'>      /**
+</span>       * x 轴坐标
+       * @type {Object|Array}
+       */
+      xAxis : {
+
+      },
+
+<span id='BUI-Chart-Chart-property-yAxis'>      /**
+</span>       * Y 轴坐标
+       * @type {Object|Array}
+       */
+      yAxis : {
+
+      },
+<span id='BUI-Chart-Chart-property-theme'>      /**
+</span>       * 应用的样式
+       * @type {Object}
+       */
+      theme : {
+        value : Theme.Base
+      }
+    }
+  },{
+    xclass : &#39;chart&#39;
+  });
+
+  return Chart;
+});</pre>
+</body>
+</html>

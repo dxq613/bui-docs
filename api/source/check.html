@@ -20,8 +20,8 @@
  * @ignore
  */
 
-define('bui/form/checkfield',['bui/form/basefield'],function (require) {
-  var Field = require('bui/form/basefield');
+define(&#39;bui/form/checkfield&#39;,[&#39;bui/form/basefield&#39;],function (require) {
+  var Field = require(&#39;bui/form/basefield&#39;);
 
 <span id='BUI-Form-Field-Check'>  /**
 </span>   * 可选中菜单域
@@ -36,25 +36,25 @@ define('bui/form/checkfield',['bui/form/basefield'],function (require) {
     onValid : function(){
       var _self = this,
         checked = _self._getControlChecked();
-      _self.setInternal('checked',checked);
-      _self.fire('change');
+      _self.setInternal(&#39;checked&#39;,checked);
+      _self.fire(&#39;change&#39;);
       if(checked){
-        _self.fire('checked');
+        _self.fire(&#39;checked&#39;);
       }else{
-        _self.fire('unchecked');
+        _self.fire(&#39;unchecked&#39;);
       }
     },
     //设置是否勾选
     _setControlChecked : function(checked){
       var _self = this,
         innerControl = _self.getInnerControl();
-      innerControl.attr('checked',!!checked);
+      innerControl.attr(&#39;checked&#39;,!!checked);
     },
     //获取是否勾选
     _getControlChecked : function(){
       var _self = this,
         innerControl = _self.getInnerControl();
-      return !!innerControl.attr('checked');
+      return !!innerControl.attr(&#39;checked&#39;);
     },
     //覆盖 设置值的方法
     _uiSetValue : function(v){
@@ -68,7 +68,7 @@ define('bui/form/checkfield',['bui/form/basefield'],function (require) {
     _uiSetChecked : function(v){
       var _self = this;
       _self._setControlChecked(v);
-      if(_self.get('rendered')){
+      if(_self.get(&#39;rendered&#39;)){
         _self.onValid();
       }
     }
@@ -80,7 +80,7 @@ define('bui/form/checkfield',['bui/form/basefield'],function (require) {
        * @type {String}
        */
       validEvent : {
-        value : 'click'
+        value : &#39;click&#39;
       },
 <span id='BUI-Form-Field-Check-cfg-checked'>      /**
 </span>       * 是否选中
@@ -99,22 +99,22 @@ define('bui/form/checkfield',['bui/form/basefield'],function (require) {
 </span>           * @event
            * 选中事件
            */
-          'checked' : false,
+          &#39;checked&#39; : false,
 <span id='BUI-Form-Field-Check-event-unchecked'>          /**
 </span>           * @event
            * 取消选中事件
            */
-          'unchecked' : false
+          &#39;unchecked&#39; : false
         }
       }
     },
     PARSER : {
       checked : function(el){
-        return !!el.attr('checked');
+        return !!el.attr(&#39;checked&#39;);
       }
     }
   },{
-    xclass : 'form-check-field'
+    xclass : &#39;form-check-field&#39;
   });
 
   return checkField;

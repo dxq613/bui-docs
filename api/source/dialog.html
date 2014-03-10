@@ -21,10 +21,10 @@
  * @ignore
  */
 
-define('bui/overlay/dialog',['bui/overlay/overlay'],function (require) {
-  var Overlay = require('bui/overlay/overlay'),
+define(&#39;bui/overlay/dialog&#39;,[&#39;bui/overlay/overlay&#39;],function (require) {
+  var Overlay = require(&#39;bui/overlay/overlay&#39;),
     UIBase = BUI.Component.UIBase,
-  	CLS_TITLE = 'header-title',
+  	CLS_TITLE = &#39;header-title&#39;,
   	PREFIX = BUI.prefix,
     HEIGHT_PADDING = 20;
 
@@ -40,24 +40,24 @@ define('bui/overlay/dialog',['bui/overlay/overlay'],function (require) {
 
     _uiSetTitle:function(v){
       var _self = this,
-        el = _self.get('el');
+        el = _self.get(&#39;el&#39;);
 
-      el.find('.' + CLS_TITLE).html(v);
+      el.find(&#39;.&#39; + CLS_TITLE).html(v);
 
     },
     _uiSetContentId : function(v){
       var _self = this,
-        body = _self.get('body'),
-        children = $('#'+v).children();
+        body = _self.get(&#39;body&#39;),
+        children = $(&#39;#&#39;+v).children();
 
       children.appendTo(body);
     },
     _uiSetHeight : function(v){
       var _self = this,
         bodyHeight = v,
-        header = _self.get('header'),
-        body = _self.get('body'),
-        footer = _self.get('footer');
+        header = _self.get(&#39;header&#39;),
+        body = _self.get(&#39;body&#39;),
+        footer = _self.get(&#39;footer&#39;);
 
       bodyHeight -= header.outerHeight()+footer.outerHeight();
       bodyHeight -=HEIGHT_PADDING * 2;
@@ -65,37 +65,37 @@ define('bui/overlay/dialog',['bui/overlay/overlay'],function (require) {
     },
     _removeContent : function(){
       var _self = this,
-        body = _self.get('body'),
-        contentId = _self.get('contentId');
+        body = _self.get(&#39;body&#39;),
+        contentId = _self.get(&#39;contentId&#39;);
       if(contentId){
-        body.children().appendTo($('#'+contentId));
+        body.children().appendTo($(&#39;#&#39;+contentId));
       }else {
         body.children().remove();
       }
     }
 
   },{
-    xclass:'dialog-view'
+    xclass:&#39;dialog-view&#39;
   });
 
 <span id='BUI-Overlay-Dialog'>  /**
-</span>   * 弹出框 xclass:'dialog'
+</span>   * 弹出框 xclass:&#39;dialog&#39;
    * &lt;p&gt;
    * &lt;img src=&quot;../assets/img/class-overlay.jpg&quot;/&gt;
    * &lt;/p&gt;
    * ** 普通弹出框 **
    * &lt;pre&gt;&lt;code&gt;
-   *  BUI.use('bui/overlay',function(Overlay){
+   *  BUI.use(&#39;bui/overlay&#39;,function(Overlay){
    *      var dialog = new Overlay.Dialog({
-   *        title:'非模态窗口',
+   *        title:&#39;非模态窗口&#39;,
    *        width:500,
    *        height:300,
    *        mask:false,  //设置是否模态
    *        buttons:[],
-   *        bodyContent:'&lt;p&gt;这是一个非模态窗口,并且不带按钮&lt;/p&gt;'
+   *        bodyContent:&#39;&lt;p&gt;这是一个非模态窗口,并且不带按钮&lt;/p&gt;&#39;
    *      });
    *    dialog.show();
-   *    $('#btnShow').on('click',function () {
+   *    $(&#39;#btnShow&#39;).on(&#39;click&#39;,function () {
    *      dialog.show();
    *    });
    *  });
@@ -103,19 +103,19 @@ define('bui/overlay/dialog',['bui/overlay/overlay'],function (require) {
    *
    * ** 使用现有的html结构 **
    * &lt;pre&gt;&lt;code&gt;
-   *  BUI.use('bui/overlay',function(Overlay){
+   *  BUI.use(&#39;bui/overlay&#39;,function(Overlay){
    *      var dialog = new Overlay.Dialog({
-   *        title:'配置DOM',
+   *        title:&#39;配置DOM&#39;,
    *        width:500,
    *        height:250,
-   *        contentId:'content',//配置DOM容器的编号
+   *        contentId:&#39;content&#39;,//配置DOM容器的编号
    *        success:function () {
-   *          alert('确认');
+   *          alert(&#39;确认&#39;);
    *          this.hide();
    *        }
    *      });
    *    dialog.show();
-   *    $('#btnShow').on('click',function () {
+   *    $(&#39;#btnShow&#39;).on(&#39;click&#39;,function () {
    *      dialog.show();
    *    });
    *  });
@@ -137,7 +137,7 @@ define('bui/overlay/dialog',['bui/overlay/overlay'],function (require) {
     //绑定事件
     bindUI : function(){
       var _self = this;
-      _self.on('closeclick',function(){
+      _self.on(&#39;closeclick&#39;,function(){
         return _self.onCancel();
       });
     },
@@ -147,13 +147,13 @@ define('bui/overlay/dialog',['bui/overlay/overlay'],function (require) {
      */
     onCancel : function(){
       var _self = this,
-        cancel = _self.get('cancel');
+        cancel = _self.get(&#39;cancel&#39;);
       return cancel.call(this);
     },
     //设置按钮
     _uiSetButtons:function(buttons){
       var _self = this,
-        footer = _self.get('footer');
+        footer = _self.get(&#39;footer&#39;);
 
       footer.children().remove();
       BUI.each(buttons,function(conf){
@@ -164,61 +164,61 @@ define('bui/overlay/dialog',['bui/overlay/overlay'],function (require) {
     //创建按钮
     _createButton : function(conf,parent){
       var _self = this,
-        temp = '&lt;button class=&quot;'+conf.elCls+'&quot;&gt;'+conf.text+'&lt;/button&gt;',
+        temp = &#39;&lt;button class=&quot;&#39;+conf.elCls+&#39;&quot;&gt;&#39;+conf.text+&#39;&lt;/button&gt;&#39;,
         btn = $(temp).appendTo(parent);
-      btn.on('click',function(){
+      btn.on(&#39;click&#39;,function(){
         conf.handler.call(_self,_self,this);
       });
     },
     destructor : function(){
       var _self = this,
-        contentId = _self.get('contentId'),
-        body = _self.get('body'),
-        closeAction = _self.get('closeAction');
-      if(closeAction == 'destroy'){
+        contentId = _self.get(&#39;contentId&#39;),
+        body = _self.get(&#39;body&#39;),
+        closeAction = _self.get(&#39;closeAction&#39;);
+      if(closeAction == &#39;destroy&#39;){
         _self.hide();
         if(contentId){
-          body.children().appendTo('#'+contentId);
+          body.children().appendTo(&#39;#&#39;+contentId);
         }
       }
     }
   },{
 
     ATTRS : 
-<span id='global-property-'>  	/**
+<span id=''>  	/**
 </span>  	* @lends BUI.Overlay.Dialog#
     * @ignore 
   	*/
     {
-      closeTpl:{
-        view:true,
-        value : '&lt;a tabindex=&quot;0&quot; href=javascript:void(&quot;关闭&quot;) role=&quot;button&quot; class=&quot;' + PREFIX + 'ext-close&quot; style=&quot;&quot;&gt;&lt;span class=&quot;' + PREFIX + 'ext-close-x x-icon x-icon-normal&quot;&gt;×&lt;/span&gt;&lt;/a&gt;'
+<span id='-property-closeTpl'>      closeTpl:{
+</span>        view:true,
+        value : &#39;&lt;a tabindex=&quot;0&quot; href=javascript:void(&quot;关闭&quot;) role=&quot;button&quot; class=&quot;&#39; + PREFIX + &#39;ext-close&quot; style=&quot;&quot;&gt;&lt;span class=&quot;&#39; + PREFIX + &#39;ext-close-x x-icon x-icon-normal&quot;&gt;×&lt;/span&gt;&lt;/a&gt;&#39;
       },
-<span id='BUI-Overlay-Dialog-cfg-buttons'>     /**
+<span id='-cfg-buttons'>     /**
 </span>       * 弹出库的按钮，可以有多个,有3个参数
        * var dialog = new Overlay.Dialog({
-       *     title:'自定义按钮',
+       *     title:&#39;自定义按钮&#39;,
        *     width:500,
        *     height:300,
        *     mask:false,
        *     buttons:[
        *       {
-       *         text:'自定义',
-       *         elCls : 'button button-primary',
+       *         text:&#39;自定义&#39;,
+       *         elCls : &#39;button button-primary&#39;,
        *         handler : function(){
        *           //do some thing
        *           this.hide();
        *         }
        *       },{
-       *         text:'关闭',
-       *         elCls : 'button',
+       *         text:&#39;关闭&#39;,
+       *         elCls : &#39;button&#39;,
        *         handler : function(){
        *           this.hide();
        *         }
        *       }
        *     ],
        *     
-       *     bodyContent:'&lt;p&gt;这是一个自定义按钮窗口,可以配置事件和文本样式&lt;/p&gt;'
+       *     bodyContent:&#39;&lt;p&gt;这是一个自定义按钮窗口,可以配置事件和文本样式&lt;/p&gt;&#39;
        *   });
        *  dialog.show();
        * &lt;ol&gt;
@@ -227,24 +227,24 @@ define('bui/overlay/dialog',['bui/overlay/overlay'],function (require) {
        *   &lt;li&gt;handler:点击按钮的回调事件&lt;/li&gt;
        * &lt;/ol&gt;
        * @cfg {Array} buttons
-       * @default '确定'、'取消'2个按钮
+       * @default &#39;确定&#39;、&#39;取消&#39;2个按钮
        * 
        */
       buttons:{
         value:[
           {
-            text:'确定',
-            elCls : 'button button-primary',
+            text:&#39;确定&#39;,
+            elCls : &#39;button button-primary&#39;,
             handler : function(){
               var _self = this,
-                success = _self.get('success');
+                success = _self.get(&#39;success&#39;);
               if(success){
                 success.call(_self);
               }
             }
           },{
-            text:'取消',
-            elCls : 'button button-primary',
+            text:&#39;取消&#39;,
+            elCls : &#39;button button-primary&#39;,
             handler : function(dialog,btn){
               if(this.onCancel() !== false){
                 this.close();
@@ -253,14 +253,14 @@ define('bui/overlay/dialog',['bui/overlay/overlay'],function (require) {
           }
         ]
       },
-<span id='BUI-Overlay-Dialog-cfg-contentId'>      /**
+<span id='-cfg-contentId'>      /**
 </span>       * 弹出框显示内容的DOM容器ID
        * @cfg {Object} contentId
        */
       contentId:{
         view:true
       },
-<span id='BUI-Overlay-Dialog-cfg-success'>  	  /**
+<span id='-cfg-success'>  	  /**
 </span>      * 点击成功时的回调函数
       * @cfg {Function} success
       */
@@ -269,7 +269,7 @@ define('bui/overlay/dialog',['bui/overlay/overlay'],function (require) {
           this.close();
         }
       },
-<span id='BUI-Overlay-Dialog-cfg-cancel'>      /**
+<span id='-cfg-cancel'>      /**
 </span>       * 用户取消时调用，如果return false则阻止窗口关闭
        * @cfg {Function} cancel
        */
@@ -278,26 +278,26 @@ define('bui/overlay/dialog',['bui/overlay/overlay'],function (require) {
 
         }
       },
-      dragNode : {
-<span id='BUI-Overlay-Dialog-method-valueFn'>        /**
+<span id='-property-dragNode'>      dragNode : {
+</span><span id='-method-valueFn'>        /**
 </span>         * @private
          */
         valueFn : function(){
-          return this.get('header');
+          return this.get(&#39;header&#39;);
         }
       },
 
-<span id='BUI-Overlay-Dialog-property-defaultLoaderCfg'>      /**
+<span id='-property-defaultLoaderCfg'>      /**
 </span>       * 默认的加载控件内容的配置,默认值：
        * &lt;pre&gt;
        *  {
-       *    property : 'bodyContent',
+       *    property : &#39;bodyContent&#39;,
        *    autoLoad : false,
        *    lazyLoad : {
-       *      event : 'show'
+       *      event : &#39;show&#39;
        *    },
        *    loadMask : {
-       *      el : _self.get('body')
+       *      el : _self.get(&#39;body&#39;)
        *    }
        *  }
        * &lt;/pre&gt;
@@ -307,53 +307,53 @@ define('bui/overlay/dialog',['bui/overlay/overlay'],function (require) {
         valueFn :function(){
           var _self = this;
           return {
-            property : 'bodyContent',
+            property : &#39;bodyContent&#39;,
             autoLoad : false,
             lazyLoad : {
-              event : 'show'
+              event : &#39;show&#39;
             },
             loadMask : {
-              el : _self.get('body')
+              el : _self.get(&#39;body&#39;)
             }
           }
         } 
       },
-<span id='BUI-Overlay-Dialog-cfg-title'>      /**
+<span id='-cfg-title'>      /**
 </span>       * 弹出框标题
        * @cfg {String} title
        */
-<span id='BUI-Overlay-Dialog-property-title'>      /**
+<span id='-property-title'>      /**
 </span>       * 弹出框标题
        * &lt;pre&gt;&lt;code&gt;
-       *  dialog.set('title','new title');
+       *  dialog.set(&#39;title&#39;,&#39;new title&#39;);
        * &lt;/code&gt;&lt;/pre&gt;
        * @type {String}
        */
       title : {
         view:true,
-        value : ''
+        value : &#39;&#39;
       },
-      mask : {
-        value:true
+<span id='-property-mask'>      mask : {
+</span>        value:true
       },
-      maskShared:{
-        value:false
+<span id='-property-maskShared'>      maskShared:{
+</span>        value:false
       },
-      headerContent:{
-        value:'&lt;div class=&quot;' + CLS_TITLE + '&quot;&gt;标题&lt;/div&gt;'
+<span id='-property-headerContent'>      headerContent:{
+</span>        value:&#39;&lt;div class=&quot;&#39; + CLS_TITLE + &#39;&quot;&gt;标题&lt;/div&gt;&#39;
       },
-      footerContent:{
-
+<span id='-property-footerContent'>      footerContent:{
+</span>
       },
-      closeable:{
-        value : true
+<span id='-property-closeable'>      closeable:{
+</span>        value : true
       },
-      xview:{
-        value:dialogView
+<span id='-property-xview'>      xview:{
+</span>        value:dialogView
       }
     }
   },{
-    xclass : 'dialog'
+    xclass : &#39;dialog&#39;
   });
   
   dialog.View = dialogView;

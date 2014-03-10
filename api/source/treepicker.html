@@ -20,12 +20,12 @@
  * @ignore
  */
 
-define('bui/extensions/treepicker',['bui/common','bui/picker','bui/tree'],function (require) {
-  'use strict';
+define(&#39;bui/extensions/treepicker&#39;,[&#39;bui/common&#39;,&#39;bui/picker&#39;,&#39;bui/tree&#39;],function (require) {
+  &#39;use strict&#39;;
 
-  var BUI = require('bui/common'),
-    ListPicker = require('bui/picker').ListPicker,
-    Tree = require('bui/tree');
+  var BUI = require(&#39;bui/common&#39;),
+    ListPicker = require(&#39;bui/picker&#39;).ListPicker,
+    Tree = require(&#39;bui/tree&#39;);
 
 <span id='BUI-Extensions-TreePicker'>  /**
 </span>   * @class BUI.Extensions.TreePicker
@@ -39,30 +39,30 @@ define('bui/extensions/treepicker',['bui/common','bui/picker','bui/tree'],functi
      * @param {String} val 设置值
      */
     setSelectedValue : function(value){
-      value = value || '';
+      value = value || &#39;&#39;;
       var _self = this,
-        tree = _self.get('tree');
-      if(_self.get('selectStatus') === 'selected'){ //如果不使用勾选
+        tree = _self.get(&#39;tree&#39;);
+      if(_self.get(&#39;selectStatus&#39;) === &#39;selected&#39;){ //如果不使用勾选
         if(value){
           tree.expandNode(value);
         }
         ListPicker.prototype.setSelectedValue.call(_self,value);
       }else{
         tree.clearAllChecked();
-        var arr = value.split(',');
+        var arr = value.split(&#39;,&#39;);
         BUI.each(arr,function(id){
           tree.setChecked(id);
         });
       }
     },
 <span id='BUI-Extensions-TreePicker-method-getSelectedValue'>    /**
-</span>     * 获取选中的值，多选状态下，值以','分割
+</span>     * 获取选中的值，多选状态下，值以&#39;,&#39;分割
      * @return {String} 选中的值
      */
     getSelectedValue : function(){
       var _self = this,
-        tree = _self.get('tree');
-      if(_self.get('selectStatus') === 'selected'){ //如果不使用勾选
+        tree = _self.get(&#39;tree&#39;);
+      if(_self.get(&#39;selectStatus&#39;) === &#39;selected&#39;){ //如果不使用勾选
         return  ListPicker.prototype.getSelectedValue.call(_self);
       }
 
@@ -70,18 +70,18 @@ define('bui/extensions/treepicker',['bui/common','bui/picker','bui/tree'],functi
       nodes = _self._getFilterNodes(nodes);
       return BUI.Array.map(nodes,function(node){
         return node.id;
-      }).join(',');
+      }).join(&#39;,&#39;);
       
     },
 <span id='BUI-Extensions-TreePicker-method-getSelectedText'>    /**
-</span>     * 获取选中项的文本，多选状态下，文本以','分割
+</span>     * 获取选中项的文本，多选状态下，文本以&#39;,&#39;分割
      * @return {String} 选中的文本
      */
     getSelectedText : function(){
       var _self = this,
-        tree = _self.get('tree');
+        tree = _self.get(&#39;tree&#39;);
        
-      if(_self.get('selectStatus') === 'selected'){ //如果不使用勾选
+      if(_self.get(&#39;selectStatus&#39;) === &#39;selected&#39;){ //如果不使用勾选
         return  ListPicker.prototype.getSelectedText.call(_self);
       }
 
@@ -89,13 +89,13 @@ define('bui/extensions/treepicker',['bui/common','bui/picker','bui/tree'],functi
       nodes = _self._getFilterNodes(nodes);
       return BUI.Array.map(nodes,function(node){
         return node.text;
-      }).join(',');
+      }).join(&#39;,&#39;);
       
     },
     //获取过滤的节点
     _getFilterNodes : function(nodes){
       var _self = this,
-        filter = _self.get('filter');
+        filter = _self.get(&#39;filter&#39;);
       if(filter){
         nodes = BUI.Array.filter(nodes,filter);
       }
@@ -104,28 +104,28 @@ define('bui/extensions/treepicker',['bui/common','bui/picker','bui/tree'],functi
   },{
     ATTRS : {
 <span id='BUI-Extensions-TreePicker-property-defaultChildClass'>      /**
-</span>       * 默认子控件的样式,默认为'simple-list'
+</span>       * 默认子控件的样式,默认为&#39;simple-list&#39;
        * @type {String}
        * @override
        */
       defaultChildClass:{
-        value : 'tree-list'
+        value : &#39;tree-list&#39;
       },
 <span id='BUI-Extensions-TreePicker-property-selectStatus'>      /**
 </span>       * 选中的状态,selected,checked
        * @type {String}
        */
       selectStatus : {
-        value : 'selected'
+        value : &#39;selected&#39;
       },
       changeEvent : {
         getter : function(){
-          return this.get('selectStatus') + 'change';
+          return this.get(&#39;selectStatus&#39;) + &#39;change&#39;;
         }
       },
       hideEvent : {
         getter : function(v){
-          if(this.get('selectStatus') === 'checked'){
+          if(this.get(&#39;selectStatus&#39;) === &#39;checked&#39;){
             return null;
           }
           return v;
@@ -144,12 +144,12 @@ define('bui/extensions/treepicker',['bui/common','bui/picker','bui/tree'],functi
        */
       tree : {
         getter : function(){
-          return this.get('children')[0];
+          return this.get(&#39;children&#39;)[0];
         }
       }
     }
   },{
-    xclass : 'tree-picker'
+    xclass : &#39;tree-picker&#39;
   });
 
   return TreePicker;

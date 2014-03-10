@@ -20,23 +20,23 @@
  * @ignore
  */
 
-define('bui/tree/treelist',['bui/common','bui/list','bui/tree/treemixin','bui/tree/selection'],function (require) {
-  var BUI = require('bui/common'),
-    List = require('bui/list'),
-    Mixin = require('bui/tree/treemixin'),
-    Selection = require('bui/tree/selection');
+define(&#39;bui/tree/treelist&#39;,[&#39;bui/common&#39;,&#39;bui/list&#39;,&#39;bui/tree/treemixin&#39;,&#39;bui/tree/selection&#39;],function (require) {
+  var BUI = require(&#39;bui/common&#39;),
+    List = require(&#39;bui/list&#39;),
+    Mixin = require(&#39;bui/tree/treemixin&#39;),
+    Selection = require(&#39;bui/tree/selection&#39;);
 
 <span id='BUI-Tree-TreeList'>  /**
 </span>   * @class BUI.Tree.TreeList
    * 树形列表控件
    * ** 你可以简单的使用配置数据 **
    * &lt;pre&gt;&lt;code&gt;
-   *  BUI.use('bui/tree',function(Tree){
+   *  BUI.use(&#39;bui/tree&#39;,function(Tree){
    *    var tree = new Tree.TreeList({
-   *      render : '#t1',
+   *      render : &#39;#t1&#39;,
    *      nodes : [
-   *        {id : '1',text : '1',children : [{id : '11',text : '11'}]},
-   *        {id : '2',text : '2'}
+   *        {id : &#39;1&#39;,text : &#39;1&#39;,children : [{id : &#39;11&#39;,text : &#39;11&#39;}]},
+   *        {id : &#39;2&#39;,text : &#39;2&#39;}
    *      ]
    *    });
    *    tree.render();
@@ -44,15 +44,15 @@ define('bui/tree/treelist',['bui/common','bui/list','bui/tree/treemixin','bui/tr
    * &lt;/code&gt;&lt;/pre&gt;
    * ** 你也可以显示根节点 ** 
    * &lt;pre&gt;&lt;code&gt;
-   *  BUI.use('bui/tree',function(Tree){
+   *  BUI.use(&#39;bui/tree&#39;,function(Tree){
    *    var tree = new Tree.TreeList({
-   *      render : '#t1',
+   *      render : &#39;#t1&#39;,
    *      root :{
-   *        id : '0',
-   *        text : '0',
+   *        id : &#39;0&#39;,
+   *        text : &#39;0&#39;,
    *        children : [
-   *          {id : '1',text : '1',children : [{id : '11',text : '11'}]},
-   *          {id : '2',text : '2'}
+   *          {id : &#39;1&#39;,text : &#39;1&#39;,children : [{id : &#39;11&#39;,text : &#39;11&#39;}]},
+   *          {id : &#39;2&#39;,text : &#39;2&#39;}
    *        ]
    *      },
    *      showRoot : true
@@ -63,34 +63,34 @@ define('bui/tree/treelist',['bui/common','bui/list','bui/tree/treemixin','bui/tr
    *
    * ** 你也可以异步加载数据 ** 
    * &lt;pre&gt;&lt;code&gt;
-   *  BUI.use(['bui/tree','bui/data'],function(Tree,Data){
+   *  BUI.use([&#39;bui/tree&#39;,&#39;bui/data&#39;],function(Tree,Data){
    *    var store = new Data.TreeStore({
    *        root :{
-   *          id : '0',
-   *          text : '0'
+   *          id : &#39;0&#39;,
+   *          text : &#39;0&#39;
    *        },
-   *        url : 'data/nodes.php'
+   *        url : &#39;data/nodes.php&#39;
    *      }),
    *      tree = new Tree.TreeList({
-   *        render : '#t1',
+   *        render : &#39;#t1&#39;,
    *        store : store,
    *        showRoot : true //可以不配置，则不显示根节点
    *      });
    *    tree.render();
-   *    store.load({id : '0'});//加载根节点，也可以让用户点击加载
+   *    store.load({id : &#39;0&#39;});//加载根节点，也可以让用户点击加载
    *  });
    * &lt;/code&gt;&lt;/pre&gt;
    *
    * ** 你还可以替换icon ** 
    * &lt;pre&gt;&lt;code&gt;
-   *  BUI.use('bui/tree',function(Tree){
+   *  BUI.use(&#39;bui/tree&#39;,function(Tree){
    *    var tree = new Tree.TreeList({
-   *      render : '#t1',
-   *      dirCls : 'folder', //替换树节点的样式
-   *      leafCls : 'file', //叶子节点的样式
+   *      render : &#39;#t1&#39;,
+   *      dirCls : &#39;folder&#39;, //替换树节点的样式
+   *      leafCls : &#39;file&#39;, //叶子节点的样式
    *      nodes : [ //数据中存在cls 会替换节点的图标样式
-   *        {id : '1',text : '1'cls:'task-folder',children : [{id : '11',text : '11',cls:'task'}]},
-   *        {id : '2',text : '2'}
+   *        {id : &#39;1&#39;,text : &#39;1&#39;cls:&#39;task-folder&#39;,children : [{id : &#39;11&#39;,text : &#39;11&#39;,cls:&#39;task&#39;}]},
+   *        {id : &#39;2&#39;,text : &#39;2&#39;}
    *      ]
    *    });
    *    tree.render();
@@ -103,17 +103,17 @@ define('bui/tree/treelist',['bui/common','bui/list','bui/tree/treemixin','bui/tr
   },{
     ATTRS : {
       itemCls : {
-        value : BUI.prefix + 'tree-item'
+        value : BUI.prefix + &#39;tree-item&#39;
       },
       itemTpl : {
-        value : '&lt;li&gt;{text}&lt;/li&gt;'
+        value : &#39;&lt;li&gt;{text}&lt;/li&gt;&#39;
       },
       idField : {
-        value : 'id'
+        value : &#39;id&#39;
       }
     }
   },{
-    xclass : 'tree-list'
+    xclass : &#39;tree-list&#39;
   });
 
   return TreeList;

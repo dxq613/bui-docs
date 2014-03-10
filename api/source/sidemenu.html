@@ -20,61 +20,61 @@
  * @author dxq613@gmail.com
  * @ignore
  */
-define('bui/menu/sidemenu',['bui/common','bui/menu/menu'],function(require){
+define(&#39;bui/menu/sidemenu&#39;,[&#39;bui/common&#39;,&#39;bui/menu/menu&#39;],function(require){
 
-  var BUI = require('bui/common'),
-    Menu = require('bui/menu/menu'),
+  var BUI = require(&#39;bui/common&#39;),
+    Menu = require(&#39;bui/menu/menu&#39;),
     Component =  BUI.Component,
-    CLS_MENU_TITLE = BUI.prefix + 'menu-title',
-    CLS_MENU_LEAF = 'menu-leaf';
+    CLS_MENU_TITLE = BUI.prefix + &#39;menu-title&#39;,
+    CLS_MENU_LEAF = &#39;menu-leaf&#39;;
     
 <span id='BUI-Menu-SideMenu'>  /**
 </span>   * 侧边栏菜单
-   * xclass:'side-menu'
+   * xclass:&#39;side-menu&#39;
    * @class BUI.Menu.SideMenu
    * @extends BUI.Menu.Menu
    */
   var sideMenu = Menu.extend(
-<span id='global-property-'>  /**
+<span id=''>  /**
 </span>   * @lends BUI.Menu.SideMenu.prototype
    * @ignore
    */
   {
-    //初始化配置项
-    initializer : function(){
+<span id='-method-initializer'>    //初始化配置项
+</span>    initializer : function(){
       var _self = this,
-        items = _self.get('items'),
-        children = _self.get('children');
+        items = _self.get(&#39;items&#39;),
+        children = _self.get(&#39;children&#39;);
 
       BUI.each(items,function(item){
         var menuCfg = _self._initMenuCfg(item);
         children.push(menuCfg);
       });
     },
-    bindUI : function(){
-      var _self = this,
-        children = _self.get('children');
+<span id='-method-bindUI'>    bindUI : function(){
+</span>      var _self = this,
+        children = _self.get(&#39;children&#39;);
       BUI.each(children,function(item){
-        var menu = item.get('children')[0];
+        var menu = item.get(&#39;children&#39;)[0];
         if(menu){
-          menu.publish('click',{
+          menu.publish(&#39;click&#39;,{
             bubbles:1
           });
         }
       });
       //防止链接跳转
-      _self.get('el').delegate('a','click',function(ev){
+      _self.get(&#39;el&#39;).delegate(&#39;a&#39;,&#39;click&#39;,function(ev){
         ev.preventDefault();
       });
       //处理点击事件，展开、折叠、选中
-      _self.on('itemclick',function(ev){
+      _self.on(&#39;itemclick&#39;,function(ev){
         var item = ev.item,
-          titleEl = $(ev.domTarget).closest('.' + CLS_MENU_TITLE);
+          titleEl = $(ev.domTarget).closest(&#39;.&#39; + CLS_MENU_TITLE);
         if(titleEl.length){
-          var collapsed = item.get('collapsed');
-            item.set('collapsed',!collapsed);
-        }else if(item.get('el').hasClass(CLS_MENU_LEAF)){
-          _self.fire('menuclick',{item:item});
+          var collapsed = item.get(&#39;collapsed&#39;);
+            item.set(&#39;collapsed&#39;,!collapsed);
+        }else if(item.get(&#39;el&#39;).hasClass(CLS_MENU_LEAF)){
+          _self.fire(&#39;menuclick&#39;,{item:item});
           _self.clearSelection();
           _self.setSelected(item);
         }
@@ -87,28 +87,28 @@ define('bui/menu/sidemenu',['bui/common','bui/menu/menu'],function(require){
     getItems:function(){
       var _self = this,
         items = [],
-        children = _self.get('children');
+        children = _self.get(&#39;children&#39;);
       BUI.each(children,function(item){
-        var menu = item.get('children')[0];
-        items = items.concat(menu.get('children'));
+        var menu = item.get(&#39;children&#39;)[0];
+        items = items.concat(menu.get(&#39;children&#39;));
       }); 
       return items;
     },
-    //初始化菜单配置项
-    _initMenuCfg : function(item){
+<span id='-method-_initMenuCfg'>    //初始化菜单配置项
+</span>    _initMenuCfg : function(item){
       var _self = this,
         items = item.items,
         subItems = [],
         cfg = {
-          xclass : 'menu-item',
-          elCls : 'menu-second',
+          xclass : &#39;menu-item&#39;,
+          elCls : &#39;menu-second&#39;,
           collapsed : item.collapsed,
           selectable: false,
           children : [{
-            xclass : 'menu',
+            xclass : &#39;menu&#39;,
             children : subItems
           }],
-          content: '&lt;div class=&quot;'+CLS_MENU_TITLE+'&quot;&gt;&lt;s&gt;&lt;/s&gt;&lt;span class=&quot;'+CLS_MENU_TITLE+'-text&quot;&gt;'+item.text+'&lt;/span&gt;&lt;/div&gt;'
+          content: &#39;&lt;div class=&quot;&#39;+CLS_MENU_TITLE+&#39;&quot;&gt;&lt;s&gt;&lt;/s&gt;&lt;span class=&quot;&#39;+CLS_MENU_TITLE+&#39;-text&quot;&gt;&#39;+item.text+&#39;&lt;/span&gt;&lt;/div&gt;&#39;
         };
       BUI.each(items,function(subItem){
         var subItemCfg = _self._initSubMenuCfg(subItem);
@@ -118,26 +118,26 @@ define('bui/menu/sidemenu',['bui/common','bui/menu/menu'],function(require){
       return cfg;
 
     },
-    //初始化二级菜单
-    _initSubMenuCfg : function(subItem){
+<span id='-method-_initSubMenuCfg'>    //初始化二级菜单
+</span>    _initSubMenuCfg : function(subItem){
       var _self = this,
         cfg = {
-          xclass : 'menu-item',
-          elCls : 'menu-leaf',
-          tpl : '&lt;a href=&quot;{href}&quot;&gt;&lt;em&gt;{text}&lt;/em&gt;&lt;/a&gt;'
+          xclass : &#39;menu-item&#39;,
+          elCls : &#39;menu-leaf&#39;,
+          tpl : &#39;&lt;a href=&quot;{href}&quot;&gt;&lt;em&gt;{text}&lt;/em&gt;&lt;/a&gt;&#39;
         };
       return BUI.mix(cfg,subItem);
     }
   },{
 
     ATTRS : 
-<span id='global-property-'>    /**
+<span id=''>    /**
 </span>     * @lends BUI.Menu.SideMenu.prototype
      * @ignore
      */
     {
       
-<span id='BUI-Menu-SideMenu-property-autoInitItems'>      /**
+<span id='-property-autoInitItems'>      /**
 </span>       * 配置的items 项是在初始化时作为children
        * @protected
        * @type {Boolean}
@@ -145,21 +145,21 @@ define('bui/menu/sidemenu',['bui/common','bui/menu/menu'],function(require){
       autoInitItems : {
           value : false
       },
-      events : {
-        value : {
-<span id='BUI-Menu-SideMenu-event-menuclick'>          /**
+<span id='-property-events'>      events : {
+</span>        value : {
+<span id='-event-menuclick'>          /**
 </span>           * 点击菜单项
 		       * @name BUI.Menu.SideMenu#menuclick
            * @event 
            * @param {Object} e 事件对象
            * @param {Object} e.item 当前选中的项
            */
-          'menuclick' : false
+          &#39;menuclick&#39; : false
         }
       }
     }
   },{
-    xclass :'side-menu'
+    xclass :&#39;side-menu&#39;
   });
 
   return sideMenu;

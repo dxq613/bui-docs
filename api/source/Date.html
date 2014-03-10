@@ -20,7 +20,7 @@
  *
  * Creates `Date` instances which let you work with dates and times.
  *
- * If you supply no arguments, the constructor creates a `Date` object for today's
+ * If you supply no arguments, the constructor creates a `Date` object for today&#39;s
  * date and time according to local time. If you supply some arguments but not
  * others, the missing arguments are set to 0. If you supply any arguments, you
  * must supply at least the year, month, and day. You can omit the hours, minutes,
@@ -59,14 +59,14 @@
  *
  *     // using static methods
  *     var start = Date.now();
- *     // the event you'd like to time goes here:
+ *     // the event you&#39;d like to time goes here:
  *     doSomethingForALongTime();
  *     var end = Date.now();
  *     var elapsed = end - start; // time in milliseconds
  *
  *     // if you have Date objects
  *     var start = new Date();
- *     // the event you'd like to time goes here:
+ *     // the event you&#39;d like to time goes here:
  *     doSomethingForALongTime();
  *     var end = new Date();
  *     var elapsed = end.getTime() - start.getTime(); // time in milliseconds
@@ -88,13 +88,13 @@
  *
  *     // use a function for the exact format desired...
  *     function ISODateString(d){
- *     function pad(n){return n&lt;10 ? '0'+n : n}
- *     return d.getUTCFullYear()+'-'
- *         + pad(d.getUTCMonth()+1)+'-'
- *         + pad(d.getUTCDate())+'T'
- *         + pad(d.getUTCHours())+':'
- *         + pad(d.getUTCMinutes())+':'
- *         + pad(d.getUTCSeconds())+'Z'}
+ *     function pad(n){return n&lt;10 ? &#39;0&#39;+n : n}
+ *     return d.getUTCFullYear()+&#39;-&#39;
+ *         + pad(d.getUTCMonth()+1)+&#39;-&#39;
+ *         + pad(d.getUTCDate())+&#39;T&#39;
+ *         + pad(d.getUTCHours())+&#39;:&#39;
+ *         + pad(d.getUTCMinutes())+&#39;:&#39;
+ *         + pad(d.getUTCSeconds())+&#39;Z&#39;}
  *
  *     var d = new Date();
  *     print(ISODateString(d)); // prints something like 2009-09-28T19:03:12Z
@@ -251,7 +251,7 @@
 
 <span id='Date-method-getDate'>/**
 </span> * @method getDate
- * Returns the numeric value corresponding to the current time.
+ * Returns the day of the month for the specified date according to local time.
  *
  * The second statement below assigns the value 25 to the variable `day`, based on the value of the
  * `Date` object `Xmas95`.
@@ -264,7 +264,7 @@
 
 <span id='Date-method-getDay'>/**
 </span> * @method getDay
- * Returns the numeric value corresponding to the current time.
+ * Returns the day of the week for the specified date according to local time.
  *
  * The value returned by `getDay` is an integer corresponding to the day of the week: 0 for Sunday, 1
  * for Monday, 2 for Tuesday, and so on.
@@ -281,7 +281,7 @@
 
 <span id='Date-method-getFullYear'>/**
 </span> * @method getFullYear
- * Returns the numeric value corresponding to the current time.
+ * Returns the year of the specified date according to local time.
  *
  * The value returned by `getFullYear` is an absolute number. For dates between the years 1000 and
  * 9999, `getFullYear` returns a four-digit number, for example, 1995. Use this function to make sure
@@ -299,7 +299,7 @@
 
 <span id='Date-method-getHours'>/**
 </span> * @method getHours
- * Returns the numeric value corresponding to the current time.
+ * Returns the hour for the specified date according to local time.
  *
  * The second statement below assigns the value 23 to the variable `hours`, based on the value of the
  * `Date` object `Xmas95`.
@@ -312,7 +312,7 @@
 
 <span id='Date-method-getMilliseconds'>/**
 </span> * @method getMilliseconds
- * Returns the numeric value corresponding to the current time.
+ * Returns the milliseconds in the specified date according to local time.
  *
  * The following example assigns the milliseconds portion of the current time to the variable ms.
  *
@@ -325,7 +325,7 @@
 
 <span id='Date-method-getMinutes'>/**
 </span> * @method getMinutes
- * Returns the numeric value corresponding to the current time.
+ * Returns the minutes in the specified date according to local time.
  *
  * The second statement below assigns the value 15 to the variable `minutes`, based on the value of
  * the `Date` object `Xmas95`.
@@ -338,7 +338,7 @@
 
 <span id='Date-method-getMonth'>/**
 </span> * @method getMonth
- * Returns the numeric value corresponding to the current time.
+ * Returns the month in the specified date according to local time.
  *
  * The second statement below assigns the value 11 to the variable `month`, based on the value of the
  * `Date` object `Xmas95`.
@@ -351,7 +351,7 @@
 
 <span id='Date-method-getSeconds'>/**
 </span> * @method getSeconds
- * Returns the numeric value corresponding to the current time.
+ * Returns the seconds in the specified date according to local time.
  *
  * The second statement below assigns the value 30 to the variable `secs`, based on the value of the
  * `Date` object `Xmas95`.
@@ -364,7 +364,8 @@
 
 <span id='Date-method-getTime'>/**
 </span> * @method getTime
- * Returns the numeric value corresponding to the current time.
+ * Returns the numeric value corresponding to the time for the specified date according to
+ * universal time.
  *
  * The value returned by the `getTime` method is the number of milliseconds since 1 January 1970
  * 00:00:00 UTC. You can use this method to help assign a date and time to another `Date` object.
@@ -398,7 +399,7 @@
 
 <span id='Date-method-getTimezoneOffset'>/**
 </span> * @method getTimezoneOffset
- * Returns the numeric value corresponding to the current time.
+ * Returns the time-zone offset from UTC, in minutes, for the current locale.
  *
  * The time-zone offset is the difference, in minutes, between UTC and local time. Note that this
  * means that the offset is positive if the local timezone is behind UTC and negative if it is ahead.
@@ -413,7 +414,7 @@
 
 <span id='Date-method-getUTCDate'>/**
 </span> * @method getUTCDate
- * Returns the numeric value corresponding to the current time.
+ * Returns the day (date) of the month in the specified date according to universal time.
  *
  * The following example assigns the day portion of the current date to the variable `d`.
  *
@@ -426,7 +427,7 @@
 
 <span id='Date-method-getUTCDay'>/**
 </span> * @method getUTCDay
- * Returns the numeric value corresponding to the current time.
+ * Returns the day of the week in the specified date according to universal time.
  *
  * The following example assigns the weekday portion of the current date to the variable `weekday`.
  *
@@ -440,7 +441,7 @@
 
 <span id='Date-method-getUTCFullYear'>/**
 </span> * @method getUTCFullYear
- * Returns the numeric value corresponding to the current time.
+ * Returns the year in the specified date according to universal time.
  *
  * The following example assigns the four-digit value of the current year to the variable `yr`.
  *
@@ -453,7 +454,7 @@
 
 <span id='Date-method-getUTCHours'>/**
 </span> * @method getUTCHours
- * Returns the numeric value corresponding to the current time.
+ * Returns the hours in the specified date according to universal time.
  *
  * The following example assigns the hours portion of the current time to the variable `hrs`.
  *
@@ -466,7 +467,7 @@
 
 <span id='Date-method-getUTCMilliseconds'>/**
 </span> * @method getUTCMilliseconds
- * Returns the numeric value corresponding to the current time.
+ * Returns the milliseconds in the specified date according to universal time.
  *
  * The following example assigns the milliseconds portion of the current time to the variable `ms`.
  *
@@ -479,7 +480,7 @@
 
 <span id='Date-method-getUTCMinutes'>/**
 </span> * @method getUTCMinutes
- * Returns the numeric value corresponding to the current time.
+ * Returns the minutes in the specified date according to universal time.
  *
  * The following example assigns the minutes portion of the current time to the variable `min`.
  *
@@ -492,7 +493,7 @@
 
 <span id='Date-method-getUTCMonth'>/**
 </span> * @method getUTCMonth
- * Returns the numeric value corresponding to the current time.
+ * Returns the month of the specified date according to universal time.
  *
  * The following example assigns the month portion of the current date to the variable `mon`.
  *
@@ -505,7 +506,7 @@
 
 <span id='Date-method-getUTCSeconds'>/**
 </span> * @method getUTCSeconds
- * Returns the numeric value corresponding to the current time.
+ * Returns the seconds in the specified date according to universal time.
  *
  * The following example assigns the seconds portion of the current time to the variable `sec`.
  *
@@ -831,7 +832,7 @@
 
 <span id='Date-method-toLocaleDateString'>/**
 </span> * @method toLocaleDateString
- * Returns the &quot;date&quot; portion of the Date as a string, using the current locale's
+ * Returns the &quot;date&quot; portion of the Date as a string, using the current locale&#39;s
  * conventions.
  *
  * The `toLocaleDateString` method relies on the underlying operating system in formatting dates. It
@@ -845,7 +846,7 @@
  * Methods such as `getDate`, `getMonth`, and `getFullYear` give more portable results than
  * `toLocaleDateString`. Use `toLocaleDateString` when the intent is to display to the user a string
  * formatted using the regional format chosen by the user. Be aware that this method, due to its
- * nature, behaves differently depending on the operating system and on the user's settings.
+ * nature, behaves differently depending on the operating system and on the user&#39;s settings.
  *
  * In the following example, `today` is a `Date` object:
  *
@@ -853,11 +854,11 @@
  *     today.toLocaleDateString()
  *
  * In this example, `toLocaleDateString` returns a string value that is similar to the following form.
- * The exact format depends on the platform, locale and user's settings.
+ * The exact format depends on the platform, locale and user&#39;s settings.
  *
  *     12/18/95
  *
- * You shouldn't use this method in contexts where you rely on a particular format or locale.
+ * You shouldn&#39;t use this method in contexts where you rely on a particular format or locale.
  *
  *     &quot;Last visit: &quot; + someDate.toLocaleDateString(); // Good example
  *     &quot;Last visit was at &quot; + someDate.toLocaleDateString(); // Bad example
@@ -868,7 +869,7 @@
 
 <span id='Date-method-toLocaleString'>/**
 </span> * @method toLocaleString
- * Converts a date to a string, using the current locale's conventions. Overrides
+ * Converts a date to a string, using the current locale&#39;s conventions. Overrides
  * the `Object.toLocaleString` method.
  *
  * The `toLocaleString` method relies on the underlying operating system in formatting dates. It
@@ -883,7 +884,7 @@
  * give more portable results than `toLocaleString`. Use `toLocaleString` when the intent is to
  * display to the user a string formatted using the regional format chosen by the user. Be aware that
  * this method, due to its nature, behaves differently depending on the operating system and on the
- * user's settings.
+ * user&#39;s settings.
  *
  * In the following example, `today` is a `Date` object:
  *
@@ -891,11 +892,11 @@
  *     today.toLocaleString();
  *
  * In this example, `toLocaleString` returns a string value that is similar to the following form. The
- * exact format depends on the platform, locale and user's settings.
+ * exact format depends on the platform, locale and user&#39;s settings.
  *
  *     12/18/95 17:28:35
  *
- * You shouldn't use this method in contexts where you rely on a particular format or locale.
+ * You shouldn&#39;t use this method in contexts where you rely on a particular format or locale.
  *
  *     &quot;Last visit: &quot; + someDate.toLocaleString(); // Good example
  *     &quot;Last visit was at &quot; + someDate.toLocaleString(); // Bad example
@@ -906,7 +907,7 @@
 
 <span id='Date-method-toLocaleTimeString'>/**
 </span> * @method toLocaleTimeString
- * Returns the &quot;time&quot; portion of the Date as a string, using the current locale's
+ * Returns the &quot;time&quot; portion of the Date as a string, using the current locale&#39;s
  * conventions.
  *
  * The `toLocaleTimeString` method relies on the underlying operating system in formatting dates. It
@@ -917,7 +918,7 @@
  * Methods such as `getHours`, `getMinutes`, and `getSeconds` give more consistent results than
  * `toLocaleTimeString`. Use `toLocaleTimeString` when the intent is to display to the user a string
  * formatted using the regional format chosen by the user. Be aware that this method, due to its
- * nature, behaves differently depending on the operating system and on the user's settings.
+ * nature, behaves differently depending on the operating system and on the user&#39;s settings.
  *
  * In the following example, `today` is a `Date` object:
  *
@@ -929,7 +930,7 @@
  *
  *     17:28:35
  *
- * You shouldn't use this method in contexts where you rely on a particular format or locale.
+ * You shouldn&#39;t use this method in contexts where you rely on a particular format or locale.
  *
  *     &quot;Last visit: &quot; + someDate.toLocaleTimeString(); // Good example
  *     &quot;Last visit was at &quot; + someDate.toLocaleTimeString(); // Bad example
@@ -1013,6 +1014,28 @@
  *     myVar = x.valueOf();      //assigns -424713600000 to myVar
  *
  * @return {Number} Date represented as milliseconds.
+ */
+
+// ECMAScript 5 methods
+
+<span id='Date-method-toJSON'>/**
+</span> * @method toJSON
+ * Returns a JSON representation of the Date object.
+ *
+ * Date instances refer to a specific point in time. Calling `toJSON()`
+ * returns a JSON formatted string representing the Date object&#39;s
+ * value.  This method is generally intended to, by default, usefully
+ * serialize Date objects during JSON serialization.
+ *
+ *     var jsonDate = (new Date()).toJSON();
+ *     var backToDate = new Date(jsonDate);
+ *
+ *     console.log(&quot;Serialized date object: &quot; + jsonDate);
+ *     // Serialized date object: 2013-01-17T12:59:08.449Z
+ *
+ * **NOTE:** This method is part of the ECMAScript 5 standard.
+ *
+ * @return {String} Date value in `YYYY-MM-DDTHH-MM-SS.MMMZ` format.
  */</pre>
 </body>
 </html>

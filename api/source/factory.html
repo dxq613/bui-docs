@@ -20,15 +20,15 @@
  * @author 索丘 &lt;zengyue.yezy@alibaba-inc.com&gt;
  * @ignore
  **/
-define('bui/uploader/factory',['bui/common', './queue', './button/htmlButton', './button/swfButton', './type/ajax', './type/flash', './type/iframe'], function (require) {
+define(&#39;bui/uploader/factory&#39;,[&#39;bui/common&#39;, &#39;./queue&#39;, &#39;./button/htmlButton&#39;, &#39;./button/swfButton&#39;, &#39;./type/ajax&#39;, &#39;./type/flash&#39;, &#39;./type/iframe&#39;], function (require) {
 
-  var BUI = require('bui/common'),
-    Queue = require('bui/uploader/queue'),
-    HtmlButton = require('bui/uploader/button/htmlButton'),
-    SwfButton = require('bui/uploader/button/swfButton'),
-    Ajax = require('bui/uploader/type/ajax'),
-    Flash = require('bui/uploader/type/flash'),
-    Iframe = require('bui/uploader/type/iframe');
+  var BUI = require(&#39;bui/common&#39;),
+    Queue = require(&#39;bui/uploader/queue&#39;),
+    HtmlButton = require(&#39;bui/uploader/button/htmlButton&#39;),
+    SwfButton = require(&#39;bui/uploader/button/swfButton&#39;),
+    Ajax = require(&#39;bui/uploader/type/ajax&#39;),
+    Flash = require(&#39;bui/uploader/type/flash&#39;),
+    Iframe = require(&#39;bui/uploader/type/iframe&#39;);
 
 <span id='Factory'>  /**
 </span>   * @BUI.Uploader.Factory
@@ -38,25 +38,42 @@ define('bui/uploader/factory',['bui/common', './queue', './button/htmlButton', '
 
   }
   Factory.prototype = {
+<span id='Factory-method-createUploadType'>    /**
+</span>     * 创建上传的类型
+     * @param  {String} type   上传类型
+     * @param  {Object} config 配置项
+     * @return {BUI.Uploader.UploadType} 类型的实例
+     */
     createUploadType: function(type, config){
-      if (type === 'ajax') {
+      if (type === &#39;ajax&#39;) {
         return new Ajax(config);
       }
-      else if(type === 'flash'){
+      else if(type === &#39;flash&#39;){
         return new Flash(config);
       }
       else{
         return new Iframe(config);
       }
     },
+<span id='Factory-method-createButton'>    /**
+</span>     * 创建button
+     * @param  {String} type   上传类型
+     * @param  {Object} config button的配置项
+     * @return {BUI.Uploader.Button} button的实例
+     */
     createButton: function(type, config){
-      if(type === 'ajax' || type === 'iframe'){
+      if(type === &#39;ajax&#39; || type === &#39;iframe&#39;){
         return new HtmlButton(config);
       }
       else{
         return new SwfButton(config);
       }
     },
+<span id='Factory-method-createQueue'>    /**
+</span>     * 创建上传的对队
+     * @param  {Object} config 配置项
+     * @return {BUI.Uploader.Queue} 队列的实例
+     */
     createQueue: function(config){
       return new Queue(config);
     }

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 分类坐标轴
+ * @ignore
+ */
+
+define(&#39;bui/chart/categoryaxis&#39;,[&#39;bui/chart/baseaxis&#39;,&#39;bui/common&#39;],function (require) {
+	var BUI = require(&#39;bui/common&#39;),
+		Axis = require(&#39;bui/chart/baseaxis&#39;);
+
+<span id='BUI-Chart-Axis-Category'>	/**
+</span>	 * @class BUI.Chart.Axis.Category
+	 * 分组坐标轴
+	 * @extends BUI.Chart.Axis
+	 */
+	function Category(cfg){
+		Category.superclass.constructor.call(this,cfg);
+	}
+
+	BUI.extend(Category,Axis);
+
+	Category.ATTRS = {
+
+<span id='BUI-Chart-Axis-Category-property-categories'>		/**
+</span>		 * 分组集合
+		 * @type {Array}
+		 */
+		categories : {
+
+		},
+<span id='BUI-Chart-Axis-Category-property-type'>        /**
+</span>         * 类型
+         * @type {String}
+         */
+        type : {
+            value : &#39;category&#39;
+        }
+
+	};
+
+	BUI.augment(Category,{
+		//渲染控件前
+		beforeRenderUI : function(){
+			var _self = this;
+			Category.superclass.beforeRenderUI.call(_self);
+			
+			//如果未指定坐标轴上的点，则自动计算
+			if(!_self.get(&#39;ticks&#39;)){
+			  var categories = _self.get(&#39;categories&#39;),
+			  	ticks = [];
+			  ticks = ticks.concat(categories);
+			  ticks.push(&#39; &#39;);
+              _self.set(&#39;ticks&#39;,ticks);
+			}
+		},
+        //ticks 获取
+        changeInfo : function(info){
+            var _self = this,
+                ticks = [];
+            ticks = ticks.concat(info.categories);
+            ticks.push(&#39; &#39;);
+            _self.set(&#39;ticks&#39;,ticks);
+        },
+<span id='global-method-getOffsetByIndex'>		/**
+</span>		 * @override
+		 * @ignore
+		 */
+		getOffsetByIndex : function(index){
+        	var _self = this,
+        		avg = _self._getAvgLength(),
+        		offset =  avg * index;
+        	if(offset &gt;= 0){
+        		offset += avg/2;
+        	}else{
+        		offset -= avg/2;
+        	}
+        	return _self._appendEndOffset(offset) + _self._getStartCoord();
+        },
+<span id='BUI-Chart-Axis-Category-method-getValue'>        /**
+</span>         * 根据画板上的点获取坐标轴上的值，对已分类坐标轴来说就是获取其中的一个分类
+         * @param  {Number} offset 
+         * @return {Number} 点在坐标轴上的值,如果不在坐标轴上,值为NaN
+         */
+        getValue : function(offset){
+            var _self = this,
+                index = _self.getSnapIndex(offset),
+                categories = _self.get(&#39;categories&#39;);
+            return categories[index];
+        },
+<span id='BUI-Chart-Axis-Category-method-changeAxis'>        /**
+</span>         * 改变坐标轴，对于分类坐标轴，只能更改 categories
+         * &lt;code&gt;
+         *     axis.changeAxis({
+         *         categories : categories
+         *     });
+         * &lt;/code&gt;
+         */
+        changeAxis : function(info){
+
+        },
+        _getAvgLength : function(){
+        	var _self = this,
+        		length = _self._getLength(),
+        		ticks = _self.get(&#39;ticks&#39;),
+        		count = ticks.length,
+        		avg = (length / (count - 1));
+        	return avg;
+        },
+<span id='BUI-Chart-Axis-Category-method-getTickOffsetPoint'>        /**
+</span>         * @protected
+         * 获取显示坐标点的位置
+         */
+        getTickOffsetPoint : function(index){
+          var _self = this,
+        		ortho = _self._getOrthoCoord(),
+        		avg = _self._getAvgLength(),
+        		current = _self.getOffsetByIndex(index);
+        	
+        	if(current &gt;= 0){
+        		current -= avg/2;
+        	}else{
+        		current += avg/2;
+        	}
+        	if(_self.isVertical()){
+        		return {
+        			x : ortho,
+        			y : current
+        		};
+        	}
+
+        	return {
+        		x : current,
+        		y : ortho
+        	};
+        }
+	});
+
+	return Category;
+});</pre>
+</body>
+</html>

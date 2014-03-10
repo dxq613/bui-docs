@@ -20,32 +20,32 @@
  * @ignore
  */
 
-define('bui/tab/tab',['bui/common'],function (require) {
+define(&#39;bui/tab/tab&#39;,[&#39;bui/common&#39;],function (require) {
   
 
-  var BUI = require('bui/common'),
+  var BUI = require(&#39;bui/common&#39;),
     Component = BUI.Component,
     UIBase = Component.UIBase;
 
 <span id='BUI-Tab-Tab'>  /**
 </span>   * 列表
-   * xclass:'tab'
+   * xclass:&#39;tab&#39;
    * &lt;pre&gt;&lt;code&gt;
-   * BUI.use('bui/tab',function(Tab){
+   * BUI.use(&#39;bui/tab&#39;,function(Tab){
    *   
    *     var tab = new Tab.Tab({
-   *         render : '#tab',
-   *         elCls : 'nav-tabs',
+   *         render : &#39;#tab&#39;,
+   *         elCls : &#39;nav-tabs&#39;,
    *         autoRender: true,
    *         children:[
-   *           {text:'标签一',value:'1'},
-   *           {text:'标签二',value:'2'},
-   *           {text:'标签三',value:'3'}
+   *           {text:&#39;标签一&#39;,value:&#39;1&#39;},
+   *           {text:&#39;标签二&#39;,value:&#39;2&#39;},
+   *           {text:&#39;标签三&#39;,value:&#39;3&#39;}
    *         ]
    *       });
-   *     tab.on('selectedchange',function (ev) {
+   *     tab.on(&#39;selectedchange&#39;,function (ev) {
    *       var item = ev.item;
-   *       $('#log').text(item.get('text') + ' ' + item.get('value'));
+   *       $(&#39;#log&#39;).text(item.get(&#39;text&#39;) + &#39; &#39; + item.get(&#39;value&#39;));
    *     });
    *     tab.setSelected(tab.getItemAt(0)); //设置选中第一个
    *   
@@ -61,20 +61,20 @@ define('bui/tab/tab',['bui/common'],function (require) {
     ATTRS : {
       elTagName:{
         view:true,
-        value:'ul'
+        value:&#39;ul&#39;
       },
 <span id='BUI-Tab-Tab-property-defaultChildClass'>      /**
 </span>       * 子类的默认类名，即类的 xclass
        * @type {String}
        * @override
-       * @default 'tab-item'
+       * @default &#39;tab-item&#39;
        */
       defaultChildClass : {
-        value : 'tab-item'
+        value : &#39;tab-item&#39;
       }
     }
   },{
-    xclass : 'tab'
+    xclass : &#39;tab&#39;
   });
 
   return tab;

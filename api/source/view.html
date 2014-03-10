@@ -21,11 +21,11 @@
  * copied by dxq613@gmail.com
  * @ignore
  */
-define('bui/component/view',['bui/component/manage','bui/component/uibase'],function(require){
+define(&#39;bui/component/view&#39;,[&#39;bui/component/manage&#39;,&#39;bui/component/uibase&#39;],function(require){
 
   var win = window,
-    Manager = require('bui/component/manage'),
-    UIBase = require('bui/component/uibase'),//BUI.Component.UIBase,
+    Manager = require(&#39;bui/component/manage&#39;),
+    UIBase = require(&#39;bui/component/uibase&#39;),//BUI.Component.UIBase,
     doc = document;
     
 <span id='BUI-Component-View'>    /**
@@ -41,13 +41,13 @@ define('bui/component/view',['bui/component/manage','bui/component/uibase'],func
 <span id='BUI-Component-View-method-getComponentCssClassWithState'>        /**
 </span>         * Get all css class name to be applied to the root element of this component for given state.
          * the css class names are prefixed with component name.
-         * @param {String} [state] This component's state info.
+         * @param {String} [state] This component&#39;s state info.
          */
         getComponentCssClassWithState: function (state) {
             var self = this,
-                componentCls = self.get('ksComponentCss');
-            state = state || '';
-            return self.getCssClassWithPrefix(componentCls.split(/\s+/).join(state + ' ') + state);
+                componentCls = self.get(&#39;ksComponentCss&#39;);
+            state = state || &#39;&#39;;
+            return self.getCssClassWithPrefix(componentCls.split(/\s+/).join(state + &#39; &#39;) + state);
         },
 
 <span id='BUI-Component-View-method-getCssClassWithPrefix'>        /**
@@ -64,14 +64,14 @@ define('bui/component/view',['bui/component/manage','bui/component/uibase'],func
          * @return {jQuery}
          */
         getKeyEventTarget: function () {
-            return this.get('el');
+            return this.get(&#39;el&#39;);
         },
 <span id='BUI-Component-View-method-getContentElement'>        /**
 </span>         * Return the dom element into which child component to be rendered.
          * @return {jQuery}
          */
         getContentElement: function () {
-            return this.get('contentEl') || this.get('el');
+            return this.get(&#39;contentEl&#39;) || this.get(&#39;el&#39;);
         },
 <span id='BUI-Component-View-method-getStatusCls'>        /**
 </span>         * 获取状态对应的css样式
@@ -80,10 +80,10 @@ define('bui/component/view',['bui/component/manage','bui/component/uibase'],func
          */
         getStatusCls : function(name){
             var self = this,
-                statusCls = self.get('statusCls'),
+                statusCls = self.get(&#39;statusCls&#39;),
                 cls = statusCls[name];
             if(!cls){
-                cls = self.getComponentCssClassWithState('-' + name);
+                cls = self.getComponentCssClassWithState(&#39;-&#39; + name);
             }
             return cls;
         },
@@ -95,10 +95,10 @@ define('bui/component/view',['bui/component/manage','bui/component/uibase'],func
             var self = this;
 
             // 新建的节点才需要摆放定位,不支持srcNode模式
-            if (!self.get('srcNode')) {
-                var render = self.get('render'),
-                    el = self.get('el'),
-                    renderBefore = self.get('elBefore');
+            if (!self.get(&#39;srcNode&#39;)) {
+                var render = self.get(&#39;render&#39;),
+                    el = self.get(&#39;el&#39;),
+                    renderBefore = self.get(&#39;elBefore&#39;);
                 if (renderBefore) {
                     el.insertBefore(renderBefore, undefined);
                 } else if (render) {
@@ -115,23 +115,23 @@ define('bui/component/view',['bui/component/manage','bui/component/uibase'],func
          */
         createDom: function () {
             var self = this,
-                contentEl = self.get('contentEl'),
-                el = self.get('el');
-            if (!self.get('srcNode')) {
+                contentEl = self.get(&#39;contentEl&#39;),
+                el = self.get(&#39;el&#39;);
+            if (!self.get(&#39;srcNode&#39;)) {
 
-                el = $('&lt;' + self.get('elTagName') + '&gt;');
+                el = $(&#39;&lt;&#39; + self.get(&#39;elTagName&#39;) + &#39;&gt;&#39;);
 
                 if (contentEl) {
                     el.append(contentEl);
                 }
 
-                self.setInternal('el', el);   
+                self.setInternal(&#39;el&#39;, el);   
             }
             
             el.addClass(self.getComponentCssClassWithState());
             if (!contentEl) {
-                // 没取到,这里设下值, uiSet 时可以 set('content')  取到
-                self.setInternal('contentEl', el);
+                // 没取到,这里设下值, uiSet 时可以 set(&#39;content&#39;)  取到
+                self.setInternal(&#39;contentEl&#39;, el);
             }
         },
 <span id='BUI-Component-View-method-_uiSetHighlighted'>        /**
@@ -140,9 +140,9 @@ define('bui/component/view',['bui/component/manage','bui/component/uibase'],func
          */
         _uiSetHighlighted: function (v) {
             var self = this,
-                componentCls = self.getStatusCls('hover'),
-                el = self.get('el');
-            el[v ? 'addClass' : 'removeClass'](componentCls);
+                componentCls = self.getStatusCls(&#39;hover&#39;),
+                el = self.get(&#39;el&#39;);
+            el[v ? &#39;addClass&#39; : &#39;removeClass&#39;](componentCls);
         },
 
 <span id='BUI-Component-View-method-_uiSetDisabled'>        /**
@@ -151,19 +151,19 @@ define('bui/component/view',['bui/component/manage','bui/component/uibase'],func
          */
         _uiSetDisabled: function (v) {
             var self = this,
-                componentCls = self.getStatusCls('disabled'),
-                el = self.get('el');
-            el[v ? 'addClass' : 'removeClass'](componentCls)
-                .attr('aria-disabled', v);
+                componentCls = self.getStatusCls(&#39;disabled&#39;),
+                el = self.get(&#39;el&#39;);
+            el[v ? &#39;addClass&#39; : &#39;removeClass&#39;](componentCls)
+                .attr(&#39;aria-disabled&#39;, v);
       
             //如果禁用控件时，处于hover状态，则清除
-            if(v &amp;&amp; self.get('highlighted')){
-            self.set('highlighted',false);
+            if(v &amp;&amp; self.get(&#39;highlighted&#39;)){
+            self.set(&#39;highlighted&#39;,false);
             }
 
-            if (self.get('focusable')) {
+            if (self.get(&#39;focusable&#39;)) {
                 //不能被 tab focus 到
-                self.getKeyEventTarget().attr('tabIndex', v ? -1 : 0);
+                self.getKeyEventTarget().attr(&#39;tabIndex&#39;, v ? -1 : 0);
             }
         },
 <span id='BUI-Component-View-method-_uiSetActive'>        /**
@@ -172,9 +172,9 @@ define('bui/component/view',['bui/component/manage','bui/component/uibase'],func
          */
         _uiSetActive: function (v) {
             var self = this,
-                componentCls = self.getStatusCls('active');
-            self.get('el')[v ? 'addClass' : 'removeClass'](componentCls)
-                .attr('aria-pressed', !!v);
+                componentCls = self.getStatusCls(&#39;active&#39;);
+            self.get(&#39;el&#39;)[v ? &#39;addClass&#39; : &#39;removeClass&#39;](componentCls)
+                .attr(&#39;aria-pressed&#39;, !!v);
         },
 <span id='BUI-Component-View-method-_uiSetFocused'>        /**
 </span>         * 设置获得焦点
@@ -182,35 +182,35 @@ define('bui/component/view',['bui/component/manage','bui/component/uibase'],func
          */
         _uiSetFocused: function (v) {
             var self = this,
-                el = self.get('el'),
-                componentCls = self.getStatusCls('focused');
-            el[v ? 'addClass' : 'removeClass'](componentCls);
+                el = self.get(&#39;el&#39;),
+                componentCls = self.getStatusCls(&#39;focused&#39;);
+            el[v ? &#39;addClass&#39; : &#39;removeClass&#39;](componentCls);
         },
 <span id='BUI-Component-View-method-_uiSetElAttrs'>        /**
 </span>         * 设置控件最外层DOM的属性
          * @protected
          */
         _uiSetElAttrs: function (attrs) {
-            this.get('el').attr(attrs);
+            this.get(&#39;el&#39;).attr(attrs);
         },
 <span id='BUI-Component-View-method-_uiSetElCls'>        /**
 </span>         * 设置应用到控件最外层DOM的css class
          * @protected
          */
         _uiSetElCls: function (cls) {
-            this.get('el').addClass(cls);
+            this.get(&#39;el&#39;).addClass(cls);
         },
 <span id='BUI-Component-View-method-_uiSetElStyle'>        /**
 </span>         * 设置应用到控件最外层DOM的css style
          * @protected
          */
         _uiSetElStyle: function (style) {
-            this.get('el').css(style);
+            this.get(&#39;el&#39;).css(style);
         },
         //设置role
         _uiSetRole : function(role){
             if(role){
-                this.get('el').attr('role',role);
+                this.get(&#39;el&#39;).attr(&#39;role&#39;,role);
             } 
         },
 <span id='BUI-Component-View-method-_uiSetWidth'>        /**
@@ -218,7 +218,7 @@ define('bui/component/view',['bui/component/manage','bui/component/uibase'],func
          * @protected
          */
         _uiSetWidth: function (w) {
-            this.get('el').width(w);
+            this.get(&#39;el&#39;).width(w);
         },
 <span id='BUI-Component-View-method-_uiSetHeight'>        /**
 </span>         * 设置应用到控件高度
@@ -226,7 +226,7 @@ define('bui/component/view',['bui/component/manage','bui/component/uibase'],func
          */
         _uiSetHeight: function (h) {
             var self = this;
-            self.get('el').height(h);
+            self.get(&#39;el&#39;).height(h);
         },
 <span id='BUI-Component-View-method-_uiSetContent'>        /**
 </span>         * 设置应用到控件的内容
@@ -237,10 +237,10 @@ define('bui/component/view',['bui/component/manage','bui/component/uibase'],func
                 el;
             // srcNode 时不重新渲染 content
             // 防止内部有改变，而 content 则是老的 html 内容
-            if (self.get('srcNode') &amp;&amp; !self.get('rendered')) {
+            if (self.get(&#39;srcNode&#39;) &amp;&amp; !self.get(&#39;rendered&#39;)) {
             } else {
-                el = self.get('contentEl');
-                if (typeof c == 'string') {
+                el = self.get(&#39;contentEl&#39;);
+                if (typeof c == &#39;string&#39;) {
                     el.html(c);
                 } else if (c) {
                     el.empty().append(c);
@@ -253,12 +253,12 @@ define('bui/component/view',['bui/component/manage','bui/component/uibase'],func
          */
         _uiSetVisible: function (isVisible) {
             var self = this,
-                el = self.get('el'),
-                visibleMode = self.get('visibleMode');
-            if (visibleMode === 'visibility') {
-                el.css('visibility', isVisible ? 'visible' : 'hidden');
+                el = self.get(&#39;el&#39;),
+                visibleMode = self.get(&#39;visibleMode&#39;);
+            if (visibleMode === &#39;visibility&#39;) {
+                el.css(&#39;visibility&#39;, isVisible ? &#39;visible&#39; : &#39;hidden&#39;);
             } else {
-                el.css('display', isVisible ? '' : 'none');
+                el.css(&#39;display&#39;, isVisible ? &#39;&#39; : &#39;none&#39;);
             }
         },
         set : function(name,value){
@@ -268,7 +268,7 @@ define('bui/component/view',['bui/component/manage','bui/component/uibase'],func
                 ucName,
                 m;
 
-            if(!attr || !_self.get('binded')){ //未初始化view或者没用定义属性
+            if(!attr || !_self.get(&#39;binded&#39;)){ //未初始化view或者没用定义属性
                 View.superclass.set.call(this,name,value);
                 return _self;
             }
@@ -284,7 +284,7 @@ define('bui/component/view',['bui/component/manage','bui/component/uibase'],func
             value = _self.__attrVals[name];
             ev = {attrName: name,prevVal: prevVal,newVal: value};
             ucName = BUI.ucfirst(name);
-            m = '_uiSet' + ucName;
+            m = &#39;_uiSet&#39; + ucName;
             if(_self[m]){
                 _self[m](value,ev);
             }
@@ -297,13 +297,13 @@ define('bui/component/view',['bui/component/manage','bui/component/uibase'],func
          * @protected
          */
         destructor : function () {
-            var el = this.get('el');
+            var el = this.get(&#39;el&#39;);
             if (el) {
                 el.remove();
             }
         }
     },{
-        xclass : 'view',
+        xclass : &#39;view&#39;,
         priority : 0
     });
 
@@ -356,7 +356,7 @@ define('bui/component/view',['bui/component/manage','bui/component/uibase'],func
         height: {
         },
 <span id='BUI-Component-View-property-statusCls'>        /**
-</span>         * 状态相关的样式,默认情况下会使用 前缀名 + xclass + '-' + 状态名
+</span>         * 状态相关的样式,默认情况下会使用 前缀名 + xclass + &#39;-&#39; + 状态名
          * see {@link BUI.Component.Controller#property-statusCls}
          * @type {Object}
          */
@@ -369,7 +369,7 @@ define('bui/component/view',['bui/component/manage','bui/component/uibase'],func
          */
         elTagName: {
             // 生成标签名字
-            value: 'div'
+            value: &#39;div&#39;
         },
 <span id='global-property-elAttrs'>        /**
 </span>         * 控件根节点属性
@@ -409,11 +409,11 @@ define('bui/component/view',['bui/component/manage','bui/component/uibase'],func
          * see {@link BUI.Component.Controller#property-visibleMode}
          */
         visibleMode: {
-            value: 'display'
+            value: &#39;display&#39;
         },
 <span id='BUI-Component-View-property-cachePosition'>        /**
 </span>         * @private
-         * 缓存隐藏时的位置，对应visibleMode = 'visiblity' 的场景
+         * 缓存隐藏时的位置，对应visibleMode = &#39;visiblity&#39; 的场景
          * @type {Object}
          */
         cachePosition : {
@@ -426,7 +426,7 @@ define('bui/component/view',['bui/component/manage','bui/component/uibase'],func
          */
         contentEl: {
             valueFn: function () {
-                return this.get('el');
+                return this.get(&#39;el&#39;);
             }
         },
 <span id='BUI-Component-View-property-prefixCls'>        /**

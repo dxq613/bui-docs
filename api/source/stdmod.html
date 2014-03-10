@@ -20,9 +20,9 @@
  * 控件包含头部（head)、内容(content)和尾部（foot)
  * @ignore
  */
-define('bui/component/uibase/stdmod',function () {
+define(&#39;bui/component/uibase/stdmod&#39;,function () {
 
-    var CLS_PREFIX = BUI.prefix + 'stdmod-';
+    var CLS_PREFIX = BUI.prefix + &#39;stdmod-&#39;;
         
 
 <span id='BUI-Component-UIBase-StdModView'>    /**
@@ -67,14 +67,14 @@ define('bui/component/uibase/stdmod',function () {
     };/**/
 
     function createUI(self, part) {
-        var el = self.get('contentEl'),
+        var el = self.get(&#39;contentEl&#39;),
             partEl = self.get(part);
         if (!partEl) {
-            partEl = $('&lt;div class=&quot;' +
-                CLS_PREFIX + part + '&quot;' +
-                ' ' +
-                ' &gt;' +
-                '&lt;/div&gt;');
+            partEl = $(&#39;&lt;div class=&quot;&#39; +
+                CLS_PREFIX + part + &#39;&quot;&#39; +
+                &#39; &#39; +
+                &#39; &gt;&#39; +
+                &#39;&lt;/div&gt;&#39;);
             partEl.appendTo(el);
             self.setInternal(part, partEl);
         }
@@ -86,7 +86,7 @@ define('bui/component/uibase/stdmod',function () {
         if (BUI.isString(v)) {
             part.html(v);
         } else {
-            part.html('')
+            part.html(&#39;&#39;)
                 .append(v);
         }
     }
@@ -94,32 +94,32 @@ define('bui/component/uibase/stdmod',function () {
     StdModView.prototype = {
 
         __createDom:function () {
-            createUI(this, 'header');
-            createUI(this, 'body');
-            createUI(this, 'footer');
+            createUI(this, &#39;header&#39;);
+            createUI(this, &#39;body&#39;);
+            createUI(this, &#39;footer&#39;);
         },
 
         _uiSetBodyStyle:function (v) {
-            this.get('body').css(v);
+            this.get(&#39;body&#39;).css(v);
         },
 
         _uiSetHeaderStyle:function (v) {
-            this.get('header').css(v);
+            this.get(&#39;header&#39;).css(v);
         },
         _uiSetFooterStyle:function (v) {
-            this.get('footer').css(v);
+            this.get(&#39;footer&#39;).css(v);
         },
 
         _uiSetBodyContent:function (v) {
-            _setStdModRenderContent(this, 'body', v);
+            _setStdModRenderContent(this, &#39;body&#39;, v);
         },
 
         _uiSetHeaderContent:function (v) {
-            _setStdModRenderContent(this, 'header', v);
+            _setStdModRenderContent(this, &#39;header&#39;, v);
         },
 
         _uiSetFooterContent:function (v) {
-            _setStdModRenderContent(this, 'footer', v);
+            _setStdModRenderContent(this, &#39;footer&#39;, v);
         }
     };
 
@@ -132,10 +132,6 @@ define('bui/component/uibase/stdmod',function () {
     }
 
     StdMod.ATTRS =
-<span id='global-property-'>    /**
-</span>     * @lends BUI.Component.UIBase.StdMod#
-     * @ignore
-     */
     {
 <span id='BUI-Component-UIBase-StdMod-property-header'>        /**
 </span>         * 控件的头部DOM. Readonly
@@ -201,9 +197,9 @@ define('bui/component/uibase/stdmod',function () {
 </span>         * 控件头部的html
          * &lt;pre&gt;&lt;code&gt;
          * var dialog = new Dialog({
-         *     headerContent: '&amp;lt;div class=&quot;header&quot;&amp;gt;&amp;lt;/div&amp;gt;',
-         *     bodyContent : '#c1',
-         *     footerContent : '&amp;lt;div class=&quot;footer&quot;&amp;gt;&amp;lt;/div&amp;gt;'
+         *     headerContent: &#39;&amp;lt;div class=&quot;header&quot;&amp;gt;&amp;lt;/div&amp;gt;&#39;,
+         *     bodyContent : &#39;#c1&#39;,
+         *     footerContent : &#39;&amp;lt;div class=&quot;footer&quot;&amp;gt;&amp;lt;/div&amp;gt;&#39;
          * });
          * dialog.show();
          * &lt;/code&gt;&lt;/pre&gt;
@@ -220,9 +216,9 @@ define('bui/component/uibase/stdmod',function () {
 </span>         * 控件内容的html
          * &lt;pre&gt;&lt;code&gt;
          * var dialog = new Dialog({
-         *     headerContent: '&amp;lt;div class=&quot;header&quot;&amp;gt;&amp;lt;/div&amp;gt;',
-         *     bodyContent : '#c1',
-         *     footerContent : '&amp;lt;div class=&quot;footer&quot;&amp;gt;&amp;lt;/div&amp;gt;'
+         *     headerContent: &#39;&amp;lt;div class=&quot;header&quot;&amp;gt;&amp;lt;/div&amp;gt;&#39;,
+         *     bodyContent : &#39;#c1&#39;,
+         *     footerContent : &#39;&amp;lt;div class=&quot;footer&quot;&amp;gt;&amp;lt;/div&amp;gt;&#39;
          * });
          * dialog.show();
          * &lt;/code&gt;&lt;/pre&gt;
@@ -239,9 +235,9 @@ define('bui/component/uibase/stdmod',function () {
 </span>         * 控件底部的html
          * &lt;pre&gt;&lt;code&gt;
          * var dialog = new Dialog({
-         *     headerContent: '&amp;lt;div class=&quot;header&quot;&amp;gt;&amp;lt;/div&amp;gt;',
-         *     bodyContent : '#c1',
-         *     footerContent : '&amp;lt;div class=&quot;footer&quot;&amp;gt;&amp;lt;/div&amp;gt;'
+         *     headerContent: &#39;&amp;lt;div class=&quot;header&quot;&amp;gt;&amp;lt;/div&amp;gt;&#39;,
+         *     bodyContent : &#39;#c1&#39;,
+         *     footerContent : &#39;&amp;lt;div class=&quot;footer&quot;&amp;gt;&amp;lt;/div&amp;gt;&#39;
          * });
          * dialog.show();
          * &lt;/code&gt;&lt;/pre&gt;

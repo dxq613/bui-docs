@@ -16,25 +16,25 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js">(function(){
-  var requires = ['bui/util','bui/ua','bui/json','bui/date','bui/array','bui/keycode','bui/observable','bui/base','bui/component'];
+  var requires = [&#39;bui/util&#39;,&#39;bui/ua&#39;,&#39;bui/json&#39;,&#39;bui/date&#39;,&#39;bui/array&#39;,&#39;bui/keycode&#39;,&#39;bui/observable&#39;,&#39;bui/base&#39;,&#39;bui/component&#39;];
   if(window.KISSY &amp;&amp; !window.KISSY.Node){ //如果是kissy同时未加载core模块
-    requires.unshift('bui/adapter');
+    requires.unshift(&#39;bui/adapter&#39;);
   }
-  define('bui/common',requires,function(require){
+  define(&#39;bui/common&#39;,requires,function(require){
     if(window.KISSY &amp;&amp; !window.KISSY.Node){
-      require('bui/adapter');
+      require(&#39;bui/adapter&#39;);
     }
-    var BUI = require('bui/util');
+    var BUI = require(&#39;bui/util&#39;);
 
     BUI.mix(BUI,{
-      UA : require('bui/ua'),
-      JSON : require('bui/json'),
-      Date : require('bui/date'),
-      Array : require('bui/array'),
-      KeyCode : require('bui/keycode'),
-      Observable : require('bui/observable'),
-      Base : require('bui/base'),
-      Component : require('bui/component')
+      UA : require(&#39;bui/ua&#39;),
+      JSON : require(&#39;bui/json&#39;),
+      Date : require(&#39;bui/date&#39;),
+      Array : require(&#39;bui/array&#39;),
+      KeyCode : require(&#39;bui/keycode&#39;),
+      Observable : require(&#39;bui/observable&#39;),
+      Base : require(&#39;bui/base&#39;),
+      Component : require(&#39;bui/component&#39;)
     });
     return BUI;
   });

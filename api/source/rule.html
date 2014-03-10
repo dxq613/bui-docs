@@ -20,9 +20,9 @@
  * @ignore
  */
 
-define('bui/form/rule',['bui/common'],function (require) {
+define(&#39;bui/form/rule&#39;,[&#39;bui/common&#39;],function (require) {
 
-  var BUI = require('bui/common');
+  var BUI = require(&#39;bui/common&#39;);
 <span id='BUI-Form-Rule'>  /**
 </span>   * @class BUI.Form.Rule
    * 验证规则
@@ -69,10 +69,10 @@ define('bui/form/rule',['bui/common'],function (require) {
       baseValue = baseValue[0];
     }
     var _self = self,
-      validator = _self.get('validator'),
+      validator = _self.get(&#39;validator&#39;),
       formatedMsg = formatError(self,baseValue,msg),
       valid = true;
-    value = value == null ? '' : value;
+    value = value == null ? &#39;&#39; : value;
     return validator.call(_self,value,baseValue,formatedMsg,control);
   }
 
@@ -96,12 +96,12 @@ define('bui/form/rule',['bui/common'],function (require) {
       return rst;
     }
 
-    return {'0' : values};
+    return {&#39;0&#39; : values};
   }
 
   function formatError(self,values,msg){
     var ars = parseParams(values); 
-    msg = msg || self.get('msg');
+    msg = msg || self.get(&#39;msg&#39;);
     return BUI.substitute(msg,ars);
   }
 
@@ -115,13 +115,13 @@ define('bui/form/rule',['bui/common'],function (require) {
      * @param {BUI.Form.Field|BUI.Form.Group} [control] 发生验证的控件
      * @return {String}   通过验证返回 null ,未通过验证返回错误信息
      * 
-     *         var msg = '输入数据必须在{0}和{1}之间！',
+     *         var msg = &#39;输入数据必须在{0}和{1}之间！&#39;,
      *           rangeRule = new Rule({
-     *             name : 'range',
+     *             name : &#39;range&#39;,
      *             msg : msg,
      *             validator :function(value,range,msg){
      *               var min = range[0], //此处我们把range定义为数组，也可以定义为{min:0,max:200},那么在传入校验时跟此处一致即可
-     *                 max = range[1];   //在错误信息中，使用用 '输入数据必须在{min}和{max}之间！',验证函数中的字符串已经进行格式化
+     *                 max = range[1];   //在错误信息中，使用用 &#39;输入数据必须在{min}和{max}之间！&#39;,验证函数中的字符串已经进行格式化
      *               if(value &lt; min || value &gt; max){
      *                 return false;
      *               }

@@ -20,16 +20,16 @@
  * @author dxq613@gmail.com
  * @ignore              
  */
-define('bui/tab/navtab',['bui/common','bui/menu'],function(require){
+define(&#39;bui/tab/navtab&#39;,[&#39;bui/common&#39;,&#39;bui/menu&#39;],function(require){
 
-  var BUI = require('bui/common'),
-    Menu = require('bui/menu'),
+  var BUI = require(&#39;bui/common&#39;),
+    Menu = require(&#39;bui/menu&#39;),
     Component =  BUI.Component,
-    CLS_NAV_LIST = 'tab-nav-list',
-    CLS_ARROW_LEFT = 'arrow-left',
-    CLS_ARROW_RIGHT = 'arrow-right',
-    CLS_FORCE_FIT = BUI.prefix + 'tab-force',
-    ID_CLOSE = 'm_close',
+    CLS_NAV_LIST = &#39;tab-nav-list&#39;,
+    CLS_ARROW_LEFT = &#39;arrow-left&#39;,
+    CLS_ARROW_RIGHT = &#39;arrow-right&#39;,
+    CLS_FORCE_FIT = BUI.prefix + &#39;tab-force&#39;,
+    ID_CLOSE = &#39;m_close&#39;,
     ITEM_WIDTH = 140;
 
 <span id='BUI-Tab-NavTabView'>  /**
@@ -41,23 +41,23 @@ define('bui/tab/navtab',['bui/common','bui/menu'],function(require){
   var navTabView = Component.View.extend({
     renderUI : function(){
       var _self = this,
-        el = _self.get('el'),
+        el = _self.get(&#39;el&#39;),
         listEl = null;
 
-      listEl = el.find('.' + CLS_NAV_LIST);
-      _self.setInternal('listEl',listEl);
+      listEl = el.find(&#39;.&#39; + CLS_NAV_LIST);
+      _self.setInternal(&#39;listEl&#39;,listEl);
     },
     getContentElement : function(){
       
-      return this.get('listEl');
+      return this.get(&#39;listEl&#39;);
     },
     getTabContentContainer : function(){
-      return this.get('el').find('.tab-content-container');
+      return this.get(&#39;el&#39;).find(&#39;.tab-content-container&#39;);
     },
     _uiSetHeight : function(v){
       var _self = this,
-        el = _self.get('el'),
-        barEl = el.find('.tab-nav-bar'),
+        el = _self.get(&#39;el&#39;),
+        barEl = el.find(&#39;.tab-nav-bar&#39;),
         containerEl = _self.getTabContentContainer();
       if(v){
         containerEl.height(v - barEl.height());
@@ -67,7 +67,7 @@ define('bui/tab/navtab',['bui/common','bui/menu'],function(require){
     //设置自动适应宽度
     _uiSetForceFit : function(v){
       var _self = this,
-        el = _self.get('el');
+        el = _self.get(&#39;el&#39;);
       if(v){
         el.addClass(CLS_FORCE_FIT);
       }else{
@@ -79,7 +79,7 @@ define('bui/tab/navtab',['bui/common','bui/menu'],function(require){
       forceFit : {}
     }
   },{
-    xclass : 'nav-tab-view',
+    xclass : &#39;nav-tab-view&#39;,
     priority:0
   });
 <span id='BUI-Tab-NavTab'>  /**
@@ -88,26 +88,26 @@ define('bui/tab/navtab',['bui/common','bui/menu'],function(require){
    * @extends BUI.Component.Controller
    */
   var navTab = Component.Controller.extend(
-<span id='global-property-'>    /**
+<span id=''>    /**
 </span>     * @lends BUI.Tab.NavTab.prototype
      * @ignore
      */
     {
-<span id='BUI-Tab-NavTab-method-addTab'>      /**
+<span id='-method-addTab'>      /**
 </span>       * 添加标签项
        * @param {Object} config 菜单项的配置项
        * @param {Boolean} reload 如果标签页已存在，则重新加载
        */
       addTab:function(config,reload){
         var _self = this,
-          id = config.id || BUI.guid('tab-item'),
-          forceFit = _self.get('forceFit'),
+          id = config.id || BUI.guid(&#39;tab-item&#39;),
+          forceFit = _self.get(&#39;forceFit&#39;),
           item = _self.getItemById(id);
 
         if(item){
           var hrefChage = false;
-          if(config.href &amp;&amp; item.get('href') != config.href){
-            item.set('href',config.href);
+          if(config.href &amp;&amp; item.get(&#39;href&#39;) != config.href){
+            item.set(&#39;href&#39;,config.href);
             hrefChage = true;
           }
           _self._setItemActived(item);
@@ -120,7 +120,7 @@ define('bui/tab/navtab',['bui/common','bui/menu'],function(require){
             id : id,
             visible : false,
             actived : true,
-            xclass : 'nav-tab-item'
+            xclass : &#39;nav-tab-item&#39;
           },config);
 
           item = _self.addChild(config);
@@ -132,81 +132,81 @@ define('bui/tab/navtab',['bui/common','bui/menu'],function(require){
         }
         return item;
       },
-<span id='BUI-Tab-NavTab-method-getTabContentContainer'>      /**
+<span id='-method-getTabContentContainer'>      /**
 </span>       * 获取导航标签，存放内容的节点
        * @return {jQuery} 导航内容的容器
        */
       getTabContentContainer : function(){
-        return this.get('view').getTabContentContainer();
+        return this.get(&#39;view&#39;).getTabContentContainer();
       },
-      //绑定事件
-      bindUI: function(){
+<span id='-method-bindUI'>      //绑定事件
+</span>      bindUI: function(){
         var _self = this,
-          forceFit = _self.get('forceFit');
+          forceFit = _self.get(&#39;forceFit&#39;);
         if(!forceFit){
           _self._bindScrollEvent();
-          _self.on('afterVisibleChange',function(ev){
+          _self.on(&#39;afterVisibleChange&#39;,function(ev){
             var item = ev.target;
-            if(item.get('actived')){
+            if(item.get(&#39;actived&#39;)){
               _self._scrollToItem(item);
             }
           });
         }
 
         //监听点击标签
-        _self.on('click',function(ev){
+        _self.on(&#39;click&#39;,function(ev){
           var item = ev.target;
           if(item != _self){
             _self._setItemActived(item);
-            _self.fire('itemclick',{item:item});
+            _self.fire(&#39;itemclick&#39;,{item:item});
           }
         });
 
         //关闭标签
-        _self.on('closed',function(ev){
+        _self.on(&#39;closed&#39;,function(ev){
           var item = ev.target;
           _self._closeItem(item);
         });
 
-        _self.on('showmenu',function(ev){
+        _self.on(&#39;showmenu&#39;,function(ev){
           _self._showMenu(ev.target,ev.position);
         });
 
         
       },
-      //绑定滚动事件
-      _bindScrollEvent : function(){
+<span id='-method-_bindScrollEvent'>      //绑定滚动事件
+</span>      _bindScrollEvent : function(){
         var _self = this,
-          el = _self.get('el');
+          el = _self.get(&#39;el&#39;);
 
-        el.find('.arrow-left').on('click',function(){
-          if(el.hasClass(CLS_ARROW_LEFT + '-active')){
+        el.find(&#39;.arrow-left&#39;).on(&#39;click&#39;,function(){
+          if(el.hasClass(CLS_ARROW_LEFT + &#39;-active&#39;)){
             _self._scrollLeft();
           }
         });
 
-        el.find('.arrow-right').on('click',function(){
-          if(el.hasClass(CLS_ARROW_RIGHT + '-active')){
+        el.find(&#39;.arrow-right&#39;).on(&#39;click&#39;,function(){
+          if(el.hasClass(CLS_ARROW_RIGHT + &#39;-active&#39;)){
             _self._scrllRight();
           }
         });
       },
-      _showMenu : function(item,position){
-        var _self = this,
+<span id='-method-_showMenu'>      _showMenu : function(item,position){
+</span>        var _self = this,
             menu = _self._getMenu(),
-            closeable = item.get('closeable'),
+            closeable = item.get(&#39;closeable&#39;),
             closeItem;
 
-        _self.set('showMenuItem',item);
+        _self.set(&#39;showMenuItem&#39;,item);
 
-        menu.set('xy',[position.x,position.y]);
+        menu.set(&#39;xy&#39;,[position.x,position.y]);
         menu.show();
         closeItem = menu.getItem(ID_CLOSE);
         if(closeItem){
-          closeItem.set('disabled',!closeable);
+          closeItem.set(&#39;disabled&#39;,!closeable);
         }
       },
-<span id='BUI-Tab-NavTab-method-setActived'>      /**
+<span id='-method-setActived'>      /**
 </span>       * 通过id,设置选中的标签项
        * @param {String} id 标签编号
        */
@@ -215,56 +215,56 @@ define('bui/tab/navtab',['bui/common','bui/menu'],function(require){
           item = _self.getItemById(id);
         _self._setItemActived(item);
       },
-<span id='BUI-Tab-NavTab-method-getActivedItem'>      /**
+<span id='-method-getActivedItem'>      /**
 </span>       * 获取当前选中的标签项
        * @return {BUI.Tab.NavTabItem} 选中的标签对象
        */
       getActivedItem : function(){
         var _self = this,
-          children = _self.get('children'),
+          children = _self.get(&#39;children&#39;),
           result = null;
         BUI.each(children,function(item){
-          if(item.get('actived')){
+          if(item.get(&#39;actived&#39;)){
             result = item;
             return false;
           }
         });
         return result;
       },
-<span id='BUI-Tab-NavTab-method-getItemById'>      /**
+<span id='-method-getItemById'>      /**
 </span>       * 通过编号获取标签项
        * @param  {String} id 标签项的编号
        * @return {BUI.Tab.NavTabItem} 标签项对象
        */
       getItemById : function(id){
         var _self = this,
-          children = _self.get('children'),
+          children = _self.get(&#39;children&#39;),
           result = null;
         BUI.each(children,function(item){
-          if(item.get('id') === id){
+          if(item.get(&#39;id&#39;) === id){
             result = item;
             return false;
           }
         });
         return result;
       },
-      _getMenu : function(){
-        var _self = this;
+<span id='-method-_getMenu'>      _getMenu : function(){
+</span>        var _self = this;
 
-        return _self.get('menu') || _self._initMenu();
+        return _self.get(&#39;menu&#39;) || _self._initMenu();
       },
-      _initMenu : function(){
-        var _self = this,
+<span id='-method-_initMenu'>      _initMenu : function(){
+</span>        var _self = this,
           menu = new Menu.ContextMenu({
               children : [
               {
 
-                xclass : 'context-menu-item',
-                iconCls:'icon icon-refresh',
-                text : '刷新',
+                xclass : &#39;context-menu-item&#39;,
+                iconCls:&#39;icon icon-refresh&#39;,
+                text : &#39;刷新&#39;,
                 listeners:{
-                  'click':function(){
-                    var item = _self.get('showMenuItem');
+                  &#39;click&#39;:function(){
+                    var item = _self.get(&#39;showMenuItem&#39;);
                     if(item){
                       item.reload();
                     }
@@ -273,12 +273,12 @@ define('bui/tab/navtab',['bui/common','bui/menu'],function(require){
               },
               {
                 id : ID_CLOSE,
-                xclass : 'context-menu-item',
-                iconCls:'icon icon-remove',
-                text: '关闭',
+                xclass : &#39;context-menu-item&#39;,
+                iconCls:&#39;icon icon-remove&#39;,
+                text: &#39;关闭&#39;,
                 listeners:{
-                  'click':function(){
-                    var item = _self.get('showMenuItem');
+                  &#39;click&#39;:function(){
+                    var item = _self.get(&#39;showMenuItem&#39;);
                     if(item){
                       item.close();
                     }
@@ -286,12 +286,12 @@ define('bui/tab/navtab',['bui/common','bui/menu'],function(require){
                 }
               },
               {
-                xclass : 'context-menu-item',
-                iconCls:'icon icon-remove-sign',
-                text : '关闭其他',
+                xclass : &#39;context-menu-item&#39;,
+                iconCls:&#39;icon icon-remove-sign&#39;,
+                text : &#39;关闭其他&#39;,
                 listeners:{
-                  'click':function(){
-                    var item = _self.get('showMenuItem');
+                  &#39;click&#39;:function(){
+                    var item = _self.get(&#39;showMenuItem&#39;);
                     if(item){
                       _self.closeOther(item);
                     }
@@ -299,11 +299,11 @@ define('bui/tab/navtab',['bui/common','bui/menu'],function(require){
                 }
               },
               {
-                xclass : 'context-menu-item',
-                iconCls:'icon icon-remove-sign',
-                text : '关闭所有',
+                xclass : &#39;context-menu-item&#39;,
+                iconCls:&#39;icon icon-remove-sign&#39;,
+                text : &#39;关闭所有&#39;,
                 listeners:{
-                  'click':function(){
+                  &#39;click&#39;:function(){
                     _self.closeAll();
                   }
                 }
@@ -312,15 +312,15 @@ define('bui/tab/navtab',['bui/common','bui/menu'],function(require){
             ]
           });
           
-        _self.set('menu',menu);
+        _self.set(&#39;menu&#39;,menu);
         return menu;
       },
-      //关闭标签项
-      _closeItem : function(item){
+<span id='-method-_closeItem'>      //关闭标签项
+</span>      _closeItem : function(item){
         var _self = this,
           index = _self._getIndex(item),
           activedItem = _self.getActivedItem(),
-          preItem = _self.get('preItem') || _self._getItemByIndex(index -1),
+          preItem = _self.get(&#39;preItem&#39;) || _self._getItemByIndex(index -1),
           nextItem = _self._getItemByIndex(index + 1);
 
         item.hide(function(){
@@ -339,16 +339,18 @@ define('bui/tab/navtab',['bui/common','bui/menu'],function(require){
         });
         
       },
-      closeAll:function(){
-        var _self = this,
-          children = _self.get('children');
+<span id='-method-closeAll'>      closeAll:function(){
+</span>        var _self = this,
+          children = _self.get(&#39;children&#39;);
         BUI.each(children,function(item){
-          item.close();
+          if(item.get(&#39;closeable&#39;)){
+            item.close();
+          }
         });
       },
-      closeOther : function(curItem){
-        var _self = this,
-          children = _self.get('children');
+<span id='-method-closeOther'>      closeOther : function(curItem){
+</span>        var _self = this,
+          children = _self.get(&#39;children&#39;);
         BUI.each(children,function(item){
           if(curItem !==item){
             item.close();
@@ -356,21 +358,21 @@ define('bui/tab/navtab',['bui/common','bui/menu'],function(require){
           
         });
       },
-      //通过位置查找标签项
-      _getItemByIndex : function(index){
+<span id='-method-_getItemByIndex'>      //通过位置查找标签项
+</span>      _getItemByIndex : function(index){
         var _self = this,
-          children = _self.get('children');  
+          children = _self.get(&#39;children&#39;);  
         return children[index];
       },
-      //获取标签项的位置
-      _getIndex : function(item){
+<span id='-method-_getIndex'>      //获取标签项的位置
+</span>      _getIndex : function(item){
         var _self = this,
-          children = _self.get('children');    
+          children = _self.get(&#39;children&#39;);    
         return BUI.Array.indexOf(item,children);
       },
-      //重新计算标签项容器的宽度位置
-      _resetItemList : function(){
-        if(this.get('forceFit')){
+<span id='-method-_resetItemList'>      //重新计算标签项容器的宽度位置
+</span>      _resetItemList : function(){
+        if(this.get(&#39;forceFit&#39;)){
           return;
         }
         var _self = this,
@@ -379,17 +381,17 @@ define('bui/tab/navtab',['bui/common','bui/menu'],function(require){
         container.width(_self._getTotalWidth());
 
       },
-      //获取选项的总宽度，以默认宽度为基数
-      _getTotalWidth : function(){
+<span id='-method-_getTotalWidth'>      //获取选项的总宽度，以默认宽度为基数
+</span>      _getTotalWidth : function(){
         var _self = this,
-          children = _self.get('children');
+          children = _self.get(&#39;children&#39;);
 
-        return children.length * _self.get('itemWidth');
+        return children.length * _self.get(&#39;itemWidth&#39;);
       },
-      _getForceItemWidth : function(){
-        var _self = this,
+<span id='-method-_getForceItemWidth'>      _getForceItemWidth : function(){
+</span>        var _self = this,
           width =  _self.getContentElement().width(),
-          children = _self.get('children'),
+          children = _self.get(&#39;children&#39;),
           totalWidth = _self._getTotalWidth(),
           itemWidth = _self.get(itemWidth);
         if(totalWidth &gt; width){
@@ -397,22 +399,22 @@ define('bui/tab/navtab',['bui/common','bui/menu'],function(require){
         }
         return itemWidth;
       },
-      forceFit : function(){
-        var _self = this;
+<span id='-method-forceFit'>      forceFit : function(){
+</span>        var _self = this;
         _self._forceItemWidth(_self._getForceItemWidth());
       },
-      //设置平均宽度
-      _forceItemWidth : function(width){
-        width = width || this.get('itemWidth');
+<span id='-method-_forceItemWidth'>      //设置平均宽度
+</span>      _forceItemWidth : function(width){
+        width = width || this.get(&#39;itemWidth&#39;);
         var _self = this,
-          children = _self.get('children');
+          children = _self.get(&#39;children&#39;);
         BUI.each(children,function(item){
-          item.set('width',width);
+          item.set(&#39;width&#39;,width);
         });
       },
-      //使指定标签项在用户可视区域内
-      _scrollToItem : function(item){
-        if(this.get('forceFit')){ //自适应后，不进行滚动
+<span id='-method-_scrollToItem'>      //使指定标签项在用户可视区域内
+</span>      _scrollToItem : function(item){
+        if(this.get(&#39;forceFit&#39;)){ //自适应后，不进行滚动
           return;
         }
         var _self = this,
@@ -442,13 +444,13 @@ define('bui/tab/navtab',['bui/common','bui/menu'],function(require){
           }
         }
       },
-      //获取标签到最左端的距离
-      _getDistanceToBegin : function(item,containerPosition){
-        var position = item.get('el').position();
+<span id='-method-_getDistanceToBegin'>      //获取标签到最左端的距离
+</span>      _getDistanceToBegin : function(item,containerPosition){
+        var position = item.get(&#39;el&#39;).position();
 
         return position.left + containerPosition.left;
       },
-<span id='BUI-Tab-NavTab-method-_getDistanceToEnd'>      /**
+<span id='-method-_getDistanceToEnd'>      /**
 </span>       * 获取标签到最右端的距离
        * @return  {Number} 像素
        * @private
@@ -459,13 +461,13 @@ define('bui/tab/navtab',['bui/common','bui/menu'],function(require){
           wraperWidth = container.parent().width(),
           containerPosition = containerPosition || container.position(),
           offsetLeft = _self._getDistanceToBegin(item,containerPosition),
-          disWidth = offsetLeft + _self.get('itemWidth') - wraperWidth; 
+          disWidth = offsetLeft + _self.get(&#39;itemWidth&#39;) - wraperWidth; 
         return disWidth;
       },
-      //获取最后一个标签项离右边的间距
-      _getLastDistance : function(container,containerPosition){
+<span id='-method-_getLastDistance'>      //获取最后一个标签项离右边的间距
+</span>      _getLastDistance : function(container,containerPosition){
         var _self = this,
-          children = _self.get('children'),
+          children = _self.get(&#39;children&#39;),
           lastItem = children[children.length - 1];
         if(lastItem)
         {
@@ -473,60 +475,60 @@ define('bui/tab/navtab',['bui/common','bui/menu'],function(require){
         }
         return 0;
       },
-      _scrollTo : function(el,left,callback){
-        var _self = this;
+<span id='-method-_scrollTo'>      _scrollTo : function(el,left,callback){
+</span>        var _self = this;
         el.animate({left:left},500,function(){
            _self._setArrowStatus(el);
         });
       },
-      _scrollLeft : function(){
-        var _self = this,
+<span id='-method-_scrollLeft'>      _scrollLeft : function(){
+</span>        var _self = this,
           container = _self.getContentElement(),
           position = container.position(),
           disWidth = _self._getLastDistance(container,position),
           toLeft;
         if(disWidth &gt; 0 ){
-          toLeft = disWidth &gt; _self.get('itemWidth') ? _self.get('itemWidth') : disWidth;
+          toLeft = disWidth &gt; _self.get(&#39;itemWidth&#39;) ? _self.get(&#39;itemWidth&#39;) : disWidth;
           _self._scrollTo(container,position.left - toLeft);
         }
 
       },
-      //向右滚动
-      _scrllRight : function(){
+<span id='-method-_scrllRight'>      //向右滚动
+</span>      _scrllRight : function(){
         var _self = this,
           container = _self.getContentElement(),
           position = container.position(),
           toRight;
         if(position.left &lt; 0){
-          toRight = position.left + _self.get('itemWidth');
+          toRight = position.left + _self.get(&#39;itemWidth&#39;);
           toRight = toRight &lt; 0 ? toRight : 0;
           _self._scrollTo(container,toRight);
         }
       },
-      //设置向左，向右的箭头是否可用
-      _setArrowStatus : function(container,containerPosition){
+<span id='-method-_setArrowStatus'>      //设置向左，向右的箭头是否可用
+</span>      _setArrowStatus : function(container,containerPosition){
 
         container = container || this.getContentElement();
         var _self = this,
-          wapperEl = _self.get('el'),
+          wapperEl = _self.get(&#39;el&#39;),
           position = containerPosition || container.position(),
           disWidth = _self._getLastDistance(container,containerPosition);
 
         //可以向左边滚动
         if(position.left &lt; 0){
-          wapperEl.addClass(CLS_ARROW_RIGHT+'-active');
+          wapperEl.addClass(CLS_ARROW_RIGHT+&#39;-active&#39;);
         }else{
-          wapperEl.removeClass(CLS_ARROW_RIGHT+'-active');
+          wapperEl.removeClass(CLS_ARROW_RIGHT+&#39;-active&#39;);
         }
 
         if(disWidth &gt; 0){
-          wapperEl.addClass(CLS_ARROW_LEFT+'-active');
+          wapperEl.addClass(CLS_ARROW_LEFT+&#39;-active&#39;);
         }else{
-          wapperEl.removeClass(CLS_ARROW_LEFT+'-active');
+          wapperEl.removeClass(CLS_ARROW_LEFT+&#39;-active&#39;);
         }
       },
-      //设置当前选中的标签
-      _setItemActived:function(item){
+<span id='-method-_setItemActived'>      //设置当前选中的标签
+</span>      _setItemActived:function(item){
         var _self = this,
           preActivedItem = _self.getActivedItem();
         if(item === preActivedItem){
@@ -534,20 +536,20 @@ define('bui/tab/navtab',['bui/common','bui/menu'],function(require){
         }
 
         if(preActivedItem){
-          preActivedItem.set('actived',false);
+          preActivedItem.set(&#39;actived&#39;,false);
         }
-        _self.set('preItem',preActivedItem);
+        _self.set(&#39;preItem&#39;,preActivedItem);
         if(item){
-          if(!item.get('actived')){
-            item.set('actived',true);
+          if(!item.get(&#39;actived&#39;)){
+            item.set(&#39;actived&#39;,true);
           }
           //当标签项可见时，否则无法计算位置信息
-          if(item.get('visible')){
+          if(item.get(&#39;visible&#39;)){
             _self._scrollToItem(item);
           }
           //为了兼容原先代码
-          _self.fire('activeChange',{item:item});
-          _self.fire('activedchange',{item:item});
+          _self.fire(&#39;activeChange&#39;,{item:item});
+          _self.fire(&#39;activedchange&#39;,{item:item});
         }
       }
 
@@ -555,15 +557,15 @@ define('bui/tab/navtab',['bui/common','bui/menu'],function(require){
     
     {
       ATTRS : 
-<span id='global-property-'>    /**
+<span id=''>    /**
 </span>      * @lends BUI.Tab.NavTab.prototype
       * @ignore
       */    
     {
-        defaultChildClass:{
-          value : 'nav-tab-item'
+<span id='-property-defaultChildClass'>        defaultChildClass:{
+</span>          value : &#39;nav-tab-item&#39;
         },
-<span id='BUI-Tab-NavTab-property-menu'>        /**
+<span id='-property-menu'>        /**
 </span>         * @private
          * 右键菜单
          * @type {Object}
@@ -571,7 +573,7 @@ define('bui/tab/navtab',['bui/common','bui/menu'],function(require){
         menu : {
 
         },
-<span id='BUI-Tab-NavTab-cfg-forceFit'>        /**
+<span id='-cfg-forceFit'>        /**
 </span>         * 设置此参数时，标签选项的宽度会进行自适应
          * @cfg {Boolean} forceFit
          */
@@ -579,38 +581,38 @@ define('bui/tab/navtab',['bui/common','bui/menu'],function(require){
           view : true,
           value : false
         },
-<span id='BUI-Tab-NavTab-property-itemWidth'>        /**
+<span id='-property-itemWidth'>        /**
 </span>         * 标签的默认宽度,140px，设置forceFit:true后，此宽度为最宽宽度
          * @type {Number}
          */
         itemWidth : {
           value : ITEM_WIDTH
         },
-<span id='BUI-Tab-NavTab-property-tpl'>        /**
+<span id='-property-tpl'>        /**
 </span>         * 渲染标签的模版
          * @type {String}
          */
         tpl : {
           view : true,
-          value : '&lt;div class=&quot;tab-nav-bar&quot;&gt;'+
-            '&lt;s class=&quot;tab-nav-arrow arrow-left&quot;&gt;&lt;/s&gt;&lt;div class=&quot;tab-nav-wrapper&quot;&gt;&lt;div class=&quot;tab-nav-inner&quot;&gt;&lt;ul class=&quot;'+CLS_NAV_LIST+'&quot;&gt;&lt;/ul&gt;&lt;/div&gt;&lt;/div&gt;&lt;s class=&quot;tab-nav-arrow arrow-right&quot;&gt;&lt;/s&gt;'+
-            '&lt;/div&gt;'+
-            '&lt;div class=&quot;tab-content-container&quot;&gt;&lt;/div&gt;'
+          value : &#39;&lt;div class=&quot;tab-nav-bar&quot;&gt;&#39;+
+            &#39;&lt;s class=&quot;tab-nav-arrow arrow-left&quot;&gt;&lt;/s&gt;&lt;div class=&quot;tab-nav-wrapper&quot;&gt;&lt;div class=&quot;tab-nav-inner&quot;&gt;&lt;ul class=&quot;&#39;+CLS_NAV_LIST+&#39;&quot;&gt;&lt;/ul&gt;&lt;/div&gt;&lt;/div&gt;&lt;s class=&quot;tab-nav-arrow arrow-right&quot;&gt;&lt;/s&gt;&#39;+
+            &#39;&lt;/div&gt;&#39;+
+            &#39;&lt;div class=&quot;tab-content-container&quot;&gt;&lt;/div&gt;&#39;
         },
-        xview : {
-          value : navTabView
+<span id='-property-xview'>        xview : {
+</span>          value : navTabView
         },
-        events : {
-                
+<span id='-property-events'>        events : {
+</span>                
           value : {
-<span id='BUI-Tab-NavTab-event-itemclick'>            /**
+<span id='-event-itemclick'>            /**
 </span>             * 点击标签项
              * @event
              * @param {Object} e 事件对象
              * @param {BUI.Tab.NavTabItem} e.item 标签项
              */
-            'itemclick' : false,
-<span id='BUI-Tab-NavTab-event-activedchange'>            /**
+            &#39;itemclick&#39; : false,
+<span id='-event-activedchange'>            /**
 </span>             * 标签项激活改变
              * @event
              * @param {Object} e 事件对象
@@ -622,7 +624,7 @@ define('bui/tab/navtab',['bui/common','bui/menu'],function(require){
       }
     },
     {
-      xclass:'nav-tab',
+      xclass:&#39;nav-tab&#39;,
       priority : 0
 
     }

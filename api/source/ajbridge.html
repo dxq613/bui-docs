@@ -20,16 +20,17 @@ Copyright 2011, KISSY UI Library v1.1.5
 MIT Licensed
 build time: Sep 11 10:29
 */
-define('bui/uploader/button/swfButton/ajbridge',['bui/common','bui/swf'], function(require){
-  var BUI = require('bui/common'),
-    SWF = require('bui/swf');
+define(&#39;bui/uploader/button/swfButton/ajbridge&#39;,[&#39;bui/common&#39;,&#39;bui/swf&#39;], function(require){
+  var BUI = require(&#39;bui/common&#39;),
+    SWF = require(&#39;bui/swf&#39;);
 
 
   var instances = {};
 
 <span id='BUI-Uploader-AJBridge'>  /**
-</span>   * @class  BUI.Uploader.AJBridge
-   * @protected
+</span>   * @ignore
+   * @class  BUI.Uploader.AJBridge
+   * @private
    * @author kingfo oicuicu@gmail.com
    */
   function AJBridge(config){
@@ -65,7 +66,7 @@ define('bui/uploader/button/swfButton/ajbridge',['bui/common','bui/swf'], functi
           try {
             return this.callSWF(methodName, Array.prototype.slice.call(arguments, 0));
           } catch(e) { // 当 swf 异常时，进一步捕获信息
-            this.fire('error', { message: e });
+            this.fire(&#39;error&#39;, { message: e });
           }
         }
       });
@@ -78,12 +79,12 @@ define('bui/uploader/button/swfButton/ajbridge',['bui/common','bui/swf'], functi
     initializer: function(){
       AJBridge.superclass.initializer.call(this);
       var _self = this,
-        attrs = _self.get('attrs'),
+        attrs = _self.get(&#39;attrs&#39;),
         id = attrs.id;
 
       instances[id] = _self;
 
-      _self.set('id', id);
+      _self.set(&#39;id&#39;, id);
     },
     __eventHandler: function(id, event){
       var _self = this,
@@ -100,7 +101,7 @@ define('bui/uploader/button/swfButton/ajbridge',['bui/common','bui/swf'], functi
     },
     destroy: function(){
       AJBridge.superclass.destroy.call(this);
-      var id = this.get('id');
+      var id = this.get(&#39;id&#39;);
       instances[id] &amp;&amp; delete instances[id];
     }
   });
@@ -108,24 +109,24 @@ define('bui/uploader/button/swfButton/ajbridge',['bui/common','bui/swf'], functi
   // 为静态方法动态注册
   // 注意，只有在 S.ready() 后进行 AJBridge 注册才有效。
   AJBridge.augment(AJBridge, [
-    'activate',
-    'getReady',
-    'getCoreVersion',
-    'setFileFilters',
-    'filter',
-    'setAllowMultipleFiles',
-    'multifile',
-    'browse',
-    'upload',
-    'uploadAll',
-    'cancel',
-    'getFile',
-    'removeFile',
-    'lock',
-    'unlock',
-    'setBtnMode',
-    'useHand',
-    'clear'
+    &#39;activate&#39;,
+    &#39;getReady&#39;,
+    &#39;getCoreVersion&#39;,
+    &#39;setFileFilters&#39;,
+    &#39;filter&#39;,
+    &#39;setAllowMultipleFiles&#39;,
+    &#39;multifile&#39;,
+    &#39;browse&#39;,
+    &#39;upload&#39;,
+    &#39;uploadAll&#39;,
+    &#39;cancel&#39;,
+    &#39;getFile&#39;,
+    &#39;removeFile&#39;,
+    &#39;lock&#39;,
+    &#39;unlock&#39;,
+    &#39;setBtnMode&#39;,
+    &#39;useHand&#39;,
+    &#39;clear&#39;
   ]);
 
   //flash里面要调用全局方法BUI.AJBridge.eventHandler,所以挂在BUI下面

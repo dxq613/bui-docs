@@ -20,28 +20,34 @@
  * @fileoverview 文件上传队列列表显示和处理
  * @author 索丘 &lt;zengyue.yezy@alibaba-inc.com&gt;
  **/
-define('bui/uploader/queue', ['bui/common', 'bui/list'], function (require) {
+define(&#39;bui/uploader/queue&#39;, [&#39;bui/common&#39;, &#39;bui/list&#39;], function (require) {
 
-  var BUI = require('bui/common'),
-    SimpleList = require('bui/list/simplelist');
+  var BUI = require(&#39;bui/common&#39;),
+    SimpleList = require(&#39;bui/list/simplelist&#39;);
 
-  var CLS_QUEUE = BUI.prefix + 'queue',
-    CLS_QUEUE_ITEM = CLS_QUEUE + '-item';
+  var CLS_QUEUE = BUI.prefix + &#39;queue&#39;,
+    CLS_QUEUE_ITEM = CLS_QUEUE + &#39;-item&#39;;
   
 <span id='BUI-Uploader-Queue'>  /**
 </span>   * 上传文件的显示队列
    * @class BUI.Uploader.Queue
    * @extends BUI.List.SimpleList
+   * &lt;pre&gt;&lt;code&gt;
+   *
+   * BUI.use(&#39;bui/uploader&#39;, function(Uploader){
+   * });
+   * 
+   * &lt;/code&gt;&lt;/pre&gt;
    */
   var Queue = SimpleList.extend({
     bindUI: function () {
       var _self = this,
-        el = _self.get('el'),
-        delCls = _self.get('delCls');
+        el = _self.get(&#39;el&#39;),
+        delCls = _self.get(&#39;delCls&#39;);
 
-      el.delegate('.' + delCls, 'click', function (ev) {
-        var itemContainer = $(ev.target).parents('.bui-queue-item'),
-          uploader = _self.get('uploader'),
+      el.delegate(&#39;.&#39; + delCls, &#39;click&#39;, function (ev) {
+        var itemContainer = $(ev.target).parents(&#39;.bui-queue-item&#39;),
+          uploader = _self.get(&#39;uploader&#39;),
           item = _self.getItemByElement(itemContainer);
         uploader &amp;&amp; uploader.cancel &amp;&amp; uploader.cancel(item);
         _self.removeItem(item);
@@ -55,7 +61,7 @@ define('bui/uploader/queue', ['bui/common', 'bui/list'], function (require) {
      */
     updateFileStatus: function(item, status, element){
       var _self = this,
-        itemStatusFields = _self.get('itemStatusFields');
+        itemStatusFields = _self.get(&#39;itemStatusFields&#39;);
       element = element || _self.findElement(item);
         
       BUI.each(itemStatusFields, function(v,k){
@@ -74,15 +80,15 @@ define('bui/uploader/queue', ['bui/common', 'bui/list'], function (require) {
      */
     _setResultTpl: function(item, status){
       var _self = this,
-        resultTpl = _self.get('resultTpl'),
-        itemTpl = resultTpl[status] || resultTpl['default'],
+        resultTpl = _self.get(&#39;resultTpl&#39;),
+        itemTpl = resultTpl[status] || resultTpl[&#39;default&#39;],
         tplData = BUI.mix({}, item.attr, item.result);
       item.resultTpl = BUI.substitute(itemTpl, tplData);
     }
   }, {
     ATTRS: {
       itemTpl: {
-        value: '&lt;li&gt;{resultTpl} &lt;span class=&quot;action&quot;&gt;&lt;span class=&quot;' + CLS_QUEUE_ITEM + '-del&quot;&gt;删除&lt;/span&gt;&lt;/span&gt;&lt;/li&gt;'
+        value: &#39;&lt;li&gt;{resultTpl} &lt;span class=&quot;action&quot;&gt;&lt;span class=&quot;&#39; + CLS_QUEUE_ITEM + &#39;-del&quot;&gt;删除&lt;/span&gt;&lt;/span&gt;&lt;/li&gt;&#39;
       },
 <span id='BUI-Uploader-Queue-property-resultTpl'>      /**
 </span>       * 上传结果的模板，可根据上传状态的不同进行设置，没有时取默认的
@@ -91,22 +97,22 @@ define('bui/uploader/queue', ['bui/common', 'bui/list'], function (require) {
        * ** 默认定义的模板结构 **
        * &lt;pre&gt;&lt;code&gt;
        * 
-       * 'default': '&lt;div class=&quot;default&quot;&gt;{name}&lt;/div&gt;',
-       * 'success': '&lt;div data-url=&quot;{url}&quot; class=&quot;success&quot;&gt;{name}&lt;/div&gt;',
-       * 'error': '&lt;div class=&quot;error&quot;&gt;&lt;span title=&quot;{name}&quot;&gt;{name}&lt;/span&gt;&lt;span class=&quot;uploader-error&quot;&gt;{msg}&lt;/span&gt;&lt;/div&gt;',
-       * 'progress': '&lt;div class=&quot;progress&quot;&gt;&lt;div class=&quot;bar&quot; style=&quot;width:{loadedPercent}%&quot;&gt;&lt;/div&gt;&lt;/div&gt;'
+       * &#39;default&#39;: &#39;&lt;div class=&quot;default&quot;&gt;{name}&lt;/div&gt;&#39;,
+       * &#39;success&#39;: &#39;&lt;div data-url=&quot;{url}&quot; class=&quot;success&quot;&gt;{name}&lt;/div&gt;&#39;,
+       * &#39;error&#39;: &#39;&lt;div class=&quot;error&quot;&gt;&lt;span title=&quot;{name}&quot;&gt;{name}&lt;/span&gt;&lt;span class=&quot;uploader-error&quot;&gt;{msg}&lt;/span&gt;&lt;/div&gt;&#39;,
+       * &#39;progress&#39;: &#39;&lt;div class=&quot;progress&quot;&gt;&lt;div class=&quot;bar&quot; style=&quot;width:{loadedPercent}%&quot;&gt;&lt;/div&gt;&lt;/div&gt;&#39;
        * 
        * &lt;/code&gt;&lt;/pre&gt;
        */
       resultTpl:{
         value: {
-          'default': '&lt;div class=&quot;default&quot;&gt;{name}&lt;/div&gt;',
-          'success': '&lt;div data-url=&quot;{url}&quot; class=&quot;success&quot;&gt;{name}&lt;/div&gt;',
-          'error': '&lt;div class=&quot;error&quot;&gt;&lt;span title=&quot;{name}&quot;&gt;{name}&lt;/span&gt;&lt;span class=&quot;uploader-error&quot;&gt;{msg}&lt;/span&gt;&lt;/div&gt;',
-          'progress': '&lt;div class=&quot;progress&quot;&gt;&lt;div class=&quot;bar&quot; style=&quot;width:{loadedPercent}%&quot;&gt;&lt;/div&gt;&lt;/div&gt;'
+          &#39;default&#39;: &#39;&lt;div class=&quot;default&quot;&gt;{name}&lt;/div&gt;&#39;,
+          &#39;success&#39;: &#39;&lt;div data-url=&quot;{url}&quot; class=&quot;success&quot;&gt;{name}&lt;/div&gt;&#39;,
+          &#39;error&#39;: &#39;&lt;div class=&quot;error&quot;&gt;&lt;span title=&quot;{name}&quot;&gt;{name}&lt;/span&gt;&lt;span class=&quot;uploader-error&quot;&gt;{msg}&lt;/span&gt;&lt;/div&gt;&#39;,
+          &#39;progress&#39;: &#39;&lt;div class=&quot;progress&quot;&gt;&lt;div class=&quot;bar&quot; style=&quot;width:{loadedPercent}%&quot;&gt;&lt;/div&gt;&lt;/div&gt;&#39;
         },
         setter: function(v){
-          return BUI.mix({}, this.get('resultTpl'), v);
+          return BUI.mix({}, this.get(&#39;resultTpl&#39;), v);
         }
       },
 <span id='BUI-Uploader-Queue-property-itemCls'>      /**
@@ -122,7 +128,7 @@ define('bui/uploader/queue', ['bui/common', 'bui/list'], function (require) {
        * @type {String}
        */
       delCls: {
-        value: CLS_QUEUE_ITEM + '-del'
+        value: CLS_QUEUE_ITEM + &#39;-del&#39;
       },
 <span id='BUI-Uploader-Queue-property-itemStatusFields'>      /**
 </span>       * 列表项的状态
@@ -131,17 +137,17 @@ define('bui/uploader/queue', ['bui/common', 'bui/list'], function (require) {
        */
       itemStatusFields: {
         value: {
-          wait: 'wait',
-          start: 'start',
-          progress: 'progress',
-          success: 'success',
-          cancel: 'cancel',
-          error: 'error'
+          wait: &#39;wait&#39;,
+          start: &#39;start&#39;,
+          progress: &#39;progress&#39;,
+          success: &#39;success&#39;,
+          cancel: &#39;cancel&#39;,
+          error: &#39;error&#39;
         }
       }
     }
   }, { 
-    xclass: 'queue'
+    xclass: &#39;queue&#39;
   });
   return Queue;
 

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 显示点的标记
+ * @ignore
+ */
+
+define(&#39;bui/chart/markers&#39;,[&#39;bui/chart/plotitem&#39;,&#39;bui/graphic&#39;,&#39;bui/chart/activedgroup&#39;],function (require) {
+
+	var BUI = require(&#39;bui/common&#39;),
+		Util = require(&#39;bui/graphic&#39;).Util,
+		Group = require(&#39;bui/chart/activedgroup&#39;),
+		PlotItem = require(&#39;bui/chart/plotitem&#39;);
+
+		
+	
+<span id='BUI-Chart-Markers'>	/**
+</span>	 * @class BUI.Chart.Markers
+	 * 显示点的标记集合
+	 * @extends BUI.Chart.PlotItem
+	 */
+	var Markers = function(cfg){
+		Markers.superclass.constructor.call(this,cfg);
+	};
+
+
+	BUI.extend(Markers,PlotItem);
+
+	BUI.mixin(Markers,[Group]);
+
+	Markers.ATTRS = {
+		elCls : {
+			value : &#39;x-chart-markers&#39;
+		},
+		zIndex : {
+			value : 6
+		},
+<span id='BUI-Chart-Markers-property-marker'>		/**
+</span>		 * 标记的配置项
+		 * @type {Object}
+		 */
+		marker : {
+
+		},
+<span id='BUI-Chart-Markers-property-actived'>		/**
+</span>		 * 标记处于active状态时的配置项
+		 * @type {Object}
+		 */
+		actived : {
+
+		},
+<span id='BUI-Chart-Markers-property-single'>		/**
+</span>		 * 是否只有一个marker
+		 * @type {Boolean}
+		 */
+		single : {
+			value : false
+		},
+<span id='BUI-Chart-Markers-property-xCache'>		/**
+</span>		 * @private
+		 */
+		xCache : {
+			value : [],
+			shared : false
+		}
+
+	};
+
+	BUI.augment(Markers,{
+
+		//渲染控件
+		renderUI : function(){
+			var _self = this;
+			Markers.superclass.renderUI.call(_self);
+			_self._drawMarkers();
+		},
+<span id='BUI-Chart-Markers-method-isItemActived'>		/**
+</span>		 * @protected
+		 * 是否激活
+		 * @param {BUI.Chart.Actived} item 可以被激活的元素
+		 * @return {BUI.Chart.Actived[]} 可以被激活的元素集合
+		 */
+		isItemActived : function(item){
+			return item.get(&#39;actived&#39;);
+		},
+<span id='BUI-Chart-Markers-method-setItemActived'>		/**
+</span>		 * @protected
+		 * 设置激活状态
+		 * @param {BUI.Chart.Actived} item 可以被激活的元素
+		 * @param {Boolean} actived 是否激活
+		 */
+		setItemActived : function(item,actived){
+			var _self = this,
+				marker = _self.get(&#39;marker&#39;),
+				activedCfg = _self.get(&#39;actived&#39;),
+				single = _self.get(&#39;single&#39;);
+			if(actived){
+				item.attr(activedCfg);
+				item.set(&#39;actived&#39;,true);
+				if(single &amp;&amp; !item.get(&#39;visible&#39;)){
+					item.show();
+				}
+			}else{
+				item.attr(marker);
+				item.set(&#39;actived&#39;,false);
+				if(single){
+					item.hide();
+				}
+			}
+		},
+<span id='BUI-Chart-Markers-method-change'>		/**
+</span>		 * 标记改变
+		 * @param {Array} items 标记集合
+		 */
+		change : function(items){
+			var _self = this,
+				children = _self.get(&#39;children&#39;),
+				xCache = [];
+			
+
+			_self.set(&#39;items&#39;,items);
+
+			BUI.each(items,function(item,index){
+				var marker = children[index];
+				if(marker){
+					if(Util.svg){
+						marker.animate({
+							x : item.x,
+							y : item.y
+						},400);
+					}else{
+						marker.attr(item);
+					}
+					
+				}
+				xCache.push(item.x);
+			});
+
+			_self.set(&#39;xCache&#39;,xCache); //清空缓存
+
+		},
+		_drawMarkers : function(){
+			var _self = this,
+				single = _self.get(&#39;single&#39;),
+				items = _self.get(&#39;items&#39;);
+
+			if(single){
+				items = [{x : 0 ,y : 0,visible:false}];
+			}
+			BUI.each(items,function(item){
+				_self._addMarker(item)
+			});
+		},
+<span id='BUI-Chart-Markers-method-addMarker'>		/**
+</span>		 * 添加marker
+		 * @param {Object} item marker的配置信息
+		 */
+		addMarker : function(item){
+			return this._addMarker(item);
+		},
+		//添加marker
+		_addMarker : function(item){
+			var _self = this,
+				xCache = _self.get(&#39;xCache&#39;),
+				marker = _self.get(&#39;marker&#39;),
+				cfg = BUI.merge(marker,item);
+
+			xCache.push(parseInt(item.x));
+			return _self.addShape(&#39;marker&#39;,cfg);
+				
+		},
+<span id='BUI-Chart-Markers-method-getSnapMarker'>		/**
+</span>		 * 获取逼近的marker
+		 * @return {BUI.Graphic.Shape} marker
+		 */
+		getSnapMarker : function(point,tolerance){
+			var _self = this,
+				xCache = _self.get(&#39;xCache&#39;),
+				single = _self.get(&#39;single&#39;),
+				rst;
+
+			if(single){
+				return _self.getChildAt(0);
+			}
+			if(BUI.isObject(point)){
+				var children = _self.get(&#39;children&#39;);
+				BUI.each(children,function(marker){
+					if(marker.attr(&#39;x&#39;) == point.x &amp;&amp; marker.attr(&#39;y&#39;) == point.y){
+						rst = marker;
+						return false;
+					}
+				});
+			}else{
+				var	snap = Util.snapTo(xCache,point,tolerance),
+				index = BUI.Array.indexOf(snap,xCache);
+				rst =  _self.getChildAt(index);
+			}
+
+			return rst;
+		}
+	});
+
+	return Markers;
+});</pre>
+</body>
+</html>

@@ -19,16 +19,16 @@
 </span> * @fileOverview 菜单项
  * @ignore
  */
-define('bui/menu/menuitem',['bui/common'],function(require){
+define(&#39;bui/menu/menuitem&#39;,[&#39;bui/common&#39;],function(require){
 
-  var BUI = require('bui/common'),
+  var BUI = require(&#39;bui/common&#39;),
       Component =  BUI.Component,
       UIBase = Component.UIBase,
       PREFIX = BUI.prefix,
-      CLS_OPEN = PREFIX + 'menu-item-open',
-      CLS_CARET = 'x-caret',
-      CLS_COLLAPSE = PREFIX + 'menu-item-collapsed',
-      DATA_ID = 'data-id';
+      CLS_OPEN = PREFIX + &#39;menu-item-open&#39;,
+      CLS_CARET = &#39;x-caret&#39;,
+      CLS_COLLAPSE = PREFIX + &#39;menu-item-collapsed&#39;,
+      DATA_ID = &#39;data-id&#39;;
 
 <span id='BUI-Menu-MenuItemView'>  /**
 </span>   * @private
@@ -41,18 +41,18 @@ define('bui/menu/menuitem',['bui/common'],function(require){
 
     _uiSetOpen : function (v) {
       var _self = this,
-        cls = _self.getStatusCls('open');
+        cls = _self.getStatusCls(&#39;open&#39;);
       if(v){
-        _self.get('el').addClass(cls);
+        _self.get(&#39;el&#39;).addClass(cls);
       }else{
-        _self.get('el').removeClass(cls);
+        _self.get(&#39;el&#39;).removeClass(cls);
       }
     }
   },{
     ATTRS : {
     }
   },{
-    xclass:'menu-item-view'
+    xclass:&#39;menu-item-view&#39;
   });
 
 <span id='BUI-Menu-MenuItem'>  /**
@@ -68,13 +68,13 @@ define('bui/menu/menuitem',['bui/common'],function(require){
      */
     renderUI : function(){
       var _self = this,
-        el = _self.get('el'),
-        id = _self.get('id'),
+        el = _self.get(&#39;el&#39;),
+        id = _self.get(&#39;id&#39;),
         temp = null;
       //未设置id时自动生成
       if(!id){
-        id = BUI.guid('menu-item');
-        _self.set('id',id);
+        id = BUI.guid(&#39;menu-item&#39;);
+        _self.set(&#39;id&#39;,id);
       }
       el.attr(DATA_ID,id);   
     },
@@ -84,8 +84,8 @@ define('bui/menu/menuitem',['bui/common'],function(require){
      */
     handleMouseEnter : function (ev) {
       var _self = this;
-      if(this.get('subMenu')){
-        this.set('open',true);
+      if(this.get(&#39;subMenu&#39;)){
+        this.set(&#39;open&#39;,true);
       }
       menuItem.superclass.handleMouseEnter.call(this,ev);
     },
@@ -95,12 +95,12 @@ define('bui/menu/menuitem',['bui/common'],function(require){
      */
     handleMouseLeave :function (ev) {
       var _self = this,
-        subMenu = _self.get('subMenu'),
-        toElement = ev.toElement;
+        subMenu = _self.get(&#39;subMenu&#39;),
+        toElement = ev.toElement || ev.relatedTarget;;
       if(toElement &amp;&amp; subMenu &amp;&amp; subMenu.containsElement(toElement)){
-        _self.set('open',true);
+        _self.set(&#39;open&#39;,true);
       }else{
-        _self.set('open',false);
+        _self.set(&#39;open&#39;,false);
       }
       menuItem.superclass.handleMouseLeave.call(this,ev);
     },
@@ -113,7 +113,7 @@ define('bui/menu/menuitem',['bui/common'],function(require){
         subMenu,
         contains = menuItem.superclass.containsElement.call(_self,elem);
       if(!contains){
-        subMenu = _self.get('subMenu');
+        subMenu = _self.get(&#39;subMenu&#39;);
         contains = subMenu &amp;&amp; subMenu.containsElement(elem);
       }
       return contains;
@@ -121,17 +121,17 @@ define('bui/menu/menuitem',['bui/common'],function(require){
     //设置打开子菜单 
     _uiSetOpen : function (v) {
       var _self = this,
-        subMenu = _self.get('subMenu'),
-        subMenuAlign = _self.get('subMenuAlign');
+        subMenu = _self.get(&#39;subMenu&#39;),
+        subMenuAlign = _self.get(&#39;subMenuAlign&#39;);
       if(subMenu){
         if(v){
-          subMenuAlign.node = _self.get('el');
-          subMenu.set('align',subMenuAlign);
+          subMenuAlign.node = _self.get(&#39;el&#39;);
+          subMenu.set(&#39;align&#39;,subMenuAlign);
           subMenu.show();
         }else{
-          var menuAlign = subMenu.get('align');
+          var menuAlign = subMenu.get(&#39;align&#39;);
           //防止子菜单被公用时
-          if(!menuAlign || menuAlign.node == _self.get('el')){
+          if(!menuAlign || menuAlign.node == _self.get(&#39;el&#39;)){
             subMenu.hide();
           }
           
@@ -142,16 +142,16 @@ define('bui/menu/menuitem',['bui/common'],function(require){
     _uiSetSubMenu : function (subMenu) {
       if(subMenu){
         var _self = this,
-          el = _self.get('el'),
-          parent = _self.get('parent');
+          el = _self.get(&#39;el&#39;),
+          parent = _self.get(&#39;parent&#39;);
         //设置菜单项所属的菜单为上一级菜单
-        if(!subMenu.get('parentMenu')){
-          subMenu.set('parentMenu',parent);
-          if(parent.get('autoHide')){
-            subMenu.set('autoHide',false);
+        if(!subMenu.get(&#39;parentMenu&#39;)){
+          subMenu.set(&#39;parentMenu&#39;,parent);
+          if(parent.get(&#39;autoHide&#39;)){
+            subMenu.set(&#39;autoHide&#39;,false);
           } 
         }
-        $(_self.get('arrowTpl')).appendTo(el);
+        $(_self.get(&#39;arrowTpl&#39;)).appendTo(el);
       }
     },
 <span id='BUI-Menu-MenuItem-method-destructor'>    /** 
@@ -160,7 +160,7 @@ define('bui/menu/menuitem',['bui/common'],function(require){
      */
     destructor : function () {
       var _self = this,
-        subMenu = _self.get('subMenu');
+        subMenu = _self.get(&#39;subMenu&#39;);
       if(subMenu){
         subMenu.destroy();
       }
@@ -168,26 +168,26 @@ define('bui/menu/menuitem',['bui/common'],function(require){
 
   },{
     ATTRS : 
-<span id='global-property-'>    /**
+<span id=''>    /**
 </span>     * @lends BUI.Menu.MenuItem#
      * @ignore
      */
     {
-<span id='BUI-Menu-MenuItem-property-elTagName'>      /**
+<span id='-property-elTagName'>      /**
 </span>       * 默认的Html 标签
        * @type {String}
        */
       elTagName : {
-          value: 'li'
+          value: &#39;li&#39;
       },
-      xview : {
-        value : menuItemView
+<span id='-property-xview'>      xview : {
+</span>        value : menuItemView
       },
-<span id='BUI-Menu-MenuItem-cfg-open'>      /**
+<span id='-cfg-open'>      /**
 </span>       * 菜单项是否展开，显示子菜单
        * @cfg {Boolean} [open=false]
        */
-<span id='BUI-Menu-MenuItem-property-open'>      /**
+<span id='-property-open'>      /**
 </span>       * 菜单项是否展开，显示子菜单
        * @type {Boolean}
        * @default false
@@ -196,48 +196,61 @@ define('bui/menu/menuitem',['bui/common'],function(require){
         view : true,
         value : false
       },
-<span id='BUI-Menu-MenuItem-cfg-subMenu'>      /**
+<span id='-cfg-subMenu'>      /**
 </span>       * 下级菜单
        * @cfg {BUI.Menu.Menu} subMenu
        */
-<span id='BUI-Menu-MenuItem-property-subMenu'>      /**
+<span id='-property-subMenu'>      /**
 </span>       * 下级菜单
        * @type {BUI.Menu.Menu}
        */
       subMenu : {
         view : true
       },
-<span id='BUI-Menu-MenuItem-property-subMenuAlign'>       /**
+<span id='-property-subMenuAlign'>       /**
 </span>       * 下级菜单和菜单项的对齐方式
        * @type {Object}
-       * @protected
        * @default 默认在下面显示
        */
       subMenuAlign : {
         valueFn : function (argument) {
           return {
-             //node: this.get('el'), // 参考元素, falsy 或 window 为可视区域, 'trigger' 为触发元素, 其他为指定元素
-             points: ['tr','tl'], // ['tr', 'tl'] 表示 overlay 的 tl 与参考节点的 tr 对齐
+             //node: this.get(&#39;el&#39;), // 参考元素, falsy 或 window 为可视区域, &#39;trigger&#39; 为触发元素, 其他为指定元素
+             points: [&#39;tr&#39;,&#39;tl&#39;], // [&#39;tr&#39;, &#39;tl&#39;] 表示 overlay 的 tl 与参考节点的 tr 对齐
              offset: [-5, 0]      // 有效值为 [n, m]
           }
         }
       },
-<span id='BUI-Menu-MenuItem-property-arrowTpl'>      /**
+<span id='-property-arrowTpl'>      /**
 </span>       * 当存在子菜单时的箭头模版
        * @protected
        * @type {String}
        */
       arrowTpl : {
-        value : '&lt;span class=&quot;' + CLS_CARET + ' ' + CLS_CARET + '-left&quot;&gt;&lt;/span&gt;'
+        value : &#39;&lt;span class=&quot;&#39; + CLS_CARET + &#39; &#39; + CLS_CARET + &#39;-left&quot;&gt;&lt;/span&gt;&#39;
       },
-      events : {
-        value : {
-          'afterOpenChange' : true
+<span id='-property-events'>      events : {
+</span>        value : {
+          &#39;afterOpenChange&#39; : true
         }
+      }
+    },
+    PARSER : {
+      subMenu : function(el){
+        var subList = el.find(&#39;ul&#39;),
+          sub;
+        if(subList &amp;&amp; subList.length){
+          sub = BUI.Component.create({
+            srcNode : subList,
+            xclass : &#39;pop-menu&#39;
+          });
+          subList.appendTo(&#39;body&#39;);
+        }
+        return sub;
       }
     }
   },{
-    xclass : 'menu-item',
+    xclass : &#39;menu-item&#39;,
     priority : 0
   });
 
@@ -256,7 +269,7 @@ define('bui/menu/menuitem',['bui/common'],function(require){
       }
     }
   },{
-    xclass:'menu-item-sparator'
+    xclass:&#39;menu-item-sparator&#39;
   });
 
   menuItem.View = menuItemView;

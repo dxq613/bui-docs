@@ -20,15 +20,15 @@
  * @author dxq613@gmail.com
  * @ignore
  */
-define('bui/tab/navtabitem',['bui/common'],function(requrie){
+define(&#39;bui/tab/navtabitem&#39;,[&#39;bui/common&#39;],function(requrie){
 
-  var BUI = requrie('bui/common'),
+  var BUI = requrie(&#39;bui/common&#39;),
     Component =  BUI.Component,
-    CLS_ITEM_TITLE = 'tab-item-title',
-    CLS_ITEM_CLOSE = 'tab-item-close',
-    CLS_ITEM_INNER = 'tab-item-inner',
-    CLS_NAV_ACTIVED = 'tab-nav-actived',
-    CLS_CONTENT = 'tab-content';
+    CLS_ITEM_TITLE = &#39;tab-item-title&#39;,
+    CLS_ITEM_CLOSE = &#39;tab-item-close&#39;,
+    CLS_ITEM_INNER = &#39;tab-item-inner&#39;,
+    CLS_NAV_ACTIVED = &#39;tab-nav-actived&#39;,
+    CLS_CONTENT = &#39;tab-content&#39;;
 
 <span id='BUI-Tab-NavTabItemView'>  /**
 </span>   * 导航标签项的视图类
@@ -39,11 +39,11 @@ define('bui/tab/navtabitem',['bui/common'],function(requrie){
   var navTabItemView =  Component.View.extend({
     renderUI : function(){
       var _self = this,
-        contentContainer = _self.get('tabContentContainer'),
-        contentTpl = _self.get('tabContentTpl');
+        contentContainer = _self.get(&#39;tabContentContainer&#39;),
+        contentTpl = _self.get(&#39;tabContentTpl&#39;);
       if(contentContainer){
         var tabContentEl = $(contentTpl).appendTo(contentContainer);
-        _self.set('tabContentEl',tabContentEl);
+        _self.set(&#39;tabContentEl&#39;,tabContentEl);
       }
     },
     //设置链接地址
@@ -52,10 +52,10 @@ define('bui/tab/navtabitem',['bui/common'],function(requrie){
     },
     _setHref : function(href){
       var _self = this,
-        tabContentEl = _self.get('tabContentEl');
-      href = href || _self.get('href');
+        tabContentEl = _self.get(&#39;tabContentEl&#39;);
+      href = href || _self.get(&#39;href&#39;);
       if(tabContentEl){
-        $('iframe',tabContentEl).attr('src',href);
+        $(&#39;iframe&#39;,tabContentEl).attr(&#39;src&#39;,href);
       }
     },
     resetHref : function(){
@@ -64,13 +64,13 @@ define('bui/tab/navtabitem',['bui/common'],function(requrie){
     //设置标题
     _uiSetTitle : function(v){
       var _self = this,
-        el = _self.get('el');
-      el.attr('title',v);
-      $('.' + CLS_ITEM_TITLE,el).text(v);
+        el = _self.get(&#39;el&#39;);
+      el.attr(&#39;title&#39;,v);
+      $(&#39;.&#39; + CLS_ITEM_TITLE,el).text(v);
     },
     _uiSetActived : function(v){
       var _self = this,
-        el = _self.get('el');
+        el = _self.get(&#39;el&#39;);
 
       _self.setTabContentVisible(v);
       if(v){
@@ -83,7 +83,7 @@ define('bui/tab/navtabitem',['bui/common'],function(requrie){
     //析构函数
     destructor : function(){
       var _self = this,
-        tabContentEl = _self.get('tabContentEl');
+        tabContentEl = _self.get(&#39;tabContentEl&#39;);
       if(tabContentEl){
         tabContentEl.remove();
       }
@@ -91,7 +91,7 @@ define('bui/tab/navtabitem',['bui/common'],function(requrie){
     //设置标签内容是否可见
     setTabContentVisible : function(v){
       var _self = this,
-        tabContentEl = _self.get('tabContentEl');
+        tabContentEl = _self.get(&#39;tabContentEl&#39;);
 
       if(tabContentEl){
         if(v){
@@ -123,83 +123,83 @@ define('bui/tab/navtabitem',['bui/common'],function(requrie){
 
 <span id='BUI-Tab-NavTabItem'>  /**
 </span>   * 导航标签项
-   * xclass : 'nav-tab-item'
+   * xclass : &#39;nav-tab-item&#39;
    * @class BUI.Tab.NavTabItem
    * @extends BUI.Component.Controller
    */
   var navTabItem = Component.Controller.extend(
-<span id='global-property-'>  /**
+<span id=''>  /**
 </span>   * @lends BUI.Tab.NavTabItem.prototype
    * @ignore
    */
   {
-<span id='BUI-Tab-NavTabItem-method-createDom'>    /**
+<span id='-method-createDom'>    /**
 </span>     * 创建DOM
      * @protected
      */
     createDom : function(){
       var _self = this,
-          parent = _self.get('parent');
+          parent = _self.get(&#39;parent&#39;);
       if(parent){
-        _self.set('tabContentContainer',parent.getTabContentContainer());
+        _self.set(&#39;tabContentContainer&#39;,parent.getTabContentContainer());
       }
     },
-<span id='BUI-Tab-NavTabItem-method-bindUI'>    /**
+<span id='-method-bindUI'>    /**
 </span>     * 绑定事件
      * @protected
      */
     bindUI : function(){
       var _self = this,
-        el = _self.get('el'),
-        events = _self.get('events');
+        el = _self.get(&#39;el&#39;),
+        events = _self.get(&#39;events&#39;);
 
-      el.on('click',function(ev){
+      el.on(&#39;click&#39;,function(ev){
         var sender = $(ev.target);
        if(sender.hasClass(CLS_ITEM_CLOSE)){
-          if(_self.fire('closing')!== false){
+          if(_self.fire(&#39;closing&#39;)!== false){
             _self.close();
           }
         }
       });
     },
-<span id='BUI-Tab-NavTabItem-method-handleDblClick'>    /**
+<span id='-method-handleDblClick'>    /**
 </span>     * 处理双击
      * @protected
      */
     handleDblClick:function(ev){
       var _self = this;
 
-      if(_self.get('closeable') &amp;&amp; _self.fire('closing')!== false){
+      if(_self.get(&#39;closeable&#39;) &amp;&amp; _self.fire(&#39;closing&#39;)!== false){
         _self.close();
       }
-      _self.fire('dblclick',{domTarget : ev.target,domEvent : ev});
+      _self.fire(&#39;dblclick&#39;,{domTarget : ev.target,domEvent : ev});
     },
-<span id='BUI-Tab-NavTabItem-method-handleContextMenu'>    /**
+<span id='-method-handleContextMenu'>    /**
 </span>     * 处理右键
      * @protected
      */
     handleContextMenu:function(ev){
       ev.preventDefault();
-      this.fire('showmenu',{position:{x:ev.pageX,y:ev.pageY}});
+      this.fire(&#39;showmenu&#39;,{position:{x:ev.pageX,y:ev.pageY}});
     },
-<span id='BUI-Tab-NavTabItem-method-setTitle'>    /**
+<span id='-method-setTitle'>    /**
 </span>     * 设置标题
      * @param {String} title 标题
      */
     setTitle : function(title){
-      this.set('title',title);
+      this.set(&#39;title&#39;,title);
     },
-<span id='BUI-Tab-NavTabItem-method-close'>    /**
+<span id='-method-close'>    /**
 </span>    * 关闭
     */
     close:function(){
-      this.fire('closed');
+      this.fire(&#39;closed&#39;);
     },
-<span id='BUI-Tab-NavTabItem-method-reload'>    /**
+<span id='-method-reload'>    /**
 </span>     * 重新加载页面
      */
     reload : function(){
-      this.get('view').resetHref();
+      this.get(&#39;view&#39;).resetHref();
     },
 <span id='global-method-show'>    /**
 </span>     * @protected
@@ -207,8 +207,8 @@ define('bui/tab/navtabitem',['bui/common'],function(requrie){
      */
     show : function(){
       var _self = this;
-        _self.get('el').show(500,function(){
-          _self.set('visible',true);
+        _self.get(&#39;el&#39;).show(500,function(){
+          _self.set(&#39;visible&#39;,true);
         });
     },
 <span id='global-method-hide'>    /**
@@ -217,23 +217,23 @@ define('bui/tab/navtabitem',['bui/common'],function(requrie){
      */
     hide : function(callback){
       var _self = this;
-      this.get('el').hide(500,function(){
-        _self.set('visible',false);
+      this.get(&#39;el&#39;).hide(500,function(){
+        _self.set(&#39;visible&#39;,false);
         callback &amp;&amp; callback();
       });
     },
 
-    _uiSetActived : function(v){
-      var _self = this,
-        parent = _self.get('parent');
+<span id='-method-_uiSetActived'>    _uiSetActived : function(v){
+</span>      var _self = this,
+        parent = _self.get(&#39;parent&#39;);
       if(parent &amp;&amp; v){
         parent._setItemActived(_self);
       }
     },
-    _uiSetCloseable : function(v){
-      var _self = this,
-        el = _self.get('el'),
-        closeEl = el.find('.' + CLS_ITEM_CLOSE);
+<span id='-method-_uiSetCloseable'>    _uiSetCloseable : function(v){
+</span>      var _self = this,
+        el = _self.get(&#39;el&#39;),
+        closeEl = el.find(&#39;.&#39; + CLS_ITEM_CLOSE);
       if(v){
         closeEl.show();
       }else{
@@ -242,15 +242,15 @@ define('bui/tab/navtabitem',['bui/common'],function(requrie){
     }
   },{
     ATTRS : 
-<span id='global-property-'>    /**
+<span id=''>    /**
 </span>     * @lends BUI.Tab.NavTabItem#
      * @ignore
      */
     {
-      elTagName : {
-        value: 'li'
+<span id='-property-elTagName'>      elTagName : {
+</span>        value: &#39;li&#39;
       },
-<span id='BUI-Tab-NavTabItem-property-actived'>      /**
+<span id='-property-actived'>      /**
 </span>       * 标签是否选中
        * @type {Boolean}
        */
@@ -258,108 +258,108 @@ define('bui/tab/navtabitem',['bui/common'],function(requrie){
         view:true,
         value : false
       }, 
-<span id='BUI-Tab-NavTabItem-property-closeable'>      /**
+<span id='-property-closeable'>      /**
 </span>       * 是否可关闭
        * @type {Boolean}
        */
       closeable : {
         value : true
       },
-      allowTextSelection:{
-        view:false,
+<span id='-property-allowTextSelection'>      allowTextSelection:{
+</span>        view:false,
         value:false
       },
-      events:{
-        value : {
-<span id='BUI-Tab-NavTabItem-event-click'>          /**
+<span id='-property-events'>      events:{
+</span>        value : {
+<span id='-event-click'>          /**
 </span>           * 点击菜单项
            * @name BUI.Tab.NavTabItem#click
            * @event 
            * @param {Object} e 事件对象
            * @param {BUI.Tab.NavTabItem} e.target 正在点击的标签
            */
-          'click' : true,
-<span id='BUI-Tab-NavTabItem-event-closing'>          /**
+          &#39;click&#39; : true,
+<span id='-event-closing'>          /**
 </span>           * 正在关闭，返回false可以阻止关闭事件发生
            * @name BUI.Tab.NavTabItem#closing
            * @event 
            * @param {Object} e 事件对象
            * @param {BUI.Tab.NavTabItem} e.target 正在关闭的标签
            */
-          'closing' : true,
-<span id='BUI-Tab-NavTabItem-event-closed'>          /**
+          &#39;closing&#39; : true,
+<span id='-event-closed'>          /**
 </span>           * 关闭事件
            * @name BUI.Tab.NavTabItem#closed
            * @event 
            * @param {Object} e 事件对象
            * @param {BUI.Tab.NavTabItem} e.target 关闭的标签
            */
-          'closed' : true,
-<span id='BUI-Tab-NavTabItem-event-showmenu'>          /**
+          &#39;closed&#39; : true,
+<span id='-event-showmenu'>          /**
 </span>           * @name BUI.Tab.NavTabItem#showmenu
            * @event
            * @param {Object} e 事件对象
            * @param {BUI.Tab.NavTabItem} e.target 显示菜单的标签
            */
-          'showmenu' : true,
-          'afterVisibleChange' : true
+          &#39;showmenu&#39; : true,
+          &#39;afterVisibleChange&#39; : true
         }
       },
-<span id='BUI-Tab-NavTabItem-property-tabContentContainer'>      /**
+<span id='-property-tabContentContainer'>      /**
 </span>       * @private
        * @type {Object}
        */
       tabContentContainer:{
         view : true
       },
-<span id='BUI-Tab-NavTabItem-property-tabContentTpl'>      /**
+<span id='-property-tabContentTpl'>      /**
 </span>       * @private
        * @type {Object}
        */
       tabContentTpl : {
         view : true,
-        value : '&lt;div class=&quot;' + CLS_CONTENT + '&quot; style=&quot;display:none;&quot;&gt;&lt;iframe src=&quot;&quot; width=&quot;100%&quot; height=&quot;100%&quot; frameborder=&quot;0&quot;&gt;&lt;/iframe&gt;&lt;/div&gt;'
+        value : &#39;&lt;div class=&quot;&#39; + CLS_CONTENT + &#39;&quot; style=&quot;display:none;&quot;&gt;&lt;iframe src=&quot;&quot; width=&quot;100%&quot; height=&quot;100%&quot; frameborder=&quot;0&quot;&gt;&lt;/iframe&gt;&lt;/div&gt;&#39;
       },
-<span id='BUI-Tab-NavTabItem-cfg-href'>      /**
+<span id='-cfg-href'>      /**
 </span>       * 标签页指定的URL
        * @cfg {String} href
        */
-<span id='BUI-Tab-NavTabItem-property-href'>      /**
+<span id='-property-href'>      /**
 </span>       * 标签页指定的URL
        * @type {String}
        */
       href : {
         view : true,
-        value:''
+        value:&#39;&#39;
       },
-      visible:{
-        view:true,
+<span id='-property-visible'>      visible:{
+</span>        view:true,
         value:true
       },
-<span id='BUI-Tab-NavTabItem-cfg-title'>      /**
+<span id='-cfg-title'>      /**
 </span>       * 标签文本
        * @cfg {String} title
        */
-<span id='BUI-Tab-NavTabItem-property-title'>      /**
+<span id='-property-title'>      /**
 </span>       * 标签文本
-       * tab.getItem('id').set('title','new title');
+       * tab.getItem(&#39;id&#39;).set(&#39;title&#39;,&#39;new title&#39;);
        * @type {String}
-       * @default ''
+       * @default &#39;&#39;
        */
       title : {
         view:true,
-        value : ''
+        value : &#39;&#39;
       },
-      tpl : {
-        view:true,
-        value :'&lt;s class=&quot;l&quot;&gt;&lt;/s&gt;&lt;div class=&quot;' + CLS_ITEM_INNER + '&quot;&gt;{icon}&lt;span class=&quot;' + CLS_ITEM_TITLE + '&quot;&gt;&lt;/span&gt;&lt;s class=&quot;' + CLS_ITEM_CLOSE + '&quot;&gt;&lt;/s&gt;&lt;/div&gt;&lt;s class=&quot;r&quot;&gt;&lt;/s&gt;'
+<span id='-property-tpl'>      tpl : {
+</span>        view:true,
+        value :&#39;&lt;s class=&quot;l&quot;&gt;&lt;/s&gt;&lt;div class=&quot;&#39; + CLS_ITEM_INNER + &#39;&quot;&gt;{icon}&lt;span class=&quot;&#39; + CLS_ITEM_TITLE + &#39;&quot;&gt;&lt;/span&gt;&lt;s class=&quot;&#39; + CLS_ITEM_CLOSE + &#39;&quot;&gt;&lt;/s&gt;&lt;/div&gt;&lt;s class=&quot;r&quot;&gt;&lt;/s&gt;&#39;
       },
-      xview:{
-        value : navTabItemView
+<span id='-property-xview'>      xview:{
+</span>        value : navTabItemView
       }
     }
   },{
-    xclass : 'nav-tab-item',
+    xclass : &#39;nav-tab-item&#39;,
     priority : 0
   });
 

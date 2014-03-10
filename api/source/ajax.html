@@ -17,15 +17,15 @@
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='global-property-'>/**
 </span> * @fileoverview ajax方案上传
- * @author 剑平（明河）&lt;minghe36@126.com&gt;,紫英&lt;daxingplay@gmail.com&gt;
+ * @author
  * @ignore
  **/
-define('bui/uploader/type/ajax', ['./base'], function(require) {
-    var EMPTY = '', LOG_PREFIX = '[uploader-AjaxType]:',
+define(&#39;bui/uploader/type/ajax&#39;, [&#39;./base&#39;], function(require) {
+    var EMPTY = &#39;&#39;, LOG_PREFIX = &#39;[uploader-Ajax]:&#39;,
         win = window,
         doc = document;
 
-    var UploadType = require('bui/uploader/type/base');
+    var UploadType = require(&#39;bui/uploader/type/base&#39;);
 
     function isSubDomain(hostname){
         return win.location.host === doc.domain;
@@ -36,8 +36,8 @@ define('bui/uploader/type/ajax', ['./base'], function(require) {
         return ind &gt;= 0 &amp;&amp; str.indexOf(suffix, ind) == ind;
     }
 
-<span id='BUI-Uploader-AjaxType'>    /**
-</span>     * @class BUI.Uploader.AjaxType
+<span id='BUI-Uploader-UploadType-Ajax'>    /**
+</span>     * @class BUI.Uploader.UploadType.Ajax
      * ajax方案上传
      * @extends BUI.Uploader.UploadType
      */
@@ -47,128 +47,120 @@ define('bui/uploader/type/ajax', ['./base'], function(require) {
         AjaxType.superclass.constructor.call(self, config);
     }
 
-    BUI.mix(AjaxType, {
-<span id='BUI-Uploader-AjaxType-property-event'>        /**
-</span>         * 事件列表
-         */
-        event : BUI.merge(UploadType.event, {
-            PROGRESS : 'progress'
-        })
-    });
     //继承于Base，属性getter和setter委托于Base处理
     BUI.extend(AjaxType, UploadType,{
-<span id='BUI-Uploader-AjaxType-method-upload'>        /**
+<span id='BUI-Uploader-UploadType-Ajax-method-upload'>        /**
 </span>         * 上传文件
          * @param {Object} File
-         * @return {BUI.Uploader.AjaxType}
+         * @return {BUI.Uploader.UploadType.Ajax}
          * @chainable
          */
         upload : function(file) {
             //不存在文件信息集合直接退出
             if (!file || !file.file) {
-                BUI.log(LOG_PREFIX + 'upload()，fileData参数有误！');
+                BUI.log(LOG_PREFIX + &#39;upload()，fileData参数有误！&#39;);
                 return false;
             }
             var self = this;
-            self.set('file', file);
-            self.fire(UploadType.event.START, {file: file});
+            self.set(&#39;file&#39;, file);
+            self.fire(&#39;start&#39;, {file: file});
             self._setFormData();
             self._addFileData(file.file);
             self.send();
             return self;
         },
-<span id='BUI-Uploader-AjaxType-method-cancel'>        /**
+<span id='BUI-Uploader-UploadType-Ajax-method-cancel'>        /**
 </span>         * 停止上传
-         * @return {BUI.Uploader.AjaxType}
+         * @return {BUI.Uploader.UploadType.Ajax}
          * @chainable
          */
         cancel : function() {
             var self = this,
-                xhr = self.get('xhr'),
-                file = self.get('file');
+                xhr = self.get(&#39;xhr&#39;),
+                file = self.get(&#39;file&#39;);
             //中止ajax请求，会触发error事件
             if(xhr){
                 xhr.abort();
-                self.fire(AjaxType.event.CANCEL, {file: file});
+                self.fire(&#39;cancel&#39;, {file: file});
             }
-            self.set('file', null);
+            self.set(&#39;file&#39;, null);
             return self;
         },
-<span id='BUI-Uploader-AjaxType-method-send'>        /**
+<span id='BUI-Uploader-UploadType-Ajax-method-send'>        /**
 </span>         * 发送ajax请求
-         * @return {BUI.Uploader.AjaxType}
+         * @return {BUI.Uploader.UploadType.Ajax}
          * @chainable
          */
         send : function() {
             var self = this,
                 //服务器端处理文件上传的路径
-                url = self.get('url'),
-                data = self.get('formData'),
-                file = self.get('file');
+                url = self.get(&#39;url&#39;),
+                data = self.get(&#39;formData&#39;),
+                file = self.get(&#39;file&#39;);
             var xhr = new XMLHttpRequest();
             //TODO:如果使用onProgress存在第二次上传不触发progress事件的问题
-            xhr.upload.addEventListener('progress',function(ev){
-                self.fire(AjaxType.event.PROGRESS, { 'loaded': ev.loaded, 'total': ev.total });
+            xhr.upload.addEventListener(&#39;progress&#39;,function(ev){
+                self.fire(&#39;progress&#39;, { &#39;loaded&#39;: ev.loaded, &#39;total&#39;: ev.total });
             });
             xhr.onload = function(ev){
                 var result = self._processResponse(xhr.responseText);
-                self.fire('complete', {result: result, file: file});
+                self.fire(&#39;complete&#39;, {result: result, file: file});
             };
             xhr.onerror = function(ev){
-                self.fire(AjaxType.event.ERROR, {file: file});
+                self.fire(&#39;error&#39;, {file: file});
             }
             xhr.open(&quot;POST&quot;, url, true);
             xhr.send(data);
             // 重置FormData
             self._setFormData();
-            self.set('xhr',xhr);
+            self.set(&#39;xhr&#39;,xhr);
             return self;
         },
         reset: function(){
         },
-<span id='BUI-Uploader-AjaxType-method-_setFormData'>        /**
+<span id='BUI-Uploader-UploadType-Ajax-method-_setFormData'>        /**
 </span>         * 设置FormData数据
          * @private
          */
         _setFormData:function(){
             var self = this;
             try{
-            	self.set('formData', new FormData());
+            	self.set(&#39;formData&#39;, new FormData());
                 self._processData();
             }catch(e){
-            	BUI.log(LOG_PREFIX + 'something error when reset FormData.');
-            	BUI.log(e, 'dir');
+            	BUI.log(LOG_PREFIX + &#39;something error when reset FormData.&#39;);
+            	BUI.log(e, &#39;dir&#39;);
            }
         },
-<span id='BUI-Uploader-AjaxType-method-_processData'>        /**
+<span id='BUI-Uploader-UploadType-Ajax-method-_processData'>        /**
 </span>         * 处理传递给服务器端的参数
          */
         _processData : function() {
-            var self = this,data = self.get('data'),
-                formData = self.get('formData');
+            var self = this,data = self.get(&#39;data&#39;),
+                formData = self.get(&#39;formData&#39;);
             //将参数添加到FormData的实例内
             BUI.each(data, function(val, key) {
                 formData.append(key, val);
             });
-            self.set('formData', formData);
+            self.set(&#39;formData&#39;, formData);
         },
-<span id='BUI-Uploader-AjaxType-method-_addFileData'>        /**
+<span id='BUI-Uploader-UploadType-Ajax-method-_addFileData'>        /**
 </span>         * 将文件信息添加到FormData内
          * @param {Object} file 文件信息
          */
         _addFileData : function(file) {
             if (!file) {
-                BUI.log(LOG_PREFIX + '_addFileData()，file参数有误！');
+                BUI.log(LOG_PREFIX + &#39;_addFileData()，file参数有误！&#39;);
                 return false;
             }
             var self = this,
-                formData = self.get('formData'),
-                fileDataName = self.get('fileDataName');
+                formData = self.get(&#39;formData&#39;),
+                fileDataName = self.get(&#39;fileDataName&#39;);
             formData.append(fileDataName, file);
-            self.set('formData', formData);
+            self.set(&#39;formData&#39;, formData);
         }
     }, {ATTRS :{
-<span id='BUI-Uploader-AjaxType-property-formData'>        /**
+<span id='BUI-Uploader-UploadType-Ajax-property-formData'>        /**
 </span>         * 表单数据对象
          */
         formData: {
@@ -176,10 +168,22 @@ define('bui/uploader/type/ajax', ['./base'], function(require) {
         data: {
         },
         xhr: {
+        },
+        events: {
+            value: {
+<span id='BUI-Uploader-UploadType-Ajax-event-progress'>                /**
+</span>                 * 上传正在上传时
+                 * @event
+                 * @param {Object} e 事件对象
+                 * @param {Number} total 文件的总大小
+                 * @param {Number} loaded 已经上传的大小
+                 */
+                progress: false
+            }
         }//,
         // subDomain: {
         //     value: {
-        //         proxy: '/sub_domain_proxy.html'
+        //         proxy: &#39;/sub_domain_proxy.html&#39;
         //     }
         // }
     }

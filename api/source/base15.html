@@ -20,17 +20,17 @@
  * @ignore
  */
 
-define('bui/tab',['bui/common','bui/tab/tab','bui/tab/tabitem','bui/tab/navtabitem','bui/tab/navtab','bui/tab/tabpanel','bui/tab/tabpanelitem'],function (require) {
-  var BUI = require('bui/common'),
-    Tab = BUI.namespace('Tab');
+define(&#39;bui/tab&#39;,[&#39;bui/common&#39;,&#39;bui/tab/tab&#39;,&#39;bui/tab/tabitem&#39;,&#39;bui/tab/navtabitem&#39;,&#39;bui/tab/navtab&#39;,&#39;bui/tab/tabpanel&#39;,&#39;bui/tab/tabpanelitem&#39;],function (require) {
+  var BUI = require(&#39;bui/common&#39;),
+    Tab = BUI.namespace(&#39;Tab&#39;);
 
   BUI.mix(Tab,{
-    Tab : require('bui/tab/tab'),
-    TabItem : require('bui/tab/tabitem'),
-    NavTabItem : require('bui/tab/navtabitem'),
-    NavTab : require('bui/tab/navtab'),
-    TabPanel : require('bui/tab/tabpanel'),
-    TabPanelItem : require('bui/tab/tabpanelitem')
+    Tab : require(&#39;bui/tab/tab&#39;),
+    TabItem : require(&#39;bui/tab/tabitem&#39;),
+    NavTabItem : require(&#39;bui/tab/navtabitem&#39;),
+    NavTab : require(&#39;bui/tab/navtab&#39;),
+    TabPanel : require(&#39;bui/tab/tabpanel&#39;),
+    TabPanelItem : require(&#39;bui/tab/tabpanelitem&#39;)
   });
 
   return Tab;

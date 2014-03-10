@@ -20,9 +20,9 @@
  * @ignore
  */
 
-define('bui/component/uibase/list',['bui/component/uibase/selection'],function (require) {
+define(&#39;bui/component/uibase/list&#39;,[&#39;bui/component/uibase/selection&#39;],function (require) {
   
-  var Selection = require('bui/component/uibase/selection');
+  var Selection = require(&#39;bui/component/uibase/selection&#39;);
 
 <span id='BUI-Component-UIBase-List'>  /**
 </span>   * 列表一类的控件的扩展，list,menu,grid都是可以从此类扩展
@@ -38,10 +38,10 @@ define('bui/component/uibase/list',['bui/component/uibase/selection'],function (
 </span>     * 选择的数据集合
      * &lt;pre&gt;&lt;code&gt;
      * var list = new List.SimpleList({
-     *   itemTpl : '&amp;lt;li id=&quot;{value}&quot;&amp;gt;{text}&amp;lt;/li&amp;gt;',
-     *   idField : 'value',
-     *   render : '#t1',
-     *   items : [{value : '1',text : '1'},{value : '2',text : '2'}]
+     *   itemTpl : &#39;&amp;lt;li id=&quot;{value}&quot;&amp;gt;{text}&amp;lt;/li&amp;gt;&#39;,
+     *   idField : &#39;value&#39;,
+     *   render : &#39;#t1&#39;,
+     *   items : [{value : &#39;1&#39;,text : &#39;1&#39;},{value : &#39;2&#39;,text : &#39;2&#39;}]
      * });
      * list.render();
      * &lt;/code&gt;&lt;/pre&gt;
@@ -50,7 +50,7 @@ define('bui/component/uibase/list',['bui/component/uibase/selection'],function (
 <span id='BUI-Component-UIBase-List-property-items'>    /**
 </span>     * 选择的数据集合
      * &lt;pre&gt;&lt;code&gt;
-     *  list.set('items',items); //列表会直接替换内容
+     *  list.set(&#39;items&#39;,items); //列表会直接替换内容
      *  //等同于 
      *  list.clearItems();
      *  list.addItems(items);
@@ -63,10 +63,10 @@ define('bui/component/uibase/list',['bui/component/uibase/selection'],function (
     },
 <span id='BUI-Component-UIBase-List-cfg-idField'>    /**
 </span>     * 选项的默认key值
-     * @cfg {String} [idField = 'id']
+     * @cfg {String} [idField = &#39;id&#39;]
      */
     idField : {
-      value : 'id'
+      value : &#39;id&#39;
     },
 <span id='global-property-itemTpl'>    /**
 </span>     * 列表项的默认模板,仅在初始化时传入。
@@ -81,15 +81,15 @@ define('bui/component/uibase/list',['bui/component/uibase/selection'],function (
      * &lt;pre&gt;&lt;code&gt;
      * var list = new List.SimpleList({
      *   itemTplRender : function(item){
-     *     if(item.type == '1'){
-     *       return '&amp;lt;li&amp;gt;&amp;lt;img src=&quot;xxx.jpg&quot;/&amp;gt;'+item.text+'&amp;lt;/li&amp;gt;'
+     *     if(item.type == &#39;1&#39;){
+     *       return &#39;&amp;lt;li&amp;gt;&amp;lt;img src=&quot;xxx.jpg&quot;/&amp;gt;&#39;+item.text+&#39;&amp;lt;/li&amp;gt;&#39;
      *     }else{
-     *       return '&amp;lt;li&amp;gt;item.text&amp;lt;/li&amp;gt;'
+     *       return &#39;&amp;lt;li&amp;gt;item.text&amp;lt;/li&amp;gt;&#39;
      *     }
      *   },
-     *   idField : 'value',
-     *   render : '#t1',
-     *   items : [{value : '1',text : '1',type : '0'},{value : '2',text : '2',type : '1'}]
+     *   idField : &#39;value&#39;,
+     *   render : &#39;#t1&#39;,
+     *   items : [{value : &#39;1&#39;,text : &#39;1&#39;,type : &#39;0&#39;},{value : &#39;2&#39;,text : &#39;2&#39;,type : &#39;1&#39;}]
      * });
      * list.render();
      * &lt;/code&gt;&lt;/pre&gt;
@@ -102,12 +102,12 @@ define('bui/component/uibase/list',['bui/component/uibase/selection'],function (
 </span>     * 子控件各个状态默认采用的样式
      * &lt;pre&gt;&lt;code&gt;
      * var list = new List.SimpleList({
-     *   render : '#t1',
+     *   render : &#39;#t1&#39;,
      *   itemStatusCls : {
-     *     selected : 'active', //默认样式为list-item-selected,现在变成'active'
-     *     hover : 'hover' //默认样式为list-item-hover,现在变成'hover'
+     *     selected : &#39;active&#39;, //默认样式为list-item-selected,现在变成&#39;active&#39;
+     *     hover : &#39;hover&#39; //默认样式为list-item-hover,现在变成&#39;hover&#39;
      *   },
-     *   items : [{id : '1',text : '1',type : '0'},{id : '2',text : '2',type : '1'}]
+     *   items : [{id : &#39;1&#39;,text : &#39;1&#39;,type : &#39;0&#39;},{id : &#39;2&#39;,text : &#39;2&#39;,type : &#39;1&#39;}]
      * });
      * list.render();
      * &lt;/code&gt;&lt;/pre&gt;
@@ -130,7 +130,7 @@ define('bui/component/uibase/list',['bui/component/uibase/selection'],function (
          * @param {HTMLElement} e.domTarget 点击的DOM对象
          * @param {HTMLElement} e.domEvent 点击的原生事件对象
          */
-        'itemclick' : true
+        &#39;itemclick&#39; : true
       }  
     }
   };
@@ -208,21 +208,21 @@ define('bui/component/uibase/list',['bui/component/uibase/selection'],function (
 <span id='BUI-Component-UIBase-List-method-getItem'>    /**
 </span>     * 通过Id获取选项，如果是改变了idField则通过改变的idField来查找选项
      * &lt;pre&gt;&lt;code&gt;
-     *   //如果idField = 'id'
-     *   var item = list.getItem('2'); 
+     *   //如果idField = &#39;id&#39;
+     *   var item = list.getItem(&#39;2&#39;); 
      *   //等同于
-     *   list.findItemByField('id','2');
+     *   list.findItemByField(&#39;id&#39;,&#39;2&#39;);
      *
-     *   //如果idField = 'value'
-     *   var item = list.getItem('2'); 
+     *   //如果idField = &#39;value&#39;
+     *   var item = list.getItem(&#39;2&#39;); 
      *   //等同于
-     *   list.findItemByField('value','2');
+     *   list.findItemByField(&#39;value&#39;,&#39;2&#39;);
      * &lt;/code&gt;&lt;/pre&gt;
      * @param {String} id 编号
      * @return {Object|BUI.Component.Controller} 选项（子控件）
      */
     getItem : function(id){
-      var field = this.get('idField');
+      var field = this.get(&#39;idField&#39;);
       return this.findItemByField(field,id);
     },
 <span id='BUI-Component-UIBase-List-method-indexOfItem'>    /**
@@ -230,7 +230,7 @@ define('bui/component/uibase/list',['bui/component/uibase/selection'],function (
      * &lt;pre&gt;&lt;code&gt;
      * var index = list.indexOf(item); //返回索引，不存在则返回-1
      * &lt;/code&gt;&lt;/pre&gt;
-     * @param  {Object|BUI.Component.Controller} 选项
+     * @param  {Object|BUI.Component.Controller} item 选项
      * @return {Number}   项的索引值
      */
     indexOfItem : function(item){
@@ -239,7 +239,7 @@ define('bui/component/uibase/list',['bui/component/uibase/selection'],function (
 <span id='BUI-Component-UIBase-List-method-addItems'>    /**
 </span>     * 添加多条选项
      * &lt;pre&gt;&lt;code&gt;
-     * var items = [{id : '1',text : '1'},{id : '2',text : '2'}];
+     * var items = [{id : &#39;1&#39;,text : &#39;1&#39;},{id : &#39;2&#39;,text : &#39;2&#39;}];
      * list.addItems(items);
      * &lt;/code&gt;&lt;/pre&gt;
      * @param {Array} items 记录集合（子控件配置项）
@@ -253,7 +253,7 @@ define('bui/component/uibase/list',['bui/component/uibase/selection'],function (
 <span id='BUI-Component-UIBase-List-method-addItemsAt'>    /**
 </span>     * 插入多条记录
      * &lt;pre&gt;&lt;code&gt;
-     * var items = [{id : '1',text : '1'},{id : '2',text : '2'}];
+     * var items = [{id : &#39;1&#39;,text : &#39;1&#39;},{id : &#39;2&#39;,text : &#39;2&#39;}];
      * list.addItemsAt(items,0); // 在最前面插入
      * list.addItemsAt(items,2); //第三个位置插入
      * &lt;/code&gt;&lt;/pre&gt;
@@ -269,8 +269,8 @@ define('bui/component/uibase/list',['bui/component/uibase/selection'],function (
 <span id='BUI-Component-UIBase-List-method-updateItem'>    /**
 </span>     * 更新列表项，修改选项值后，DOM跟随变化
      * &lt;pre&gt;&lt;code&gt;
-     *   var item = list.getItem('2');
-     *   list.text = '新内容'; //此时对应的DOM不会变化
+     *   var item = list.getItem(&#39;2&#39;);
+     *   list.text = &#39;新内容&#39;; //此时对应的DOM不会变化
      *   list.updateItem(item); //DOM进行相应的变化
      * &lt;/code&gt;&lt;/pre&gt;
      * @param  {Object} item 选项值
@@ -282,7 +282,7 @@ define('bui/component/uibase/list',['bui/component/uibase/selection'],function (
 </span>     * 添加选项,添加在控件最后
      * 
      * &lt;pre&gt;&lt;code&gt;
-     * list.addItem({id : '3',text : '3',type : '0'});
+     * list.addItem({id : &#39;3&#39;,text : &#39;3&#39;,type : &#39;0&#39;});
      * &lt;/code&gt;&lt;/pre&gt;
      * 
      * @param {Object|BUI.Component.Controller} item 选项，子控件配置项、子控件
@@ -294,7 +294,7 @@ define('bui/component/uibase/list',['bui/component/uibase/selection'],function (
 <span id='BUI-Component-UIBase-List-method-addItemAt'>    /**
 </span>     * 在指定位置添加选项
      * &lt;pre&gt;&lt;code&gt;
-     * list.addItemAt({id : '3',text : '3',type : '0'},0); //第一个位置
+     * list.addItemAt({id : &#39;3&#39;,text : &#39;3&#39;,type : &#39;0&#39;},0); //第一个位置
      * &lt;/code&gt;&lt;/pre&gt;
      * @param {Object|BUI.Component.Controller} item 选项，子控件配置项、子控件
      * @param {Number} index 索引
@@ -327,7 +327,7 @@ define('bui/component/uibase/list',['bui/component/uibase/selection'],function (
      * &lt;pre&gt;&lt;code&gt;
      * list.clearItems(); 
      * //等同于
-     * list.set('items',items);
+     * list.set(&#39;items&#39;,items);
      * &lt;/code&gt;&lt;/pre&gt;
      */
     clearItems : function(){
@@ -339,7 +339,7 @@ define('bui/component/uibase/list',['bui/component/uibase/selection'],function (
 <span id='BUI-Component-UIBase-List-method-removeItem'>    /**
 </span>     * 删除选项
      * &lt;pre&gt;&lt;code&gt;
-     * var item = list.getItem('1');
+     * var item = list.getItem(&#39;1&#39;);
      * list.removeItem(item);
      * &lt;/code&gt;&lt;/pre&gt;
      * @param {Object|BUI.Component.Controller} item 选项（子控件）
@@ -391,36 +391,36 @@ define('bui/component/uibase/list',['bui/component/uibase/selection'],function (
         item.selected = false;
     }
     if(item.set){
-        item.set('selected',false);
+        item.set(&#39;selected&#39;,false);
     }
   }
 
   function beforeAddItem(self,item){
 
     var c = item.isController ? item.getAttrVals() : item,
-      defaultTpl = self.get('itemTpl'),
-      defaultStatusCls = self.get('itemStatusCls'),
-      defaultTplRender = self.get('itemTplRender');
+      defaultTpl = self.get(&#39;itemTpl&#39;),
+      defaultStatusCls = self.get(&#39;itemStatusCls&#39;),
+      defaultTplRender = self.get(&#39;itemTplRender&#39;);
 
     //配置默认模板
     if(defaultTpl &amp;&amp; !c.tpl){
-      setItemAttr(item,'tpl',defaultTpl);
+      setItemAttr(item,&#39;tpl&#39;,defaultTpl);
       //  c.tpl = defaultTpl;
     }
     //配置默认渲染函数
     if(defaultTplRender &amp;&amp; !c.tplRender){
-      setItemAttr(item,'tplRender',defaultTplRender);
+      setItemAttr(item,&#39;tplRender&#39;,defaultTplRender);
       //c.tplRender = defaultTplRender;
     }
     //配置默认状态样式
     if(defaultStatusCls){
-      var statusCls = c.statusCls || item.isController ? item.get('statusCls') : {};
+      var statusCls = c.statusCls || item.isController ? item.get(&#39;statusCls&#39;) : {};
       BUI.each(defaultStatusCls,function(v,k){
         if(v &amp;&amp; !statusCls[k]){
             statusCls[k] = v;
         }
       });
-      setItemAttr(item,'statusCls',statusCls)
+      setItemAttr(item,&#39;statusCls&#39;,statusCls)
       //item.statusCls = statusCls;
     }
    // clearSelected(item);
@@ -466,16 +466,16 @@ define('bui/component/uibase/list',['bui/component/uibase/selection'],function (
 </span>     * 默认的加载控件内容的配置,默认值：
      * &lt;pre&gt;
      *  {
-     *   property : 'children',
-     *   dataType : 'json'
+     *   property : &#39;children&#39;,
+     *   dataType : &#39;json&#39;
      * }
      * &lt;/pre&gt;
      * @type {Object}
      */
     defaultLoaderCfg  : {
       value : {
-        property : 'children',
-        dataType : 'json'
+        property : &#39;children&#39;,
+        dataType : &#39;json&#39;
       }
     }
   });
@@ -484,11 +484,11 @@ define('bui/component/uibase/list',['bui/component/uibase/selection'],function (
     //初始化，将items转换成children
     __init : function(){
       var _self = this,
-        items = _self.get('items');
-      if(items &amp;&amp; _self.get('autoInitItems')){
+        items = _self.get(&#39;items&#39;);
+      if(items &amp;&amp; _self.get(&#39;autoInitItems&#39;)){
         _self.addItems(items);
       } 
-      _self.on('beforeRenderUI',function(){
+      _self.on(&#39;beforeRenderUI&#39;,function(){
         _self._beforeRenderUI();
       });
     },
@@ -501,8 +501,8 @@ define('bui/component/uibase/list',['bui/component/uibase/selection'],function (
     //渲染子控件
     _beforeRenderUI : function(){
       var _self = this,
-        children = _self.get('children'),
-        items = _self.get('items');   
+        children = _self.get(&#39;children&#39;),
+        items = _self.get(&#39;items&#39;);   
       BUI.each(children,function(item){
         beforeAddItem(_self,item);
       });
@@ -510,39 +510,39 @@ define('bui/component/uibase/list',['bui/component/uibase/selection'],function (
     //绑定事件
     __bindUI : function(){
       var _self = this,
-        selectedEvent = _self.get('selectedEvent');
+        selectedEvent = _self.get(&#39;selectedEvent&#39;);
      
       _self.on(selectedEvent,function(e){
         var item = e.target;
-        if(item.get('selectable')){
-            if(!item.get('selected')){
+        if(item.get(&#39;selectable&#39;)){
+            if(!item.get(&#39;selected&#39;)){
               _self.setSelected(item);
-            }else if(_self.get('multipleSelect')){
+            }else if(_self.get(&#39;multipleSelect&#39;)){
               _self.clearSelected(item);
             }
         }
       });
 
-      _self.on('click',function(e){
+      _self.on(&#39;click&#39;,function(e){
         if(e.target !== _self){
-          _self.fire('itemclick',{item:e.target,domTarget : e.domTarget,domEvent : e});
+          _self.fire(&#39;itemclick&#39;,{item:e.target,domTarget : e.domTarget,domEvent : e});
         }
       });
-      _self.on('beforeAddChild',function(ev){
+      _self.on(&#39;beforeAddChild&#39;,function(ev){
         beforeAddItem(_self,ev.child);
       });
-      _self.on('beforeRemoveChild',function(ev){
+      _self.on(&#39;beforeRemoveChild&#39;,function(ev){
         var item = ev.child,
-          selected = item.get('selected');
+          selected = item.get(&#39;selected&#39;);
         //清理选中状态
         if(selected){
-          if(_self.get('multipleSelect')){
+          if(_self.get(&#39;multipleSelect&#39;)){
             _self.clearSelected(item);
           }else{
             _self.setSelected(null);
           }
         }
-        item.set('selected',false);
+        item.set(&#39;selected&#39;,false);
       });
     },
 <span id='BUI-Component-UIBase-ChildList-method-clearControl'>    /**
@@ -559,7 +559,7 @@ define('bui/component/uibase/list',['bui/component/uibase/selection'],function (
      * @override
      */
     getItems : function () {
-      return this.get('children');
+      return this.get(&#39;children&#39;);
     },
 <span id='BUI-Component-UIBase-ChildList-method-updateItem'>    /**
 </span>     * 更新列表项
@@ -567,7 +567,7 @@ define('bui/component/uibase/list',['bui/component/uibase/selection'],function (
      */
     updateItem : function(item){
       var _self = this,
-        idField = _self.get('idField'),
+        idField = _self.get(&#39;idField&#39;),
         element = _self.findItemByField(idField,item[idField]);
       if(element){
         element.setTplContent();
@@ -580,7 +580,7 @@ define('bui/component/uibase/list',['bui/component/uibase/selection'],function (
      */
     removeItem : function (item) {
       var _self = this,
-        idField = _self.get('idField');
+        idField = _self.get(&#39;idField&#39;);
       if(!(item instanceof BUI.Component.Controller)){
         item = _self.findItemByField(idField,item[idField]);
       }
@@ -599,12 +599,12 @@ define('bui/component/uibase/list',['bui/component/uibase/selection'],function (
 
       root = root || this;
       var _self = this,
-        children = root.get('children'),
+        children = root.get(&#39;children&#39;),
         result = null;
       $(children).each(function(index,item){
         if(item.get(field) == value){
             result = item;
-        }else if(item.get('children').length){
+        }else if(item.get(&#39;children&#39;).length){
             result = _self.findItemByField(field,value,item);
         }
         if(result){
@@ -614,7 +614,7 @@ define('bui/component/uibase/list',['bui/component/uibase/selection'],function (
       return result;
     },
     getItemText : function(item){
-      return item.get('el').text();
+      return item.get(&#39;el&#39;).text();
     },
     getValueByField : function(item,field){
         return item &amp;&amp; item.get(field);
@@ -625,12 +625,12 @@ define('bui/component/uibase/list',['bui/component/uibase/selection'],function (
      */
     setItemSelectedStatus : function(item,selected){
       var _self = this,
-        method = selected ? 'addClass' : 'removeClass',
+        method = selected ? &#39;addClass&#39; : &#39;removeClass&#39;,
         element = null;
 
       if(item){
-        item.set('selected',selected);
-        element = item.get('el');
+        item.set(&#39;selected&#39;,selected);
+        element = item.get(&#39;el&#39;);
       }
       _self.afterSelected(item,selected,element);
     },
@@ -641,7 +641,7 @@ define('bui/component/uibase/list',['bui/component/uibase/selection'],function (
      * @return {Boolean}  是否选中
      */
     isItemSelected : function(item){
-        return item ? item.get('selected') : false;
+        return item ? item.get(&#39;selected&#39;) : false;
     },
 <span id='BUI-Component-UIBase-ChildList-method-setAllSelection'>    /**
 </span>     * 设置所有选项选中

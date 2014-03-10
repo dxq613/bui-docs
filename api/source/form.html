@@ -20,23 +20,23 @@
  * @ignore
  */
 
-define('bui/form/form',['bui/common','bui/form/fieldcontainer'],function (require) {
+define(&#39;bui/form/form&#39;,[&#39;bui/common&#39;,&#39;bui/form/fieldcontainer&#39;],function (require) {
   
-  var BUI = require('bui/common'),
+  var BUI = require(&#39;bui/common&#39;),
     TYPE_SUBMIT = {
-      NORMAL : 'normal',
-      AJAX : 'ajax',
-      IFRAME : 'iframe'
+      NORMAL : &#39;normal&#39;,
+      AJAX : &#39;ajax&#39;,
+      IFRAME : &#39;iframe&#39;
     },
-    FieldContainer = require('bui/form/fieldcontainer'),
+    FieldContainer = require(&#39;bui/form/fieldcontainer&#39;),
     Component = BUI.Component;
 
   var FormView = FieldContainer.View.extend({
     _uiSetMethod : function(v){
-      this.get('el').attr('method',v);
+      this.get(&#39;el&#39;).attr(&#39;method&#39;,v);
     },
     _uiSetAction : function(v){
-      this.get('el').attr('action',v);
+      this.get(&#39;el&#39;).attr(&#39;action&#39;,v);
     }
   },{
     ATTRS : {
@@ -44,7 +44,7 @@ define('bui/form/form',['bui/common','bui/form/fieldcontainer'],function (requir
       action : {}
     }
   },{
-    xclass: 'form-view'
+    xclass: &#39;form-view&#39;
   });
 
 <span id='BUI-Form-Form'>  /**
@@ -56,9 +56,9 @@ define('bui/form/form',['bui/common','bui/form/fieldcontainer'],function (requir
   var Form = FieldContainer.extend({
     renderUI : function(){
       var _self = this,
-        buttonBar = _self.get('buttonBar'),
+        buttonBar = _self.get(&#39;buttonBar&#39;),
         cfg;
-      if($.isPlainObject(buttonBar) &amp;&amp; _self.get('buttons')){
+      if($.isPlainObject(buttonBar) &amp;&amp; _self.get(&#39;buttons&#39;)){
         cfg = BUI.merge(_self.getDefaultButtonBarCfg(),buttonBar);
         _self._initButtonBar(cfg);
       }
@@ -66,22 +66,23 @@ define('bui/form/form',['bui/common','bui/form/fieldcontainer'],function (requir
     },
     _initButtonBar : function(cfg){
       var _self = this;
-      BUI.use('bui/toolbar',function(Toolbar){
+      BUI.use(&#39;bui/toolbar&#39;,function(Toolbar){
         buttonBar = new Toolbar.Bar(cfg);
-        _self.set('buttonBar',buttonBar);
+        _self.set(&#39;buttonBar&#39;,buttonBar);
       });
     },
     bindUI : function(){
       var _self = this,
-        formEl = _self.get('el');
+        formEl = _self.get(&#39;el&#39;);
 
-      formEl.on('submit',function(ev){
+      formEl.on(&#39;submit&#39;,function(ev){
         _self.valid();
         if(!_self.isValid() || _self.onBeforeSubmit() === false){
           ev.preventDefault();
+          _self.focusError();
           return;
         }
-        if(_self.isValid() &amp;&amp; _self.get('submitType') === TYPE_SUBMIT.AJAX){
+        if(_self.isValid() &amp;&amp; _self.get(&#39;submitType&#39;) === TYPE_SUBMIT.AJAX){
           ev.preventDefault();
           _self.ajaxSubmit();
         }
@@ -95,31 +96,52 @@ define('bui/form/form',['bui/common','bui/form/fieldcontainer'],function (requir
      */
     getDefaultButtonBarCfg : function(){
       var _self = this,
-        buttons = _self.get('buttons');
+        buttons = _self.get(&#39;buttons&#39;);
       return {
         autoRender : true,
-        elCls :'toolbar',
-        render : _self.get('el'),
+        elCls :&#39;toolbar&#39;,
+        render : _self.get(&#39;el&#39;),
         items : buttons,
-        defaultChildClass : 'bar-item-button'
+        defaultChildClass : &#39;bar-item-button&#39;
       };
+    },
+<span id='BUI-Form-Form-method-focusError'>    /**
+</span>     * 将焦点定位到第一个错误字段
+     */
+    focusError : function(){
+      var _self = this,
+        fields = _self.getFields();
+      
+      BUI.each(fields,function(field){
+        if(field.get(&#39;visible&#39;) &amp;&amp; !field.get(&#39;disabled&#39;) &amp;&amp; !field.isValid()){
+          try{
+            field.focus();
+          }catch(e){
+            BUI.log(e);
+          }
+          
+          return false;
+        }
+      });
     },
 <span id='BUI-Form-Form-method-submit'>    /**
 </span>     * 表单提交，如果未通过验证，则阻止提交
      */
     submit : function(options){
       var _self = this,
-        submitType = _self.get('submitType');
+        submitType = _self.get(&#39;submitType&#39;);
       _self.valid();
       if(_self.isValid()){
         if(_self.onBeforeSubmit() == false){
           return;
         }
         if(submitType === TYPE_SUBMIT.NORMAL){
-          _self.get('el')[0].submit();
+          _self.get(&#39;el&#39;)[0].submit();
         }else if(submitType === TYPE_SUBMIT.AJAX){
           _self.ajaxSubmit(options);
         }
+      }else{
+        _self.focusError();
       }
     },
 <span id='BUI-Form-Form-method-ajaxSubmit'>    /**
@@ -127,16 +149,16 @@ define('bui/form/form',['bui/common','bui/form/fieldcontainer'],function (requir
      */
     ajaxSubmit : function(options){
       var _self = this,
-        method = _self.get('method'),
-        action = _self.get('action'),
-        callback = _self.get('callback'),
-        submitMask = _self.get('submitMask'),
+        method = _self.get(&#39;method&#39;),
+        action = _self.get(&#39;action&#39;),
+        callback = _self.get(&#39;callback&#39;),
+        submitMask = _self.get(&#39;submitMask&#39;),
         data = _self.serializeToObject(), //获取表单数据
         success,
         ajaxParams = BUI.merge(true,{ //合并请求参数
           url : action,
           type : method,
-          dataType : 'json',
+          dataType : &#39;json&#39;,
           data : data
         },options);
 
@@ -160,13 +182,13 @@ define('bui/form/form',['bui/common','bui/form/fieldcontainer'],function (requir
     //获取提交的屏蔽层
     _initSubmitMask : function(){
       var _self = this,
-        submitType = _self.get('submitType'),
-        submitMask = _self.get('submitMask');
+        submitType = _self.get(&#39;submitType&#39;),
+        submitMask = _self.get(&#39;submitMask&#39;);
       if(submitType === TYPE_SUBMIT.AJAX &amp;&amp; submitMask){
-        BUI.use('bui/mask',function(Mask){
+        BUI.use(&#39;bui/mask&#39;,function(Mask){
           var cfg = $.isPlainObject(submitMask) ? submitMask : {};
-          submitMask = new Mask.LoadMask(BUI.mix({el : _self.get('el')},cfg));
-          _self.set('submitMask',submitMask);
+          submitMask = new Mask.LoadMask(BUI.mix({el : _self.get(&#39;el&#39;)},cfg));
+          _self.set(&#39;submitMask&#39;,submitMask);
         });
       }
     },
@@ -175,7 +197,7 @@ define('bui/form/form',['bui/common','bui/form/fieldcontainer'],function (requir
      * @return {Object} 序列化成对象
      */
     serializeToObject : function(){
-      return BUI.FormHelper.serializeToObject(this.get('el')[0]);
+      return BUI.FormHelper.serializeToObject(this.get(&#39;el&#39;)[0]);
     },
 <span id='BUI-Form-Form-method-toObject'>    /**
 </span>     * serializeToObject 的缩写，所有的键值都是字符串
@@ -190,20 +212,20 @@ define('bui/form/form',['bui/common','bui/form/fieldcontainer'],function (requir
      * @return {Boolean} 是否取消提交
      */
     onBeforeSubmit : function(){
-      return this.fire('beforesubmit');
+      return this.fire(&#39;beforesubmit&#39;);
     },
 <span id='BUI-Form-Form-method-reset'>    /**
 </span>     * 表单恢复初始值
      */
     reset : function(){
       var _self = this,
-        initRecord = _self.get('initRecord');
+        initRecord = _self.get(&#39;initRecord&#39;);
       _self.setRecord(initRecord);
     },
 <span id='BUI-Form-Form-method-resetTips'>    /**
 </span>     * 重置提示信息，因为在表单隐藏状态下，提示信息定位错误
      * &lt;pre&gt;&lt;code&gt;
-     * dialog.on('show',function(){
+     * dialog.on(&#39;show&#39;,function(){
      *   form.resetTips();
      * });
      *   
@@ -222,8 +244,8 @@ define('bui/form/form',['bui/common','bui/form/fieldcontainer'],function (requir
      */
     destructor : function(){
       var _self = this,
-        buttonBar = _self.get('buttonBar'),
-        submitMask = _self.get('submitMask');
+        buttonBar = _self.get(&#39;buttonBar&#39;),
+        submitMask = _self.get(&#39;submitMask&#39;);
       if(buttonBar &amp;&amp; buttonBar.destroy){
         buttonBar.destroy();
       }
@@ -246,7 +268,7 @@ define('bui/form/form',['bui/common','bui/form/fieldcontainer'],function (requir
        */
       action : {
         view : true,
-        value : ''
+        value : &#39;&#39;
       },
       allowTextSelection:{
         value : true
@@ -266,15 +288,15 @@ define('bui/form/form',['bui/common','bui/form/fieldcontainer'],function (requir
        */
       method : {
         view : true,
-        value : 'get'
+        value : &#39;get&#39;
       },
 <span id='BUI-Form-Form-property-defaultLoaderCfg'>      /**
 </span>       * 默认的loader配置
        * &lt;pre&gt;
        * {
        *   autoLoad : true,
-       *   property : 'record',
-       *   dataType : 'json'
+       *   property : &#39;record&#39;,
+       *   dataType : &#39;json&#39;
        * }
        * &lt;/pre&gt;
        * @type {Object}
@@ -282,8 +304,8 @@ define('bui/form/form',['bui/common','bui/form/fieldcontainer'],function (requir
       defaultLoaderCfg : {
         value : {
           autoLoad : true,
-          property : 'record',
-          dataType : 'json'
+          property : &#39;record&#39;,
+          dataType : &#39;json&#39;
         }
       },
 <span id='BUI-Form-Form-property-submitMask'>      /**
@@ -292,7 +314,7 @@ define('bui/form/form',['bui/common','bui/form/fieldcontainer'],function (requir
        */
       submitMask : {
         value : {
-          msg : '正在提交。。。'
+          msg : &#39;正在提交。。。&#39;
         }
       },
 <span id='BUI-Form-Form-cfg-submitType'>      /**
@@ -301,13 +323,20 @@ define('bui/form/form',['bui/common','bui/form/fieldcontainer'],function (requir
        *  - normal 普通方式，直接提交表单
        *  - ajax 异步提交方式，在submit指定参数
        *  - iframe 使用iframe提交,开发中。。。
-       * @cfg {String} [submitType='normal']
+       * @cfg {String} [submitType=&#39;normal&#39;]
        */
       submitType : {
-        value : 'normal'
+        value : &#39;normal&#39;
+      },
+<span id='BUI-Form-Form-property-focusError'>      /**
+</span>       * 表单提交前，如果存在错误，是否将焦点定位到第一个错误
+       * @type {Object}
+       */
+      focusError : {
+        value : true
       },
 <span id='BUI-Form-Form-property-callback'>      /**
-</span>       * 表单提交成功后的回调函数，普通提交方式 submitType = 'normal'，不会调用
+</span>       * 表单提交成功后的回调函数，普通提交方式 submitType = &#39;normal&#39;，不会调用
        * @type {Object}
        */
       callback : {
@@ -315,8 +344,8 @@ define('bui/form/form',['bui/common','bui/form/fieldcontainer'],function (requir
       },
       decorateCfgFields : {
         value : {
-          'method' : true,
-          'action' : true
+          &#39;method&#39; : true,
+          &#39;action&#39; : true
         }
       },
 <span id='BUI-Form-Form-property-defaultChildClass'>      /**
@@ -324,14 +353,14 @@ define('bui/form/form',['bui/common','bui/form/fieldcontainer'],function (requir
        * @type {String}
        */
       defaultChildClass : {
-        value : 'form-field'
+        value : &#39;form-field&#39;
       },
 <span id='BUI-Form-Form-property-elTagName'>      /**
 </span>       * 使用的标签，为form
        * @type {String}
        */
       elTagName : {
-        value : 'form'
+        value : &#39;form&#39;
       },
 <span id='BUI-Form-Form-property-buttons'>      /**
 </span>       * 表单按钮
@@ -349,7 +378,7 @@ define('bui/form/form',['bui/common','bui/form/fieldcontainer'],function (requir
         value : {}
       },
       childContainer : {
-        value : '.x-form-fields'
+        value : &#39;.x-form-fields&#39;
       },
 <span id='BUI-Form-Form-property-initRecord'>      /**
 </span>       * 表单初始化的数据，用于初始化或者表单回滚
@@ -369,11 +398,11 @@ define('bui/form/form',['bui/common','bui/form/fieldcontainer'],function (requir
         value : FormView
       },
       tpl : {
-        value : '&lt;div class=&quot;x-form-fields&quot;&gt;&lt;/div&gt;'
+        value : &#39;&lt;div class=&quot;x-form-fields&quot;&gt;&lt;/div&gt;&#39;
       }
     }
   },{
-    xclass : 'form'
+    xclass : &#39;form&#39;
   });
   
   Form.View = FormView;

@@ -20,15 +20,26 @@
  * @fileoverview 异步文件上传的验证器
  * @author 索丘 zengyue.yezy@alibaba-inc.com
  **/
-define('bui/uploader/validator',['bui/common'], function (require) {
+define(&#39;bui/uploader/validator&#39;,[&#39;bui/common&#39;], function (require) {
 
-  var BUI = require('bui/common');
+  var BUI = require(&#39;bui/common&#39;);
 
 
 <span id='BUI-Uploader-Validator'>  /**
 </span>   * 异步文件上传的验证器
    * @class BUI.Uploader.Validator
    * @extend BUI.Base
+   *
+   * &lt;pre&gt;&lt;code&gt;
+   * //默认已经定义的一些规则
+   * rules: {
+   *   maxSize: [1024, &#39;文件最大不能超过1M!&#39;],
+   *   minSize: [1, &#39;文件最小不能小于1k!&#39;],
+   *   max: [5, &#39;文件最多不能超过{0}个！&#39;],
+   *   min: [1, &#39;文件最少不能少于{0}个!&#39;],
+   *   ext: [&#39;.png&#39;,&#39;文件类型只能为{0}&#39;]
+   * }
+   * &lt;/code&gt;&lt;/pre&gt;
    */
   function Validator(config){
     Validator.superclass.constructor.call(this, config);
@@ -40,10 +51,8 @@ define('bui/uploader/validator',['bui/common'], function (require) {
      * @type {Object}
      */
     rules: {
-
     },
     queue: {
-
     }
   }
 
@@ -60,7 +69,7 @@ define('bui/uploader/validator',['bui/common'], function (require) {
     },
     _validItem: function(item){
       var _self = this,
-        rules = _self.get('rules'),
+        rules = _self.get(&#39;rules&#39;),
         isValid = true;
 
       BUI.each(rules, function(rule, name){
@@ -109,39 +118,39 @@ define('bui/uploader/validator',['bui/common'], function (require) {
   }
 
   //文件最大值
-  Validator.addRule('maxSize', function(item, baseValue, formatMsg){
+  Validator.addRule(&#39;maxSize&#39;, function(item, baseValue, formatMsg){
     if(item.size &gt; baseValue * 1024){
       return formatMsg;
     }
   });
 
   //文件最小值
-  Validator.addRule('minSize', function(item, baseValue, formatMsg){
+  Validator.addRule(&#39;minSize&#39;, function(item, baseValue, formatMsg){
     if(item.size &lt; baseValue * 1024){
       return formatMsg;
     }
   });
 
   //上传文件的最大个数
-  Validator.addRule('max', function(item, baseValue, formatMsg){
-    var count = this.get('queue').getCount();
+  Validator.addRule(&#39;max&#39;, function(item, baseValue, formatMsg){
+    var count = this.get(&#39;queue&#39;).getCount();
     if(count &gt; baseValue){
       return formatMsg;
     }
   });
 
   //上传文件的最小个数
-  Validator.addRule('min', function(item, baseValue, formatMsg){
-    var count = this.get('queue').getCount();
+  Validator.addRule(&#39;min&#39;, function(item, baseValue, formatMsg){
+    var count = this.get(&#39;queue&#39;).getCount();
     if(count &lt; baseValue){
       return formatMsg;
     }
   });
 
   //上传文件的文件类型
-  Validator.addRule('ext', function(item, baseValue, formatMsg){
+  Validator.addRule(&#39;ext&#39;, function(item, baseValue, formatMsg){
     var ext = item.ext,
-      baseValue = baseValue.split(',');
+      baseValue = baseValue.split(&#39;,&#39;);
     if($.inArray(ext, baseValue) === -1){
       return formatMsg;
     }

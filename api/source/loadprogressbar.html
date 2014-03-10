@@ -21,42 +21,42 @@
  * @ignore
  */
 
-define('bui/progressbar/load',['bui/progressbar/base'],function(require){
+define(&#39;bui/progressbar/load&#39;,[&#39;bui/progressbar/base&#39;],function(require){
 
-	var Base = require('bui/progressbar/base'),
+	var Base = require(&#39;bui/progressbar/base&#39;),
 	 	notStarted = 0,
 		hasStarted = 1,
 		hasEnded = 2;
 <span id='BUI-ProgressBar-Load'>	/**
 </span>	 * 异步加载进度条
 	 *&lt;pre&gt;&lt;code&gt;
-	 *  BUI.use('bui/progressbar',function(ProgressBar){
+	 *  BUI.use(&#39;bui/progressbar&#39;,function(ProgressBar){
    *   
    *    var Progressbar = ProgressBar.Load;
    *    var num = 10,
    *      ajaxCfg = {     
-   *        url : 'data/progress-bar-data.php',
-   *        dataType : 'json',
+   *        url : &#39;data/progress-bar-data.php&#39;,
+   *        dataType : &#39;json&#39;,
    *        data : {
    *          id :num
    *        }
    *      };
    *    var progressbar = new Progressbar({
-   *      render : '#progressbar',
-   *      tpl : '&lt;div class=&quot;bar&quot;&gt;&lt;/div&gt;',
-   *      elCls:'progress progress-striped active',
+   *      render : &#39;#progressbar&#39;,
+   *      tpl : &#39;&lt;div class=&quot;bar&quot;&gt;&lt;/div&gt;&#39;,
+   *      elCls:&#39;progress progress-striped active&#39;,
    *      ajaxCfg : ajaxCfg,
    *      interval : 1000
    *    });
    *
    *    progressbar.render();
-	 *		$('.button-primary').click(function(){
+	 *		$(&#39;.button-primary&#39;).click(function(){
    *      num = 10;
    *      ajaxCfg.data.id = num;
    *      progressbar.start();
    *    });
  
-   *    $('.button-danger').click(function(){
+   *    $(&#39;.button-danger&#39;).click(function(){
    *      progressbar.cancel();
    *    });
    *      
@@ -73,9 +73,9 @@ define('bui/progressbar/load',['bui/progressbar/base'],function(require){
 		bindUI : function () {
 			var _self = this;
 
-			_self.on('afterPercentChange',function (ev) {
+			_self.on(&#39;afterPercentChange&#39;,function (ev) {
 				if(_self.isLoading()){
-					var percent = _self.get('percent');
+					var percent = _self.get(&#39;percent&#39;);
 					if(percent == 100 ){
 						_self.onCompleted();
 					}
@@ -104,8 +104,8 @@ define('bui/progressbar/load',['bui/progressbar/base'],function(require){
 		 */
 		complete : function(){
 			var _self = this;
-			clearTimeout(_self.get('t'));
-			_self.set('percent',100);
+			clearTimeout(_self.get(&#39;t&#39;));
+			_self.set(&#39;percent&#39;,100);
 			
 		},
 <span id='BUI-ProgressBar-Load-method-cancel'>		/**
@@ -116,11 +116,11 @@ define('bui/progressbar/load',['bui/progressbar/base'],function(require){
 		 */
 		cancel : function(){
 			var _self = this;
-			clearTimeout(_self.get('t'));
-			if(_self.get('percent')){
-				_self.set('percent',0);
+			clearTimeout(_self.get(&#39;t&#39;));
+			if(_self.get(&#39;percent&#39;)){
+				_self.set(&#39;percent&#39;,0);
 			}
-			_self.set('status',notStarted);
+			_self.set(&#39;status&#39;,notStarted);
 		},
 <span id='BUI-ProgressBar-Load-method-onstart'>		/**
 </span>		 * 开始
@@ -128,12 +128,12 @@ define('bui/progressbar/load',['bui/progressbar/base'],function(require){
 		 */
 		onstart : function(){
 			var _self = this,
-				cfg = _self.get('cfg');
+				cfg = _self.get(&#39;cfg&#39;);
 
-			_self.set('percent',0);
-			_self.set('status',hasStarted);
+			_self.set(&#39;percent&#39;,0);
+			_self.set(&#39;status&#39;,hasStarted);
 			
-			_self.fire('start',cfg);
+			_self.fire(&#39;start&#39;,cfg);
 			_self._startLoad();
 		},
 <span id='BUI-ProgressBar-Load-method-onChange'>		/**
@@ -142,7 +142,7 @@ define('bui/progressbar/load',['bui/progressbar/base'],function(require){
 		 */
 		onChange : function(){
 			var _self = this;
-			_self.fire('loadchange');
+			_self.fire(&#39;loadchange&#39;);
 		},
 
 <span id='BUI-ProgressBar-Load-method-onCompleted'>		/**
@@ -151,8 +151,8 @@ define('bui/progressbar/load',['bui/progressbar/base'],function(require){
 		 */
 		onCompleted : function(){
 			var _self = this;
-			_self.set('status',hasEnded);
-			_self.fire('completed');
+			_self.set(&#39;status&#39;,hasEnded);
+			_self.fire(&#39;completed&#39;);
 			
 		},
 <span id='BUI-ProgressBar-Load-method-isLoading'>		/**
@@ -160,28 +160,28 @@ define('bui/progressbar/load',['bui/progressbar/base'],function(require){
 		 * @return {Boolean} 是否正在加载
 		 */
 		isLoading : function  () {
-			return this.get('status') === hasStarted;
+			return this.get(&#39;status&#39;) === hasStarted;
 		},
 <span id='BUI-ProgressBar-Load-method-isCompleted'>		/**
 </span>		 * 是否已经加载完毕
 		 * @return {Boolean} 是否加载完毕
 		 */
 		isCompleted : function () {
-			return this.get('status') === hasEnded;
+			return this.get(&#39;status&#39;) === hasEnded;
 		},
 		_startLoad : function () {
 			var _self = this,
-				ajaxCfg = _self.get('ajaxCfg'),
-				interval = _self.get('interval'),
+				ajaxCfg = _self.get(&#39;ajaxCfg&#39;),
+				interval = _self.get(&#39;interval&#39;),
 				t;
 			ajaxCfg.success = function(data){
 				var percent = data.percent;
-				_self.set('percent',percent);
+				_self.set(&#39;percent&#39;,percent);
 				if(percent &lt; 100 &amp;&amp; _self.isLoading()){
 					t = setTimeout(function(){
 						$.ajax(ajaxCfg);
 					},interval);
-					_self.set('t',t);
+					_self.set(&#39;t&#39;,t);
 				}
 			};
 			$.ajax(ajaxCfg);
@@ -221,14 +221,14 @@ define('bui/progressbar/load',['bui/progressbar/base'],function(require){
 	        */
 			events : {
 				/*value : [
-					'start',
-					'loadchange',
-					'completed'
+					&#39;start&#39;,
+					&#39;loadchange&#39;,
+					&#39;completed&#39;
 				]*/
 			}
 		}
 	},{
-		xclass : 'progress-bar-load'
+		xclass : &#39;progress-bar-load&#39;
 	});
 
 	return loadProgressBar;

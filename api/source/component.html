@@ -20,7 +20,7 @@
  * @ignore
  */
 
-define('bui/component',['bui/component/manage','bui/component/uibase','bui/component/view','bui/component/controller'],function (require) {
+define(&#39;bui/component&#39;,[&#39;bui/component/manage&#39;,&#39;bui/component/uibase&#39;,&#39;bui/component/view&#39;,&#39;bui/component/controller&#39;],function (require) {
 <span id='BUI-Component'>  /**
 </span>   * @class BUI.Component
    * &lt;p&gt;
@@ -31,21 +31,21 @@ define('bui/component',['bui/component/manage','bui/component/uibase','bui/compo
   var Component = {};
 
   BUI.mix(Component,{
-    Manager : require('bui/component/manage'),
-    UIBase : require('bui/component/uibase'),
-    View : require('bui/component/view'),
-    Controller : require('bui/component/controller')
+    Manager : require(&#39;bui/component/manage&#39;),
+    UIBase : require(&#39;bui/component/uibase&#39;),
+    View : require(&#39;bui/component/view&#39;),
+    Controller : require(&#39;bui/component/controller&#39;)
   });
 
   function create(component, self) {
     var childConstructor, xclass;
     if (component &amp;&amp; (xclass = component.xclass)) {
         if (self &amp;&amp; !component.prefixCls) {
-            component.prefixCls = self.get('prefixCls');
+            component.prefixCls = self.get(&#39;prefixCls&#39;);
         }
         childConstructor = Component.Manager.getConstructorByXClass(xclass);
         if (!childConstructor) {
-            BUI.error('can not find class by xclass desc : ' + xclass);
+            BUI.error(&#39;can not find class by xclass desc : &#39; + xclass);
         }
         component = new childConstructor(component);
     }

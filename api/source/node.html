@@ -21,8 +21,8 @@
  * @ignore
  */
 
-define('bui/data/node',['bui/common'],function (require) {
-  var BUI = require('bui/common');
+define(&#39;bui/data/node&#39;,[&#39;bui/common&#39;],function (require) {
+  var BUI = require(&#39;bui/common&#39;);
 
   function mapNode(cfg,map){
     var rst = {};
@@ -62,7 +62,7 @@ define('bui/data/node',['bui/common'],function (require) {
 </span>     * 显示节点时显示的文本
      * @type {Object}
      */
-    text : '',
+    text : &#39;&#39;,
 <span id='BUI-Data-Node-property-id'>    /**
 </span>     * 代表节点的编号
      * @type {String}
@@ -74,7 +74,7 @@ define('bui/data/node',['bui/common'],function (require) {
      */
     loaded : false,
 <span id='BUI-Data-Node-property-path'>    /**
-</span>     * 从根节点到此节点的路径，id的集合如： ['0','1','12'],
+</span>     * 从根节点到此节点的路径，id的集合如： [&#39;0&#39;,&#39;1&#39;,&#39;12&#39;],
      * 便于快速定位节点
      * @type {Array}
      */

@@ -20,15 +20,15 @@
  * @ignore
  */
 
-define('bui/component/uibase/decorate',['bui/array','bui/json','bui/component/manage'],function (require) {
+define(&#39;bui/component/uibase/decorate&#39;,[&#39;bui/array&#39;,&#39;bui/json&#39;,&#39;bui/component/manage&#39;],function (require) {
   
-  var ArrayUtil = require('bui/array'),
-    JSON = require('bui/json'),
+  var ArrayUtil = require(&#39;bui/array&#39;),
+    JSON = require(&#39;bui/json&#39;),
     prefixCls = BUI.prefix,
-    FIELD_PREFIX = 'data-'
-    FIELD_CFG = FIELD_PREFIX + 'cfg',
-    PARSER = 'PARSER',
-    Manager = require('bui/component/manage'),
+    FIELD_PREFIX = &#39;data-&#39;,
+    FIELD_CFG = FIELD_PREFIX + &#39;cfg&#39;,
+    PARSER = &#39;PARSER&#39;,
+    Manager = require(&#39;bui/component/manage&#39;),
     regx = /^[\{\[]/;
 
   function isConfigField(name,cfgFields){
@@ -89,7 +89,7 @@ define('bui/component/uibase/decorate',['bui/array','bui/json','bui/component/ma
             self.setInternal(p, v.call(self, srcNode));
         }
         // 单选选择器
-        else if (typeof v == 'string') {
+        else if (typeof v == &#39;string&#39;) {
             self.setInternal(p, srcNode.find(v));
         }
         // 多选选择器
@@ -120,20 +120,20 @@ define('bui/component/uibase/decorate',['bui/array','bui/json','bui/component/ma
 
   function initDecorate(self){
     var _self = self,
-      srcNode = _self.get('srcNode'),
+      srcNode = _self.get(&#39;srcNode&#39;),
       userConfig,
       decorateCfg;
     if(srcNode){
       srcNode = $(srcNode);
-      _self.setInternal('el',srcNode);
-      _self.setInternal('srcNode',srcNode);
+      _self.setInternal(&#39;el&#39;,srcNode);
+      _self.setInternal(&#39;srcNode&#39;,srcNode);
 
-      userConfig = _self.get('userConfig');
+      userConfig = _self.get(&#39;userConfig&#39;);
       decorateCfg = _self.getDecorateConfig(srcNode);
       setConfigFields(self,decorateCfg);
       
       //如果从DOM中读取子控件
-      if(_self.get('isDecorateChild') &amp;&amp; _self.decorateInternal){
+      if(_self.get(&#39;isDecorateChild&#39;) &amp;&amp; _self.decorateInternal){
         _self.decorateInternal(srcNode);
       }
       initParser(self,srcNode);
@@ -154,7 +154,7 @@ define('bui/component/uibase/decorate',['bui/array','bui/json','bui/component/ma
 </span>     * 配置控件的根节点的DOM
      * &lt;pre&gt;&lt;code&gt;
      * new Form.Form({
-     *   srcNode : '#J_Form'
+     *   srcNode : &#39;#J_Form&#39;
      * }).render();
      * &lt;/code&gt;&lt;/pre&gt;
      * @cfg {jQuery} srcNode
@@ -178,17 +178,17 @@ define('bui/component/uibase/decorate',['bui/array','bui/json','bui/component/ma
 </span>     * 此配置项配置使用那些srcNode上的节点作为配置项
      *  - 当时用 decorate 时，取 srcNode上的节点的属性作为控件的配置信息
      *  - 默认id,name,value,title 都会作为属性传入
-     *  - 使用 'data-cfg' 作为整体的配置属性
+     *  - 使用 &#39;data-cfg&#39; 作为整体的配置属性
      *  &lt;pre&gt;&lt;code&gt;
      *     &lt;input id=&quot;c1&quot; type=&quot;text&quot; name=&quot;txtName&quot; id=&quot;id&quot;,data-cfg=&quot;{allowBlank:false}&quot; /&gt;
      *     //会生成以下配置项：
      *     {
-     *         name : 'txtName',
-     *         id : 'id',
+     *         name : &#39;txtName&#39;,
+     *         id : &#39;id&#39;,
      *         allowBlank:false
      *     }
      *     new Form.Field({
-     *        src:'#c1'
+     *        src:&#39;#c1&#39;
      *     }).render();
      *  &lt;/code&gt;&lt;/pre&gt;
      * @type {Object}
@@ -196,10 +196,10 @@ define('bui/component/uibase/decorate',['bui/array','bui/json','bui/component/ma
      */
     decorateCfgFields : {
       value : {
-        'id' : true,
-        'name' : true,
-        'value' : true,
-        'title' : true
+        &#39;id&#39; : true,
+        &#39;name&#39; : true,
+        &#39;value&#39; : true,
+        &#39;title&#39; : true
       }
     }
   };
@@ -217,7 +217,7 @@ define('bui/component/uibase/decorate',['bui/array','bui/json','bui/component/ma
       var _self = this,
         dom = el[0],
         attributes = dom.attributes,
-        decorateCfgFields = _self.get('decorateCfgFields'),
+        decorateCfgFields = _self.get(&#39;decorateCfgFields&#39;),
         config = {},
         statusCfg = _self._getStautsCfg(el);
 
@@ -229,11 +229,11 @@ define('bui/component/uibase/decorate',['bui/array','bui/json','bui/component/ma
               BUI.mix(config,cfg);
           }
           else if(isConfigField(name,decorateCfgFields)){
-            name = name.replace(FIELD_PREFIX,'');
+            name = name.replace(FIELD_PREFIX,&#39;&#39;);
             config[name] = parseFieldValue(attr.nodeValue);
           }
         }catch(e){
-          BUI.log('parse field error,the attribute is:' + name);
+          BUI.log(&#39;parse field error,the attribute is:&#39; + name);
         }
       });
       return BUI.mix(config,statusCfg);
@@ -243,7 +243,7 @@ define('bui/component/uibase/decorate',['bui/array','bui/json','bui/component/ma
     _getStautsCfg : function(el){
       var _self = this,
         rst = {},
-        statusCls = _self.get('statusCls');
+        statusCls = _self.get(&#39;statusCls&#39;);
       BUI.each(statusCls,function(v,k){
         if(el.hasClass(v)){
           rst[k] = true;
@@ -258,8 +258,8 @@ define('bui/component/uibase/decorate',['bui/array','bui/json','bui/component/ma
      */
     getDecorateElments : function(){
       var _self = this,
-        el = _self.get('el'),
-        contentContainer = _self.get('childContainer');
+        el = _self.get(&#39;el&#39;),
+        contentContainer = _self.get(&#39;childContainer&#39;);
       if(contentContainer){
         return el.find(contentContainer).children();
       }else{
@@ -279,12 +279,12 @@ define('bui/component/uibase/decorate',['bui/array','bui/json','bui/component/ma
 <span id='BUI-Component-UIBase-Decorate-method-findXClassByNode'>    /**
 </span>     * 获取子控件的xclass类型
      * @protected
-     * @param {jQuery} 子控件的根节点
+     * @param {jQuery} childNode 子控件的根节点
      */
     findXClassByNode: function (childNode, ignoreError) {
       var _self = this,
-        cls = childNode.attr(&quot;class&quot;) || '',
-        childClass = _self.get('defaultChildClass'); //如果没有样式或者查找不到对应的类，使用默认的子控件类型
+        cls = childNode.attr(&quot;class&quot;) || &#39;&#39;,
+        childClass = _self.get(&#39;defaultChildClass&#39;); //如果没有样式或者查找不到对应的类，使用默认的子控件类型
 
           // 过滤掉特定前缀
       cls = cls.replace(new RegExp(&quot;\\b&quot; + prefixCls, &quot;ig&quot;), &quot;&quot;);
@@ -300,7 +300,7 @@ define('bui/component/uibase/decorate',['bui/array','bui/json','bui/component/ma
     // 生成一个组件
     decorateChildrenInternal: function (xclass, c) {
       var _self = this,
-        children = _self.get('children');
+        children = _self.get(&#39;children&#39;);
       children.push({
         xclass : xclass,
         srcNode: c
@@ -309,7 +309,7 @@ define('bui/component/uibase/decorate',['bui/array','bui/json','bui/component/ma
 <span id='BUI-Component-UIBase-Decorate-method-decorateChildren'>    /**
 </span>     * 封装子控件
      * @private
-     * @param {jQuery} el component's root element.
+     * @param {jQuery} el component&#39;s root element.
      */
     decorateChildren: function (el) {
       var _self = this,
