@@ -40,8 +40,9 @@ define(&#39;bui/chart/timeaxis&#39;,[&#39;bui/common&#39;,&#39;bui/chart/numbera
     return date;
   }
 
-<span id='BUI-Chart-Axis-DateTime'>  /**
-</span>   * @class BUI.Chart.Axis.DateTime
+<span id='BUI-Chart-Axis-Time'>  /**
+</span>   * @class BUI.Chart.Axis.Time
+   * 时间坐标轴
    */
   var Time = function(cfg){
     Time.superclass.constructor.call(this,cfg)
@@ -49,7 +50,7 @@ define(&#39;bui/chart/timeaxis&#39;,[&#39;bui/common&#39;,&#39;bui/chart/numbera
 
   Time.ATTRS = {
 
-<span id='BUI-Chart-Axis-DateTime-property-startDate'>    /**
+<span id='BUI-Chart-Axis-Time-property-startDate'>    /**
 </span>     * 开始日期时间
      * @type {Date}
      */
@@ -59,7 +60,7 @@ define(&#39;bui/chart/timeaxis&#39;,[&#39;bui/common&#39;,&#39;bui/chart/numbera
     dateFormat : {
 
     },
-<span id='BUI-Chart-Axis-DateTime-property-endDate'>    /**
+<span id='BUI-Chart-Axis-Time-property-endDate'>    /**
 </span>     * 结束日期时间
      * @type {Date}
      */

@@ -194,32 +194,7 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
         }
       }
     },
-<span id='BUI-Chart-SeriesGroup-method-'>    /**
-</span>     * @protected
-     * 获取可以被激活的元素
-     * @return {BUI.Chart.Actived[]} 可以被激活的元素集合
-     */
-    /*getActiveItems : function(){
-      var _self = this,
-        series = _self.getSeries(),
-        rst = [];
-
-      BUI.each(series,function(item){
-        if(item.isActived){
-          rst.push(item);
-        }
-      });
-      return rst;
-    },
-    clearActived : function(){
-      var _self = this,
-        series = _self.getSeries();
-      BUI.each(series,function(item){
-        if(item.clearActived){
-          item.clearActived();
-        }
-      });
-    },*/
+   
 <span id='BUI-Chart-SeriesGroup-method-getSeries'>    /**
 </span>     * 获取所有的数据序列
      * @return {Array} [description]
@@ -654,7 +629,7 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
 
         if(item.get(&#39;yAxis&#39;) == null){
           if(BUI.isArray(yAxis)){
-            item.set(&#39;yAxis&#39;) = yAxis[0];
+            item.set(&#39;yAxis&#39;,yAxis[0]);
           }else{
             item.set(&#39;yAxis&#39;,yAxis);
           }
