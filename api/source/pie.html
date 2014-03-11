@@ -343,7 +343,7 @@ define(&#39;bui/chart/pieseries&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#39;
       _self.on(&#39;mouseover&#39;,function(ev){
         var target = ev.target,
           shape = target.shape;
-        shape &amp;&amp; _self.setActived(shape);
+        shape &amp;&amp; _self.setActivedItem(shape);
       });
     },
     _getLabelCfg : function(point,distance,rAppend){

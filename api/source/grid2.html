@@ -278,13 +278,19 @@ define(&#39;bui/chart/grid&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plotitem&#3
 						path.push([&#39;L&#39;,point.x,point.y]);
 					}
 				});
-				path.push(&#39;z&#39;);
+				path.push([&#39;L&#39;,points[0].x,points[0].y]);
+				path.push([&#39;z&#39;]);
 			}else{
 				var x = item.center.x,
 					y = item.center.y,
 					rx = item.r,
 					ry = item.r;
-				path = [[&quot;M&quot;, x, y], [&quot;m&quot;, 0, -ry], [&quot;a&quot;, rx, ry, 0, 1, 1, 0, 2 * ry], [&quot;a&quot;, rx, ry, 0, 1, 1, 0, -2 * ry], [&quot;z&quot;]];
+				if(rx == 0){
+					path = [];
+				}else{
+					path = [[&quot;M&quot;, x, y], [&quot;m&quot;, 0, -ry], [&quot;a&quot;, rx, ry, 0, 1, 1, 0, 2 * ry], [&quot;a&quot;, rx, ry, 0, 1, 1, 0, -2 * ry]];
+				}
+				
 			}
 			return path;
 		},

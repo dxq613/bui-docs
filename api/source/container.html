@@ -258,7 +258,7 @@
 			BUI.each(children,function(item){
 				item.destroy();
 			});
-			BUI.Array.empty(children);
+			children &amp;&amp; BUI.Array.empty(children);
 			if(el.__set &amp;&amp; el.__set.clear){
 				el.__set.clear();
 			}
@@ -272,7 +272,9 @@
     		children = _self.get(&#39;children&#39;),
     		el = _self.get(&#39;el&#39;),
     		node = _self.get(&#39;node&#39;);
-
+    	if(_self.get(&#39;destroyed&#39;)){
+    		return;
+    	}
     	_self.clear();
 
     	Container.superclass.destroy.call(this);

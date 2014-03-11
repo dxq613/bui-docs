@@ -171,26 +171,7 @@
 			_self.set(&#39;y&#39;,params.y);
 			//_self._vmlAnimate(params,ms,callback);
 		},
-		/*_vmlAnimate : function(params,ms,callback){
-			var _self = this,
-				x = _self.get(&#39;x&#39;) || 0,//当前的x
-				y = _self.get(&#39;y&#39;) || 0,//当前的y
-				dx = params.x - x, //x 移动的距离
-				dy = params.y - y,
-				stepId = _self.get(&#39;stepId&#39;); //y 移动的距离
-
-			stepId &amp;&amp; Util.stopStep(stepId); //终止之前的动画
-
-		  stepId = Util.animStep(ms,function(factor){
-				var cx = x + dx * factor,
-					cy = y + dy * factor;
-					
-				_self.move(cx,cy);
-
-			},callback);
-
-			_self.set(&#39;stepId&#39;,stepId);
-		},*/
+		
 <span id='BUI-Graphic-Group-method-move'>		/**
 </span>		 * 移动的到位置
 		 * @param  {Number} x 移动到x

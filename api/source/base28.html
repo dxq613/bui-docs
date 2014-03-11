@@ -278,6 +278,7 @@
     	var _self = this;
     	if(_self.get(&#39;parent&#39;)){
     		_self.get(&#39;parent&#39;).removeChild(_self,destroy);
+            _self.set(&#39;parent&#39;,null);
     	}else if(destroy){
     		_self.destroy();
     	}
@@ -288,10 +289,15 @@
     destroy : function(){
     	var _self = this,
     		el = _self.get(&#39;el&#39;),
-        node = _self.get(&#39;node&#39;);
+            destroyed = _self.get(&#39;destroyed&#39;),
+            node = _self.get(&#39;node&#39;);
+        if(destroyed){
+            return;
+        }
     	el.remove &amp;&amp; el.remove();
     	_self._attrs = {};
-      $(node).off();
+        $(node).off();
+        _self.set(&#39;destroyed&#39;,true);
     }
 
 	});

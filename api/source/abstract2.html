@@ -150,6 +150,16 @@ define(&#39;bui/chart/abstractaxis&#39;,function (require) {
         gridGroup = _self.get(&#39;parent&#39;).addGroup(Grid,grid);
         _self.set(&#39;gridGroup&#39;,gridGroup);
     },
+<span id='BUI-Chart-Axis-Abstract-method-isInAxis'>    /**
+</span>     * 是否在坐标轴内
+     * @return {Boolean} 是否在坐标轴内
+     */
+    isInAxis : function(x,y){
+      var _self = this,
+        plotRange = _self.get(&#39;plotRange&#39;);
+    
+      return plotRange &amp;&amp; plotRange.isInRange(x,y);
+    },
 <span id='BUI-Chart-Axis-Abstract-method-getLinePath'>    /**
 </span>     * @protected
      * 获取坐标轴的path

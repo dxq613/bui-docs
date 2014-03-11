@@ -119,9 +119,7 @@ define(&#39;bui/select/select&#39;,[&#39;bui/common&#39;,&#39;bui/picker&#39;],f
         picker.set(&#39;triggerEvent&#39;, _self.get(&#39;triggerEvent&#39;));
         picker.set(&#39;autoSetValue&#39;, _self.get(&#39;autoSetValue&#39;));
         picker.set(&#39;textField&#39;,textEl);
-        if(_self.get(&#39;forceFit&#39;)){
-          picker.set(&#39;width&#39;,el.outerWidth());
-        }
+        
         picker.render();
         _self.set(&#39;list&#39;,picker.get(&#39;list&#39;));
       },
@@ -138,6 +136,11 @@ define(&#39;bui/select/select&#39;,[&#39;bui/common&#39;,&#39;bui/picker&#39;],f
         });
         list.on(&#39;itemsshow&#39;,function(){
           _self._syncValue();
+        });
+        picker.on(&#39;show&#39;,function(){
+          if(_self.get(&#39;forceFit&#39;)){
+            picker.set(&#39;width&#39;,el.outerWidth());
+          }
         });
       },
 <span id='BUI-Select-Select-method-containsElement'>      /**
