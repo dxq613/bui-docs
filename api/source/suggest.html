@@ -237,12 +237,8 @@ define(&#39;bui/select/suggest&#39;,[&#39;bui/common&#39;,&#39;bui/select/combox
     }
   },{
     ATTRS : 
-<span id=''>    /**
-</span>     * @lends BUI.Select.Suggest#
-     * @ignore
-     */
     {
-<span id='-cfg-data'>      /**
+<span id='BUI-Select-Suggest-cfg-data'>      /**
 </span>       * 用于显示提示的数据源
        * &lt;pre&gt;&lt;code&gt;
        *   var suggest = new Select.Suggest({
@@ -253,15 +249,14 @@ define(&#39;bui/select/suggest&#39;,[&#39;bui/common&#39;,&#39;bui/select/combox
        * &lt;/code&gt;&lt;/pre&gt;
        * @cfg {Array} data
        */
-<span id='global-property-data'>      /**
+<span id='BUI-Select-Suggest-property-data'>      /**
 </span>       * 用于显示提示的数据源
        * @type {Array}
-       * @ignore
        */
       data:{
         value : null
       },
-<span id='-property-query'>      /**
+<span id='BUI-Select-Suggest-property-query'>      /**
 </span>       * 输入框的值
        * @type {String}
        * @private
@@ -269,20 +264,18 @@ define(&#39;bui/select/suggest&#39;,[&#39;bui/common&#39;,&#39;bui/select/combox
       query:{
         value : EMPTY
       },
-<span id='-cfg-cacheable'>      /**
+<span id='BUI-Select-Suggest-cfg-cacheable'>      /**
 </span>       * 是否允许缓存
        * @cfg {Boolean} cacheable
-       * @default false
        */
-<span id='-property-cacheable'>      /**
+<span id='BUI-Select-Suggest-property-cacheable'>      /**
 </span>       * 是否允许缓存
        * @type {Boolean}
-       * @default false
        */
       cacheable:{
         value:false
       },
-<span id='-property-dataCache'>      /**
+<span id='BUI-Select-Suggest-property-dataCache'>      /**
 </span>       * 缓存的数据
        * @private
        */
@@ -290,7 +283,7 @@ define(&#39;bui/select/suggest&#39;,[&#39;bui/common&#39;,&#39;bui/select/combox
         shared:false,
         value:{}
       },
-<span id='-cfg-dataType'>      /**
+<span id='BUI-Select-Suggest-cfg-dataType'>      /**
 </span>       * 请求返回的数据格式默认为&#39;jsonp&#39;
        * &lt;pre&gt;&lt;code&gt;
        *  var suggest = new Select.Suggest({
@@ -305,7 +298,7 @@ define(&#39;bui/select/suggest&#39;,[&#39;bui/common&#39;,&#39;bui/select/combox
       dataType : {
         value : &#39;jsonp&#39;
       },
-<span id='-cfg-url'>      /**
+<span id='BUI-Select-Suggest-cfg-url'>      /**
 </span>       * 请求数据的url
        * &lt;pre&gt;&lt;code&gt;
        *  var suggest = new Select.Suggest({
@@ -320,7 +313,7 @@ define(&#39;bui/select/suggest&#39;,[&#39;bui/common&#39;,&#39;bui/select/combox
       url : {
 
       },
-<span id='-property-callback'>      /**
+<span id='BUI-Select-Suggest-property-callback'>      /**
 </span>       * 请求完数据的回调函数
        * &lt;pre&gt;&lt;code&gt;
        *  var suggest = new Select.Suggest({
@@ -338,7 +331,7 @@ define(&#39;bui/select/suggest&#39;,[&#39;bui/common&#39;,&#39;bui/select/combox
       callback : {
 
       },
-<span id='-cfg-triggerEvent'>      /**
+<span id='BUI-Select-Suggest-cfg-triggerEvent'>      /**
 </span>       * 触发的事件
        * @cfg {String} triggerEvent
        * @default &#39;click&#39;
@@ -351,10 +344,9 @@ define(&#39;bui/select/suggest&#39;,[&#39;bui/common&#39;,&#39;bui/select/combox
           return &#39;keyup&#39;;
         }
       },
-<span id='-property-autoSetValue'>      /**
+<span id='BUI-Select-Suggest-property-autoSetValue'>      /**
 </span>       * suggest不提供自动设置选中文本功能
        * @type {Boolean}
-       * @default true
        */
       autoSetValue:{
         value:false

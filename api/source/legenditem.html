@@ -107,16 +107,11 @@ define(&#39;bui/chart/legenditem&#39;,[&#39;bui/common&#39;,&#39;bui/chart/ploti
     	var _self = this,
     		series = _self.get(&#39;series&#39;);
 
-    	_self.on(&#39;mouseover&#39;,function(){
+    	_self.on(&#39;mouseover&#39;,function(ev){
     		series.setActived &amp;&amp; series.setActived();
-    	}).on(&#39;mouseout&#39;,function(){
+    	}).on(&#39;mouseout&#39;,function(ev){
     		series.clearActived &amp;&amp; series.clearActived();
     	});
-
-    	_self.on(&#39;mousemove&#39;,function(ev){
-    		ev.stopPropagation();
-    	});
-
     },
     //点击事件
     bindClick : function(){
@@ -124,7 +119,15 @@ define(&#39;bui/chart/legenditem&#39;,[&#39;bui/common&#39;,&#39;bui/chart/ploti
     		series = _self.get(&#39;series&#39;);
 
     	_self.on(&#39;click&#39;,function(){
-    		_self._setVisible(!series.get(&#39;visible&#39;));
+    		var visible = series.get(&#39;visible&#39;);
+    		if(visible){ //防止最后一个隐藏
+    			var seriesParent = series.get(&#39;parent&#39;),
+    				count = seriesParent.getVisibleSeries().length;
+    			if(count == 1){
+    				return;
+    			}
+    		}
+    		_self._setVisible(!visible);
     	});
     },
     //设置是否可见
@@ -217,6 +220,7 @@ define(&#39;bui/chart/legenditem&#39;,[&#39;bui/common&#39;,&#39;bui/chart/ploti
 					});
 					break;
 			}
+			shape &amp;&amp; shape.attr(&#39;cursor&#39;,&#39;pointer&#39;);
 			_self.set(&#39;shape&#39;,shape);
 		},
 		_createMarker : function(){

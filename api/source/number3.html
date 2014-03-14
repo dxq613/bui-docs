@@ -79,7 +79,7 @@ define(&#39;bui/chart/numberaxis&#39;,[&#39;bui/chart/baseaxis&#39;,&#39;bui/com
      */
     formatter : {
       value : function(value){
-        if(value == null){
+        if(value == null || isNaN(value)){
           return &#39;&#39;;
         }
         if(value &lt; 1e3){
@@ -134,6 +134,7 @@ define(&#39;bui/chart/numberaxis&#39;,[&#39;bui/chart/baseaxis&#39;,&#39;bui/com
         // }
         return ticks;
     },
+   
 <span id='BUI-Chart-Axis-Number-method-changeInfo'>    /**
 </span>     * @protected
      * 修改信息

@@ -171,6 +171,80 @@ define(&#39;bui/chart/baseseries&#39;,[&#39;bui/chart/plotitem&#39;,&#39;bui/cha
         _self.onMouseOut();
       }
     },
+<span id='BUI-Chart-Series-method-changeData'>    /**
+</span>     * 更改数据
+     * @param  {Array} data 数据
+     */
+    changeData : function(data,redraw){
+      var _self = this,
+        preData = _self.get(&#39;data&#39;),
+        parent = _self.get(&#39;parent&#39;);
+      if(data != preData){
+        _self.set(&#39;data&#39;,data);
+      }
+      if(redraw){
+        if(parent){
+          parent.repaint();
+        }else if(_self.get(&#39;visible&#39;)){
+          _self.repaint();
+        }
+      }
+    },
+<span id='BUI-Chart-Series-method-addPoint'>    /**
+</span>     * 添加数据
+     * @param {*} point  数据
+     * @param {Boolean} shift  是否删除最前面的数据
+     * @param {Boolean} redraw 是否重绘图表
+     */
+    addPoint : function(point,shift,redraw){
+      var _self = this,
+        data = _self.get(&#39;data&#39;);
+      data.push(point);
+      
+      if(shift){
+        data.shift();
+        redraw &amp;&amp; data.unshift(data[0]);
+      }
+      _self.changeData(data,redraw);
+
+      if(shift){
+        setTimeout(function(){
+          data.shift();
+          _self.set(&#39;points&#39;,null);
+          if(redraw){
+            _self.shiftPoint();
+            _self.changeShapes(_self.getPoints(),false);
+          }
+        },800);
+        
+      }
+    },
+<span id='BUI-Chart-Series-method-shiftPoint'>    /**
+</span>     * 删除第一个节点的操作
+     * @protected
+     */
+    shiftPoint : function(){
+      var _self = this,
+        markersGroup = _self.get(&#39;markersGroup&#39;),
+        labelsGroup = _self.get(&#39;labelsGroup&#39;),
+        xAxis = _self.get(&#39;xAxis&#39;),
+        first;
+      if(markersGroup){
+        first =markersGroup.getChildAt(0);
+        first &amp;&amp; first.remove();
+      }
+      if(labelsGroup){
+        first = labelsGroup.getChildAt(0);
+        first &amp;&amp; first.remove();
+      }
+      if(xAxis){
+        var labels = xAxis.get(&#39;labelsGroup&#39;);
+        if(labels){
+          first = labels.getChildAt(0);
+          first &amp;&amp; first.remove();
+        }
+      }
+    },
 <span id='BUI-Chart-Series-method-getData'>    /**
 </span>     * 获取对应坐标轴上的数据
      * @return {Array} 
@@ -361,7 +435,7 @@ define(&#39;bui/chart/baseseries&#39;,[&#39;bui/chart/plotitem&#39;,&#39;bui/cha
       _self.changeShapes(points);
       BUI.each(points,function(point){
         if(labels){
-          labels.items.push(point.value,point);
+          labels.items.push(point.value);
         }
         if(markers){
           markers.items.push(point);
@@ -390,6 +464,9 @@ define(&#39;bui/chart/baseseries&#39;,[&#39;bui/chart/plotitem&#39;,&#39;bui/cha
       if(markersGroup){
         marker.x = offset.x;
         marker.y = offset.y;
+        if(offset.obj &amp;&amp; offset.obj.marker){
+          BUI.mix(marker,offset.obj.marker);
+        }
 
        rst = markersGroup.addMarker(marker);
        rst.set(&#39;point&#39;,offset);

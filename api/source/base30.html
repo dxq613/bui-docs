@@ -20,7 +20,7 @@
  * @ignore
  */
 
-define(&#39;bui/chart&#39;,[&#39;bui/common&#39;,&#39;bui/chart/chart&#39;,&#39;bui/chart/axis&#39;,&#39;bui/chart/series&#39;],function (require) {
+define(&#39;bui/chart&#39;,[&#39;bui/common&#39;,&#39;bui/chart/chart&#39;,&#39;bui/chart/axis&#39;,&#39;bui/chart/series&#39;,&#39;bui/chart/plotrange&#39;,&#39;bui/chart/theme&#39;],function (require) {
   
   var BUI = require(&#39;bui/common&#39;),
     Chart = BUI.namespace(&#39;Chart&#39;);
@@ -28,7 +28,9 @@ define(&#39;bui/chart&#39;,[&#39;bui/common&#39;,&#39;bui/chart/chart&#39;,&#39;
   BUI.mix(Chart,{
     Chart : require(&#39;bui/chart/chart&#39;),
     Axis : require(&#39;bui/chart/axis&#39;),
-    Series : require(&#39;bui/chart/series&#39;)
+    Series : require(&#39;bui/chart/series&#39;),
+    PlotRange : require(&#39;bui/chart/plotrange&#39;),
+    Theme : require(&#39;bui/chart/theme&#39;)
   });
 
   return Chart;

@@ -264,7 +264,14 @@
 </span>     * 矩形的高度
      * @type {Number}
      */
-    height : {}
+    height : {},
+<span id='BUI-Graphic-Shape-Rect-property-r'>    /**
+</span>     * 圆角
+     * @type {Number}
+     */
+    r: {
+      value : 0
+    }
   };
 
   BUI.extend(Rect,Shape);
@@ -723,8 +730,9 @@
         BUI.mix(attrs,{
           width : radius * 2,
           height : radius * 2,
-          x : x - radius,
-          y : y - radius
+          x : x - (radius - attrs.radius),
+          y : y - (radius - attrs.radius),
+          radius : radius
         });
         el.attr(attrs);
       }
@@ -732,7 +740,10 @@
     animate : function(params,ms,easing,callback){
       var _self = this;
 
-      if(_self.get(&#39;type&#39;) == &#39;image&#39;){
+      if(_self.get(&#39;el&#39;).type == &#39;image&#39;){
+        var radius = params.radius || _self.attr(&#39;radius&#39;);
+        params.x = params.x - radius;
+        params.y = params.y - radius;
         _self.get(&#39;el&#39;).animate(params,ms,easing,callback);
       }else{
         var attrs = _self.get(&#39;attrs&#39;),

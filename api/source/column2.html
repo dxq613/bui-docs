@@ -62,9 +62,11 @@ define(&#39;bui/chart/columnseries&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#
       return path;
     }
 
-<span id='BUI-Chart-Axis-Column'>  /**
-</span>   * @class BUI.Chart.Axis.Column
+<span id='BUI-Chart-Series-Column'>  /**
+</span>   * @class BUI.Chart.Series.Column
    * 柱状图
+   * @extends BUI.Chart.Series.Cartesian
+   * @mixins BUI.Chart.Series.ItemGroup
    */
   var Column = function(cfg){
     Column.superclass.constructor.call(this,cfg);
@@ -78,20 +80,31 @@ define(&#39;bui/chart/columnseries&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#
     elCls : {
       value : &#39;x-chart-column&#39;
     },
-<span id='BUI-Chart-Axis-Column-property-columnWidth'>    /**
+<span id='BUI-Chart-Series-Column-property-columnWidth'>    /**
 </span>     * 每一个子项的宽度,自动计算得出
      * @type {Number}
      */
     columnWidth : {
       //value : 25
     },
-<span id='BUI-Chart-Axis-Column-property-columnOffset'>    /**
+<span id='BUI-Chart-Series-Column-property-columnOffset'>    /**
 </span>     * 自动计算得出
      * @type {Object}
      */
     columnOffset : {
       value : 0
     },
+<span id='BUI-Chart-Series-Column-property-cancelSelect'>    /**
+</span>     * 是否允许取消选中，选中状态下，继续点击则会取消选中
+     * @type {Boolean}
+     */
+    cancelSelect : {
+      value : false
+    },
+<span id='BUI-Chart-Series-Column-property-stackPadding'>    /**
+</span>     * 发生层叠时，层叠之间的间距
+     * @type {Object}
+     */
     stackPadding : {
       value : 1
     },
@@ -119,7 +132,7 @@ define(&#39;bui/chart/columnseries&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#
 
 
   BUI.augment(Column,{
-<span id='BUI-Chart-Axis-Column-method-processColor'>    /**
+<span id='BUI-Chart-Series-Column-method-processColor'>    /**
 </span>     * @protected
      * 处理颜色
      */
@@ -133,22 +146,49 @@ define(&#39;bui/chart/columnseries&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#
         }
       }
     },
+    bindUI : function(){
+      Column.superclass.bindUI.call(this);
+      this.bindItemClick();
+    },
     //渲染
     draw : function(points){
       var _self = this;
       _self.resetWidth();
 
       BUI.each(points,function(point,index){
-        var shape = _self.addItem(point,index);
-        if(_self.get(&#39;labels&#39;)){
-          var label = _self.addLabel(point.value,point);
-          shape.set(&#39;label&#39;,label);
-        }
+        _self._drawPoint(point,index);
       });
       if(_self.get(&#39;animate&#39;)){
         _self.animateItems();
       }
       _self.sort();
+    },
+    _drawPoint : function(point,index){
+      var _self = this,
+        shape = _self.addItem(point,index);
+
+      if(_self.get(&#39;labels&#39;)){
+        var label = _self.addLabel(point.value,point);
+        shape.set(&#39;label&#39;,label);
+      }
+    },
+    //覆写添加节点的方法
+    addPoint : function(point,shift,redraw){
+      var _self = this,
+        data = _self.get(&#39;data&#39;);
+      data.push(point);
+      
+      if(shift){
+        data.shift();
+        redraw &amp;&amp;  _self.shiftPoint();
+      }
+      _self.changeData(data,redraw);
+    },
+    shiftPoint : function(){
+      var _self = this,
+        firstItem = _self.getItems()[0];
+      firstItem &amp;&amp; firstItem.remove();
+      Column.superclass.shiftPoint.call(this);
     },
     //重置宽度
     resetWidth : function(){
@@ -235,6 +275,11 @@ define(&#39;bui/chart/columnseries&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#
           path : path
         },_self.get(&#39;changeDuration&#39;));
       });
+      var count = points.length,
+        length = items.length;
+      for (var i = length; i &lt; count; i++) {
+        _self._drawPoint(points[i],i);
+      };
     },
     getActiveItems : function(){
       return this.getItems();
@@ -246,7 +291,7 @@ define(&#39;bui/chart/columnseries&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#
     isItemActived : function(item){
       return item.get(&#39;actived&#39;);
     },
-<span id='BUI-Chart-Axis-Column-method-setItemActived'>    /**
+<span id='BUI-Chart-Series-Column-method-setItemActived'>    /**
 </span>     * @protected
      * 设置激活状态
      * @param {BUI.Chart.Actived} item 可以被激活的元素
@@ -254,7 +299,7 @@ define(&#39;bui/chart/columnseries&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#
      */
     setItemActived : function(item,actived){
       var _self = this,
-        color = _self.get(&#39;color&#39;);
+        color = item.getCfgAttr(&#39;attrs&#39;).fill;
 
       if(actived){
         item.attr(&#39;fill&#39;,highlight(color,0.2));
@@ -264,7 +309,27 @@ define(&#39;bui/chart/columnseries&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#
         item.set(&#39;actived&#39;,false);
       }
     },
-<span id='BUI-Chart-Axis-Column-method-onStickyTracking'>    /**
+<span id='BUI-Chart-Series-Column-method-setItemSelected'>    /**
+</span>     * @protected
+     * 设置选中
+     * @param {Object} item  
+     * @param {Boolean} selected 选中状态
+     */
+    setItemSelected : function(item,selected){
+      var _self = this,
+        attrs = item.getCfgAttr(&#39;attrs&#39;),
+        color = attrs.fill,
+        stroke = attrs.stroke,
+        strokeWidth = attrs[&#39;stroke-width&#39;];
+      if(selected){
+        item.attr({&#39;stroke&#39;: Util.dark(color,.30),&#39;stroke-width&#39; : 2});
+        item.set(&#39;selected&#39;,true);
+      }else{
+        item.attr({&#39;stroke&#39;: stroke,&#39;stroke-width&#39; : strokeWidth});
+        item.set(&#39;selected&#39;,false);
+      }
+    },
+<span id='BUI-Chart-Series-Column-method-onStickyTracking'>    /**
 </span>     * @protected
      * 鼠标在画布上移动
      */
@@ -280,7 +345,7 @@ define(&#39;bui/chart/columnseries&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#
         });
       }
     },
-<span id='BUI-Chart-Axis-Column-method-pointToFactorPath'>    /**
+<span id='BUI-Chart-Series-Column-method-pointToFactorPath'>    /**
 </span>     * @protected
      * 动画过程中根据比例获取path
      * @param  {Object} point  子项的节点信息
@@ -335,7 +400,7 @@ define(&#39;bui/chart/columnseries&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#
 
       return path;
     },
-<span id='BUI-Chart-Axis-Column-method-processPoint'>    /**
+<span id='BUI-Chart-Series-Column-method-processPoint'>    /**
 </span>     * @protected
      * 处理节点，并且添加附加信息
      */

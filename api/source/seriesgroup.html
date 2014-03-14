@@ -125,6 +125,13 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
      */
     stackedData : {
 
+    },
+<span id='BUI-Chart-SeriesGroup-property-data'>    /**
+</span>     * 可以设置数据序列共同的数据源
+     * @type {Data}
+     */
+    data : {
+
     }
 
   };
@@ -164,6 +171,7 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
       var _self = this,
         canvas = _self.get(&#39;canvas&#39;);
       canvas.on(&#39;mousemove&#39;,BUI.wrapBehavior(_self,&#39;onCanvasMove&#39;));
+      canvas.on(&#39;mouseout&#39;,BUI.wrapBehavior(_self,&#39;onMouseOut&#39;));
     },
     //处理鼠标在画板上移动
     onCanvasMove : function(ev){
@@ -181,20 +189,30 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
       if(_self._isInAxis(point)){
         _self._processTracking(point,tipGroup);
       }else{
-        //标志从显示到隐藏
-        if(tipGroup.get(&#39;visible&#39;)){
-          _self.clearActivedItem();
-          if(tipGroup.get(&#39;shared&#39;)){
-            BUI.each(_self.getVisibleSeries(),function(series){
-              var markers = series.get(&#39;markersGroup&#39;);
-              markers &amp;&amp; markers.clearActivedItem();
-            });
-          }
-          _self._hideTip();
-        }
+        _self.onMouseOut();
       }
     },
-   
+    
+    onMouseOut : function(ev){
+      var _self = this,
+        tipGroup = _self.get(&#39;tipGroup&#39;);
+      if(ev &amp;&amp; ev.target != _self.get(&#39;canvas&#39;).get(&#39;none&#39;)){
+        return;
+      }
+      _self.clearActivedItem();
+
+      //标志从显示到隐藏
+      if(tipGroup.get(&#39;visible&#39;)){
+        
+        if(tipGroup.get(&#39;shared&#39;)){
+          BUI.each(_self.getVisibleSeries(),function(series){
+            var markers = series.get(&#39;markersGroup&#39;);
+            markers &amp;&amp; markers.clearActivedItem();
+          });
+        }
+        _self._hideTip();
+      }
+    },
 <span id='BUI-Chart-SeriesGroup-method-getSeries'>    /**
 </span>     * 获取所有的数据序列
      * @return {Array} [description]
@@ -247,7 +265,7 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
           if(series.get(&#39;visible&#39;)){
             count = count + 1;
             item.name = series.get(&#39;name&#39;);
-            item.value = renderer ? renderer(info) : series.getTipItem(info);
+            item.value = renderer ? renderer(info,series) : series.getTipItem(info);
             item.color = info.color || series.get(&#39;color&#39;);
             rst.items.push(item);
             var markersGroup = series.get(&#39;markersGroup&#39;);
@@ -363,9 +381,7 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
           temp.push(_self._createAxis(item));
           _self.set(&#39;yAxis&#39;,temp);
         });
-      }
-
-      if(yAxis &amp;&amp; !yAxis.isGroup){
+      }else if(yAxis &amp;&amp; !yAxis.isGroup){
         if(xAxis &amp;&amp; xAxis.get(&#39;type&#39;) == &#39;circle&#39;){
           yAxis.type = &#39;radius&#39;;
           yAxis.circle = xAxis;
@@ -373,6 +389,8 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
         yAxis = _self._createAxis(yAxis);
         _self.set(&#39;yAxis&#39;,yAxis);
       }
+
+      
     },
     //创建坐标轴
     _createAxis : function(axis){
@@ -547,9 +565,12 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
 
     },
     //数据变化或者序列显示隐藏引起的坐标轴变化
-    _resetAxis : function(axis){
+    _resetAxis : function(axis,type){
+
+      type = type || &#39;yAxis&#39;;
+
       var _self = this,
-        info = _self._caculateAxisInfo(axis,&#39;yAxis&#39;),
+        info = _self._caculateAxisInfo(axis,type),
         series = _self.getSeries();
 
       _self.set(&#39;stackedData&#39;,null);
@@ -558,12 +579,34 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
         return;
       }
       axis.change(info);
+    },
+    _resetSeries : function(){
+      var _self = this,
+        series = _self.getSeries();
       BUI.each(series,function(item){
-        if(item.get(&#39;yAxis&#39;) == axis &amp;&amp; item.get(&#39;visible&#39;)){
+        if(item.get(&#39;visible&#39;)){
           item.repaint();
         }
       });
-      
+    },
+<span id='BUI-Chart-SeriesGroup-method-repaint'>    /**
+</span>     * 重新绘制数据序列
+     */
+    repaint : function(){
+      var _self = this,
+        xAxis = _self.get(&#39;xAxis&#39;),
+        yAxis = _self.get(&#39;yAxis&#39;);
+      xAxis &amp;&amp; _self._resetAxis(xAxis,&#39;xAxis&#39;);
+      if(yAxis){
+        if(BUI.isArray(yAxis)){
+          BUI.each(yAxis,function(axis){
+            _self._resetAxis(axis,&#39;yAxis&#39;);
+          });
+        }else{
+          _self._resetAxis(yAxis,&#39;yAxis&#39;);
+        }
+      }
+      _self._resetSeries();
     },
     //获取默认的类型
     _getDefaultType : function(){
@@ -636,7 +679,7 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
         }
         //多个y轴时
         if(BUI.isNumber(item.get(&#39;yAxis&#39;))){
-          item.set(&#39;yAxis&#39;,yAxis[item.yAxis]);
+          item.set(&#39;yAxis&#39;,yAxis[item.get(&#39;yAxis&#39;)]);
         }
       });
       
@@ -650,6 +693,7 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
       if(!series.get(&#39;visible&#39;)){
         series.show();
         _self._resetAxis(series.get(&#39;yAxis&#39;));
+        _self._resetSeries();
       }
     },
 <span id='BUI-Chart-SeriesGroup-method-hideSeries'>    /**
@@ -661,6 +705,7 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
       if(series.get(&#39;visible&#39;)){
         series.hide();
         _self._resetAxis(series.get(&#39;yAxis&#39;));
+        _self._resetSeries();
       }
     },
     _addLegendItem : function(series){
@@ -675,6 +720,7 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
       var _self = this,
         seriesCfg = _self.get(&#39;seriesOptions&#39;),
         colors = _self.get(&#39;colors&#39;),
+        data = _self.get(&#39;data&#39;),
         symbols = _self.get(&#39;symbols&#39;);
 
       item = BUI.mix(true,{},seriesCfg[type + &#39;Cfg&#39;],item);
@@ -686,6 +732,9 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
       //marker的形状
       if(item.markers &amp;&amp; item.markers.marker &amp;&amp; !item.markers.marker.symbol){
         item.markers.marker.symbol = symbols[index % symbols.length];
+      }
+      if(data &amp;&amp; !item.data){
+        item.data = data;
       }
       
       return item;
@@ -700,6 +749,8 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
       var _self = this,
         canvas = _self.get(&#39;canvas&#39;);
       canvas.off(&#39;mousemove&#39;,BUI.getWrapBehavior(_self,&#39;onCanvasMove&#39;));
+      canvas.off(&#39;mouseout&#39;,BUI.getWrapBehavior(_self,&#39;onMouseOut&#39;));
+
       Group.superclass.remove.call(_self);
     }
 

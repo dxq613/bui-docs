@@ -287,13 +287,14 @@ define(&#39;bui/chart/axis/auto&#39;,[&#39;bui/graphic&#39;],function  (require)
 
     }
 
-
     //计算ticks
     if(isNull(count)){
       count = (max - min) / interval;
     }
     min = tryFixed(min,interval);
-    ticks.push(min);
+    if(!isNull(min)){
+      ticks.push(min);
+    }
     for(var i = 1 ; i &lt;= count ;i++){
       ticks.push(tryFixed(interval * i + min,interval));
     }
@@ -469,13 +470,26 @@ define(&#39;bui/chart/axis/auto&#39;,[&#39;bui/graphic&#39;],function  (require)
             ticks.push(new Date(year,month,day,hour + i).getTime());
           }
 
-        }else{ //最小单位是分钟
+        }else if(interval &gt; MINUTE_MS) { //最小单位是分钟
           var dMinus = diffMinus(min,max),
             minutes = Math.ceil(interval / MINUTE_MS);
           interval = minutes * MINUTE_MS;
 
           for(var i = 0 ; i&lt;= dMinus + minutes ; i = i + minutes){
             ticks.push(min + i * MINUTE_MS);
+          }
+        }else {
+          if(interval &lt; 1000){
+            interval == 1000;
+          }
+          min = Math.floor(min / 1000) * 1000;
+          var 
+            dSeconds = Math.ceil((max - min) / 1000),
+            seconds = Math.ceil(interval / 1000);
+          interval = seconds * 1000;
+
+          for(var i = 0; i&lt; dSeconds + seconds; i = i + seconds){
+            ticks.push(min + i * 1000);
           }
         }
 
@@ -484,8 +498,10 @@ define(&#39;bui/chart/axis/auto&#39;,[&#39;bui/graphic&#39;],function  (require)
     }
 
     if(!ticks.length){
+      min = Math.floor(min / 1000) * 1000;
+      max = Math.ceil(max/1000) * 1000;
       var count = (max - min)/interval;
-      for(var i = 1 ; i &lt;= count ;i++){
+      for(var i = 0 ; i &lt;= count ;i++){
         ticks.push(tryFixed(interval * i + min,interval));
       }
     }

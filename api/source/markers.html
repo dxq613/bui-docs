@@ -146,10 +146,17 @@ define(&#39;bui/chart/markers&#39;,[&#39;bui/chart/plotitem&#39;,&#39;bui/graphi
 					}else{
 						marker.attr(item);
 					}
-					
+					xCache.push(item.x);
+				}else{
+					_self._addMarker(item);
 				}
-				xCache.push(item.x);
+				
 			});
+
+			var count = _self.getCount();
+			for(var i = count - 1 ; i &gt; items.length - 1; i--){
+				_self.getChildAt(i).remove();
+			}
 
 			_self.set(&#39;xCache&#39;,xCache); //清空缓存
 

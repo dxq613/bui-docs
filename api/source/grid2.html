@@ -256,6 +256,9 @@ define(&#39;bui/chart/grid&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plotitem&#3
 				type = _self.get(&#39;type&#39;),
 				cfg;
 			if(type == &#39;line&#39;){
+				if(items.length == 0){
+					return &#39;&#39;;
+				}
 				return lines2path(items,lineCfg);
 			}
 			cfg = BUI.mix({},lineCfg);

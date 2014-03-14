@@ -61,19 +61,20 @@ define(&#39;bui/chart/theme&#39;,function (requrie) {
         animate : true
       };
   Theme.Base = Theme({
-    colors : [&#39;#2f7ed8&#39;,&#39;#0d233a&#39;,&#39;#8bbc21&#39;,&#39;#910000&#39;,&#39;#1aadce&#39;,&#39;#492970&#39;,&#39;#f28f43&#39;,&#39;#77a1e5&#39;,&#39;#c42525&#39;,&#39;#a6c96a&#39;],
+    colors : [ &#39;#5e90c9&#39;,&#39;#1c2d3f&#39;,&#39;#a9d052&#39;,&#39;#a12d2d&#39;,&#39;#43bbb4&#39;,&#39;#5a2a94&#39;,&#39;#fabe3c&#39;,&#39;#2279dc&#39;,&#39;#e360e5&#39;,&#39;#48000c&#39;],
+    //[&#39;#2f7ed8&#39;,&#39;#0d233a&#39;,&#39;#8bbc21&#39;,&#39;#910000&#39;,&#39;#1aadce&#39;,&#39;#492970&#39;,&#39;#f28f43&#39;,&#39;#77a1e5&#39;,&#39;#c42525&#39;,&#39;#a6c96a&#39;],
     symbols : [&#39;circle&#39;,&#39;diamond&#39;,&#39;square&#39;,&#39;triangle&#39;,&#39;triangle-down&#39;],
     plotCfg : {
-      margin : 50
+      margin : [50,50,100]
     },
     title : {
       &#39;font-size&#39; : &#39;16px&#39;,
-      &#39;font-family&#39; : &#39;tahoma,arial,&quot;SimSun&quot;,Georgia, &quot;Times New Roman&quot;, Times, serif&#39;,
+      &#39;font-family&#39; : &#39;SimSun,Georgia, Times, serif&#39;,
       &#39;fill&#39; : &#39;#274b6d&#39;
     },
     subTitle : {
-      &#39;font-size&#39; : &#39;14px&#39;,
-      &#39;font-family&#39; : &#39;tahoma,arial,&quot;SimSun&quot;,Georgia, &quot;Times New Roman&quot;, Times, serif&#39;,
+      &#39;font-size&#39; : 14,
+      &#39;font-family&#39; : &#39;tahoma,arial,SimSun,Georgia, Times, serif&#39;,
       &#39;fill&#39; : &#39;#4d759e&#39;
     },
     xAxis : {
@@ -93,8 +94,7 @@ define(&#39;bui/chart/theme&#39;,function (requrie) {
       },
       title : {
         text : &#39;&#39;,
-        font : &#39;16px bold&#39;,
-        rotate : 90,
+        rotate : -90,
         x : -30
       },
       position:&#39;left&#39;,
@@ -120,10 +120,18 @@ define(&#39;bui/chart/theme&#39;,function (requrie) {
         }
       },
       pieCfg : {
-        colors : [&#39;#2f7ed8&#39;,&#39;#0d233a&#39;,&#39;#8bbc21&#39;,&#39;#910000&#39;,&#39;#1aadce&#39;,&#39;#492970&#39;,&#39;#f28f43&#39;,&#39;#77a1e5&#39;,&#39;#c42525&#39;,&#39;#a6c96a&#39;],
+        colors : [ &#39;#5e90c9&#39;,&#39;#1c2d3f&#39;,&#39;#a9d052&#39;,&#39;#a12d2d&#39;,&#39;#43bbb4&#39;,&#39;#5a2a94&#39;,&#39;#fabe3c&#39;,&#39;#2279dc&#39;,&#39;#e360e5&#39;,&#39;#48000c&#39;],
+        //[&#39;#2f7ed8&#39;,&#39;#0d233a&#39;,&#39;#8bbc21&#39;,&#39;#910000&#39;,&#39;#1aadce&#39;,&#39;#492970&#39;,&#39;#f28f43&#39;,&#39;#77a1e5&#39;,&#39;#c42525&#39;,&#39;#a6c96a&#39;],
+        //[ &#39;#ff6600&#39;,&#39;#b01111&#39;,&#39;#ac5724&#39;,&#39;#572d8a&#39;,&#39;#333333&#39;,&#39;#7bab12&#39;,&#39;#c25e5e&#39;,&#39;#a6c96a&#39;,&#39;#133960&#39;,&#39;#2586e7&#39;],
         item : {
           stroke : &#39;#fff&#39;
-        }
+        },
+        labels : {
+          distance : 30,
+          label : {
+
+          }
+         }
       }
       
     },

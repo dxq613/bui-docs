@@ -143,10 +143,19 @@ define(&#39;bui/chart/baseaxis&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#39;,
 
             if(plotRange){
                 var start = plotRange.start,
+                    position = _self.get(&#39;position&#39;),
                     end = {};
                 if(_self.isVertical()){
-                    end.y = plotRange.end.y;
-                    end.x = start.x; 
+                    if(position == &#39;left&#39;){
+                        end.y = plotRange.end.y;
+                        end.x = start.x; 
+                    }else{
+                        start = {};
+                        end = plotRange.end;
+                        start.x = plotRange.end.x;
+                        start.y = plotRange.start.y;
+                    }
+                    
                 }else{
                     
                     end.x = plotRange.end.x;
@@ -165,13 +174,25 @@ define(&#39;bui/chart/baseaxis&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#39;,
          */
         change : function(info){
             var _self = this;
+            if(_self.isChange(info.ticks)){
+                _self._clearTicksInfo();
+                _self.changeInfo(info);
+                _self._processTicks(null,true);
+                _self._changeTicks();
+                _self._changeGrid();
+                _self.resetLabels();
+            }
+        },
+<span id='BUI-Chart-Axis-method-isChange'>        /**
+</span>         * 坐标轴是否将要发生改变
+         * @param  {Array}  ticks 新的坐标点
+         * @return {Boolean}  是否发生改变
+         */
+        isChange : function(ticks){
+          var _self = this,
+              preTicks = _self.get(&#39;ticks&#39;);
 
-            _self._clearTicksInfo();
-            _self.changeInfo(info);
-            _self._processTicks(null,true);
-            _self._changeTicks();
-            _self._changeGrid();
-            _self.resetLabels();
+          return  !BUI.Array.equals(ticks,preTicks);
         },
 <span id='BUI-Chart-Axis-method-changeInfo'>        /**
 </span>         * @protected
@@ -182,7 +203,6 @@ define(&#39;bui/chart/baseaxis&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#39;,
 
             _self.set(&#39;ticks&#39;,info.ticks);
         },
-        
         _clearTicksInfo : function(){
             var _self = this,
                 grid = _self.get(&#39;grid&#39;),
@@ -455,85 +475,6 @@ define(&#39;bui/chart/baseaxis&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#39;,
             path.push([&#39;L&#39;,end.x,end.y]);
             return path;
         },
-        //画轴线
-        /*_drawLines : function(){
-            var _self = this,
-                start = _self.get(&#39;start&#39;),
-                end = _self.get(&#39;end&#39;),
-                lineAttrs = _self.get(&#39;line&#39;),
-                
-                ticks = _self.get(&#39;ticks&#39;);
-
-            if(lineAttrs){
-                lineAttrs = BUI.mix({
-                    x1 : start.x,
-                    y1 : start.y,
-                    x2 : end.x,
-                    y2 : end.y
-                },lineAttrs);
-                var lineShape = _self.addShape({
-                    type :&#39;line&#39;,
-                    elCls : CLS_AXIS + &#39;-line&#39;,
-                    attrs :lineAttrs
-                });
-                _self.set(&#39;lineShape&#39;,lineShape);
-            }
-
-             _self._processTicks(ticks);
-            
-            
-        },
-        //处理坐标,添加对应的栅格和label,初始生成跟重置有所差别
-        _processTicks : function(ticks,reset){
-            var _self = this,
-                pointCache = _self.get(&#39;pointCache&#39;),
-                labels = _self.get(&#39;labels&#39;);
-
-            ticks = ticks || _self.get(&#39;ticks&#39;);
-            BUI.each(ticks,function(point,index){
-                var tickOffsetPoint = _self.getTickOffsetPoint(index),
-                    offsetPoint = _self.getOffsetPoint(index);
-
-                pointCache.push(_self.getOffsetByIndex(index));
-                if(_self.get(&#39;tickLine&#39;)){
-                    _self._addTickItem(tickOffsetPoint);
-                }
-                if(_self.get(&#39;grid&#39;)){
-                    _self._addGridItem(tickOffsetPoint);
-                }
-                if(labels){
-                    if(!reset){
-                        _self.addLabel(_self.formatPoint(point),offsetPoint);
-                    }else{
-                        labels.items.push({
-                            text : point,
-                            x : offsetPoint.x,
-                            y : offsetPoint.y
-                        });
-                    }
-                    
-                }
-            });
-        },
-        
-        //添加坐标轴上的坐标点
-        _addTickItem : function(offsetPoint){
-
-            var _self = this,
-                tickItems = _self.get(&#39;tickItems&#39;),
-                cfg = {
-                    x1 : offsetPoint.x,
-                    y1 : offsetPoint.y
-                },
-                end = _self.getTickEnd(offsetPoint);
-
-            if(!tickItems){
-                tickItems = [];
-                _self.set(&#39;tickItems&#39;,tickItems);
-            }
-            BUI.mix(cfg,end);
-            tickItems.push(cfg);
-        },*/
         getTickEnd : function(start){
             var _self = this,
                 lineAttrs = _self.get(&#39;tickLine&#39;),
@@ -550,32 +491,6 @@ define(&#39;bui/chart/baseaxis&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#39;,
             }
             return rst;
         },
-        /*
-        _renderTicks : function(){
-            var _self = this,
-                tickItems = _self.get(&#39;tickItems&#39;),
-                lineAttrs = _self.get(&#39;tickLine&#39;),
-                path = &#39;&#39;,
-                cfg = BUI.mix({},lineAttrs);
-            if(tickItems){
-                BUI.each(tickItems,function(item){
-                    var subPath = BUI.substitute(&#39;M{x1} {y1}L{x2} {y2}&#39;,item);
-                    path += subPath;
-                });
-                
-                delete cfg.value;
-                cfg.path = path;
-
-                var tickShape =  _self.addShape({
-                    type : &#39;path&#39;,
-                    elCls : CLS_AXIS + &#39;-ticks&#39;,
-                    attrs : cfg
-                });
-                _self.set(&#39;tickShape&#39;,tickShape);
-                
-                
-            }
-        },*/
         _changeTicks : function(){
             var _self = this,
                 tickShape = _self.get(&#39;tickShape&#39;),
@@ -679,41 +594,6 @@ define(&#39;bui/chart/baseaxis&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#39;,
             return item;
 
         },
-        //添加grid的项
-        /*_addGridItem : function(offsetPoint){
-            var _self = this,
-                grid = _self.get(&#39;grid&#39;),
-                plotRange = _self.get(&#39;plotRange&#39;),
-                item = {};
-            if(!grid.items){
-                grid.items = [];
-            }
-
-            item.x1 = offsetPoint.x;
-            item.y1 = offsetPoint.y;
-            if(_self.isVertical()){
-                item.y2 = item.y1;
-                item.x2 = plotRange.end.x;
-            }else{
-                item.x2 = item.x1;
-                item.y2 = plotRange.end.y;
-            }
-            grid.items.push(item);
-
-        },
-
-        //渲染栅格
-        _renderGrid : function(){
-            var _self = this,
-                grid = _self.get(&#39;grid&#39;),
-                gridGroup,
-                plotRange;
-            if(!grid){
-                return;
-            }
-            gridGroup = _self.get(&#39;parent&#39;).addGroup(Grid,grid);
-            _self.set(&#39;gridGroup&#39;,gridGroup);
-        },*/
 
         _changeGrid : function(){
             var _self = this,

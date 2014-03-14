@@ -93,7 +93,8 @@ define(&#39;bui/chart/legend&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plotitem&
      */
     back : {
       value : {
-        stroke : &#39;#909090&#39;
+        stroke : &#39;#909090&#39;,
+        fill : &#39;#fff&#39;
       }
     }
 
@@ -108,6 +109,13 @@ define(&#39;bui/chart/legend&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plotitem&
       Legend.superclass.renderUI.call(_self);
       _self._renderItems();
       _self._renderBorder();    
+    },
+    bindUI : function(){
+      Legend.superclass.bindUI.call(_self);
+      var _self = this;
+      _self.on(&#39;mousemove&#39;,function(ev){
+        ev.stopPropagation();
+      });
     },
     _renderItems : function(){
       var _self = this,
@@ -164,6 +172,7 @@ define(&#39;bui/chart/legend&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plotitem&
         },border);
 
         shape = _self.addShape(&#39;rect&#39;,cfg);
+        shape.toBack();
         _self.set(&#39;borderShape&#39;,shape);
       }
     },
@@ -221,6 +230,7 @@ define(&#39;bui/chart/legend&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plotitem&
     _getNextX : function(){
       var _self = this,
         layout = _self.get(&#39;layout&#39;),
+        
         nextX = PADDING;
       if(layout == &#39;horizontal&#39;){
         var children = _self.get(&#39;itemsGroup&#39;).get(&#39;children&#39;);
@@ -228,7 +238,6 @@ define(&#39;bui/chart/legend&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plotitem&
           if(item.isGroup){
             nextX += (item.getWidth() + PADDING);
           }
-          
         });
       }
       return nextX;
@@ -245,7 +254,21 @@ define(&#39;bui/chart/legend&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plotitem&
     },
     //获取总的宽度
     _getTotalWidth : function(){
-      return this._getNextX();
+      var _self = this;
+      if(_self.get(&#39;layout&#39;) == &#39;horizontal&#39;){
+        return this._getNextX();
+      }else{
+        var children = _self.get(&#39;itemsGroup&#39;).get(&#39;children&#39;),
+          max = PADDING;
+        BUI.each(children,function(item){
+          var width = item.getWidth();
+          if(item.isGroup &amp;&amp; width &gt; max){
+            max = width;
+          }
+        });
+        return max + PADDING * 2;
+      }
+      
     },
     //获取整体的高度
     _getTotalHeight : function(){

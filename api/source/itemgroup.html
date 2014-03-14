@@ -48,13 +48,26 @@ define(&#39;bui/chart/series/itemgroup&#39;,[&#39;bui/chart/baseseries&#39;],fun
      */
     group : {
 
+    },
+<span id='BUI-Chart-Series-ItemGroup-property-allowPointSelect'>    /**
+</span>     * 是否允许选中
+     * @type {Boolean}
+     */
+    allowPointSelect : {
+      value : false
+    },
+<span id='BUI-Chart-Series-ItemGroup-property-cancelSelect'>    /**
+</span>     * 是否允许取消选中，选中状态下，继续点击则会取消选中
+     * @type {Boolean}
+     */
+    cancelSelect : {
+      value : true
     }
   }
 
   BUI.extend(Group,Base);
 
   BUI.augment(Group,{
-
     addItem : function(point,index){
       var _self = this,
         group = _self.get(&#39;group&#39;),
@@ -75,9 +88,84 @@ define(&#39;bui/chart/series/itemgroup&#39;,[&#39;bui/chart/baseseries&#39;],fun
       }
 
       var shape = group.addShape(&#39;path&#39;,cfg);
-      
+      shape.isSeriesItem = true;
       shape.set(&#39;point&#39;,point);
       return shape;
+    },
+     //绑定点击事件
+    bindItemClick : function(){
+      var _self = this,
+        cancelSelect = _self.get(&#39;cancelSelect&#39;);
+      if(_self.get(&#39;allowPointSelect&#39;)){
+        _self.on(&#39;click&#39;,function(ev){
+          var target = ev.target,
+            shape = target.shape,
+            selected;
+          if(shape &amp;&amp; shape.isSeriesItem){
+            selected = shape.get(&#39;selected&#39;);
+            if(cancelSelect &amp;&amp; selected){
+              _self.clearSelected(shape)
+            }else{
+              _self.setSelected(shape);
+            }
+          }
+        });
+      }
+    },
+<span id='BUI-Chart-Series-ItemGroup-method-setSelected'>    /**
+</span>     * 设置选中
+     * @param {Object} item 选项
+     */
+    setSelected : function(item){
+      var _self = this;
+      if(!_self.isSelected(item)){
+        _self.clearSelected();
+        _self.setItemSelected(item,true);
+      }
+    },
+<span id='BUI-Chart-Series-ItemGroup-method-clearSelected'>    /**
+</span>     * 清除选中
+     * @param  {Object} item 选项
+     */
+    clearSelected : function(item){
+      var _self = this;
+      item = item || _self.getSelected();
+      if(item){
+        _self.setItemSelected(item,false);
+      }
+    },
+<span id='BUI-Chart-Series-ItemGroup-method-setItemSelected'>    /**
+</span>     * @protected
+     * 设置选中
+     * @param {Object} item  
+     * @param {Boolean} selected 选中状态
+     */
+    setItemSelected : function(item,selected){
+
+    },
+<span id='BUI-Chart-Series-ItemGroup-method-isSelected'>    /**
+</span>     * 是否选中
+     * @param  {Object}  item 是否选中
+     * @return {Boolean}  是否选中
+     */
+    isSelected : function(item){
+      return item &amp;&amp; item.get(&#39;selected&#39;);
+    },
+<span id='BUI-Chart-Series-ItemGroup-method-getSelected'>    /**
+</span>     * 获取选中的项
+     * @return {Object} 选中的项
+     */
+    getSelected : function(){
+      var _self = this,
+        items = _self.getItems(),
+        rst;
+      BUI.each(items,function(item){
+        if(_self.isSelected(item)){
+          rst = item;
+          return false;
+        }
+      });
+      return rst;
     },
 <span id='BUI-Chart-Series-ItemGroup-method-getItemCfg'>    /**
 </span>     * @protected

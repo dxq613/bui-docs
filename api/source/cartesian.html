@@ -49,7 +49,20 @@ define(&#39;bui/chart/cartesianseries&#39;,[&#39;bui/chart/baseseries&#39;,&#39;
   }
 
   Cartesian.ATTRS = {
+<span id='BUI-Chart-Series-Cartesian-property-pointInterval'>     /**
+</span>     * 如果横坐标是数字类型，则通过点的间距来决定点
+     * @type {Number}
+     */
+    pointInterval : {
 
+    },
+<span id='BUI-Chart-Series-Cartesian-property-pointStart'>    /**
+</span>     * 如果横坐标是数字类型,点的起始值
+     * @type {Number}
+     */
+    pointStart : {
+      value : 0
+    },
 <span id='BUI-Chart-Series-Cartesian-property-xAxis'>    /**
 </span>     * x坐标轴
      * @type {BUI.Chart.Axis}
@@ -108,8 +121,13 @@ define(&#39;bui/chart/cartesianseries&#39;,[&#39;bui/chart/baseseries&#39;,&#39;
 
       return point;
     },
+    //覆写父类方法，改变数据
+    changeData : function(data,redraw){
+      this.set(&#39;pointsCache&#39;,{});
+      Cartesian.superclass.changeData.call(this,data,redraw);
+    },
 <span id='BUI-Chart-Series-Cartesian-method-getPointByObject'>    /**
-</span>     * 根据对象获取值
+</span>     * 
      * @protected
      * @return {Object} 点的集合
      */
@@ -192,23 +210,24 @@ define(&#39;bui/chart/cartesianseries&#39;,[&#39;bui/chart/baseseries&#39;,&#39;
       var _self = this,
         data = _self.get(&#39;data&#39;),
         pointsCache = _self.get(&#39;pointsCache&#39;),
+        xAxis = _self.get(&#39;xAxis&#39;),
         first = data[0],
-        rst = [];
+        rst = [],
+        pointStart = _self.get(&#39;pointStart&#39;);
 
       type = type || &#39;yAxis&#39;;
       if(pointsCache[type]){
         return pointsCache[type];
       }
       //如果是x轴，并且指定了开始节点
-      if(type == &#39;xAxis&#39; &amp;&amp; _self.get(&#39;pointStart&#39;) != null){
-        var pointStart = _self.get(&#39;pointStart&#39;),
+      if(type == &#39;xAxis&#39; &amp;&amp; (pointStart != null &amp;&amp;!(xAxis.get(&#39;type&#39;) == &#39;time&#39; &amp;&amp; pointStart == 0)) &amp;&amp; _self.get(&#39;pointInterval&#39;) /*&amp;&amp; !(xAxis.get(&#39;type&#39;) == &#39;time&#39;) &amp;&amp; pointStart == 0*/){
+        var 
           pointInterval = _self.get(&#39;pointInterval&#39;);
           rst.push(pointStart);
           rst.push(pointStart + (data.length - 1) * pointInterval);
       }else{ 
         var xField = _self.get(&#39;xField&#39;),
           yField = _self.get(&#39;yField&#39;);
-
         //遍历所有节点
         BUI.each(data,function(item){
           //数字和字符串直接填入

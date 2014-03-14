@@ -60,9 +60,24 @@ define(&#39;bui/observable&#39;,[&#39;bui/util&#39;],function (r) {
         functions.splice(index,1);
       }
     },
+<span id='BUI-Observable-Callbacks-method-empty'>    /**
+</span>     * 清空事件
+     */
     empty : function(){
       var length = this._functions.length; //ie6,7下，必须指定需要删除的数量
       this._functions.splice(0,length);
+    },
+<span id='BUI-Observable-Callbacks-method-pause'>    /**
+</span>     * 暂停事件
+     */
+    pause : function(){
+      this._paused = true;
+    },
+<span id='BUI-Observable-Callbacks-method-resume'>    /**
+</span>     * 唤醒事件
+     */
+    resume : function(){
+      this._paused = false;
     },
 <span id='BUI-Observable-Callbacks-method-fireWith'>    /**
 </span>     * 触发回调
@@ -73,7 +88,9 @@ define(&#39;bui/observable&#39;,[&#39;bui/util&#39;],function (r) {
     fireWith : function(scope,args){
       var _self = this,
         rst;
-
+      if(this._paused){
+        return;
+      }
       BUI.each(_self._functions,function(fn){
         rst = fn.apply(scope,args);
         if(rst === false){
@@ -267,6 +284,24 @@ define(&#39;bui/observable&#39;,[&#39;bui/util&#39;],function (r) {
           }
       }
       return result;
+    },
+<span id='BUI-Observable-method-pauseEvent'>    /**
+</span>     * 暂停事件的执行
+     * @param  {String} eventType 事件类型
+     */
+    pauseEvent : function(eventType){
+      var _self = this,
+        callbacks = _self._getCallbacks(eventType);
+      callbacks &amp;&amp; callbacks.pause();
+    },
+<span id='BUI-Observable-method-resumeEvent'>    /**
+</span>     * 唤醒事件
+     * @param  {String} eventType 事件类型
+     */
+    resumeEvent : function(eventType){
+      var _self = this,
+        callbacks = _self._getCallbacks(eventType);
+      callbacks &amp;&amp; callbacks.resume();
     },
 <span id='BUI-Observable-method-on'>    /**
 </span>     * 添加绑定事件
