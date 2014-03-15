@@ -253,13 +253,9 @@ define(&#39;bui/select/select&#39;,[&#39;bui/common&#39;,&#39;bui/picker&#39;],f
       }
     },{
       ATTRS : 
-<span id=''>      /**
-</span>       * @lends BUI.Select.Select#
-       * @ignore
-       */
       {
 
-<span id='-cfg-picker'>        /**
+<span id='BUI-Select-Select-cfg-picker'>        /**
 </span>         * 选择器，浮动出现，供用户选择
          * @cfg {BUI.Picker.ListPicker} picker
          * &lt;pre&gt;&lt;code&gt;
@@ -290,7 +286,7 @@ define(&#39;bui/select/select&#39;,[&#39;bui/common&#39;,&#39;bui/picker&#39;],f
          * select.render();
          * &lt;/code&gt;&lt;/pre&gt;
          */
-<span id='-property-picker'>        /**
+<span id='BUI-Select-Select-property-picker'>        /**
 </span>         * 选择器，浮动出现，供用户选择
          * @readOnly
          * @type {BUI.Picker.ListPicker}
@@ -298,7 +294,7 @@ define(&#39;bui/select/select&#39;,[&#39;bui/common&#39;,&#39;bui/picker&#39;],f
         picker:{
 
         },
-<span id='-property-list'>        /**
+<span id='BUI-Select-Select-property-list'>        /**
 </span>         * Picker中的列表
          * &lt;pre&gt;
          *   var list = select.get(&#39;list&#39;);
@@ -309,7 +305,7 @@ define(&#39;bui/select/select&#39;,[&#39;bui/common&#39;,&#39;bui/picker&#39;],f
         list : {
 
         },
-<span id='-cfg-valueField'>        /**
+<span id='BUI-Select-Select-cfg-valueField'>        /**
 </span>         * 存放值得字段，一般是一个input[type=&#39;hidden&#39;] ,用于存放选择框的值
          * @cfg {Object} valueField
          */
@@ -319,7 +315,7 @@ define(&#39;bui/select/select&#39;,[&#39;bui/common&#39;,&#39;bui/picker&#39;],f
         valueField : {
 
         },
-<span id='-cfg-Store'>        /**
+<span id='BUI-Select-Select-cfg-Store'>        /**
 </span>         * 数据缓冲类
          * &lt;pre&gt;&lt;code&gt;
          *  var store = new Store({
@@ -337,32 +333,32 @@ define(&#39;bui/select/select&#39;,[&#39;bui/common&#39;,&#39;bui/picker&#39;],f
         store : {
 
         },
-<span id='-property-focusable'>        focusable:{
-</span>          value:true
+        focusable:{
+          value:true
         },
-<span id='-cfg-multipleSelect'>        /**
+<span id='BUI-Select-Select-cfg-multipleSelect'>        /**
 </span>         * 是否可以多选
          * @cfg {Boolean} [multipleSelect=false]
          */
-<span id='-property-multipleSelect'>        /**
+<span id='BUI-Select-Select-property-multipleSelect'>        /**
 </span>         * 是否可以多选
          * @type {Boolean}
          */
         multipleSelect:{
           value:false
         },
-<span id='-cfg-name'>        /**
+<span id='BUI-Select-Select-cfg-name'>        /**
 </span>         * 控件的name，用于存放选中的文本，便于表单提交
          * @cfg {Object} name
          */
-<span id='-property-name'>        /**
+<span id='BUI-Select-Select-property-name'>        /**
 </span>         * 控件的name，便于表单提交
          * @type {Object}
          */
         name:{
 
         },
-<span id='-cfg-items'>        /**
+<span id='BUI-Select-Select-cfg-items'>        /**
 </span>         * 选项
          * @cfg {Array} items
          * &lt;pre&gt;&lt;code&gt;
@@ -384,14 +380,14 @@ define(&#39;bui/select/select&#39;,[&#39;bui/common&#39;,&#39;bui/picker&#39;],f
          * });
          * &lt;/code&gt;&lt;/pre&gt;
          */
-<span id='-property-items'>        /**
+<span id='BUI-Select-Select-property-items'>        /**
 </span>         * 选项
          * @type {Array}
          */
         items:{
           sync:false
         },
-<span id='-property-inputCls'>        /**
+<span id='BUI-Select-Select-property-inputCls'>        /**
 </span>         * 标示选择完成后，显示文本的DOM节点的样式
          * @type {String}
          * @protected
@@ -400,7 +396,7 @@ define(&#39;bui/select/select&#39;,[&#39;bui/common&#39;,&#39;bui/picker&#39;],f
         inputCls:{
           value:CLS_INPUT
         },
-<span id='-cfg-forceFit'>        /**
+<span id='BUI-Select-Select-cfg-forceFit'>        /**
 </span>         * 是否使选择列表跟选择框同等宽度
          * &lt;pre&gt;&lt;code&gt;
          *   picker = new Picker.ListPicker({
@@ -421,9 +417,9 @@ define(&#39;bui/select/select&#39;,[&#39;bui/common&#39;,&#39;bui/picker&#39;],f
         forceFit : {
           value : true
         },
-<span id='-property-events'>        events : {
-</span>          value : {
-<span id='-event-change'>            /**
+        events : {
+          value : {
+<span id='BUI-Select-Select-event-change'>            /**
 </span>             * 选择值发生改变时
              * @event
              * @param {Object} e 事件对象
@@ -434,7 +430,7 @@ define(&#39;bui/select/select&#39;,[&#39;bui/common&#39;,&#39;bui/picker&#39;],f
             &#39;change&#39; : false
           }
         },
-<span id='-property-tpl'>        /**
+<span id='BUI-Select-Select-property-tpl'>        /**
 </span>         * 控件的默认模版
          * @type {String}
          * @default 
@@ -444,7 +440,7 @@ define(&#39;bui/select/select&#39;,[&#39;bui/common&#39;,&#39;bui/picker&#39;],f
           view:true,
           value : &#39;&lt;input type=&quot;text&quot; readonly=&quot;readonly&quot; class=&quot;&#39;+CLS_INPUT+&#39;&quot;/&gt;&lt;span class=&quot;x-icon x-icon-normal&quot;&gt;&lt;i class=&quot;icon icon-caret icon-caret-down&quot;&gt;&lt;/i&gt;&lt;/span&gt;&#39;
         },
-<span id='-cfg-triggerEvent'>        /**
+<span id='BUI-Select-Select-cfg-triggerEvent'>        /**
 </span>         * 触发的事件
          * @cfg {String} triggerEvent
          * @default &#39;click&#39;

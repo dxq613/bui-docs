@@ -336,12 +336,8 @@ define(&#39;bui/calendar/calendar&#39;,[&#39;bui/picker&#39;,&#39;bui/calendar/m
 
   },{
     ATTRS :
-<span id=''>    /**
-</span>     * @lends BUI.Calendar.Calendar#
-     * @ignore
-     */
     {
-<span id='-property-header'>      /**
+<span id='BUI-Calendar-Calendar-property-header'>      /**
 </span>       * 日历控件头部，选择年月
        * @private
        * @type {Object}
@@ -350,7 +346,7 @@ define(&#39;bui/calendar/calendar&#39;,[&#39;bui/picker&#39;,&#39;bui/calendar/m
 
       },
 
-<span id='-property-panel'>      /**
+<span id='BUI-Calendar-Calendar-property-panel'>      /**
 </span>       * 日历控件选择日
        * @private
        * @type {Object}
@@ -358,7 +354,7 @@ define(&#39;bui/calendar/calendar&#39;,[&#39;bui/picker&#39;,&#39;bui/calendar/m
       panel:{
 
       },
-<span id='-property-maxDate'>      /**
+<span id='BUI-Calendar-Calendar-property-maxDate'>      /**
 </span>       * 最大日期
        * &lt;pre&gt;&lt;code&gt;
        *   calendar.set(&#39;maxDate&#39;,&#39;2013-07-29&#39;);
@@ -368,7 +364,7 @@ define(&#39;bui/calendar/calendar&#39;,[&#39;bui/picker&#39;,&#39;bui/calendar/m
       maxDate : {
 
       },
-<span id='-property-minDate'>      /**
+<span id='BUI-Calendar-Calendar-property-minDate'>      /**
 </span>       * 最小日期
        * &lt;pre&gt;&lt;code&gt;
        *   calendar.set(&#39;minDate&#39;,&#39;2013-07-29&#39;);
@@ -378,7 +374,7 @@ define(&#39;bui/calendar/calendar&#39;,[&#39;bui/picker&#39;,&#39;bui/calendar/m
       minDate : {
 
       },
-<span id='-property-monthPicker'>      /**
+<span id='BUI-Calendar-Calendar-property-monthPicker'>      /**
 </span>       * 选择月份控件
        * @private
        * @type {Object}
@@ -386,7 +382,7 @@ define(&#39;bui/calendar/calendar&#39;,[&#39;bui/picker&#39;,&#39;bui/calendar/m
       monthPicker : {
 
       },
-<span id='-property-timepicker'>      /**
+<span id='BUI-Calendar-Calendar-property-timepicker'>      /**
 </span>       * 选择时间控件
        * @private
        * @type {Object}
@@ -394,31 +390,31 @@ define(&#39;bui/calendar/calendar&#39;,[&#39;bui/picker&#39;,&#39;bui/calendar/m
       timepicker:{
 
       },
-<span id='-property-width'>      width:{
-</span>        value:180
+      width:{
+        value:180
       },
-<span id='-property-events'>      events:{
-</span>        value:{
-<span id='-event-click'>           /**
+      events:{
+        value:{
+<span id='BUI-Calendar-Calendar-event-click'>           /**
 </span>           * @event
            * @name BUI.Calendar.Calendar#click
            * @param {Object} e 点击事件
            * @param {Date} e.date
            */
           &#39;click&#39; : false,
-<span id='-event-accept'>          /**
+<span id='BUI-Calendar-Calendar-event-accept'>          /**
 </span>           * 确认日期更改，如果不显示日期则当点击日期或者点击今天按钮时触发，如果显示日期，则当点击确认按钮时触发。
            * @event
            */
           &#39;accept&#39; : false,
-<span id='-event-datechange'>          /**
+<span id='BUI-Calendar-Calendar-event-datechange'>          /**
 </span>           * @event
            * @name BUI.Calendar.Calendar#datechange
            * @param {Object} e 选中的日期发生改变
            * @param {Date} e.date
            */
           &#39;datechange&#39; : false,
-<span id='-event-monthchange'>           /**
+<span id='BUI-Calendar-Calendar-event-monthchange'>           /**
 </span>           * @event
            * @name BUI.Calendar.Calendar#monthchange
            * @param {Object} e 月份发生改变
@@ -428,7 +424,7 @@ define(&#39;bui/calendar/calendar&#39;,[&#39;bui/picker&#39;,&#39;bui/calendar/m
           &#39;monthchange&#39; : false
         }
       },
-<span id='-cfg-showTime'>      /**
+<span id='BUI-Calendar-Calendar-cfg-showTime'>      /**
 </span>       * 是否选择时间,此选项决定是否可以选择时间
        *
        * @cfg {Boolean} showTime
@@ -436,7 +432,7 @@ define(&#39;bui/calendar/calendar&#39;,[&#39;bui/picker&#39;,&#39;bui/calendar/m
       showTime : {
         value : false
       },
-<span id='-property-lockTime'>      /**
+<span id='BUI-Calendar-Calendar-property-lockTime'>      /**
 </span>      * 锁定时间选择
       *&lt;pre&gt;&lt;code&gt;
       *  var calendar = new Calendar.Calendar({
@@ -449,10 +445,10 @@ define(&#39;bui/calendar/calendar&#39;,[&#39;bui/picker&#39;,&#39;bui/calendar/m
       */
       lockTime :{
       },
-<span id='-property-timeTpl'>      timeTpl : {
-</span>        value : &#39;&lt;input type=&quot;text&quot; readonly class=&quot;&#39; + CLS_PICKER_TIME + &#39; &#39; + CLS_PICKER_HOUR + &#39;&quot; /&gt;:&lt;input type=&quot;text&quot; readonly class=&quot;&#39; + CLS_PICKER_TIME + &#39; &#39; + CLS_PICKER_MINUTE + &#39;&quot; /&gt;:&lt;input type=&quot;text&quot; readonly class=&quot;&#39; + CLS_PICKER_TIME + &#39; &#39; + CLS_PICKER_SECOND + &#39;&quot; /&gt;&#39;
+      timeTpl : {
+        value : &#39;&lt;input type=&quot;text&quot; readonly class=&quot;&#39; + CLS_PICKER_TIME + &#39; &#39; + CLS_PICKER_HOUR + &#39;&quot; /&gt;:&lt;input type=&quot;text&quot; readonly class=&quot;&#39; + CLS_PICKER_TIME + &#39; &#39; + CLS_PICKER_MINUTE + &#39;&quot; /&gt;:&lt;input type=&quot;text&quot; readonly class=&quot;&#39; + CLS_PICKER_TIME + &#39; &#39; + CLS_PICKER_SECOND + &#39;&quot; /&gt;&#39;
       },
-<span id='-cfg-selectedDate'>      /**
+<span id='BUI-Calendar-Calendar-cfg-selectedDate'>      /**
 </span>       * 选择的日期,默认为当天
        * &lt;pre&gt;&lt;code&gt;
        *  var calendar = new Calendar.Calendar({
@@ -462,7 +458,7 @@ define(&#39;bui/calendar/calendar&#39;,[&#39;bui/picker&#39;,&#39;bui/calendar/m
        * &lt;/code&gt;&lt;/pre&gt;
        * @cfg {Date} selectedDate
        */
-<span id='-property-selectedDate'>      /**
+<span id='BUI-Calendar-Calendar-property-selectedDate'>      /**
 </span>       * 选择的日期
        * &lt;pre&gt;&lt;code&gt;
        *   calendar.set(&#39;selectedDate&#39;,new Date(&#39;2013-9-01&#39;));
@@ -473,21 +469,21 @@ define(&#39;bui/calendar/calendar&#39;,[&#39;bui/picker&#39;,&#39;bui/calendar/m
       selectedDate : {
         value : today()
       },
-<span id='-property-hour'>      /**
+<span id='BUI-Calendar-Calendar-property-hour'>      /**
 </span>       * 小时,默认为当前小时
        * @type {Number}
        */
       hour : {
         value : new Date().getHours()
       },
-<span id='-property-minute'>      /**
+<span id='BUI-Calendar-Calendar-property-minute'>      /**
 </span>       * 分,默认为当前分
        * @type {Number}
        */
       minute:{
         value : new Date().getMinutes()
       },
-<span id='-property-second'>      /**
+<span id='BUI-Calendar-Calendar-property-second'>      /**
 </span>       * 秒,默认为当前秒
        * @type {Number}
        */

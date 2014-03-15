@@ -38,19 +38,16 @@ define(&#39;bui/data/proxy&#39;,[&#39;bui/data/sortable&#39;],function(require) 
   BUI.extend(proxy,BUI.Base);
 
   BUI.augment(proxy,
-<span id=''>  /**
-</span>   * @lends BUI.Data.Proxy.prototype
-   * @ignore
-   */
+
   {
-<span id='-method-_read'>    /**
+<span id='BUI-Data-Proxy-method-_read'>    /**
 </span>     * @protected
      * 读取数据的方法，在子类中覆盖
      */
     _read : function(params,callback){
 
     },
-<span id='-method-read'>    /**
+<span id='BUI-Data-Proxy-method-read'>    /**
 </span>     * 读数据
      * @param  {Object} params 键值对形式的参数
      * @param {Function} callback 回调函数，函数原型 function(data){}
@@ -64,14 +61,14 @@ define(&#39;bui/data/proxy&#39;,[&#39;bui/data/sortable&#39;],function(require) 
         callback.call(scope,data);
       });
     },
-<span id='-method-_save'>    /**
+<span id='BUI-Data-Proxy-method-_save'>    /**
 </span>     * @protected
      * 保存数据的方法，在子类中覆盖
      */
     _save : function(ype,data,callback){
 
     },
-<span id='-method-save'>    /**
+<span id='BUI-Data-Proxy-method-save'>    /**
 </span>     * 保存数据
      * @param {String} type 类型，包括，add,update,remove,all几种类型
      * @param  {Object} saveData 键值对形式的参数
@@ -105,16 +102,12 @@ define(&#39;bui/data/proxy&#39;,[&#39;bui/data/sortable&#39;],function(require) 
   };
 
   ajaxProxy.ATTRS = BUI.mix(true,proxy.ATTRS,
-<span id=''>  /**
-</span>   * @lends BUI.Data.Proxy.Ajax#
-   * @ignore
-   */
   {
-<span id='-cfg-limitParam'>    /**
+<span id='BUI-Data-Proxy-Ajax-cfg-limitParam'>    /**
 </span>     * 限制条数
      * @cfg {String} [limitParam=&#39;limit&#39;] 
      */
-<span id='-property-limitParam'>    /**
+<span id='BUI-Data-Proxy-Ajax-property-limitParam'>    /**
 </span>     * 限制条数
      * @type {String}
      * @default &#39;limit&#39;
@@ -122,22 +115,22 @@ define(&#39;bui/data/proxy&#39;,[&#39;bui/data/sortable&#39;],function(require) 
     limitParam : {
       value : &#39;limit&#39;
     },
-<span id='-cfg-startParam'>    /**
+<span id='BUI-Data-Proxy-Ajax-cfg-startParam'>    /**
 </span>     * 起始纪录代表的字段
      * @cfg {String} [startParam=&#39;start&#39;]
      */
-<span id='-property-startParam'>    /**
+<span id='BUI-Data-Proxy-Ajax-property-startParam'>    /**
 </span>     * 起始纪录代表的字段
      * @type {String}
      */
     startParam : {
       value : &#39;start&#39;
     },
-<span id='-cfg-pageIndexParam'>    /**
+<span id='BUI-Data-Proxy-Ajax-cfg-pageIndexParam'>    /**
 </span>     * 页码的字段名
      * @cfg {String} [pageIndexParam=&#39;pageIndex&#39;]
      */
-<span id='-property-pageIndexParam'>    /**
+<span id='BUI-Data-Proxy-Ajax-property-pageIndexParam'>    /**
 </span>     * 页码的字段名
      * @type {String}
      * @default &#39;pageIndex&#39;
@@ -145,32 +138,32 @@ define(&#39;bui/data/proxy&#39;,[&#39;bui/data/sortable&#39;],function(require) 
     pageIndexParam : {
       value : &#39;pageIndex&#39;
     },
-<span id='-property-saveTypeParam'>    /**
+<span id='BUI-Data-Proxy-Ajax-property-saveTypeParam'>    /**
 </span>     * 保存类型的字段名,如果每种保存类型未设置对应的Url，则附加参数
      * @type {Object}
      */
     saveTypeParam : {
       value : &#39;saveType&#39;
     },
-<span id='-property-saveDataParam'>    /**
+<span id='BUI-Data-Proxy-Ajax-property-saveDataParam'>    /**
 </span>     * 保存数据放到的字段名称
      * @type {String}
      */
     saveDataParam : {
 
     },
-<span id='-property-pageStart'>    /**
+<span id='BUI-Data-Proxy-Ajax-property-pageStart'>    /**
 </span>     * 传递到后台，分页开始的页码，默认从0开始
      * @type {Number}
      */
     pageStart : {
       value : 0
     },
-<span id='-cfg-dataType'>    /**
+<span id='BUI-Data-Proxy-Ajax-cfg-dataType'>    /**
 </span>    * 加载数据时，返回的格式,目前只支持&quot;json、jsonp&quot;格式&lt;br&gt;
     * @cfg {String} [dataType=&#39;json&#39;]
     */
-<span id='-property-dataType'>   /**
+<span id='BUI-Data-Proxy-Ajax-property-dataType'>   /**
 </span>    * 加载数据时，返回的格式,目前只支持&quot;json、jsonp&quot;格式&lt;br&gt;
     * @type {String}
     * @default &quot;json&quot;
@@ -178,11 +171,11 @@ define(&#39;bui/data/proxy&#39;,[&#39;bui/data/sortable&#39;],function(require) 
     dataType: {
       value : &#39;json&#39;
     },
-<span id='-cfg-method'>    /**
+<span id='BUI-Data-Proxy-Ajax-cfg-method'>    /**
 </span>     * 获取数据的方式,&#39;GET&#39;或者&#39;POST&#39;,默认为&#39;GET&#39;
      * @cfg {String} [method=&#39;GET&#39;]
      */
-<span id='-property-method'>    /**
+<span id='BUI-Data-Proxy-Ajax-property-method'>    /**
 </span>     * 获取数据的方式,&#39;GET&#39;或者&#39;POST&#39;,默认为&#39;GET&#39;
      * @type {String}
      * @default &#39;GET&#39;
@@ -190,12 +183,12 @@ define(&#39;bui/data/proxy&#39;,[&#39;bui/data/sortable&#39;],function(require) 
     method : {
       value : &#39;GET&#39;
     },
-<span id='-cfg-ajaxOptions'>    /**
+<span id='BUI-Data-Proxy-Ajax-cfg-ajaxOptions'>    /**
 </span>     * 异步请求的所有自定义参数，开放的其他属性用于快捷使用，如果有特殊参数配置，可以使用这个属性,&lt;br&gt;
      * 不要使用success和error的回调函数，会覆盖默认的处理数据的函数
      * @cfg {Object} ajaxOptions 
      */
-<span id='-property-ajaxOptions'>    /**
+<span id='BUI-Data-Proxy-Ajax-property-ajaxOptions'>    /**
 </span>     * 异步请求的所有自定义参数
      * @type {Object}
      */
@@ -204,26 +197,26 @@ define(&#39;bui/data/proxy&#39;,[&#39;bui/data/sortable&#39;],function(require) 
 
       }
     },
-<span id='-property-cache'>    /**
+<span id='BUI-Data-Proxy-Ajax-property-cache'>    /**
 </span>     * 是否使用Cache
      * @type {Boolean}
      */
     cache : {
       value : false
     },
-<span id='-property-save'>    /**
+<span id='BUI-Data-Proxy-Ajax-property-save'>    /**
 </span>     * 保存数据的配置信息
      * @type {Object}
      */
     save : {
 
     },
-<span id='-cfg-url'>    /**
+<span id='BUI-Data-Proxy-Ajax-cfg-url'>    /**
 </span>     * 加载数据的链接
      * @cfg {String} url
      * @required
      */
-<span id='-property-url'>    /**
+<span id='BUI-Data-Proxy-Ajax-property-url'>    /**
 </span>     * 加载数据的链接
      * @type {String}
      * @required
@@ -295,7 +288,7 @@ define(&#39;bui/data/proxy&#39;,[&#39;bui/data/sortable&#39;],function(require) 
       }
       return rst;
     },
-<span id='-method-_read'>    /**
+<span id='BUI-Data-Proxy-Ajax-method-_read'>    /**
 </span>     * @protected
      * @private
      */

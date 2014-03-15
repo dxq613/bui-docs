@@ -35,12 +35,9 @@ define(&#39;bui/data/sortable&#39;,function() {
   };
 
   sortable.ATTRS = 
-<span id=''>  /**
-</span>   * @lends BUI.Data.Sortable#
-   * @ignore
-   */
+
   {
-<span id='-cfg-compareFunction'>    /**
+<span id='BUI-Data-Sortable-cfg-compareFunction'>    /**
 </span>     * 比较函数
      * @cfg {Function} compareFunction
      * 函数原型 function(v1,v2)，比较2个字段是否相等
@@ -67,29 +64,29 @@ define(&#39;bui/data/sortable&#39;,function() {
         }
       }
     },
-<span id='-cfg-sortField'>    /**
+<span id='BUI-Data-Sortable-cfg-sortField'>    /**
 </span>     * 排序字段
      * @cfg {String} sortField
      */
-<span id='-property-sortField'>    /**
+<span id='BUI-Data-Sortable-property-sortField'>    /**
 </span>     * 排序字段
      * @type {String}
      */
     sortField : {
 
     },
-<span id='-cfg-sortDirection'>    /**
+<span id='BUI-Data-Sortable-cfg-sortDirection'>    /**
 </span>     * 排序方向,&#39;ASC&#39;、&#39;DESC&#39;
      * @cfg {String} [sortDirection = &#39;ASC&#39;]
      */
-<span id='-property-sortDirection'>    /**
+<span id='BUI-Data-Sortable-property-sortDirection'>    /**
 </span>     * 排序方向,&#39;ASC&#39;、&#39;DESC&#39;
      * @type {String}
      */
     sortDirection : {
       value : &#39;ASC&#39;
     },
-<span id='-cfg-sortInfo'>    /**
+<span id='BUI-Data-Sortable-cfg-sortInfo'>    /**
 </span>     * 排序信息
      * &lt;ol&gt;
      * &lt;li&gt;field: 排序字段&lt;/li&gt;
@@ -97,7 +94,7 @@ define(&#39;bui/data/sortable&#39;,function() {
      * &lt;/ol&gt;
      * @cfg {Object} sortInfo
      */
-<span id='-property-sortInfo'>    /**
+<span id='BUI-Data-Sortable-property-sortInfo'>    /**
 </span>     * 排序信息
      * &lt;ol&gt;
      * &lt;li&gt;field: 排序字段&lt;/li&gt;
@@ -125,13 +122,9 @@ define(&#39;bui/data/sortable&#39;,function() {
   };
 
   BUI.augment(sortable,
-<span id=''>  /**
-</span>   * @lends BUI.Data.Sortable.prototype
-   * @ignore
-   */
   {
-<span id='-method-compare'>    compare : function(obj1,obj2,field,direction){
-</span>
+    compare : function(obj1,obj2,field,direction){
+
       var _self = this,
         dir;
       field = field || _self.get(&#39;sortField&#39;);
@@ -144,7 +137,7 @@ define(&#39;bui/data/sortable&#39;,function() {
 
       return _self.get(&#39;compareFunction&#39;)(obj1[field],obj2[field]) * dir;
     },
-<span id='-method-getSortData'>    /**
+<span id='BUI-Data-Sortable-method-getSortData'>    /**
 </span>     * 获取排序的集合
      * @protected
      * @return {Array} 排序集合
@@ -152,7 +145,7 @@ define(&#39;bui/data/sortable&#39;,function() {
     getSortData : function(){
 
     },
-<span id='-method-sortData'>    /**
+<span id='BUI-Data-Sortable-method-sortData'>    /**
 </span>     * 排序数据
      * @param  {String|Array} field   排序字段或者数组
      * @param  {String} direction 排序方向

@@ -88,12 +88,8 @@ define(&#39;bui/tab/navtab&#39;,[&#39;bui/common&#39;,&#39;bui/menu&#39;],functi
    * @extends BUI.Component.Controller
    */
   var navTab = Component.Controller.extend(
-<span id=''>    /**
-</span>     * @lends BUI.Tab.NavTab.prototype
-     * @ignore
-     */
     {
-<span id='-method-addTab'>      /**
+<span id='BUI-Tab-NavTab-method-addTab'>      /**
 </span>       * 添加标签项
        * @param {Object} config 菜单项的配置项
        * @param {Boolean} reload 如果标签页已存在，则重新加载
@@ -132,15 +128,15 @@ define(&#39;bui/tab/navtab&#39;,[&#39;bui/common&#39;,&#39;bui/menu&#39;],functi
         }
         return item;
       },
-<span id='-method-getTabContentContainer'>      /**
+<span id='BUI-Tab-NavTab-method-getTabContentContainer'>      /**
 </span>       * 获取导航标签，存放内容的节点
        * @return {jQuery} 导航内容的容器
        */
       getTabContentContainer : function(){
         return this.get(&#39;view&#39;).getTabContentContainer();
       },
-<span id='-method-bindUI'>      //绑定事件
-</span>      bindUI: function(){
+      //绑定事件
+      bindUI: function(){
         var _self = this,
           forceFit = _self.get(&#39;forceFit&#39;);
         if(!forceFit){
@@ -174,8 +170,8 @@ define(&#39;bui/tab/navtab&#39;,[&#39;bui/common&#39;,&#39;bui/menu&#39;],functi
 
         
       },
-<span id='-method-_bindScrollEvent'>      //绑定滚动事件
-</span>      _bindScrollEvent : function(){
+      //绑定滚动事件
+      _bindScrollEvent : function(){
         var _self = this,
           el = _self.get(&#39;el&#39;);
 
@@ -191,8 +187,8 @@ define(&#39;bui/tab/navtab&#39;,[&#39;bui/common&#39;,&#39;bui/menu&#39;],functi
           }
         });
       },
-<span id='-method-_showMenu'>      _showMenu : function(item,position){
-</span>        var _self = this,
+      _showMenu : function(item,position){
+        var _self = this,
             menu = _self._getMenu(),
             closeable = item.get(&#39;closeable&#39;),
             closeItem;
@@ -206,7 +202,7 @@ define(&#39;bui/tab/navtab&#39;,[&#39;bui/common&#39;,&#39;bui/menu&#39;],functi
           closeItem.set(&#39;disabled&#39;,!closeable);
         }
       },
-<span id='-method-setActived'>      /**
+<span id='BUI-Tab-NavTab-method-setActived'>      /**
 </span>       * 通过id,设置选中的标签项
        * @param {String} id 标签编号
        */
@@ -215,7 +211,7 @@ define(&#39;bui/tab/navtab&#39;,[&#39;bui/common&#39;,&#39;bui/menu&#39;],functi
           item = _self.getItemById(id);
         _self._setItemActived(item);
       },
-<span id='-method-getActivedItem'>      /**
+<span id='BUI-Tab-NavTab-method-getActivedItem'>      /**
 </span>       * 获取当前选中的标签项
        * @return {BUI.Tab.NavTabItem} 选中的标签对象
        */
@@ -231,7 +227,7 @@ define(&#39;bui/tab/navtab&#39;,[&#39;bui/common&#39;,&#39;bui/menu&#39;],functi
         });
         return result;
       },
-<span id='-method-getItemById'>      /**
+<span id='BUI-Tab-NavTab-method-getItemById'>      /**
 </span>       * 通过编号获取标签项
        * @param  {String} id 标签项的编号
        * @return {BUI.Tab.NavTabItem} 标签项对象
@@ -248,13 +244,13 @@ define(&#39;bui/tab/navtab&#39;,[&#39;bui/common&#39;,&#39;bui/menu&#39;],functi
         });
         return result;
       },
-<span id='-method-_getMenu'>      _getMenu : function(){
-</span>        var _self = this;
+      _getMenu : function(){
+        var _self = this;
 
         return _self.get(&#39;menu&#39;) || _self._initMenu();
       },
-<span id='-method-_initMenu'>      _initMenu : function(){
-</span>        var _self = this,
+      _initMenu : function(){
+        var _self = this,
           menu = new Menu.ContextMenu({
               children : [
               {
@@ -315,8 +311,8 @@ define(&#39;bui/tab/navtab&#39;,[&#39;bui/common&#39;,&#39;bui/menu&#39;],functi
         _self.set(&#39;menu&#39;,menu);
         return menu;
       },
-<span id='-method-_closeItem'>      //关闭标签项
-</span>      _closeItem : function(item){
+      //关闭标签项
+      _closeItem : function(item){
         var _self = this,
           index = _self._getIndex(item),
           activedItem = _self.getActivedItem(),
@@ -339,8 +335,8 @@ define(&#39;bui/tab/navtab&#39;,[&#39;bui/common&#39;,&#39;bui/menu&#39;],functi
         });
         
       },
-<span id='-method-closeAll'>      closeAll:function(){
-</span>        var _self = this,
+      closeAll:function(){
+        var _self = this,
           children = _self.get(&#39;children&#39;);
         BUI.each(children,function(item){
           if(item.get(&#39;closeable&#39;)){
@@ -348,8 +344,8 @@ define(&#39;bui/tab/navtab&#39;,[&#39;bui/common&#39;,&#39;bui/menu&#39;],functi
           }
         });
       },
-<span id='-method-closeOther'>      closeOther : function(curItem){
-</span>        var _self = this,
+      closeOther : function(curItem){
+        var _self = this,
           children = _self.get(&#39;children&#39;);
         BUI.each(children,function(item){
           if(curItem !==item){
@@ -358,20 +354,20 @@ define(&#39;bui/tab/navtab&#39;,[&#39;bui/common&#39;,&#39;bui/menu&#39;],functi
           
         });
       },
-<span id='-method-_getItemByIndex'>      //通过位置查找标签项
-</span>      _getItemByIndex : function(index){
+      //通过位置查找标签项
+      _getItemByIndex : function(index){
         var _self = this,
           children = _self.get(&#39;children&#39;);  
         return children[index];
       },
-<span id='-method-_getIndex'>      //获取标签项的位置
-</span>      _getIndex : function(item){
+      //获取标签项的位置
+      _getIndex : function(item){
         var _self = this,
           children = _self.get(&#39;children&#39;);    
         return BUI.Array.indexOf(item,children);
       },
-<span id='-method-_resetItemList'>      //重新计算标签项容器的宽度位置
-</span>      _resetItemList : function(){
+      //重新计算标签项容器的宽度位置
+      _resetItemList : function(){
         if(this.get(&#39;forceFit&#39;)){
           return;
         }
@@ -381,15 +377,15 @@ define(&#39;bui/tab/navtab&#39;,[&#39;bui/common&#39;,&#39;bui/menu&#39;],functi
         container.width(_self._getTotalWidth());
 
       },
-<span id='-method-_getTotalWidth'>      //获取选项的总宽度，以默认宽度为基数
-</span>      _getTotalWidth : function(){
+      //获取选项的总宽度，以默认宽度为基数
+      _getTotalWidth : function(){
         var _self = this,
           children = _self.get(&#39;children&#39;);
 
         return children.length * _self.get(&#39;itemWidth&#39;);
       },
-<span id='-method-_getForceItemWidth'>      _getForceItemWidth : function(){
-</span>        var _self = this,
+      _getForceItemWidth : function(){
+        var _self = this,
           width =  _self.getContentElement().width(),
           children = _self.get(&#39;children&#39;),
           totalWidth = _self._getTotalWidth(),
@@ -399,12 +395,12 @@ define(&#39;bui/tab/navtab&#39;,[&#39;bui/common&#39;,&#39;bui/menu&#39;],functi
         }
         return itemWidth;
       },
-<span id='-method-forceFit'>      forceFit : function(){
-</span>        var _self = this;
+      forceFit : function(){
+        var _self = this;
         _self._forceItemWidth(_self._getForceItemWidth());
       },
-<span id='-method-_forceItemWidth'>      //设置平均宽度
-</span>      _forceItemWidth : function(width){
+      //设置平均宽度
+      _forceItemWidth : function(width){
         width = width || this.get(&#39;itemWidth&#39;);
         var _self = this,
           children = _self.get(&#39;children&#39;);
@@ -412,8 +408,8 @@ define(&#39;bui/tab/navtab&#39;,[&#39;bui/common&#39;,&#39;bui/menu&#39;],functi
           item.set(&#39;width&#39;,width);
         });
       },
-<span id='-method-_scrollToItem'>      //使指定标签项在用户可视区域内
-</span>      _scrollToItem : function(item){
+      //使指定标签项在用户可视区域内
+      _scrollToItem : function(item){
         if(this.get(&#39;forceFit&#39;)){ //自适应后，不进行滚动
           return;
         }
@@ -444,13 +440,13 @@ define(&#39;bui/tab/navtab&#39;,[&#39;bui/common&#39;,&#39;bui/menu&#39;],functi
           }
         }
       },
-<span id='-method-_getDistanceToBegin'>      //获取标签到最左端的距离
-</span>      _getDistanceToBegin : function(item,containerPosition){
+      //获取标签到最左端的距离
+      _getDistanceToBegin : function(item,containerPosition){
         var position = item.get(&#39;el&#39;).position();
 
         return position.left + containerPosition.left;
       },
-<span id='-method-_getDistanceToEnd'>      /**
+<span id='BUI-Tab-NavTab-method-_getDistanceToEnd'>      /**
 </span>       * 获取标签到最右端的距离
        * @return  {Number} 像素
        * @private
@@ -464,8 +460,8 @@ define(&#39;bui/tab/navtab&#39;,[&#39;bui/common&#39;,&#39;bui/menu&#39;],functi
           disWidth = offsetLeft + _self.get(&#39;itemWidth&#39;) - wraperWidth; 
         return disWidth;
       },
-<span id='-method-_getLastDistance'>      //获取最后一个标签项离右边的间距
-</span>      _getLastDistance : function(container,containerPosition){
+      //获取最后一个标签项离右边的间距
+      _getLastDistance : function(container,containerPosition){
         var _self = this,
           children = _self.get(&#39;children&#39;),
           lastItem = children[children.length - 1];
@@ -475,14 +471,14 @@ define(&#39;bui/tab/navtab&#39;,[&#39;bui/common&#39;,&#39;bui/menu&#39;],functi
         }
         return 0;
       },
-<span id='-method-_scrollTo'>      _scrollTo : function(el,left,callback){
-</span>        var _self = this;
+      _scrollTo : function(el,left,callback){
+        var _self = this;
         el.animate({left:left},500,function(){
            _self._setArrowStatus(el);
         });
       },
-<span id='-method-_scrollLeft'>      _scrollLeft : function(){
-</span>        var _self = this,
+      _scrollLeft : function(){
+        var _self = this,
           container = _self.getContentElement(),
           position = container.position(),
           disWidth = _self._getLastDistance(container,position),
@@ -493,8 +489,8 @@ define(&#39;bui/tab/navtab&#39;,[&#39;bui/common&#39;,&#39;bui/menu&#39;],functi
         }
 
       },
-<span id='-method-_scrllRight'>      //向右滚动
-</span>      _scrllRight : function(){
+      //向右滚动
+      _scrllRight : function(){
         var _self = this,
           container = _self.getContentElement(),
           position = container.position(),
@@ -505,8 +501,8 @@ define(&#39;bui/tab/navtab&#39;,[&#39;bui/common&#39;,&#39;bui/menu&#39;],functi
           _self._scrollTo(container,toRight);
         }
       },
-<span id='-method-_setArrowStatus'>      //设置向左，向右的箭头是否可用
-</span>      _setArrowStatus : function(container,containerPosition){
+      //设置向左，向右的箭头是否可用
+      _setArrowStatus : function(container,containerPosition){
 
         container = container || this.getContentElement();
         var _self = this,
@@ -527,8 +523,8 @@ define(&#39;bui/tab/navtab&#39;,[&#39;bui/common&#39;,&#39;bui/menu&#39;],functi
           wapperEl.removeClass(CLS_ARROW_LEFT+&#39;-active&#39;);
         }
       },
-<span id='-method-_setItemActived'>      //设置当前选中的标签
-</span>      _setItemActived:function(item){
+      //设置当前选中的标签
+      _setItemActived:function(item){
         var _self = this,
           preActivedItem = _self.getActivedItem();
         if(item === preActivedItem){
@@ -556,16 +552,12 @@ define(&#39;bui/tab/navtab&#39;,[&#39;bui/common&#39;,&#39;bui/menu&#39;],functi
     },
     
     {
-      ATTRS : 
-<span id=''>    /**
-</span>      * @lends BUI.Tab.NavTab.prototype
-      * @ignore
-      */    
+      ATTRS :    
     {
-<span id='-property-defaultChildClass'>        defaultChildClass:{
-</span>          value : &#39;nav-tab-item&#39;
+        defaultChildClass:{
+          value : &#39;nav-tab-item&#39;
         },
-<span id='-property-menu'>        /**
+<span id='BUI-Tab-NavTab-property-menu'>        /**
 </span>         * @private
          * 右键菜单
          * @type {Object}
@@ -573,7 +565,7 @@ define(&#39;bui/tab/navtab&#39;,[&#39;bui/common&#39;,&#39;bui/menu&#39;],functi
         menu : {
 
         },
-<span id='-cfg-forceFit'>        /**
+<span id='BUI-Tab-NavTab-cfg-forceFit'>        /**
 </span>         * 设置此参数时，标签选项的宽度会进行自适应
          * @cfg {Boolean} forceFit
          */
@@ -581,14 +573,14 @@ define(&#39;bui/tab/navtab&#39;,[&#39;bui/common&#39;,&#39;bui/menu&#39;],functi
           view : true,
           value : false
         },
-<span id='-property-itemWidth'>        /**
+<span id='BUI-Tab-NavTab-property-itemWidth'>        /**
 </span>         * 标签的默认宽度,140px，设置forceFit:true后，此宽度为最宽宽度
          * @type {Number}
          */
         itemWidth : {
           value : ITEM_WIDTH
         },
-<span id='-property-tpl'>        /**
+<span id='BUI-Tab-NavTab-property-tpl'>        /**
 </span>         * 渲染标签的模版
          * @type {String}
          */
@@ -599,20 +591,20 @@ define(&#39;bui/tab/navtab&#39;,[&#39;bui/common&#39;,&#39;bui/menu&#39;],functi
             &#39;&lt;/div&gt;&#39;+
             &#39;&lt;div class=&quot;tab-content-container&quot;&gt;&lt;/div&gt;&#39;
         },
-<span id='-property-xview'>        xview : {
-</span>          value : navTabView
+        xview : {
+          value : navTabView
         },
-<span id='-property-events'>        events : {
-</span>                
+        events : {
+                
           value : {
-<span id='-event-itemclick'>            /**
+<span id='BUI-Tab-NavTab-event-itemclick'>            /**
 </span>             * 点击标签项
              * @event
              * @param {Object} e 事件对象
              * @param {BUI.Tab.NavTabItem} e.item 标签项
              */
             &#39;itemclick&#39; : false,
-<span id='-event-activedchange'>            /**
+<span id='BUI-Tab-NavTab-event-activedchange'>            /**
 </span>             * 标签项激活改变
              * @event
              * @param {Object} e 事件对象

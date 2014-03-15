@@ -82,12 +82,8 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
   };
 
   store.ATTRS = 
-<span id=''>  /**
-</span>   * @lends BUI.Data.Store#
-   * @ignore
-   */
   {
-<span id='-cfg-autoSync'>    /**
+<span id='BUI-Data-Store-cfg-autoSync'>    /**
 </span>     * 保存数据时，是否自动更新数据源的数据，常用于添加、删除、更改数据后重新加载数据。
      * @cfg {Boolean} autoSync
      */
@@ -109,7 +105,7 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
       value : 0
     },
     
-<span id='-property-deletedRecords'>    /**
+<span id='BUI-Data-Store-property-deletedRecords'>    /**
 </span>     * 删除掉的纪录
      * @readOnly
      * @private
@@ -119,7 +115,7 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
       shared : false,
       value:[]
     },
-<span id='-cfg-errorProperty'>    /**
+<span id='BUI-Data-Store-cfg-errorProperty'>    /**
 </span>     * 错误字段,包含在返回信息中表示错误信息的字段
      * &lt;pre&gt;&lt;code&gt;
      *   //可以修改接收的后台参数的含义
@@ -141,7 +137,7 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
     errorProperty : {
       value : &#39;error&#39;
     },
-<span id='-cfg-hasErrorProperty'>    /**
+<span id='BUI-Data-Store-cfg-hasErrorProperty'>    /**
 </span>     * 是否存在错误,加载数据时如果返回错误，此字段表示有错误发生
      * &lt;pre&gt;&lt;code&gt;
      *   //可以修改接收的后台参数的含义
@@ -165,7 +161,7 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
       value : &#39;hasError&#39;
     },
 
-<span id='-property-matchFunction'>    /**
+<span id='BUI-Data-Store-property-matchFunction'>    /**
 </span>     * 对比2个对象是否相当，在去重、更新、删除，查找数据时使用此函数
      * @default  
      * function(obj1,obj2){
@@ -185,7 +181,7 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
         return obj1 == obj2;
       }
     },
-<span id='-property-modifiedRecords'>    /**
+<span id='BUI-Data-Store-property-modifiedRecords'>    /**
 </span>     * 更改的纪录集合
      * @type {Array}
      * @private
@@ -195,7 +191,7 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
       shared : false,
       value:[]
     },
-<span id='-property-newRecords'>    /**
+<span id='BUI-Data-Store-property-newRecords'>    /**
 </span>     * 新添加的纪录集合，只读
      * @type {Array}
      * @private
@@ -205,7 +201,7 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
       shared : false,
       value : []
     },
-<span id='-cfg-remoteSort'>    /**
+<span id='BUI-Data-Store-cfg-remoteSort'>    /**
 </span>     * 是否远程排序，默认状态下内存排序
      *   - 由于当前Store存储的不一定是数据源的全集，所以此配置项需要重新读取数据
      *   - 在分页状态下，进行远程排序，会进行全集数据的排序，并返回首页的数据
@@ -215,7 +211,7 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
     remoteSort : {
       value : false
     },
-<span id='-property-resultMap'>    /**
+<span id='BUI-Data-Store-property-resultMap'>    /**
 </span>     * 缓存的数据，包含以下几个字段
      * &lt;ol&gt;
      * &lt;li&gt;rows: 数据集合&lt;/li&gt;
@@ -229,7 +225,7 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
       shared : false,
       value : {}
     },
-<span id='-cfg-root'>    /**
+<span id='BUI-Data-Store-cfg-root'>    /**
 </span>     * 加载数据时，返回数据的根目录
      * @cfg {String} [root=&#39;rows&#39;]
      * &lt;pre&gt;&lt;code&gt;
@@ -248,7 +244,7 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
      */
     root: { value : &#39;rows&#39;}, 
 
-<span id='-property-rowCount'>    /**
+<span id='BUI-Data-Store-property-rowCount'>    /**
 </span>     * 当前Store缓存的数据条数
      * @type {Number}
      * @private
@@ -257,7 +253,7 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
     rowCount :{
       value : 0
     },
-<span id='-cfg-totalProperty'>    /**
+<span id='BUI-Data-Store-cfg-totalProperty'>    /**
 </span>     * 加载数据时，返回记录的总数的字段，用于分页
      * @cfg {String} [totalProperty=&#39;results&#39;]
      *&lt;pre&gt;&lt;code&gt;
@@ -275,7 +271,7 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
      */
     totalProperty: {value :&#39;results&#39;}, 
 
-<span id='-property-start'>    /**
+<span id='BUI-Data-Store-property-start'>    /**
 </span>     * 加载数据的起始位置
      * &lt;pre&gt;&lt;code&gt;
      *  //初始化时，可以在params中配置
@@ -291,7 +287,7 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
     start:{
       value : 0
     },
-<span id='-cfg-pageSize'>    /**
+<span id='BUI-Data-Store-cfg-pageSize'>    /**
 </span>     * 每页多少条记录,默认为null,此时不分页，当指定了此值时分页
      * &lt;pre&gt;&lt;code&gt;
      *  //当请求的数据分页时
@@ -311,12 +307,8 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
   BUI.mixin(store,[Sortable]);
 
   BUI.augment(store,
-<span id=''>  /**
-</span>   * @lends BUI.Data.Store.prototype
-   * @ignore
-   */
   {
-<span id='-method-add'>    /**
+<span id='BUI-Data-Store-method-add'>    /**
 </span>    * 添加记录,默认添加在后面
     * &lt;pre&gt;&lt;code&gt;
     *  //添加记录
@@ -343,7 +335,7 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
         count = _self.getCount();
       _self.addAt(data,count,noRepeat,match)
     },
-<span id='-method-addAt'>    /**
+<span id='BUI-Data-Store-method-addAt'>    /**
 </span>    * 添加记录,指定索引值
     * &lt;pre&gt;&lt;code&gt;
     *  //使用方式跟类似于add,增加了index参数
@@ -373,7 +365,7 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
         }
       });
     },
-<span id='-method-contains'>    /**
+<span id='BUI-Data-Store-method-contains'>    /**
 </span>    * 验证是否存在指定记录
     * &lt;pre&gt;&lt;code&gt;
     *  store.contains(obj); //是否包含指定的记录
@@ -389,7 +381,7 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
     contains :function(record,match){
       return this.findIndexBy(record,match)!==-1;
     },
-<span id='-method-find'>    /**
+<span id='BUI-Data-Store-method-find'>    /**
 </span>    * 查找记录，仅返回第一条
     * &lt;pre&gt;&lt;code&gt;
     *  var record = store.find(&#39;id&#39;,&#39;123&#39;);
@@ -410,7 +402,7 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
       });
       return result;
     },
-<span id='-method-findAll'>    /**
+<span id='BUI-Data-Store-method-findAll'>    /**
 </span>    * 查找记录，返回所有符合查询条件的记录
     * &lt;pre&gt;&lt;code&gt;
     *   var records = store.findAll(&#39;type&#39;,&#39;0&#39;);
@@ -430,7 +422,7 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
       });
       return result;
     },
-<span id='-method-findByIndex'>    /**
+<span id='BUI-Data-Store-method-findByIndex'>    /**
 </span>    * 根据索引查找记录
     * &lt;pre&gt;&lt;code&gt;
     *  var record = store.findByIndex(1);
@@ -441,7 +433,7 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
     findByIndex : function(index){
       return this.getResult()[index];
     },
-<span id='-method-findIndexBy'>    /**
+<span id='BUI-Data-Store-method-findIndexBy'>    /**
 </span>    * 查找数据所在的索引位置,若不存在返回-1
     * &lt;pre&gt;&lt;code&gt;
     *  var index = store.findIndexBy(obj);
@@ -470,7 +462,7 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
       });
       return position;
     },
-<span id='-method-findNextRecord'>    /**
+<span id='BUI-Data-Store-method-findNextRecord'>    /**
 </span>    * 获取下一条记录
     * &lt;pre&gt;&lt;code&gt;
     *  var record = store.findNextRecord(obj);
@@ -487,7 +479,7 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
       return;
     },
 
-<span id='-method-getCount'>    /**
+<span id='BUI-Data-Store-method-getCount'>    /**
 </span>     * 获取缓存的记录数
      * &lt;pre&gt;&lt;code&gt;
      *  var count = store.getCount(); //缓存的数据数量
@@ -499,7 +491,7 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
     getCount : function(){
       return this.getResult().length;
     },
-<span id='-method-getTotalCount'>    /**
+<span id='BUI-Data-Store-method-getTotalCount'>    /**
 </span>     * 获取数据源的数据总数，分页时，当前仅缓存当前页数据
      * &lt;pre&gt;&lt;code&gt;
      *  var count = store.getCount(); //缓存的数据数量
@@ -514,7 +506,7 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
         total = _self.get(&#39;totalProperty&#39;);
       return parseInt(resultMap[total],10) || 0;
     },
-<span id='-method-getResult'>    /**
+<span id='BUI-Data-Store-method-getResult'>    /**
 </span>     * 获取当前缓存的纪录
      * &lt;pre&gt;&lt;code&gt;
      *   var records = store.getResult();
@@ -527,14 +519,14 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
         root = _self.get(&#39;root&#39;);
       return resultMap[root];
     },
-<span id='-method-hasData'>    /**
+<span id='BUI-Data-Store-method-hasData'>    /**
 </span>     * 是否包含数据
      * @return {Boolean} 
      */
     hasData : function(){
       return this.getCount() !== 0;
     },
-<span id='-method-setResult'>    /**
+<span id='BUI-Data-Store-method-setResult'>    /**
 </span>     * 设置数据源,非异步加载时，设置缓存的数据
      * &lt;pre&gt;&lt;code&gt;
      *   store.setResult([]); //清空数据
@@ -554,7 +546,7 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
       }
     },
 
-<span id='-method-remove'>    /**
+<span id='BUI-Data-Store-method-remove'>    /**
 </span>    * 删除一条或多条记录触发 remove 事件.
     * &lt;pre&gt;&lt;code&gt;
     *  store.remove(obj);  //删除一条记录
@@ -587,7 +579,7 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
         _self.fire(&#39;remove&#39;,{record:record});
       }); 
     },
-<span id='-method-save'>    /**
+<span id='BUI-Data-Store-method-save'>    /**
 </span>     * 保存数据，有几种类型：
      * 
      *  - add 保存添加的记录,
@@ -630,8 +622,8 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
       },_self);
 
     },
-<span id='-method-_getSaveType'>    //根据保存的数据获取保存的类型
-</span>    _getSaveType :function(saveData){
+    //根据保存的数据获取保存的类型
+    _getSaveType :function(saveData){
       var _self = this;
       if(!saveData){
         return &#39;all&#39;;
@@ -650,8 +642,8 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
       }
       return &#39;custom&#39;;
     },
-<span id='-method-_getDirtyData'>    //获取未保存的数据
-</span>    _getDirtyData : function(){
+    //获取未保存的数据
+    _getDirtyData : function(){
       var _self = this,
         proxy = _self.get(&#39;proxy&#39;);
       if(proxy.get(&#39;url&#39;)){
@@ -669,7 +661,7 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
       }
       
     },
-<span id='-method-onSave'>    /**
+<span id='BUI-Data-Store-method-onSave'>    /**
 </span>     * 保存完成后
      * @private
      */
@@ -688,8 +680,8 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
         _self.load();
       }
     },
-<span id='-method-_clearDirty'>    //清除脏数据
-</span>    _clearDirty : function(type,saveData){
+    //清除脏数据
+    _clearDirty : function(type,saveData){
       var _self = this;
       switch(type){
         case  &#39;all&#39; : 
@@ -711,7 +703,7 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
         BUI.Array.remove(_self.get(name),obj);
       }
     },
-<span id='-method-sort'>    /**
+<span id='BUI-Data-Store-method-sort'>    /**
 </span>     * 排序，如果remoteSort = true,发送请求，后端排序
      * &lt;pre&gt;&lt;code&gt;
      *   store.sort(&#39;id&#39;,&#39;DESC&#39;); //以id为排序字段，倒序排序
@@ -731,7 +723,7 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
         _self.load(_self.get(&#39;sortInfo&#39;));
       }
     },
-<span id='-method-sum'>    /**
+<span id='BUI-Data-Store-method-sum'>    /**
 </span>     * 计算指定字段的和
      * &lt;pre&gt;&lt;code&gt;
      *   var sum = store.sum(&#39;number&#39;);
@@ -752,7 +744,7 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
       });
       return sum;
     },
-<span id='-method-setValue'>    /**
+<span id='BUI-Data-Store-method-setValue'>    /**
 </span>    * 设置记录的值 ，触发 update 事件
     * &lt;pre&gt;&lt;code&gt;
     *  store.setValue(obj,&#39;value&#39;,&#39;new value&#39;);
@@ -771,7 +763,7 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
       }
       _self.fire(&#39;update&#39;,{record:record,field:field,value:value});
     },
-<span id='-method-update'>    /**
+<span id='BUI-Data-Store-method-update'>    /**
 </span>    * 更新记录 ，触发 update事件
     * &lt;pre&gt;&lt;code&gt;
     *   var record = store.find(&#39;id&#39;,&#39;12&#39;);
@@ -801,8 +793,8 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
       }
       _self.fire(&#39;update&#39;,{record:record});
     },
-<span id='-method-_addRecord'>    //添加纪录
-</span>    _addRecord :function(record,index){
+    //添加纪录
+    _addRecord :function(record,index){
       var records = this.getResult();
       if(index == undefined){
         index = records.length;
@@ -810,14 +802,14 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
       records.splice(index,0,record);
       this.fire(&#39;add&#39;,{record:record,index:index});
     },
-<span id='-method-_clearChanges'>    //清除改变的数据记录
-</span>    _clearChanges : function(){
+    //清除改变的数据记录
+    _clearChanges : function(){
       var _self = this;
       BUI.Array.empty(_self.get(&#39;newRecords&#39;));
       BUI.Array.empty(_self.get(&#39;modifiedRecords&#39;));
       BUI.Array.empty(_self.get(&#39;deletedRecords&#39;));
     },
-<span id='-method-_filterLocal'>    /**
+<span id='BUI-Data-Store-method-_filterLocal'>    /**
 </span>     * @protected
      * 过滤缓存的数据
      * @param  {Function} fn 过滤函数
@@ -838,14 +830,14 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
       });
       return rst;
     },
-<span id='-method-_getDefaultMatch'>    //获取默认的匹配函数
-</span>    _getDefaultMatch :function(){
+    //获取默认的匹配函数
+    _getDefaultMatch :function(){
 
       return this.get(&#39;matchFunction&#39;);
     },
 
-<span id='-method-_getPageParams'>    //获取分页相关的信息
-</span>    _getPageParams : function(){
+    //获取分页相关的信息
+    _getPageParams : function(){
       var _self = this,
         sortInfo = _self.get(&#39;sortInfo&#39;),
         start = _self.get(&#39;start&#39;),
@@ -864,7 +856,7 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
 
       return params;
     },
-<span id='-method-getAppendParams'>     /**
+<span id='BUI-Data-Store-method-getAppendParams'>     /**
 </span>     * 获取附加的参数,分页信息，排序信息
      * @override
      * @protected
@@ -873,7 +865,7 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
     getAppendParams : function(){
       return this._getPageParams();
     },
-<span id='-method-beforeInit'>    /**
+<span id='BUI-Data-Store-method-beforeInit'>    /**
 </span>     * @protected
      * 初始化之前
      */
@@ -881,22 +873,22 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
       //初始化结果集
       this._setResult([]);
     },
-<span id='-method-_localSort'>    //本地排序
-</span>    _localSort : function(field,direction){
+    //本地排序
+    _localSort : function(field,direction){
       var _self = this;
 
       _self._sortData(field,direction);
 
       _self.fire(&#39;localsort&#39;,{field:field,direction:direction});
     },
-<span id='-method-_sortData'>    _sortData : function(field,direction,data){
-</span>      var _self = this;
+    _sortData : function(field,direction,data){
+      var _self = this;
       data = data || _self.getResult();
 
       _self.sortData(field,direction,data);
     },
-<span id='-method-afterProcessLoad'>    //处理数据
-</span>    afterProcessLoad : function(data,params){
+    //处理数据
+    afterProcessLoad : function(data,params){
       var _self = this,
         root = _self.get(&#39;root&#39;),
         start = params.start,
@@ -922,8 +914,8 @@ define(&#39;bui/data/store&#39;,[&#39;bui/data/proxy&#39;,&#39;bui/data/abstract
 
       _self.fire(&#39;load&#39;,{ params : params });
     },
-<span id='-method-_setResult'>    //设置结果集
-</span>    _setResult : function(rows,totalCount){
+    //设置结果集
+    _setResult : function(rows,totalCount){
       var _self = this,
         resultMap = _self.get(&#39;resultMap&#39;);
 

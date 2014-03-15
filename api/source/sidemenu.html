@@ -35,13 +35,9 @@ define(&#39;bui/menu/sidemenu&#39;,[&#39;bui/common&#39;,&#39;bui/menu/menu&#39;
    * @extends BUI.Menu.Menu
    */
   var sideMenu = Menu.extend(
-<span id=''>  /**
-</span>   * @lends BUI.Menu.SideMenu.prototype
-   * @ignore
-   */
   {
-<span id='-method-initializer'>    //初始化配置项
-</span>    initializer : function(){
+    //初始化配置项
+    initializer : function(){
       var _self = this,
         items = _self.get(&#39;items&#39;),
         children = _self.get(&#39;children&#39;);
@@ -51,8 +47,8 @@ define(&#39;bui/menu/sidemenu&#39;,[&#39;bui/common&#39;,&#39;bui/menu/menu&#39;
         children.push(menuCfg);
       });
     },
-<span id='-method-bindUI'>    bindUI : function(){
-</span>      var _self = this,
+    bindUI : function(){
+      var _self = this,
         children = _self.get(&#39;children&#39;);
       BUI.each(children,function(item){
         var menu = item.get(&#39;children&#39;)[0];
@@ -94,8 +90,8 @@ define(&#39;bui/menu/sidemenu&#39;,[&#39;bui/common&#39;,&#39;bui/menu/menu&#39;
       }); 
       return items;
     },
-<span id='-method-_initMenuCfg'>    //初始化菜单配置项
-</span>    _initMenuCfg : function(item){
+    //初始化菜单配置项
+    _initMenuCfg : function(item){
       var _self = this,
         items = item.items,
         subItems = [],
@@ -118,8 +114,8 @@ define(&#39;bui/menu/sidemenu&#39;,[&#39;bui/common&#39;,&#39;bui/menu/menu&#39;
       return cfg;
 
     },
-<span id='-method-_initSubMenuCfg'>    //初始化二级菜单
-</span>    _initSubMenuCfg : function(subItem){
+    //初始化二级菜单
+    _initSubMenuCfg : function(subItem){
       var _self = this,
         cfg = {
           xclass : &#39;menu-item&#39;,
@@ -131,13 +127,9 @@ define(&#39;bui/menu/sidemenu&#39;,[&#39;bui/common&#39;,&#39;bui/menu/menu&#39;
   },{
 
     ATTRS : 
-<span id=''>    /**
-</span>     * @lends BUI.Menu.SideMenu.prototype
-     * @ignore
-     */
     {
       
-<span id='-property-autoInitItems'>      /**
+<span id='BUI-Menu-SideMenu-property-autoInitItems'>      /**
 </span>       * 配置的items 项是在初始化时作为children
        * @protected
        * @type {Boolean}
@@ -145,9 +137,9 @@ define(&#39;bui/menu/sidemenu&#39;,[&#39;bui/common&#39;,&#39;bui/menu/menu&#39;
       autoInitItems : {
           value : false
       },
-<span id='-property-events'>      events : {
-</span>        value : {
-<span id='-event-menuclick'>          /**
+      events : {
+        value : {
+<span id='BUI-Menu-SideMenu-event-menuclick'>          /**
 </span>           * 点击菜单项
 		       * @name BUI.Menu.SideMenu#menuclick
            * @event 

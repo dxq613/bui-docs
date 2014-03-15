@@ -168,26 +168,22 @@ define(&#39;bui/menu/menuitem&#39;,[&#39;bui/common&#39;],function(require){
 
   },{
     ATTRS : 
-<span id=''>    /**
-</span>     * @lends BUI.Menu.MenuItem#
-     * @ignore
-     */
     {
-<span id='-property-elTagName'>      /**
+<span id='BUI-Menu-MenuItem-property-elTagName'>      /**
 </span>       * 默认的Html 标签
        * @type {String}
        */
       elTagName : {
           value: &#39;li&#39;
       },
-<span id='-property-xview'>      xview : {
-</span>        value : menuItemView
+      xview : {
+        value : menuItemView
       },
-<span id='-cfg-open'>      /**
+<span id='BUI-Menu-MenuItem-cfg-open'>      /**
 </span>       * 菜单项是否展开，显示子菜单
        * @cfg {Boolean} [open=false]
        */
-<span id='-property-open'>      /**
+<span id='BUI-Menu-MenuItem-property-open'>      /**
 </span>       * 菜单项是否展开，显示子菜单
        * @type {Boolean}
        * @default false
@@ -196,18 +192,18 @@ define(&#39;bui/menu/menuitem&#39;,[&#39;bui/common&#39;],function(require){
         view : true,
         value : false
       },
-<span id='-cfg-subMenu'>      /**
+<span id='BUI-Menu-MenuItem-cfg-subMenu'>      /**
 </span>       * 下级菜单
        * @cfg {BUI.Menu.Menu} subMenu
        */
-<span id='-property-subMenu'>      /**
+<span id='BUI-Menu-MenuItem-property-subMenu'>      /**
 </span>       * 下级菜单
        * @type {BUI.Menu.Menu}
        */
       subMenu : {
         view : true
       },
-<span id='-property-subMenuAlign'>       /**
+<span id='BUI-Menu-MenuItem-property-subMenuAlign'>       /**
 </span>       * 下级菜单和菜单项的对齐方式
        * @type {Object}
        * @default 默认在下面显示
@@ -221,7 +217,7 @@ define(&#39;bui/menu/menuitem&#39;,[&#39;bui/common&#39;],function(require){
           }
         }
       },
-<span id='-property-arrowTpl'>      /**
+<span id='BUI-Menu-MenuItem-property-arrowTpl'>      /**
 </span>       * 当存在子菜单时的箭头模版
        * @protected
        * @type {String}
@@ -229,8 +225,8 @@ define(&#39;bui/menu/menuitem&#39;,[&#39;bui/common&#39;],function(require){
       arrowTpl : {
         value : &#39;&lt;span class=&quot;&#39; + CLS_CARET + &#39; &#39; + CLS_CARET + &#39;-left&quot;&gt;&lt;/span&gt;&#39;
       },
-<span id='-property-events'>      events : {
-</span>        value : {
+      events : {
+        value : {
           &#39;afterOpenChange&#39; : true
         }
       }

@@ -113,20 +113,16 @@ define(&#39;bui/menu/menu&#39;,[&#39;bui/common&#39;],function(require){
     }
   },{
     ATTRS:
-<span id=''>    /**
-</span>     * @lends BUI.Menu.Menu#
-     * @ignore
-     */
     {
 
-<span id='-property-elTagName'>      elTagName:{
-</span>        view : true,
+      elTagName:{
+        view : true,
         value : &#39;ul&#39;
       },
-<span id='-property-idField'>		  idField:{
-</span>        value:&#39;id&#39;
+		  idField:{
+        value:&#39;id&#39;
       },
-<span id='-property-isDecorateChild'>      /**
+<span id='BUI-Menu-Menu-property-isDecorateChild'>      /**
 </span>       * @protected
        * 是否根据DOM生成子控件
        * @type {Boolean}
@@ -134,7 +130,7 @@ define(&#39;bui/menu/menu&#39;,[&#39;bui/common&#39;],function(require){
       isDecorateChild : {
         value : true
       },
-<span id='-property-defaultChildClass'>      /**
+<span id='BUI-Menu-Menu-property-defaultChildClass'>      /**
 </span>       * 子类的默认类名，即类的 xclass
        * @type {String}
        * @default &#39;menu-item&#39;
@@ -142,14 +138,14 @@ define(&#39;bui/menu/menu&#39;,[&#39;bui/common&#39;],function(require){
       defaultChildClass : {
         value : &#39;menu-item&#39;
       },
-<span id='-property-selectedItem'>      /**
+<span id='BUI-Menu-Menu-property-selectedItem'>      /**
 </span>       * 选中的菜单项
        * @type {Object}
        */
       selectedItem : {
 
       },
-<span id='-property-parentMenu'>      /**
+<span id='BUI-Menu-Menu-property-parentMenu'>      /**
 </span>       * 上一级菜单
        * @type {BUI.Menu.Menu}
        * @readOnly

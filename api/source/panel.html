@@ -191,13 +191,9 @@ define(&#39;bui/calendar/panel&#39;,[&#39;bui/common&#39;],function (require) {
    * @extends BUI.Component.Controller
    */
   var panel = Component.Controller.extend(
-<span id=''>  /**
-</span>  * @lends  BUI.Calendar.Panel.prototype 
-  * @ignore
-  */
   {
 
-<span id='-method-initializer'>    /**
+<span id='BUI-Calendar-Panel-method-initializer'>    /**
 </span>     * 设置默认年月
      * @protected
      */
@@ -245,7 +241,7 @@ define(&#39;bui/calendar/panel&#39;,[&#39;bui/common&#39;],function (require) {
         }
       }
     },
-<span id='-method-setMonth'>    /**
+<span id='BUI-Calendar-Panel-method-setMonth'>    /**
 </span>     * 设置年月
      * @param {Number} year  年
      * @param {Number} month 月
@@ -262,8 +258,8 @@ define(&#39;bui/calendar/panel&#39;,[&#39;bui/common&#39;],function (require) {
     		//}
       }
     },
-<span id='-method-_uiSetSelected'>    //选中日期
-</span>    _uiSetSelected : function(date,ev){
+    //选中日期
+    _uiSetSelected : function(date,ev){
       var _self = this;
       
       if(!(ev &amp;&amp; ev.prevVal &amp;&amp; DateUtil.isDateEquals(date,ev.prevVal))){
@@ -272,50 +268,46 @@ define(&#39;bui/calendar/panel&#39;,[&#39;bui/common&#39;],function (require) {
         _self.fire(&#39;selectedchange&#39;,{date:date});
       } 
     },
-<span id='-method-_uiSetMaxDate'>    //设置最日期
-</span>    _uiSetMaxDate : function(v){
+    //设置最日期
+    _uiSetMaxDate : function(v){
       if(v){
         this.get(&#39;view&#39;).updatePanel();
       }
     },
-<span id='-method-_uiSetMinDate'>    //设置最小日期
-</span>    _uiSetMinDate : function(v){
+    //设置最小日期
+    _uiSetMinDate : function(v){
       if(v){
         this.get(&#39;view&#39;).updatePanel();
       }
     }
   },{
     ATTRS:
-<span id=''>    /**
-</span>     * @lends BUI.Calendar.Panel#
-     * @ignore
-     */
     {
-<span id='-property-year'>      /**
+<span id='BUI-Calendar-Panel-property-year'>      /**
 </span>       * 展示的月所属年
        * @type {Number}
        */
       year : {
         view :true
       },
-<span id='-property-month'>      /**
+<span id='BUI-Calendar-Panel-property-month'>      /**
 </span>       * 展示的月
        * @type {Number}
        */
       month:{
         view :true
       },
-<span id='-property-selected'>      /**
+<span id='BUI-Calendar-Panel-property-selected'>      /**
 </span>       * 选中的日期
        * @type {Date}
        */
       selected : {
 
       },
-<span id='-property-focusable'>      focusable:{
-</span>        value:true
+      focusable:{
+        value:true
       },
-<span id='-property-dayTpl'>      /**
+<span id='BUI-Calendar-Panel-property-dayTpl'>      /**
 </span>       * 日期的模板
        * @private
        * @type {Object}
@@ -328,16 +320,16 @@ define(&#39;bui/calendar/panel&#39;,[&#39;bui/common&#39;],function (require) {
                 &#39;&lt;/a&gt;&#39;+
               &#39;&lt;/td&gt;&#39;
       },
-<span id='-property-events'>      events:{
-</span>        value : {
-<span id='-event-click'>          /**
+      events:{
+        value : {
+<span id='BUI-Calendar-Panel-event-click'>          /**
 </span>           * @event
            * @name BUI.Calendar.Panel#click
            * @param {Object} e 点击事件
            * @param {Date} e.date
            */
           &#39;click&#39; : false,
-<span id='-method-selectedchange'>          /**
+<span id='BUI-Calendar-Panel-method-selectedchange'>          /**
 </span>           * @name BUI.Calendar.Panel#selectedchange
            * @param {Object} e 点击事件
            * @param {Date} e.date
@@ -345,7 +337,7 @@ define(&#39;bui/calendar/panel&#39;,[&#39;bui/common&#39;],function (require) {
           &#39;selectedchange&#39; : true
         }
       },
-<span id='-property-maxDate'>      /**
+<span id='BUI-Calendar-Panel-property-maxDate'>      /**
 </span>       * 最小日期
        * @type {Date | String}
        */
@@ -360,7 +352,7 @@ define(&#39;bui/calendar/panel&#39;,[&#39;bui/common&#39;],function (require) {
           }
         }
       },
-<span id='-property-minDate'>      /**
+<span id='BUI-Calendar-Panel-property-minDate'>      /**
 </span>       * 最小日期
        * @type {Date | String}
        */
@@ -375,7 +367,7 @@ define(&#39;bui/calendar/panel&#39;,[&#39;bui/common&#39;],function (require) {
           }
         }
       },
-<span id='-property-weekTpl'>      /**
+<span id='BUI-Calendar-Panel-property-weekTpl'>      /**
 </span>       * 周的模板
        * @private
        * @type {Object}
@@ -384,8 +376,8 @@ define(&#39;bui/calendar/panel&#39;,[&#39;bui/common&#39;],function (require) {
         view : true,
         value : &#39;&lt;tr&gt;{daysTpl}&lt;/tr&gt;&#39;
       },
-<span id='-property-tpl'>      tpl:{
-</span>        view:true,
+      tpl:{
+        view:true,
         value:&#39;&lt;table class=&quot;x-datepicker-inner&quot; cellspacing=&quot;0&quot;&gt;&#39; +
                 &#39;&lt;thead&gt;&#39; +
                    &#39;&lt;tr&gt;&#39; +
@@ -402,8 +394,8 @@ define(&#39;bui/calendar/panel&#39;,[&#39;bui/common&#39;],function (require) {
                 &#39;&lt;/tbody&gt;&#39; +
               &#39;&lt;/table&gt;&#39;
       },
-<span id='-property-xview'>      xview : {value : panelView}
-</span>    }
+      xview : {value : panelView}
+    }
   },{
     xclass:&#39;calendar-panel&#39;,
     priority:0

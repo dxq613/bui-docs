@@ -59,24 +59,20 @@ define(&#39;bui/grid/plugins/selection&#39;,[&#39;bui/common&#39;],function(requ
   BUI.extend(checkSelection,BUI.Base);
 
   checkSelection.ATTRS = 
-<span id=''>  /**
-</span>   * @lends BUI.Grid.Plugins.CheckSelection.prototype
-   * @ignore
-   */ 
   {
-<span id='-property-width'>    /**
+<span id='BUI-Grid-Plugins-CheckSelection-property-width'>    /**
 </span>    * column&#39;s width which contains the checkbox
     */
     width : {
       value : 40
     },
-<span id='-property-column'>    /**
+<span id='BUI-Grid-Plugins-CheckSelection-property-column'>    /**
 </span>    * @private
     */
     column : {
       
     },
-<span id='-property-cellInner'>    /**
+<span id='BUI-Grid-Plugins-CheckSelection-property-cellInner'>    /**
 </span>    * @private
     * &lt;input  class=&quot;&#39; + CLS_CHECKBOX + &#39;&quot; type=&quot;checkbox&quot;&gt;
     */
@@ -86,13 +82,9 @@ define(&#39;bui/grid/plugins/selection&#39;,[&#39;bui/common&#39;],function(requ
   };
 
   BUI.augment(checkSelection, 
-<span id=''>  /**
-</span>   * @lends BUI.Grid.Plugins.CheckSelection.prototype
-   * @ignore
-   */ 
   {
-<span id='-method-createDom'>    createDom : function(grid){
-</span>      var _self = this;
+    createDom : function(grid){
+      var _self = this;
       var cfg = {
             title : &#39;&#39;,
             width : _self.get(&#39;width&#39;),
@@ -106,7 +98,7 @@ define(&#39;bui/grid/plugins/selection&#39;,[&#39;bui/common&#39;],function(requ
       grid.set(&#39;multipleSelect&#39;,true);
       _self.set(&#39;column&#39;,checkColumn);
     },
-<span id='-method-bindUI'>    /**
+<span id='BUI-Grid-Plugins-CheckSelection-method-bindUI'>    /**
 </span>    * @private
     */
     bindUI : function(grid){
@@ -149,24 +141,20 @@ define(&#39;bui/grid/plugins/selection&#39;,[&#39;bui/common&#39;],function(requ
   BUI.extend(radioSelection,BUI.Base);
 
   radioSelection.ATTRS = 
-<span id=''>  /**
-</span>   * @lends BUI.Grid.Plugins.RadioSelection#
-   * @ignore
-   */ 
   {
-<span id='-property-width'>    /**
+<span id='BUI-Grid-Plugins-RadioSelection-property-width'>    /**
 </span>    * column&#39;s width which contains the checkbox
     */
     width : {
       value : 40
     },
-<span id='-property-column'>    /**
+<span id='BUI-Grid-Plugins-RadioSelection-property-column'>    /**
 </span>    * @private
     */
     column : {
       
     },
-<span id='-property-cellInner'>    /**
+<span id='BUI-Grid-Plugins-RadioSelection-property-cellInner'>    /**
 </span>    * @private
     */
     cellInner : {
@@ -189,7 +177,7 @@ define(&#39;bui/grid/plugins/selection&#39;,[&#39;bui/common&#39;],function(requ
       grid.set(&#39;multipleSelect&#39;,false);
       _self.set(&#39;column&#39;,column);
     },
-<span id='-method-bindUI'>    /**
+<span id='BUI-Grid-Plugins-RadioSelection-method-bindUI'>    /**
 </span>    * @private
     */
     bindUI : function(grid){

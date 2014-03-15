@@ -117,16 +117,12 @@ define(&#39;bui/component/uibase/position&#39;,function () {
     }
 
     Position.ATTRS =
-<span id=''>    /**
-</span>     * @lends BUI.Component.UIBase.Position#
-     * @ignore
-     */
     {
-<span id='-cfg-x'>        /**
+<span id='BUI-Component-UIBase-Position-cfg-x'>        /**
 </span>         * 水平坐标
          * @cfg {Number} x
          */
-<span id='-property-x'>        /**
+<span id='BUI-Component-UIBase-Position-property-x'>        /**
 </span>         * 水平坐标
          * &lt;pre&gt;&lt;code&gt;
          *     overlay.set(&#39;x&#39;,100);
@@ -136,11 +132,11 @@ define(&#39;bui/component/uibase/position&#39;,function () {
         x:{
             view:1
         },
-<span id='-cfg-y'>        /**
+<span id='BUI-Component-UIBase-Position-cfg-y'>        /**
 </span>         * 垂直坐标
          * @cfg {Number} y
          */
-<span id='-property-y'>        /**
+<span id='BUI-Component-UIBase-Position-property-y'>        /**
 </span>         * 垂直坐标
          * &lt;pre&gt;&lt;code&gt;
          *     overlay.set(&#39;y&#39;,100);
@@ -150,7 +146,7 @@ define(&#39;bui/component/uibase/position&#39;,function () {
         y:{
             view:1
         },
-<span id='-property-left'>        /**
+<span id='BUI-Component-UIBase-Position-property-left'>        /**
 </span>         * 相对于父元素的水平位置
          * @type {Number}
          * @protected
@@ -158,7 +154,7 @@ define(&#39;bui/component/uibase/position&#39;,function () {
         left : {
             view:1
         },
-<span id='-property-top'>        /**
+<span id='BUI-Component-UIBase-Position-property-top'>        /**
 </span>         * 相对于父元素的垂直位置
          * @type {Number}
          * @protected
@@ -166,7 +162,7 @@ define(&#39;bui/component/uibase/position&#39;,function () {
         top : {
             view:1
         },
-<span id='-cfg-xy'>        /**
+<span id='BUI-Component-UIBase-Position-cfg-xy'>        /**
 </span>         * 水平和垂直坐标
          * &lt;pre&gt;&lt;code&gt;
          * var overlay = new Overlay({
@@ -177,7 +173,7 @@ define(&#39;bui/component/uibase/position&#39;,function () {
          * &lt;/code&gt;&lt;/pre&gt;
          * @cfg {Number[]} xy
          */
-<span id='-property-xy'>        /**
+<span id='BUI-Component-UIBase-Position-property-xy'>        /**
 </span>         * 水平和垂直坐标
          * &lt;pre&gt;&lt;code&gt;
          *     overlay.set(&#39;xy&#39;,[100,100]);
@@ -207,7 +203,7 @@ define(&#39;bui/component/uibase/position&#39;,function () {
                 return [this.get(&#39;x&#39;), this.get(&#39;y&#39;)];
             }
         },
-<span id='-cfg-zIndex'>        /**
+<span id='BUI-Component-UIBase-Position-cfg-zIndex'>        /**
 </span>         * z-index value.
          * &lt;pre&gt;&lt;code&gt;
          *   var overlay = new Overlay({
@@ -216,7 +212,7 @@ define(&#39;bui/component/uibase/position&#39;,function () {
          * &lt;/code&gt;&lt;/pre&gt;
          * @cfg {Number} zIndex
          */
-<span id='-property-zIndex'>        /**
+<span id='BUI-Component-UIBase-Position-property-zIndex'>        /**
 </span>         * z-index value.
          * &lt;pre&gt;&lt;code&gt;
          *   overlay.set(&#39;zIndex&#39;,&#39;1200&#39;);
@@ -240,12 +236,8 @@ define(&#39;bui/component/uibase/position&#39;,function () {
 
 
     Position.prototype =
-<span id=''>    /**
-</span>     * @lends BUI.Component.UIBase.Position.prototype
-     * @ignore
-     */
     {
-<span id='-method-move'>        /**
+<span id='BUI-Component-UIBase-Position-method-move'>        /**
 </span>         * Move to absolute position.
          * @param {Number|Number[]} x
          * @param {Number} [y]
@@ -265,8 +257,8 @@ define(&#39;bui/component/uibase/position&#39;,function () {
             self.set(&#39;xy&#39;, [x, y]);
             return self;
         },
-<span id='-method-_uiSetX'>        //设置 x 坐标时，重置 left
-</span>        _uiSetX : function(v){
+        //设置 x 坐标时，重置 left
+        _uiSetX : function(v){
             if(v != null){
                 var _self = this,
                     el = _self.get(&#39;el&#39;);
@@ -278,8 +270,8 @@ define(&#39;bui/component/uibase/position&#39;,function () {
             }
             
         },
-<span id='-method-_uiSetY'>        //设置 y 坐标时，重置 top
-</span>        _uiSetY : function(v){
+        //设置 y 坐标时，重置 top
+        _uiSetY : function(v){
             if(v != null){
                 var _self = this,
                     el = _self.get(&#39;el&#39;);
@@ -289,8 +281,8 @@ define(&#39;bui/component/uibase/position&#39;,function () {
                 }
             }
         },
-<span id='-method-_uiSetLeft'>        //设置 left时，重置 x
-</span>        _uiSetLeft : function(v){
+        //设置 left时，重置 x
+        _uiSetLeft : function(v){
             var _self = this,
                     el = _self.get(&#39;el&#39;);
             if(v != null){
@@ -299,8 +291,8 @@ define(&#39;bui/component/uibase/position&#39;,function () {
                 _self.setInternal(&#39;left&#39;,el.position().left);
             }*/
         },
-<span id='-method-_uiSetTop'>        //设置top 时，重置y
-</span>        _uiSetTop : function(v){
+        //设置top 时，重置y
+        _uiSetTop : function(v){
             var _self = this,
                 el = _self.get(&#39;el&#39;);
             if(v != null){

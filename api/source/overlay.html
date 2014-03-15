@@ -166,12 +166,8 @@ define(&#39;bui/overlay/overlay&#39;,[&#39;bui/common&#39;],function (require) {
     }
   },{
     ATTRS : 
-<span id=''>	/**
-</span>	* @lends BUI.Overlay.Overlay#
-  * @ignore 
-	**/	
 	{
-<span id='-property-effect'>      /**
+<span id='BUI-Overlay-Overlay-property-effect'>      /**
 </span>       * {Object} - 可选, 显示或隐藏时的特效支持, 对象包含以下配置
        * &lt;ol&gt;
        * &lt;li&gt;effect:特效效果，&#39;none(默认无特效)&#39;,&#39;linear(线性)&#39;,fade(渐变)&#39;,&#39;slide(滑动出现)&#39;&lt;/li&gt;
@@ -186,7 +182,7 @@ define(&#39;bui/overlay/overlay&#39;,[&#39;bui/common&#39;],function (require) {
           callback : null
         }
       },
-<span id='-property-closeable'>      /**
+<span id='BUI-Overlay-Overlay-property-closeable'>      /**
 </span>       * whether this component can be closed.
        * @default false
        * @type {Boolean}
@@ -195,14 +191,14 @@ define(&#39;bui/overlay/overlay&#39;,[&#39;bui/common&#39;],function (require) {
       closeable:{
           value:false
       },
-<span id='-cfg-showArrow'>      /**
+<span id='BUI-Overlay-Overlay-cfg-showArrow'>      /**
 </span>       * 是否显示指向箭头，跟align属性的points相关
        * @cfg {Boolean} [showArrow = false]
        */
       showArrow : {
         value : false
       },
-<span id='-cfg-arrowContainer'>      /**
+<span id='BUI-Overlay-Overlay-cfg-arrowContainer'>      /**
 </span>       * 箭头放置在的位置，是一个选择器，例如 .arrow-wraper
        *     new Tip({ //可以设置整个控件的模板
        *       arrowContainer : &#39;.arrow-wraper&#39;,
@@ -214,21 +210,21 @@ define(&#39;bui/overlay/overlay&#39;,[&#39;bui/common&#39;],function (require) {
       arrowContainer : {
         view : true
       },
-<span id='-cfg-arrowTpl'>      /**
+<span id='BUI-Overlay-Overlay-cfg-arrowTpl'>      /**
 </span>       * 指向箭头的模板
        * @cfg {Object} arrowTpl
        */
       arrowTpl : {
         value : &#39;&lt;s class=&quot;&#39; + CLS_ARROW + &#39;&quot;&gt;&lt;s class=&quot;&#39; + CLS_ARROW + &#39;-inner&quot;&gt;&lt;/s&gt;&lt;/s&gt;&#39;
       },
-<span id='-property-visibleMode'>      visibleMode : {
-</span>        value : &#39;visibility&#39;
+      visibleMode : {
+        value : &#39;visibility&#39;
       },
-<span id='-property-visible'>      visible :{
-</span>        value:false
+      visible :{
+        value:false
       },
-<span id='-property-xview'>      xview : {
-</span>        value : overlayView
+      xview : {
+        value : overlayView
       }
     }
   },{

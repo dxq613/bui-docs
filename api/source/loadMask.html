@@ -105,25 +105,21 @@ define(&#39;bui/mask/loadmask&#39;,[&#39;bui/mask/mask&#39;],function (require) 
 
     //对象原型
     BUI.augment(LoadMask,
-<span id=''>    /** 
-</span>    * @lends BUI.Mask.LoadMask.prototype 
-    * @ignore
-    */
     {
         
-<span id='-method-disable'>        /**
+<span id='BUI-Mask-LoadMask-method-disable'>        /**
 </span>         * 设置控件不可用
          */
         disable:function () {
             this.set(&#39;disabled&#39;,true);
         },
-<span id='-method-onLoad'>        /**
+<span id='BUI-Mask-LoadMask-method-onLoad'>        /**
 </span>         * @private 加载已经完毕，解除屏蔽
          */
         onLoad:function () {
             Mask.unmaskElement(this.get(&#39;el&#39;));
         },
-<span id='-method-onBeforeLoad'>        /**
+<span id='BUI-Mask-LoadMask-method-onBeforeLoad'>        /**
 </span>         * @private 开始加载，屏蔽当前元素
          */
         onBeforeLoad:function () {
@@ -132,22 +128,22 @@ define(&#39;bui/mask/loadmask&#39;,[&#39;bui/mask/mask&#39;],function (require) 
                 Mask.maskElement(_self.get(&#39;el&#39;), _self.get(&#39;msg&#39;), this.get(&#39;msgCls&#39;));
             }
         },
-<span id='-method-show'>        /**
+<span id='BUI-Mask-LoadMask-method-show'>        /**
 </span>         * 显示加载条，并遮盖元素
          */
         show:function () {
             this.onBeforeLoad();
         },
 
-<span id='-method-hide'>        /**
+<span id='BUI-Mask-LoadMask-method-hide'>        /**
 </span>         * 隐藏加载条，并解除遮盖元素
          */
         hide:function () {
             this.onLoad();
         },
 
-<span id='-method-destroy'>        /*
-</span>         * 清理资源
+        /*
+         * 清理资源
          */
         destroy:function () {
             this.hide();

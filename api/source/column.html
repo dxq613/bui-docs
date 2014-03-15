@@ -171,12 +171,8 @@ define(&#39;bui/grid/column&#39;,[&#39;bui/common&#39;],function (require) {
      * @extends BUI.Component.Controller
      */
     var column = BUI.Component.Controller.extend(
-<span id=''>        /**
-</span>         * @lends BUI.Grid.Column.prototype
-         * @ignore
-         */
-<span id='-method-_toggleSortState'>        {    //toggle sort state of this column ,if no sort state set &#39;ASC&#39;,else toggle &#39;ASC&#39; and &#39;DESC&#39;
-</span>            _toggleSortState:function () {
+        {    //toggle sort state of this column ,if no sort state set &#39;ASC&#39;,else toggle &#39;ASC&#39; and &#39;DESC&#39;
+            _toggleSortState:function () {
                 var _self = this,
                     sortState = _self.get(&#39;sortState&#39;),
                     v = sortState ? (sortState === SORT_ASC ? SORT_DESC : SORT_ASC) : SORT_ASC;
@@ -199,26 +195,22 @@ define(&#39;bui/grid/column&#39;,[&#39;bui/common&#39;],function (require) {
                 }
                 //_self.fire(&#39;click&#39;,{domTarget:ev.target});
             },
-<span id='-method-_uiSetWidth'>            _uiSetWidth : function(v){
-</span>                if(v){
+            _uiSetWidth : function(v){
+                if(v){
                     this.set(&#39;originWidth&#39;,v);
                 }
             }
         }, {
             ATTRS:
-<span id=''>            /*** 
-</span>            * @lends BUI.Grid.Column.prototype 
-            * @ignore
-            */
             {
-<span id='-property-elTagName'>                /**
+<span id='BUI-Grid-Column-property-elTagName'>                /**
 </span>                 * The tag name of the rendered column
                  * @private
                  */
                 elTagName:{
                     value:&#39;th&#39;
                 },
-<span id='-property-open'>                /**
+<span id='BUI-Grid-Column-property-open'>                /**
 </span>                 * 表头展开显示菜单，
                  * @type {Boolean}
                  * @protected
@@ -227,7 +219,7 @@ define(&#39;bui/grid/column&#39;,[&#39;bui/common&#39;],function (require) {
                     view : true,
                     value : false
                 },
-<span id='-cfg-dataIndex'>                /**
+<span id='BUI-Grid-Column-cfg-dataIndex'>                /**
 </span>                 * 此列对应显示数据的字段名称
                  * &lt;pre&gt;&lt;code&gt;
                  * {
@@ -238,7 +230,7 @@ define(&#39;bui/grid/column&#39;,[&#39;bui/common&#39;],function (require) {
                  * &lt;/code&gt;&lt;/pre&gt;
                  * @cfg {String} dataIndex
                  */
-<span id='-property-dataIndex'>                /**
+<span id='BUI-Grid-Column-property-dataIndex'>                /**
 </span>                 * 此列对应显示数据的字段名称
                  * @type {String}
                  * @default {String} empty string
@@ -247,7 +239,7 @@ define(&#39;bui/grid/column&#39;,[&#39;bui/common&#39;],function (require) {
                     view:true,
                     value:&#39;&#39;
                 },
-<span id='-property-draggable'>                /**
+<span id='BUI-Grid-Column-property-draggable'>                /**
 </span>                 * 是否可拖拽，暂时未支持
                  * @private
                  * @type {Boolean}
@@ -258,7 +250,7 @@ define(&#39;bui/grid/column&#39;,[&#39;bui/common&#39;],function (require) {
                     view:true,
                     value:true
                 },
-<span id='-property-editor'>                /**
+<span id='BUI-Grid-Column-property-editor'>                /**
 </span>                 * 编辑器,用于可编辑表格中&lt;br&gt;
                  * ** 常用编辑器 **
                  *  - xtype 指的是表单字段的类型 {@link BUI.Form.Field}
@@ -279,28 +271,28 @@ define(&#39;bui/grid/column&#39;,[&#39;bui/common&#39;],function (require) {
                 editor:{
 
                 },
-<span id='-property-focusable'>                /**
+<span id='BUI-Grid-Column-property-focusable'>                /**
 </span>                 * 是否可以获取焦点
                  * @protected
                  */
                 focusable:{
                     value:false
                 },
-<span id='-cfg-fixed'>                /**
+<span id='BUI-Grid-Column-cfg-fixed'>                /**
 </span>                 * 固定列,主要用于在首行显示一些特殊内容，如单选框，复选框，序号等。插件不能对此列进行特殊操作，如：移动位置，隐藏等
                  * @cfg {Boolean} fixed
                  */
                 fixed : {
                     value : false
                 },
-<span id='-cfg-id'>                /**
+<span id='BUI-Grid-Column-cfg-id'>                /**
 </span>                 * 控件的编号
                  * @cfg {String} id
                  */
                 id:{
 
                 },
-<span id='-cfg-renderer'>                /**
+<span id='BUI-Grid-Column-cfg-renderer'>                /**
 </span>                 * 渲染表格单元格的格式化函数
                  * &quot;function(value,obj,index){return value;}&quot;
                  * &lt;pre&gt;&lt;code&gt;
@@ -313,7 +305,7 @@ define(&#39;bui/grid/column&#39;,[&#39;bui/common&#39;],function (require) {
                 renderer:{
 
                 },
-<span id='-property-resizable'>                /**
+<span id='BUI-Grid-Column-property-resizable'>                /**
 </span>                 * 是否可以调整宽度，应用于拖拽或者自适应宽度时
                  * @type {Boolean}
                  * @protected
@@ -322,7 +314,7 @@ define(&#39;bui/grid/column&#39;,[&#39;bui/common&#39;],function (require) {
                 resizable:{
                     value:true
                 },
-<span id='-cfg-sortable'>                /**
+<span id='BUI-Grid-Column-cfg-sortable'>                /**
 </span>                 * 是否可以按照此列排序，如果设置true,那么点击列头时
                  * &lt;pre&gt;&lt;code&gt;
                  *     {title : &#39;数字&#39;, dataIndex :&#39;b&#39;,sortable : false},
@@ -334,7 +326,7 @@ define(&#39;bui/grid/column&#39;,[&#39;bui/common&#39;],function (require) {
                     view:true,
                     value:true
                 },
-<span id='-property-sortState'>                /**
+<span id='BUI-Grid-Column-property-sortState'>                /**
 </span>                 * 排序状态，当前排序是按照升序、降序。有3种值 null, &#39;ASC&#39;,&#39;DESC&#39;
                  * @type {String}
                  * @protected
@@ -344,11 +336,11 @@ define(&#39;bui/grid/column&#39;,[&#39;bui/common&#39;],function (require) {
                     view:true,
                     value:null
                 },
-<span id='-cfg-title'>                /**
+<span id='BUI-Grid-Column-cfg-title'>                /**
 </span>                 * 列标题
                  * @cfg {String} [title=&amp;#160;]
                  */
-<span id='-property-title'>                /**
+<span id='BUI-Grid-Column-property-title'>                /**
 </span>                 * 列标题
                  * &lt;pre&gt;&lt;code&gt;
                  * var column = grid.findColumn(&#39;id&#39;);
@@ -364,7 +356,7 @@ define(&#39;bui/grid/column&#39;,[&#39;bui/common&#39;],function (require) {
                     value:&#39;&amp;#160;&#39;
                 },
 
-<span id='-cfg-width'>                /**
+<span id='BUI-Grid-Column-cfg-width'>                /**
 </span>                 * 列的宽度,可以使数字或者百分比,不要使用 width : &#39;100&#39;或者width : &#39;100px&#39;
                  * &lt;pre&gt;&lt;code&gt;
                  *  {title : &#39;文本&#39;,width:100,dataIndex :&#39;a&#39;,editor : {xtype : &#39;text&#39;}}
@@ -374,7 +366,7 @@ define(&#39;bui/grid/column&#39;,[&#39;bui/common&#39;],function (require) {
                  * @cfg {Number} [width = 80]
                  */
                 
-<span id='-property-width'>                /**
+<span id='BUI-Grid-Column-property-width'>                /**
 </span>                 * 列宽度
                  * &lt;pre&gt;&lt;code&gt;
                  *  grid.findColumn(id).set(&#39;width&#39;,200);
@@ -385,11 +377,11 @@ define(&#39;bui/grid/column&#39;,[&#39;bui/common&#39;],function (require) {
                 width:{
                     value:100
                 },
-<span id='-cfg-showMenu'>                /**
+<span id='BUI-Grid-Column-cfg-showMenu'>                /**
 </span>                 * 是否显示菜单
                  * @cfg {Boolean} [showMenu=false]
                  */
-<span id='-property-showMenu'>                /**
+<span id='BUI-Grid-Column-property-showMenu'>                /**
 </span>                 * 是否显示菜单
                  * @type {Boolean}
                  * @default false
@@ -398,7 +390,7 @@ define(&#39;bui/grid/column&#39;,[&#39;bui/common&#39;],function (require) {
                     view:true,
                     value:false
                 },
-<span id='-property-triggerTpl'>                /**
+<span id='BUI-Grid-Column-property-triggerTpl'>                /**
 </span>                 * @private
                  * @type {Object}
                  */
@@ -407,7 +399,7 @@ define(&#39;bui/grid/column&#39;,[&#39;bui/common&#39;],function (require) {
                     value:&#39;&lt;span class=&quot;&#39; + CLS_TRIGGER + &#39;&quot;&gt;&lt;/span&gt;&#39;
                     
                 },
-<span id='-property-tpl'>                /**
+<span id='BUI-Grid-Column-property-tpl'>                /**
 </span>                 * An template used to create the internal structure inside this Component&#39;s encapsulating Element.
                  * User can use the syntax of KISSY &#39;s template component.
                  * Only in the configuration of the column can set this property.
@@ -420,46 +412,46 @@ define(&#39;bui/grid/column&#39;,[&#39;bui/common&#39;],function (require) {
                         &#39;&lt;span class=&quot;&#39; + CLS_HD_TITLE + &#39;&quot;&gt;{title}&lt;/span&gt;&#39; +
                         &#39;&lt;/div&gt;&#39;
                 },
-<span id='-cfg-cellTpl'>                /**
+<span id='BUI-Grid-Column-cfg-cellTpl'>                /**
 </span>                 * 单元格的模板，在列上设置单元格的模板，可以在渲染单元格时使用，更改单元格的内容
                  * @cfg {String} cellTpl
                  */
-<span id='-property-cellTpl'>                /**
+<span id='BUI-Grid-Column-property-cellTpl'>                /**
 </span>                 * 单元格的模板，在列上设置单元格的模板，可以在渲染单元格时使用，更改单元格的内容
                  * @type {String}
                  */
                 cellTpl:{
                     value:&#39;&#39;
                 },
-<span id='-property-events'>                /**
+<span id='BUI-Grid-Column-property-events'>                /**
 </span>                 * the collection of column&#39;s events
                  * @protected
                  * @type {Array}
                  */
                 events:{
                     value:{
-<span id='-event-afterWidthChange'>                    /**
+<span id='BUI-Grid-Column-event-afterWidthChange'>                    /**
 </span>                     * @event
                      * Fires when this column&#39;s width changed
                      * @param {jQuery.Event} e the event object
                      * @param {BUI.Grid.Column} target
                      */
                         &#39;afterWidthChange&#39; : true,
-<span id='-event-afterSortStateChange'>                    /**
+<span id='BUI-Grid-Column-event-afterSortStateChange'>                    /**
 </span>                     * @event
                      * Fires when this column&#39;s sort changed
                      * @param {jQuery.Event} e the event object
                      * @param {BUI.Grid.Column} e.target
                      */
                         &#39;afterSortStateChange&#39; : true,
-<span id='-event-afterVisibleChange'>                    /**
+<span id='BUI-Grid-Column-event-afterVisibleChange'>                    /**
 </span>                     * @event
                      * Fires when this column&#39;s hide or show
                      * @param {jQuery.Event} e the event object
                      * @param {BUI.Grid.Column} e.target
                      */
                         &#39;afterVisibleChange&#39; : true,
-<span id='-event-click'>                    /**
+<span id='BUI-Grid-Column-event-click'>                    /**
 </span>                     * @event
                      * Fires when use clicks the column
                      * @param {jQuery.Event} e the event object
@@ -467,7 +459,7 @@ define(&#39;bui/grid/column&#39;,[&#39;bui/common&#39;],function (require) {
                      * @param {HTMLElement} domTarget the dom target of this event
                      */
                         &#39;click&#39; : true,
-<span id='-event-resize'>                    /**
+<span id='BUI-Grid-Column-event-resize'>                    /**
 </span>                     * @event
                      * Fires after the component is resized.
                      * @param {BUI.Grid.Column} target
@@ -475,7 +467,7 @@ define(&#39;bui/grid/column&#39;,[&#39;bui/common&#39;],function (require) {
                      * @param {Number} adjHeight The box-adjusted height that was set
                      */
                         &#39;resize&#39; : true,
-<span id='-event-move'>                    /**
+<span id='BUI-Grid-Column-event-move'>                    /**
 </span>                     * @event
                      * Fires after the component is moved.
                      * @param {jQuery.Event} e the event object
@@ -486,7 +478,7 @@ define(&#39;bui/grid/column&#39;,[&#39;bui/common&#39;],function (require) {
                         &#39;move&#39; : true
                     }
                 },
-<span id='-property-xview'>                /**
+<span id='BUI-Grid-Column-property-xview'>                /**
 </span>                 * @private
                  */
                 xview:{

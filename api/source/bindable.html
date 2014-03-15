@@ -106,14 +106,10 @@ define(&#39;bui/component/uibase/bindable&#39;,function(){
 
 
 	BUI.augment(bindable,
-<span id=''>	/**
-</span>	* @lends BUI.Data.Bindable.prototype
-	* @ignore
-	*/	
 	{
 
-<span id='-method-__bindUI'>		__bindUI : function(){
-</span>			var _self = this,
+		__bindUI : function(){
+			var _self = this,
 				store = _self.get(&#39;store&#39;),
 				loadMask = _self.get(&#39;loadMask&#39;);
 			if(!store){
@@ -150,8 +146,8 @@ define(&#39;bui/component/uibase/bindable&#39;,function(){
 				_self.onLocalSort(e);
 			});
 		},
-<span id='-method-__syncUI'>		__syncUI : function(){
-</span>			var _self = this,
+		__syncUI : function(){
+			var _self = this,
 				store = _self.get(&#39;store&#39;);
 			if(!store){
 				return;
@@ -160,7 +156,7 @@ define(&#39;bui/component/uibase/bindable&#39;,function(){
 				_self.onLoad();
 			}
 		},
-<span id='-method-onBeforeLoad'>		/**
+<span id='BUI-Component-UIBase-Bindable-method-onBeforeLoad'>		/**
 </span>		* @protected
     * @template
 		* before store load data
@@ -170,7 +166,7 @@ define(&#39;bui/component/uibase/bindable&#39;,function(){
 		onBeforeLoad : function(e){
 
 		},
-<span id='-method-onLoad'>		/**
+<span id='BUI-Component-UIBase-Bindable-method-onLoad'>		/**
 </span>		* @protected
     * @template
 		* after store load data
@@ -180,7 +176,7 @@ define(&#39;bui/component/uibase/bindable&#39;,function(){
 		onLoad : function(e){
 			
 		},
-<span id='-method-onException'>		/**
+<span id='BUI-Component-UIBase-Bindable-method-onException'>		/**
 </span>		* @protected
     * @template
 		* occurred exception when store is loading data
@@ -190,7 +186,7 @@ define(&#39;bui/component/uibase/bindable&#39;,function(){
 		onException : function(e){
 			
 		},
-<span id='-method-onAdd'>		/**
+<span id='BUI-Component-UIBase-Bindable-method-onAdd'>		/**
 </span>		* @protected
     * @template
 		* after added data to store
@@ -200,7 +196,7 @@ define(&#39;bui/component/uibase/bindable&#39;,function(){
 		onAdd : function(e){
 		
 		},
-<span id='-method-onRemove'>		/**
+<span id='BUI-Component-UIBase-Bindable-method-onRemove'>		/**
 </span>		* @protected
     * @template
 		* after remvoed data to store
@@ -210,7 +206,7 @@ define(&#39;bui/component/uibase/bindable&#39;,function(){
 		onRemove : function(e){
 		
 		},
-<span id='-method-onUpdate'>		/**
+<span id='BUI-Component-UIBase-Bindable-method-onUpdate'>		/**
 </span>		* @protected
     * @template
 		* after updated data to store
@@ -220,7 +216,7 @@ define(&#39;bui/component/uibase/bindable&#39;,function(){
 		onUpdate : function(e){
 		
 		},
-<span id='-method-onLocalSort'>		/**
+<span id='BUI-Component-UIBase-Bindable-method-onLocalSort'>		/**
 </span>		* @protected
     * @template
 		* after local sorted data to store

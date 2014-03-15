@@ -403,6 +403,9 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
       }else if(!axis.ticks &amp;&amp; type != &#39;circle&#39;){
         axis.autoTicks = true; //标记是自动计算的坐标轴
       }
+      if(type == &#39;category&#39; &amp;&amp; !axis.categories){
+        axis.autoTicks = true; //标记是自动计算的坐标轴
+      }
       axis.plotRange = _self.get(&#39;plotRange&#39;);
       axis.autoPaint = false;  //暂时不绘制坐标轴，需要自动生成坐标轴
 
@@ -416,6 +419,9 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
     },
     //获取y轴的坐标点
     _caculateAxisInfo : function(axis,name){
+      if(axis.get(&#39;type&#39;) == &#39;category&#39;){
+        return this._caculateCategories(axis,name);
+      }
       var _self = this,
         data = [],
         type = axis.get(&#39;type&#39;),
@@ -470,6 +476,24 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
 
       return rst;
 
+    },
+    _caculateCategories : function(axis,name){
+      var _self = this,
+        data = _self.getSeriesData(axis,name),
+        categories = [].concat(data[0]);
+      if(data.length &gt; 1 &amp;&amp; !_self.get(&#39;data&#39;)){ //不共享data时
+        for (var i = 1; i &lt; data.length; i++) {
+          var arr = data[i];
+          BUI.each(arr,function(value){
+            if(!BUI.indexOf(value)){
+              categories.push(value);
+            }
+          });
+        };
+      }
+      return {
+        categories : categories
+      };
     },
 <span id='BUI-Chart-SeriesGroup-method-getSeriesData'>    /**
 </span>     * 获取数据序列的数据
@@ -540,8 +564,14 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
         if(_self._hasRelativeSeries(item,name)){
           if(item.get(&#39;autoTicks&#39;)){
             var info = _self._caculateAxisInfo(item,name);
-            item.set(&#39;tickInterval&#39;,info.interval);
-            item.set(&#39;ticks&#39;,info.ticks);
+            /*if(item.get(&#39;type&#39;) == &#39;category&#39;){
+
+            }else{
+              item.set(&#39;tickInterval&#39;,info.interval);
+              item.set(&#39;ticks&#39;,info.ticks);
+            }*/
+            item.changeInfo(info);
+            
           }
           
           item.paint();
@@ -550,6 +580,7 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
       });
       
     },
+    //是否存在关联的数据序列
     _hasRelativeSeries : function(axis,name){
       var _self = this,
         series = _self.getVisibleSeries(),
@@ -607,6 +638,20 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
         }
       }
       _self._resetSeries();
+    },
+<span id='BUI-Chart-SeriesGroup-method-changeData'>    /**
+</span>     * 改变数据
+     * @param  {Array} data 数据
+     */
+    changeData : function(data){
+      var _self = this,
+        series = _self.getSeries();
+
+      _self.set(&#39;data&#39;,data);
+      BUI.each(series,function(item){
+        item.changeData(data);
+      });
+      _self.repaint();
     },
     //获取默认的类型
     _getDefaultType : function(){

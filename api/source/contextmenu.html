@@ -58,12 +58,8 @@ define(&#39;bui/memu/contextmenu&#39;,[&#39;bui/common&#39;,&#39;bui/menu/menuit
   },{
 
     ATTRS:
-<span id=''>    /**
-</span>     * @lends BUI.Menu.MenuItem#
-     * @ignore
-     */
     {
-<span id='-property-text'>      /**
+<span id='BUI-Menu-ContextMenuItem-property-text'>      /**
 </span>       * 显示的文本
        * @type {String}
        */
@@ -71,7 +67,7 @@ define(&#39;bui/memu/contextmenu&#39;,[&#39;bui/common&#39;,&#39;bui/menu/menuit
         veiw:true,
         value:&#39;&#39;
       },
-<span id='-property-iconCls'>      /**
+<span id='BUI-Menu-ContextMenuItem-property-iconCls'>      /**
 </span>       * 菜单项图标的样式
        * @type {String}
        */
@@ -79,8 +75,8 @@ define(&#39;bui/memu/contextmenu&#39;,[&#39;bui/common&#39;,&#39;bui/menu/menuit
         sync:false,
         value:&#39;&#39;
       },
-<span id='-property-tpl'>      tpl:{
-</span>        value:&#39;&lt;a class=&quot;&#39; + CLS_Link + &#39;&quot; href=&quot;#&quot;&gt;\
+      tpl:{
+        value:&#39;&lt;a class=&quot;&#39; + CLS_Link + &#39;&quot; href=&quot;#&quot;&gt;\
         &lt;span class=&quot;&#39; + CLS_ITEM_ICON + &#39; {iconCls}&quot;&gt;&lt;/span&gt;&lt;span class=&quot;&#39; + PREFIX + &#39;menu-item-text&quot;&gt;{text}&lt;/span&gt;&lt;/a&gt;&#39;
       }
     }

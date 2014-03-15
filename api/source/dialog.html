@@ -185,16 +185,12 @@ define(&#39;bui/overlay/dialog&#39;,[&#39;bui/overlay/overlay&#39;],function (re
   },{
 
     ATTRS : 
-<span id=''>  	/**
-</span>  	* @lends BUI.Overlay.Dialog#
-    * @ignore 
-  	*/
     {
-<span id='-property-closeTpl'>      closeTpl:{
-</span>        view:true,
+      closeTpl:{
+        view:true,
         value : &#39;&lt;a tabindex=&quot;0&quot; href=javascript:void(&quot;关闭&quot;) role=&quot;button&quot; class=&quot;&#39; + PREFIX + &#39;ext-close&quot; style=&quot;&quot;&gt;&lt;span class=&quot;&#39; + PREFIX + &#39;ext-close-x x-icon x-icon-normal&quot;&gt;×&lt;/span&gt;&lt;/a&gt;&#39;
       },
-<span id='-cfg-buttons'>     /**
+<span id='BUI-Overlay-Dialog-cfg-buttons'>     /**
 </span>       * 弹出库的按钮，可以有多个,有3个参数
        * var dialog = new Overlay.Dialog({
        *     title:&#39;自定义按钮&#39;,
@@ -253,14 +249,14 @@ define(&#39;bui/overlay/dialog&#39;,[&#39;bui/overlay/overlay&#39;],function (re
           }
         ]
       },
-<span id='-cfg-contentId'>      /**
+<span id='BUI-Overlay-Dialog-cfg-contentId'>      /**
 </span>       * 弹出框显示内容的DOM容器ID
        * @cfg {Object} contentId
        */
       contentId:{
         view:true
       },
-<span id='-cfg-success'>  	  /**
+<span id='BUI-Overlay-Dialog-cfg-success'>  	  /**
 </span>      * 点击成功时的回调函数
       * @cfg {Function} success
       */
@@ -269,7 +265,7 @@ define(&#39;bui/overlay/dialog&#39;,[&#39;bui/overlay/overlay&#39;],function (re
           this.close();
         }
       },
-<span id='-cfg-cancel'>      /**
+<span id='BUI-Overlay-Dialog-cfg-cancel'>      /**
 </span>       * 用户取消时调用，如果return false则阻止窗口关闭
        * @cfg {Function} cancel
        */
@@ -278,8 +274,8 @@ define(&#39;bui/overlay/dialog&#39;,[&#39;bui/overlay/overlay&#39;],function (re
 
         }
       },
-<span id='-property-dragNode'>      dragNode : {
-</span><span id='-method-valueFn'>        /**
+      dragNode : {
+<span id='BUI-Overlay-Dialog-method-valueFn'>        /**
 </span>         * @private
          */
         valueFn : function(){
@@ -287,7 +283,7 @@ define(&#39;bui/overlay/dialog&#39;,[&#39;bui/overlay/overlay&#39;],function (re
         }
       },
 
-<span id='-property-defaultLoaderCfg'>      /**
+<span id='BUI-Overlay-Dialog-property-defaultLoaderCfg'>      /**
 </span>       * 默认的加载控件内容的配置,默认值：
        * &lt;pre&gt;
        *  {
@@ -318,11 +314,11 @@ define(&#39;bui/overlay/dialog&#39;,[&#39;bui/overlay/overlay&#39;],function (re
           }
         } 
       },
-<span id='-cfg-title'>      /**
+<span id='BUI-Overlay-Dialog-cfg-title'>      /**
 </span>       * 弹出框标题
        * @cfg {String} title
        */
-<span id='-property-title'>      /**
+<span id='BUI-Overlay-Dialog-property-title'>      /**
 </span>       * 弹出框标题
        * &lt;pre&gt;&lt;code&gt;
        *  dialog.set(&#39;title&#39;,&#39;new title&#39;);
@@ -333,23 +329,23 @@ define(&#39;bui/overlay/dialog&#39;,[&#39;bui/overlay/overlay&#39;],function (re
         view:true,
         value : &#39;&#39;
       },
-<span id='-property-mask'>      mask : {
-</span>        value:true
+      mask : {
+        value:true
       },
-<span id='-property-maskShared'>      maskShared:{
-</span>        value:false
+      maskShared:{
+        value:false
       },
-<span id='-property-headerContent'>      headerContent:{
-</span>        value:&#39;&lt;div class=&quot;&#39; + CLS_TITLE + &#39;&quot;&gt;标题&lt;/div&gt;&#39;
+      headerContent:{
+        value:&#39;&lt;div class=&quot;&#39; + CLS_TITLE + &#39;&quot;&gt;标题&lt;/div&gt;&#39;
       },
-<span id='-property-footerContent'>      footerContent:{
-</span>
+      footerContent:{
+
       },
-<span id='-property-closeable'>      closeable:{
-</span>        value : true
+      closeable:{
+        value : true
       },
-<span id='-property-xview'>      xview:{
-</span>        value:dialogView
+      xview:{
+        value:dialogView
       }
     }
   },{

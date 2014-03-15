@@ -35,12 +35,8 @@ define(&#39;bui/grid/format&#39;,function (require) {
      * @singleton
      */
     var Format =
-<span id=''>    /** 
-</span>    * @lends BUI.Grid.Format 
-    * @ignore
-    */
     {
-<span id='-method-dateRenderer'>        /**
+<span id='BUI-Grid-Format-method-dateRenderer'>        /**
 </span>         * 日期格式化函数
          * @param {Number|Date} d 格式话的日期，一般为1970 年 1 月 1 日至今的毫秒数
          * @return {String} 格式化后的日期格式为 2011-10-31
@@ -68,7 +64,7 @@ define(&#39;bui/grid/format&#39;,function (require) {
             }
             return date.getFullYear() + &#39;-&#39; + formatTimeUnit(date.getMonth() + 1) + &#39;-&#39; + formatTimeUnit(date.getDate());
         },
-<span id='-method-datetimeRenderer'>        /**
+<span id='BUI-Grid-Format-method-datetimeRenderer'>        /**
 </span>         * @description 日期时间格式化函数
          * @param {Number|Date} d 格式话的日期，一般为1970 年 1 月 1 日至今的毫秒数
          * @return {String} 格式化后的日期格式时间为 2011-10-31 16 : 41 : 02
@@ -91,7 +87,7 @@ define(&#39;bui/grid/format&#39;,function (require) {
             }
             return date.getFullYear() + &#39;-&#39; + formatTimeUnit(date.getMonth() + 1) + &#39;-&#39; + formatTimeUnit(date.getDate()) + &#39; &#39; + formatTimeUnit(date.getHours()) + &#39;:&#39; + formatTimeUnit(date.getMinutes()) + &#39;:&#39; + formatTimeUnit(date.getSeconds());
         },
-<span id='-method-cutTextRenderer'>        /**
+<span id='BUI-Grid-Format-method-cutTextRenderer'>        /**
 </span>         * 文本截取函数，当文本超出一定数字时，会截取文本，添加...
          * @param {Number} length 截取多少字符
          * @return {Function} 返回处理函数 返回截取后的字符串，如果本身小于指定的数字，返回原字符串。如果大于，则返回截断后的字符串，并附加...
@@ -105,7 +101,7 @@ define(&#39;bui/grid/format&#39;,function (require) {
                 return value;
             };
         },
-<span id='-method-enumRenderer'>        /**
+<span id='BUI-Grid-Format-method-enumRenderer'>        /**
 </span>         * 枚举格式化函数
          * @param {Object} enumObj 键值对的枚举对象 {&quot;1&quot;:&quot;大&quot;,&quot;2&quot;:&quot;小&quot;}
          * @return {Function} 返回指定枚举的格式化函数
@@ -118,7 +114,7 @@ define(&#39;bui/grid/format&#39;,function (require) {
                 return enumObj[value] || &#39;&#39;;
             };
         },
-<span id='-method-multipleItemsRenderer'>        /**
+<span id='BUI-Grid-Format-method-multipleItemsRenderer'>        /**
 </span>         * 将多个值转换成一个字符串
          * @param {Object} enumObj 键值对的枚举对象 {&quot;1&quot;:&quot;大&quot;,&quot;2&quot;:&quot;小&quot;}
          * @return {Function} 返回指定枚举的格式化函数
@@ -146,7 +142,7 @@ define(&#39;bui/grid/format&#39;,function (require) {
                 return result.join(&#39;,&#39;);
             };
         },
-<span id='-method-moneyCentRenderer'>        /**
+<span id='BUI-Grid-Format-method-moneyCentRenderer'>        /**
 </span>         * 将财务数据分转换成元
          * @param {Number|String} enumObj 键值对的枚举对象 {&quot;1&quot;:&quot;大&quot;,&quot;2&quot;:&quot;小&quot;}
          * @return {Number} 返回将分转换成元的数字

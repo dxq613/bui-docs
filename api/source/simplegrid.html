@@ -191,15 +191,11 @@ define(&#39;bui/grid/simplegrid&#39;,[&#39;bui/common&#39;,&#39;bui/list&#39;],f
    * @extends BUI.List.SimpleList
    */
   var simpleGrid = BUI.List.SimpleList.extend(
-<span id=''>  /**
-</span>   * @lends BUI.Grid.SimpleGrid.prototype
-   * @ignore
-   */
   {
-<span id='-method-renderUI'>    renderUI : function(){
-</span>      this.get(&#39;view&#39;).setColumns();
+    renderUI : function(){
+      this.get(&#39;view&#39;).setColumns();
     },
-<span id='-method-bindUI'>    /**
+<span id='BUI-Grid-SimpleGrid-method-bindUI'>    /**
 </span>     * 绑定事件
      * @protected
      */
@@ -217,7 +213,7 @@ define(&#39;bui/grid/simplegrid&#39;,[&#39;bui/common&#39;,&#39;bui/list&#39;],f
         sender.removeClass(hoverCls);
       });
     },
-<span id='-method-showData'>    /**
+<span id='BUI-Grid-SimpleGrid-method-showData'>    /**
 </span>     * 显示数据
      * &lt;pre&gt;&lt;code&gt;
      *   var data = [{},{}];
@@ -233,14 +229,14 @@ define(&#39;bui/grid/simplegrid&#39;,[&#39;bui/common&#39;,&#39;bui/list&#39;],f
       //this.get(&#39;view&#39;).showData(data);
       this.set(&#39;items&#39;,data);
     },
-<span id='-method-clearData'>    /**
+<span id='BUI-Grid-SimpleGrid-method-clearData'>    /**
 </span>     * 清除数据
      */
     clearData : function(){
       this.get(&#39;view&#39;).clearData();
     },
-<span id='-method-_uiSetColumns'>    _uiSetColumns : function(columns){
-</span>      var _self = this;
+    _uiSetColumns : function(columns){
+      var _self = this;
 
       //重置列，先清空数据
       _self.clearData();
@@ -248,12 +244,8 @@ define(&#39;bui/grid/simplegrid&#39;,[&#39;bui/common&#39;,&#39;bui/list&#39;],f
     }
   },{
     ATTRS : 
-<span id=''>    /**
-</span>     * @lends BUI.Grid.SimpleGrid#
-     * @ignore
-     */
     {
-<span id='-property-itemCls'>      /**
+<span id='BUI-Grid-SimpleGrid-property-itemCls'>      /**
 </span>       * 表格可点击项的样式
        * @protected
        * @type {String}
@@ -262,7 +254,7 @@ define(&#39;bui/grid/simplegrid&#39;,[&#39;bui/common&#39;,&#39;bui/list&#39;],f
         view:true,
         value : CLS_GRID_ROW
       },
-<span id='-property-tableCls'>      /**
+<span id='BUI-Grid-SimpleGrid-property-tableCls'>      /**
 </span>       * 表格应用的样式，更改此值，则不应用默认表格样式
        * &lt;pre&gt;&lt;code&gt;
        * grid = new Grid.SimpleGrid({
@@ -279,11 +271,11 @@ define(&#39;bui/grid/simplegrid&#39;,[&#39;bui/common&#39;,&#39;bui/list&#39;],f
         view : true,
         value : CLS_GRID + &#39;-table&#39;
       },
-<span id='-cfg-columns'>      /**
+<span id='BUI-Grid-SimpleGrid-cfg-columns'>      /**
 </span>       * 列信息
        * @cfg {Array} columns
        */
-<span id='-property-columns'>      /**
+<span id='BUI-Grid-SimpleGrid-property-columns'>      /**
 </span>       * 列信息，仅支持以下配置项：
        * &lt;ol&gt;
        *   &lt;li&gt;title：标题&lt;/li&gt;
@@ -300,7 +292,7 @@ define(&#39;bui/grid/simplegrid&#39;,[&#39;bui/common&#39;,&#39;bui/list&#39;],f
         sync:false,
         value : []
       },
-<span id='-property-tpl'>      /**
+<span id='BUI-Grid-SimpleGrid-property-tpl'>      /**
 </span>       * 模板
        * @protected
        */
@@ -308,7 +300,7 @@ define(&#39;bui/grid/simplegrid&#39;,[&#39;bui/common&#39;,&#39;bui/list&#39;],f
         view : true,
         value:&#39;&lt;table cellspacing=&quot;0&quot; class=&quot;{tableCls}&quot; cellpadding=&quot;0&quot;&gt;&lt;thead&gt;&lt;tr&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;/tbody&gt;&lt;/table&gt;&#39;
       },
-<span id='-cfg-innerBorder'>      /**
+<span id='BUI-Grid-SimpleGrid-cfg-innerBorder'>      /**
 </span>       * 单元格左右之间是否出现边框
        * &lt;pre&gt;&lt;code&gt;
        * &lt;pre&gt;&lt;code&gt;
@@ -322,7 +314,7 @@ define(&#39;bui/grid/simplegrid&#39;,[&#39;bui/common&#39;,&#39;bui/list&#39;],f
        * &lt;/code&gt;&lt;/pre&gt;
        * @cfg {Boolean} [innerBorder=true]
        */
-<span id='-property-innerBorder'>      /**
+<span id='BUI-Grid-SimpleGrid-property-innerBorder'>      /**
 </span>       * 单元格左右之间是否出现边框
        * @type {Boolean}
        * @default true
@@ -331,7 +323,7 @@ define(&#39;bui/grid/simplegrid&#39;,[&#39;bui/common&#39;,&#39;bui/list&#39;],f
           view:true,
           value : true
       },
-<span id='-property-rowTpl'>      /**
+<span id='BUI-Grid-SimpleGrid-property-rowTpl'>      /**
 </span>       * 行模版
        * @type {Object}
        */
@@ -339,7 +331,7 @@ define(&#39;bui/grid/simplegrid&#39;,[&#39;bui/common&#39;,&#39;bui/list&#39;],f
         view : true,
         value:&#39;&lt;tr class=&quot;&#39; + CLS_GRID_ROW + &#39; {oddCls}&quot;&gt;{cellsTpl}&lt;/tr&gt;&#39;
       },
-<span id='-property-cellTpl'>      /**
+<span id='BUI-Grid-SimpleGrid-property-cellTpl'>      /**
 </span>       * 单元格的模版
        * @type {String}
        */
@@ -347,7 +339,7 @@ define(&#39;bui/grid/simplegrid&#39;,[&#39;bui/common&#39;,&#39;bui/list&#39;],f
         view:true,
         value:&#39;&lt;td class=&quot;&#39; + CLS_GRID + &#39;-cell {elCls}&quot;&gt;&lt;div class=&quot;&#39; + CLS_GRID + &#39;-cell-inner&quot;&gt;&lt;span class=&quot;&#39; + CLS_GRID + &#39;-cell-text&quot;&gt;{text}&lt;/span&gt;&lt;/div&gt;&lt;/td&gt;&#39;
       },
-<span id='-property-columnTpl'>      /**
+<span id='BUI-Grid-SimpleGrid-property-columnTpl'>      /**
 </span>       * 列的配置模版
        * @type {String}
        */
@@ -355,7 +347,7 @@ define(&#39;bui/grid/simplegrid&#39;,[&#39;bui/common&#39;,&#39;bui/list&#39;],f
         view:true,
         value : &#39;&lt;th class=&quot;&#39; + CLS_GRID + &#39;-hd {elCls}&quot; width=&quot;{width}&quot;&gt;&lt;div class=&quot;&#39; + CLS_GRID + &#39;-hd-inner&quot;&gt;&lt;span class=&quot;&#39; + CLS_GRID + &#39;-hd-title&quot;&gt;{title}&lt;/span&gt;&lt;/div&gt;&lt;/th&gt;&#39;
       },
-<span id='-property-events'>      /**
+<span id='BUI-Grid-SimpleGrid-property-events'>      /**
 </span>       * @private
        */
       events :{ 
@@ -364,8 +356,8 @@ define(&#39;bui/grid/simplegrid&#39;,[&#39;bui/common&#39;,&#39;bui/list&#39;],f
             
           }
       },
-<span id='-property-xview'>      xview : {
-</span>        value : simpleGridView
+      xview : {
+        value : simpleGridView
       }
     }
   },{

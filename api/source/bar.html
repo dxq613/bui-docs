@@ -70,13 +70,9 @@ define(&#39;bui/toolbar/bar&#39;,function(){
    * @extends BUI.Component.Controller
    * @mixins BUI.Component.UIBase.ChildList
    */
-	var Bar = Component.Controller.extend([UIBase.ChildList],
-<span id=''>	 /**
-</span>	 * @lends BUI.Toolbar.Bar.prototype
-   * @ignore 
-	 */	
+	var Bar = Component.Controller.extend([UIBase.ChildList],	
 	{
-<span id='-method-getItem'>		/**
+<span id='BUI-Toolbar-Bar-method-getItem'>		/**
 </span>		* 通过id 获取项
 		* @param {String|Number} id the id of item 
 		* @return {BUI.Toolbar.BarItem}
@@ -86,16 +82,12 @@ define(&#39;bui/toolbar/bar&#39;,function(){
 		}
 	},{
 		ATTRS:
-<span id=''>    /** 
-</span>    * @lends BUI.Toolbar.Bar.prototype
-    * @ignore
-    */
 		{
-<span id='-property-elTagName'>      elTagName :{
-</span>          view : true,
+      elTagName :{
+          view : true,
           value : &#39;ul&#39;
       },
-<span id='-property-defaultChildClass'>      /**
+<span id='BUI-Toolbar-Bar-property-defaultChildClass'>      /**
 </span>       * 默认子项的样式
        * @type {String}
        * @override

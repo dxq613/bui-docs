@@ -197,6 +197,17 @@ define(&#39;bui/chart/chart&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#39;,&#3
     getSeries : function(){
       return this.get(&#39;seriesGroup&#39;).getSeries();
     },
+<span id='BUI-Chart-Chart-method-changeData'>     /**
+</span>     * 改变数据
+     * @param  {Array} data 数据
+     */
+    changeData : function(data){
+      var _self = this,
+        group = _self.get(&#39;seriesGroup&#39;);
+
+      _self.set(&#39;data&#39;,data);
+      group.changeData(data);
+    },
     destructor : function(){
       var _self = this;
 

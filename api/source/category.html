@@ -75,6 +75,7 @@ define(&#39;bui/chart/categoryaxis&#39;,[&#39;bui/chart/baseaxis&#39;,&#39;bui/c
                 ticks = [];
             ticks = ticks.concat(info.categories);
             ticks.push(&#39; &#39;);
+            _self.set(&#39;categories&#39;,info.categories);
             _self.set(&#39;ticks&#39;,ticks);
         },
 <span id='global-method-getOffsetByIndex'>		/**

@@ -100,10 +100,6 @@ define(&#39;bui/list/simplelist&#39;,[&#39;bui/common&#39;,&#39;bui/list/domlist
    * @mixins BUI.Component.UIBase.Bindable
    */
   var  simpleList = BUI.Component.Controller.extend([DomList,UIBase.Bindable,KeyNav,Sortable],
-<span id=''>  /**
-</span>   * @lends BUI.List.SimpleList.prototype
-   * @ignore
-   */
   {
 <span id='global-method-bindUI'>    /**
 </span>     * @protected
@@ -139,7 +135,7 @@ define(&#39;bui/list/simplelist&#39;,[&#39;bui/common&#39;,&#39;bui/list/domlist
         _self.get(&#39;view&#39;).setElementHover(sender,false);
       });
     },
-<span id='-method-onAdd'>    /**
+<span id='BUI-List-SimpleList-method-onAdd'>    /**
 </span>     * 添加
      * @protected
      */
@@ -154,7 +150,7 @@ define(&#39;bui/list/simplelist&#39;,[&#39;bui/common&#39;,&#39;bui/list/domlist
       }
       
     },
-<span id='-method-onRemove'>    /**
+<span id='BUI-List-SimpleList-method-onRemove'>    /**
 </span>     * 删除
     * @protected
     */
@@ -163,14 +159,14 @@ define(&#39;bui/list/simplelist&#39;,[&#39;bui/common&#39;,&#39;bui/list/domlist
         item = e.record;
       _self.removeItem(item);
     },
-<span id='-method-onUpdate'>    /**
+<span id='BUI-List-SimpleList-method-onUpdate'>    /**
 </span>     * 更新
     * @protected
     */
     onUpdate : function(e){
       this.updateItem(e.record);
     },
-<span id='-method-onLocalSort'>    /**
+<span id='BUI-List-SimpleList-method-onLocalSort'>    /**
 </span>    * 本地排序
     * @protected
     */
@@ -181,7 +177,7 @@ define(&#39;bui/list/simplelist&#39;,[&#39;bui/common&#39;,&#39;bui/list/domlist
         this.onLoad(e);
       }
     },
-<span id='-method-onLoad'>    /**
+<span id='BUI-List-SimpleList-method-onLoad'>    /**
 </span>     * 加载数据
      * @protected
      */
@@ -193,13 +189,10 @@ define(&#39;bui/list/simplelist&#39;,[&#39;bui/common&#39;,&#39;bui/list/domlist
     }
   },{
     ATTRS : 
-<span id=''>    /**
-</span>     * @lends BUI.List.SimpleList#
-     * @ignore
-     */
+
     {
 
-<span id='-property-frontSortable'>      /**
+<span id='BUI-List-SimpleList-property-frontSortable'>      /**
 </span>       * 排序的时候是否直接进行DOM的排序，不重新生成DOM，&lt;br&gt;
        * 在可展开的表格插件，TreeGrid等控件中不要使用此属性
        * @type {Boolean}
@@ -208,7 +201,7 @@ define(&#39;bui/list/simplelist&#39;,[&#39;bui/common&#39;,&#39;bui/list/domlist
       frontSortable : {
         value : false
       },
-<span id='-property-items'>      /**
+<span id='BUI-List-SimpleList-property-items'>      /**
 </span>       * 选项集合
        * @protected
        * @type {Array}
@@ -217,7 +210,7 @@ define(&#39;bui/list/simplelist&#39;,[&#39;bui/common&#39;,&#39;bui/list/domlist
         view:true,
         value : []
       },
-<span id='-cfg-itemCl'>      /**
+<span id='BUI-List-SimpleList-cfg-itemCl'>      /**
 </span>       * 选项的样式，用来获取子项
        * &lt;pre&gt;&lt;code&gt;
        * var list = new List.SimpleList({
@@ -233,7 +226,7 @@ define(&#39;bui/list/simplelist&#39;,[&#39;bui/common&#39;,&#39;bui/list/domlist
         view:true,
         value : CLS_ITEM
       },
-<span id='-cfg-idField'>      /**
+<span id='BUI-List-SimpleList-cfg-idField'>      /**
 </span>       * 选项的默认id字段
        * &lt;pre&gt;&lt;code&gt;
        * var list = new List.SimpleList({
@@ -250,7 +243,7 @@ define(&#39;bui/list/simplelist&#39;,[&#39;bui/common&#39;,&#39;bui/list/domlist
       idField : {
         value : &#39;value&#39;
       },
-<span id='-property-listSelector'>      /**
+<span id='BUI-List-SimpleList-property-listSelector'>      /**
 </span>       * 列表的选择器，将列表项附加到此节点
        * @protected
        * @type {Object}
@@ -259,7 +252,7 @@ define(&#39;bui/list/simplelist&#39;,[&#39;bui/common&#39;,&#39;bui/list/domlist
         view:true,
         value:&#39;ul&#39;
       },
-<span id='-cfg-itemTpl'>      /**
+<span id='BUI-List-SimpleList-cfg-itemTpl'>      /**
 </span>       * 列表项的默认模板。
        *&lt;pre&gt;&lt;code&gt;
        * var list = new List.SimpleList({
@@ -277,11 +270,11 @@ define(&#39;bui/list/simplelist&#39;,[&#39;bui/common&#39;,&#39;bui/list/domlist
         view : true,
         value : &#39;&lt;li role=&quot;option&quot; class=&quot;&#39; + CLS_ITEM + &#39;&quot;&gt;{text}&lt;/li&gt;&#39;
       },
-<span id='-property-tpl'>      tpl : {
-</span>        value:&#39;&lt;ul&gt;&lt;/ul&gt;&#39;
+      tpl : {
+        value:&#39;&lt;ul&gt;&lt;/ul&gt;&#39;
       },
-<span id='-property-xview'>      xview:{
-</span>        value : simpleListView
+      xview:{
+        value : simpleListView
       }
     }
   },{

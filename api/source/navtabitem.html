@@ -128,12 +128,8 @@ define(&#39;bui/tab/navtabitem&#39;,[&#39;bui/common&#39;],function(requrie){
    * @extends BUI.Component.Controller
    */
   var navTabItem = Component.Controller.extend(
-<span id=''>  /**
-</span>   * @lends BUI.Tab.NavTabItem.prototype
-   * @ignore
-   */
   {
-<span id='-method-createDom'>    /**
+<span id='BUI-Tab-NavTabItem-method-createDom'>    /**
 </span>     * 创建DOM
      * @protected
      */
@@ -144,7 +140,7 @@ define(&#39;bui/tab/navtabitem&#39;,[&#39;bui/common&#39;],function(requrie){
         _self.set(&#39;tabContentContainer&#39;,parent.getTabContentContainer());
       }
     },
-<span id='-method-bindUI'>    /**
+<span id='BUI-Tab-NavTabItem-method-bindUI'>    /**
 </span>     * 绑定事件
      * @protected
      */
@@ -162,7 +158,7 @@ define(&#39;bui/tab/navtabitem&#39;,[&#39;bui/common&#39;],function(requrie){
         }
       });
     },
-<span id='-method-handleDblClick'>    /**
+<span id='BUI-Tab-NavTabItem-method-handleDblClick'>    /**
 </span>     * 处理双击
      * @protected
      */
@@ -174,7 +170,7 @@ define(&#39;bui/tab/navtabitem&#39;,[&#39;bui/common&#39;],function(requrie){
       }
       _self.fire(&#39;dblclick&#39;,{domTarget : ev.target,domEvent : ev});
     },
-<span id='-method-handleContextMenu'>    /**
+<span id='BUI-Tab-NavTabItem-method-handleContextMenu'>    /**
 </span>     * 处理右键
      * @protected
      */
@@ -182,20 +178,20 @@ define(&#39;bui/tab/navtabitem&#39;,[&#39;bui/common&#39;],function(requrie){
       ev.preventDefault();
       this.fire(&#39;showmenu&#39;,{position:{x:ev.pageX,y:ev.pageY}});
     },
-<span id='-method-setTitle'>    /**
+<span id='BUI-Tab-NavTabItem-method-setTitle'>    /**
 </span>     * 设置标题
      * @param {String} title 标题
      */
     setTitle : function(title){
       this.set(&#39;title&#39;,title);
     },
-<span id='-method-close'>    /**
+<span id='BUI-Tab-NavTabItem-method-close'>    /**
 </span>    * 关闭
     */
     close:function(){
       this.fire(&#39;closed&#39;);
     },
-<span id='-method-reload'>    /**
+<span id='BUI-Tab-NavTabItem-method-reload'>    /**
 </span>     * 重新加载页面
      */
     reload : function(){
@@ -223,15 +219,15 @@ define(&#39;bui/tab/navtabitem&#39;,[&#39;bui/common&#39;],function(requrie){
       });
     },
 
-<span id='-method-_uiSetActived'>    _uiSetActived : function(v){
-</span>      var _self = this,
+    _uiSetActived : function(v){
+      var _self = this,
         parent = _self.get(&#39;parent&#39;);
       if(parent &amp;&amp; v){
         parent._setItemActived(_self);
       }
     },
-<span id='-method-_uiSetCloseable'>    _uiSetCloseable : function(v){
-</span>      var _self = this,
+    _uiSetCloseable : function(v){
+      var _self = this,
         el = _self.get(&#39;el&#39;),
         closeEl = el.find(&#39;.&#39; + CLS_ITEM_CLOSE);
       if(v){
@@ -242,15 +238,11 @@ define(&#39;bui/tab/navtabitem&#39;,[&#39;bui/common&#39;],function(requrie){
     }
   },{
     ATTRS : 
-<span id=''>    /**
-</span>     * @lends BUI.Tab.NavTabItem#
-     * @ignore
-     */
     {
-<span id='-property-elTagName'>      elTagName : {
-</span>        value: &#39;li&#39;
+      elTagName : {
+        value: &#39;li&#39;
       },
-<span id='-property-actived'>      /**
+<span id='BUI-Tab-NavTabItem-property-actived'>      /**
 </span>       * 标签是否选中
        * @type {Boolean}
        */
@@ -258,20 +250,20 @@ define(&#39;bui/tab/navtabitem&#39;,[&#39;bui/common&#39;],function(requrie){
         view:true,
         value : false
       }, 
-<span id='-property-closeable'>      /**
+<span id='BUI-Tab-NavTabItem-property-closeable'>      /**
 </span>       * 是否可关闭
        * @type {Boolean}
        */
       closeable : {
         value : true
       },
-<span id='-property-allowTextSelection'>      allowTextSelection:{
-</span>        view:false,
+      allowTextSelection:{
+        view:false,
         value:false
       },
-<span id='-property-events'>      events:{
-</span>        value : {
-<span id='-event-click'>          /**
+      events:{
+        value : {
+<span id='BUI-Tab-NavTabItem-event-click'>          /**
 </span>           * 点击菜单项
            * @name BUI.Tab.NavTabItem#click
            * @event 
@@ -279,7 +271,7 @@ define(&#39;bui/tab/navtabitem&#39;,[&#39;bui/common&#39;],function(requrie){
            * @param {BUI.Tab.NavTabItem} e.target 正在点击的标签
            */
           &#39;click&#39; : true,
-<span id='-event-closing'>          /**
+<span id='BUI-Tab-NavTabItem-event-closing'>          /**
 </span>           * 正在关闭，返回false可以阻止关闭事件发生
            * @name BUI.Tab.NavTabItem#closing
            * @event 
@@ -287,7 +279,7 @@ define(&#39;bui/tab/navtabitem&#39;,[&#39;bui/common&#39;],function(requrie){
            * @param {BUI.Tab.NavTabItem} e.target 正在关闭的标签
            */
           &#39;closing&#39; : true,
-<span id='-event-closed'>          /**
+<span id='BUI-Tab-NavTabItem-event-closed'>          /**
 </span>           * 关闭事件
            * @name BUI.Tab.NavTabItem#closed
            * @event 
@@ -295,7 +287,7 @@ define(&#39;bui/tab/navtabitem&#39;,[&#39;bui/common&#39;],function(requrie){
            * @param {BUI.Tab.NavTabItem} e.target 关闭的标签
            */
           &#39;closed&#39; : true,
-<span id='-event-showmenu'>          /**
+<span id='BUI-Tab-NavTabItem-event-showmenu'>          /**
 </span>           * @name BUI.Tab.NavTabItem#showmenu
            * @event
            * @param {Object} e 事件对象
@@ -305,14 +297,14 @@ define(&#39;bui/tab/navtabitem&#39;,[&#39;bui/common&#39;],function(requrie){
           &#39;afterVisibleChange&#39; : true
         }
       },
-<span id='-property-tabContentContainer'>      /**
+<span id='BUI-Tab-NavTabItem-property-tabContentContainer'>      /**
 </span>       * @private
        * @type {Object}
        */
       tabContentContainer:{
         view : true
       },
-<span id='-property-tabContentTpl'>      /**
+<span id='BUI-Tab-NavTabItem-property-tabContentTpl'>      /**
 </span>       * @private
        * @type {Object}
        */
@@ -320,11 +312,11 @@ define(&#39;bui/tab/navtabitem&#39;,[&#39;bui/common&#39;],function(requrie){
         view : true,
         value : &#39;&lt;div class=&quot;&#39; + CLS_CONTENT + &#39;&quot; style=&quot;display:none;&quot;&gt;&lt;iframe src=&quot;&quot; width=&quot;100%&quot; height=&quot;100%&quot; frameborder=&quot;0&quot;&gt;&lt;/iframe&gt;&lt;/div&gt;&#39;
       },
-<span id='-cfg-href'>      /**
+<span id='BUI-Tab-NavTabItem-cfg-href'>      /**
 </span>       * 标签页指定的URL
        * @cfg {String} href
        */
-<span id='-property-href'>      /**
+<span id='BUI-Tab-NavTabItem-property-href'>      /**
 </span>       * 标签页指定的URL
        * @type {String}
        */
@@ -332,15 +324,15 @@ define(&#39;bui/tab/navtabitem&#39;,[&#39;bui/common&#39;],function(requrie){
         view : true,
         value:&#39;&#39;
       },
-<span id='-property-visible'>      visible:{
-</span>        view:true,
+      visible:{
+        view:true,
         value:true
       },
-<span id='-cfg-title'>      /**
+<span id='BUI-Tab-NavTabItem-cfg-title'>      /**
 </span>       * 标签文本
        * @cfg {String} title
        */
-<span id='-property-title'>      /**
+<span id='BUI-Tab-NavTabItem-property-title'>      /**
 </span>       * 标签文本
        * tab.getItem(&#39;id&#39;).set(&#39;title&#39;,&#39;new title&#39;);
        * @type {String}
@@ -350,12 +342,12 @@ define(&#39;bui/tab/navtabitem&#39;,[&#39;bui/common&#39;],function(requrie){
         view:true,
         value : &#39;&#39;
       },
-<span id='-property-tpl'>      tpl : {
-</span>        view:true,
+      tpl : {
+        view:true,
         value :&#39;&lt;s class=&quot;l&quot;&gt;&lt;/s&gt;&lt;div class=&quot;&#39; + CLS_ITEM_INNER + &#39;&quot;&gt;{icon}&lt;span class=&quot;&#39; + CLS_ITEM_TITLE + &#39;&quot;&gt;&lt;/span&gt;&lt;s class=&quot;&#39; + CLS_ITEM_CLOSE + &#39;&quot;&gt;&lt;/s&gt;&lt;/div&gt;&lt;s class=&quot;r&quot;&gt;&lt;/s&gt;&#39;
       },
-<span id='-property-xview'>      xview:{
-</span>        value : navTabItemView
+      xview:{
+        value : navTabItemView
       }
     }
   },{

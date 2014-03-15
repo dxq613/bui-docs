@@ -59,16 +59,12 @@ define(&#39;bui/toolbar/baritem&#39;,function(){
     }
   },{
     ATTRS:
-<span id=''>    /**
-</span>     * @lends BUI.Toolbar.BarItem.prototype
-     * @ignore
-     */
     {
-<span id='-property-elTagName'>      elTagName :{
-</span>          view : true,
+      elTagName :{
+          view : true,
           value : &#39;li&#39;
       },
-<span id='-cfg-selectable'>      /**
+<span id='BUI-Toolbar-BarItem-cfg-selectable'>      /**
 </span>       * 是否可选择
        * &lt;pre&gt;&lt;code&gt;
        * 
@@ -78,15 +74,15 @@ define(&#39;bui/toolbar/baritem&#39;,function(){
       selectable : {
         value : false
       },
-<span id='-property-focusable'>      /**
+<span id='BUI-Toolbar-BarItem-property-focusable'>      /**
 </span>      * 是否获取焦点
       * @default {boolean} false
       */
       focusable : {
         value : false
       },
-<span id='-property-xview'>      xview: {
-</span>        value : BarItemView
+      xview: {
+        value : BarItemView
       }
     }
   },{
@@ -129,19 +125,15 @@ define(&#39;bui/toolbar/baritem&#39;,function(){
     
   },{
     ATTRS:
-<span id=''>    /**
-</span>     * @lends BUI.Toolbar.BarItem.Button.prototype
-     * @ignore
-     */
     {
-<span id='-property-checked'>      /**
+<span id='BUI-Toolbar-BarItem-Button-property-checked'>      /**
 </span>       * 是否选中
        * @type {Boolean}
        */
       checked : {
         value :false
       },
-<span id='-property-tpl'>      /**
+<span id='BUI-Toolbar-BarItem-Button-property-tpl'>      /**
 </span>       * 模板
        * @type {String}
        */
@@ -149,22 +141,22 @@ define(&#39;bui/toolbar/baritem&#39;,function(){
         view : true,
         value : &#39;&lt;button type=&quot;button&quot; class=&quot;{btnCls}&quot;&gt;{text}&lt;/button&gt;&#39;
       },
-<span id='-cfg-btnCls'>      /**
+<span id='BUI-Toolbar-BarItem-Button-cfg-btnCls'>      /**
 </span>       * 按钮的样式
        * @cfg {String} btnCls
        */
-<span id='-property-btnCls'>      /**
+<span id='BUI-Toolbar-BarItem-Button-property-btnCls'>      /**
 </span>       * 按钮的样式
        * @type {String}
        */
       btnCls:{
         sync:false
       },
-<span id='-cfg-text'>      /**
+<span id='BUI-Toolbar-BarItem-Button-cfg-text'>      /**
 </span>      * The text to be used as innerHTML (html tags are accepted).
       * @cfg {String} text
       */
-<span id='-property-text'>      /**
+<span id='BUI-Toolbar-BarItem-Button-property-text'>      /**
 </span>      * The text to be used as innerHTML (html tags are accepted).
       * @type {String} 
       */
@@ -210,12 +202,8 @@ define(&#39;bui/toolbar/baritem&#39;,function(){
     
   },{
     ATTRS:
-<span id=''>    /** 
-</span>    * @lends BUI.Toolbar.BarItem.Spacer.prototype
-    * @ignore
-    */
     {
-<span id='-property-width'>      /**
+<span id='BUI-Toolbar-BarItem-Spacer-property-width'>      /**
 </span>      * 空白宽度
       * @type {Number}
       */
@@ -244,17 +232,13 @@ define(&#39;bui/toolbar/baritem&#39;,function(){
     }
   },{
     ATTRS:
-<span id=''>    /**
-</span>     * @lends BUI.Toolbar.BarItem.Text.prototype
-     * @ignore
-     */
     {
       
-<span id='-cfg-text'>      /**
+<span id='BUI-Toolbar-BarItem-Text-cfg-text'>      /**
 </span>      * 文本用作 innerHTML (html tags are accepted).
       * @cfg {String} text
       */
-<span id='-property-text'>      /**
+<span id='BUI-Toolbar-BarItem-Text-property-text'>      /**
 </span>      * 文本用作 innerHTML (html tags are accepted).
       * @default {String} &quot;&quot;
       */

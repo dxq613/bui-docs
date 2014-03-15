@@ -36,12 +36,8 @@ define(&#39;bui/toolbar/numberpagingbar&#39;,[&#39;bui/toolbar/pagingbar&#39;],f
      * @class BUI.Toolbar.NumberPagingBar
      */
     var NumberPagingBar = PBar.extend(
-<span id=''>        /** 
-</span>        * @lends BUI.Toolbar.NumberPagingBar.prototype
-        * @ignore
-        */
         {
-<span id='-method-_getItems'>        /**
+<span id='BUI-Toolbar-NumberPagingBar-method-_getItems'>        /**
 </span>        * get the initial items of paging bar
         * @protected
         *
@@ -61,8 +57,8 @@ define(&#39;bui/toolbar/numberpagingbar&#39;,[&#39;bui/toolbar/pagingbar&#39;],f
             items.push(_self._getButtonItem(PBar.ID_NEXT));
             return items;
         },
-<span id='-method-_getButtonItem'>        _getButtonItem : function(id){
-</span>          var _self = this;
+        _getButtonItem : function(id){
+          var _self = this;
 
           return {
               id:id,
@@ -70,7 +66,7 @@ define(&#39;bui/toolbar/numberpagingbar&#39;,[&#39;bui/toolbar/pagingbar&#39;],f
               disabled:true
           };
         },
-<span id='-method-_bindButtonEvent'>        /**
+<span id='BUI-Toolbar-NumberPagingBar-method-_bindButtonEvent'>        /**
 </span>        * bind buttons event
         * @protected
         *
@@ -90,14 +86,14 @@ define(&#39;bui/toolbar/numberpagingbar&#39;,[&#39;bui/toolbar/pagingbar&#39;],f
               }
             });
         },
-<span id='-method-_setNumberPages'>        //设置页码信息，设置 页数 按钮
-</span>        _setNumberPages : function(){
+        //设置页码信息，设置 页数 按钮
+        _setNumberPages : function(){
             var _self = this;
 
             _self._setNumberButtons();
         },
-<span id='-method-_setNumberButtons'>        //设置 页数 按钮
-</span>        _setNumberButtons : function(){
+        //设置 页数 按钮
+        _setNumberButtons : function(){
             var _self = this,
                 curPage = _self.get(&#39;curPage&#39;),
                 totalPage = _self.get(&#39;totalPage&#39;),
@@ -115,13 +111,13 @@ define(&#39;bui/toolbar/numberpagingbar&#39;,[&#39;bui/toolbar/pagingbar&#39;],f
             }
                
         },
-<span id='-method-_appendNumberButton'>        _appendNumberButton : function(cfg){
-</span>          var _self = this,
+        _appendNumberButton : function(cfg){
+          var _self = this,
             count = _self.getItemCount();
           var item = _self.addItemAt(cfg,count - 1);
         },
-<span id='-method-_clearNumberButtons'>        _clearNumberButtons : function(){
-</span>          var _self = this,
+        _clearNumberButtons : function(){
+          var _self = this,
             items = _self.getItems(),
             count = _self.getItemCount();
 
@@ -130,8 +126,8 @@ define(&#39;bui/toolbar/numberpagingbar&#39;,[&#39;bui/toolbar/pagingbar&#39;],f
             count = _self.getItemCount();          
           }
         },
-<span id='-method-_getNumberItems'>        //获取所有页码按钮的配置项
-</span>        _getNumberItems : function(curPage, totalPage){
+        //获取所有页码按钮的配置项
+        _getNumberItems : function(curPage, totalPage){
             var _self = this,
                 result = [],
                 maxLimitCount = _self.get(&#39;maxLimitCount&#39;),
@@ -174,16 +170,16 @@ define(&#39;bui/toolbar/numberpagingbar&#39;,[&#39;bui/toolbar/pagingbar&#39;],f
 
             return result;
         },
-<span id='-method-_getEllipsisItem'>        //获取省略号
-</span>        _getEllipsisItem : function(){
+        //获取省略号
+        _getEllipsisItem : function(){
             var _self = this;
             return {
                 disabled: true,           
                 content : _self.get(&#39;ellipsisTpl&#39;)
             };
         },
-<span id='-method-_getNumberItem'>        //生成页面按钮配置项
-</span>        _getNumberItem : function(page){
+        //生成页面按钮配置项
+        _getNumberItem : function(page){
             var _self = this;
             return {
                 id : page,
@@ -208,7 +204,7 @@ define(&#39;bui/toolbar/numberpagingbar&#39;,[&#39;bui/toolbar/pagingbar&#39;],f
             nextText : {
               value : &#39;&gt;&gt;&#39;
             },
-<span id='-property-maxLimitCount'>            /**
+<span id='BUI-Toolbar-NumberPagingBar-property-maxLimitCount'>            /**
 </span>            * 当页码超过该设置页码时候显示省略号
             * @default {Number} 4
             */
@@ -218,13 +214,13 @@ define(&#39;bui/toolbar/numberpagingbar&#39;,[&#39;bui/toolbar/pagingbar&#39;],f
             showRangeCount : {
                 value : 1   
             },
-<span id='-property-numberButtonCls'>            /**
+<span id='BUI-Toolbar-NumberPagingBar-property-numberButtonCls'>            /**
 </span>            * the css used on number button
             */
             numberButtonCls:{
                 value : CLS_NUMBER_BUTTON
             },
-<span id='-property-ellipsisTpl'>            /**
+<span id='BUI-Toolbar-NumberPagingBar-property-ellipsisTpl'>            /**
 </span>            * the template of ellipsis which represent the omitted pages number
             */
             ellipsisTpl : {
