@@ -291,6 +291,9 @@ define(&#39;bui/chart/lineseries&#39;,[&#39;bui/chart/cartesianseries&#39;,&#39;
     },
     //将点转换成Path
     points2path : function(points){
+      if(!points.length){
+        return &#39;&#39;;
+      }
       var _self = this,
         smooth = _self.get(&#39;smooth&#39;),
         connectNulls = _self.get(&#39;connectNulls&#39;),
@@ -324,6 +327,9 @@ define(&#39;bui/chart/lineseries&#39;,[&#39;bui/chart/cartesianseries&#39;,&#39;
     },
     //获取tracker的路径，增加触发事件的范围
     points2tracker : function(points){
+      if(!points.length){
+        return &#39;&#39;;
+      }
       var _self = this,
         tolerance = _self.get(&#39;tolerance&#39;),
         first = points[0],

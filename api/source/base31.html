@@ -93,7 +93,8 @@ define(&#39;bui/chart/baseseries&#39;,[&#39;bui/chart/plotitem&#39;,&#39;bui/cha
      * @type {Array}
      */
     data : {
-
+      value : [],
+      shared : false
     },
 <span id='BUI-Chart-Series-property-autoPaint'>    /**
 </span>     * 渲染时就绘制图形
@@ -132,6 +133,22 @@ define(&#39;bui/chart/baseseries&#39;,[&#39;bui/chart/plotitem&#39;,&#39;bui/cha
      */
     yField : {
       value : &#39;y&#39;
+    },
+<span id='BUI-Chart-Series-property-itemName'>    /**
+</span>     * 活动子项的名称，用于组成 itemactived,itemunactived的事件
+     * @protected
+     * @type {String}
+     */
+    itemName : {
+      value : &#39;seriesItem&#39;
+    },
+<span id='BUI-Chart-Series-property-groupName'>    /**
+</span>     * 所属分组的名称,用于事件中标示父元素
+     * @protected
+     * @type {String}
+     */
+    groupName : {
+      value : &#39;series&#39;
     }
 
   };
@@ -237,13 +254,13 @@ define(&#39;bui/chart/baseseries&#39;,[&#39;bui/chart/plotitem&#39;,&#39;bui/cha
         first = labelsGroup.getChildAt(0);
         first &amp;&amp; first.remove();
       }
-      /*if(xAxis){
+      if(xAxis){
         var labels = xAxis.get(&#39;labelsGroup&#39;);
         if(labels){
           first = labels.getChildAt(0);
           first &amp;&amp; first.remove();
         }
-      }*/
+      }/**/
     },
 <span id='BUI-Chart-Series-method-getData'>    /**
 </span>     * 获取对应坐标轴上的数据
@@ -406,13 +423,15 @@ define(&#39;bui/chart/baseseries&#39;,[&#39;bui/chart/plotitem&#39;,&#39;bui/cha
       var _self = this,
         points = _self.getPoints();
 
-      if(_self.get(&#39;isPaint&#39;)){
+      if(_self.get(&#39;isPaint&#39;) || !_self.get(&#39;data&#39;).length){ //没有数据时不做渲染
         return;
       }
+      _self.set(&#39;painting&#39;,true);//正在绘制，防止再绘制过程中触发重绘
       _self.draw(points,function(){
         _self.sort();
       });
       _self.set(&#39;isPaint&#39;,true);
+      _self.set(&#39;painting&#39;,false);
     },
 <span id='BUI-Chart-Series-method-repaint'>    /**
 </span>     * 重绘
@@ -424,6 +443,12 @@ define(&#39;bui/chart/baseseries&#39;,[&#39;bui/chart/plotitem&#39;,&#39;bui/cha
         points;
 
       _self.set(&#39;points&#39;,null);
+      if(!_self.get(&#39;isPaint&#39;) &amp;&amp; !_self.get(&#39;painting&#39;)){
+        _self.paint();
+        return;
+      }
+
+      
       points = _self.getPoints();
 
       if(labels){

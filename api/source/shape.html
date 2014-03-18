@@ -190,7 +190,7 @@
           if(str){
             var sub = str.split(&#39; &#39;);
             sub = $.map(sub,function(subStr){
-              if($.isNumeric(subStr)){
+              if(BUI.isNumeric(subStr)){
                 return parseFloat(subStr);
               }
               return subStr;

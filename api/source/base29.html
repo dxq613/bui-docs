@@ -604,7 +604,7 @@ define(&#39;bui/chart/baseaxis&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#39;,
             }
             gridGroup = _self.get(&#39;gridGroup&#39;);
 
-            gridGroup.change(grid.items);
+            gridGroup &amp;&amp; gridGroup.change(grid.items);
         },
         //移除控件前移除对应的grid和labels
         remove : function(){

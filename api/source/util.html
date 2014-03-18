@@ -107,7 +107,7 @@ define(&#39;bui/util&#39;,function(require){
 </span>             * 子版本号
              * @type {Number}
              */
-            subVersion : 75,
+            subVersion : 76,
 
 <span id='BUI-method-isFunction'>            /**
 </span>             * 是否为函数
@@ -148,6 +148,14 @@ define(&#39;bui/util&#39;,function(require){
                 function(value) {
                     return toString.call(value) === &#39;[object Object]&#39;;
                 },
+<span id='BUI-method-isNumeric'>            /**
+</span>             * 是否是数字或者数字字符串
+             * @param  {String}  value 数字字符串
+             * @return {Boolean}  是否是数字或者数字字符串
+             */
+            isNumeric: function(value) {
+                return !isNaN(parseFloat(value)) &amp;&amp; isFinite(value);
+            },
 <span id='BUI-method-augment'>            /**
 </span>             * 将指定的方法或属性放到构造函数的原型链上，
              * 函数支持多于2个变量，后面的变量同s1一样将其成员复制到构造函数的原型链上。
@@ -188,6 +196,7 @@ define(&#39;bui/util&#39;,function(require){
                     throw msg;
                 }
             },
+            
 <span id='BUI-method-extend'>            /**
 </span>             * 实现类的继承，通过父类生成子类
              * @param  {Function} subclass
@@ -198,18 +207,18 @@ define(&#39;bui/util&#39;,function(require){
              *      @example
              *      //父类
              *      function base(){
-     * 
-     *      }
+             *  
+             *      }
              *
              *      function sub(){
-     * 
-     *      }
+             * 
+             *      }
              *      //子类
              *      BUI.extend(sub,base,{
-     *          method : function(){
-     *    
-     *          }
-     *      });
+             *          method : function(){
+             *    
+             *          }
+             *      });
              *
              *      //或者
              *      var sub = BUI.extend(base,{});

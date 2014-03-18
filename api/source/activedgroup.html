@@ -32,7 +32,7 @@ define(&#39;bui/chart/activedgroup&#39;,function  (require) {
 	};
 
 	Group.ATTRS = {
-
+		
 	};
 
 	BUI.augment(Group,{
@@ -67,6 +67,23 @@ define(&#39;bui/chart/activedgroup&#39;,function  (require) {
 				item.clearActived();
 			}
 		},
+		
+<span id='BUI-Chart-ActivedGroup-method-onActived'>		/**
+</span>		 * @protected
+		 * 触发激活事件
+		 * @param  {Object} item 可激活的子项
+		 */
+		onActived : function(item){
+			this.fireUpGroup(&#39;actived&#39;,item);
+		},
+<span id='BUI-Chart-ActivedGroup-method-onUnActived'>		/**
+</span>		 * @protected
+		 * 触发取消激活事件
+		 * @param  {Object} item 可激活的子项
+		 */
+		onUnActived : function(item){
+			this.fireUpGroup(&#39;unactived&#39;,item);
+		},
 <span id='BUI-Chart-ActivedGroup-method-setActivedItem'>		/**
 </span>		 * 设置激活的元素
 		 * @param {BUI.Chart.Actived} item 可以被激活的元素
@@ -77,6 +94,7 @@ define(&#39;bui/chart/activedgroup&#39;,function  (require) {
 			_self.clearActivedItem();
 			if(item &amp;&amp; !_self.isItemActived(item)){
 				_self.setItemActived(item,true);
+				_self.onActived();
 			}
 			
 		},
@@ -104,7 +122,11 @@ define(&#39;bui/chart/activedgroup&#39;,function  (require) {
 		clearActivedItem : function(item){
 			var _self = this;
 			item = item || _self.getActived();
-			item &amp;&amp; _self.setItemActived(item,false);
+			if(item){
+				_self.setItemActived(item,false);
+				_self.onUnActived(item);
+			}
+				 
 		}
 
 	});

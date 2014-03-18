@@ -96,12 +96,13 @@ define(&#39;bui/chart/series/itemgroup&#39;,[&#39;bui/chart/baseseries&#39;],fun
     bindItemClick : function(){
       var _self = this,
         cancelSelect = _self.get(&#39;cancelSelect&#39;);
-      if(_self.get(&#39;allowPointSelect&#39;)){
-        _self.on(&#39;click&#39;,function(ev){
-          var target = ev.target,
-            shape = target.shape,
-            selected;
-          if(shape &amp;&amp; shape.isSeriesItem){
+      
+      _self.on(&#39;click&#39;,function(ev){
+        var target = ev.target,
+          shape = target.shape,
+          selected;
+        if(shape &amp;&amp; shape.isSeriesItem){
+          if(_self.get(&#39;allowPointSelect&#39;)){
             selected = shape.get(&#39;selected&#39;);
             if(cancelSelect &amp;&amp; selected){
               _self.clearSelected(shape)
@@ -109,8 +110,9 @@ define(&#39;bui/chart/series/itemgroup&#39;,[&#39;bui/chart/baseseries&#39;],fun
               _self.setSelected(shape);
             }
           }
-        });
-      }
+          _self.fireUpGroup(&#39;click&#39;,shape);
+        }
+      });
     },
 <span id='BUI-Chart-Series-ItemGroup-method-setSelected'>    /**
 </span>     * 设置选中
@@ -121,7 +123,71 @@ define(&#39;bui/chart/series/itemgroup&#39;,[&#39;bui/chart/baseseries&#39;],fun
       if(!_self.isSelected(item)){
         _self.clearSelected();
         _self.setItemSelected(item,true);
+        _self.onSelected(item);
       }
+    },
+<span id='BUI-Chart-Series-ItemGroup-method-changePoints'>    /**
+</span>     * @protected
+     * points 发生改变时
+     */
+    changePoints : function(points){
+      var _self = this,
+        items = _self.getItems(),
+        animate = _self.get(&#39;animate&#39;);
+
+      points = points || _self.getPoints();
+
+      //修改现有的path
+      BUI.each(items,function(item,index){
+        var point = points[index],
+          prePoint,
+          path;
+        if(point){
+          prePoint = item.get(&#39;point&#39;);
+          item.set(&#39;point&#39;,point);
+          item.set(&#39;prePoint&#39;,prePoint);
+
+          if(!animate){
+            path = _self.pointToPath(point);
+            item.attr(&#39;path&#39;,path);
+          }else{
+            _self.animateItem(item,prePoint);
+          }
+          
+        }
+      });
+
+      var count = points.length,
+        length = items.length;
+
+      //大于现有的点
+      for (var i = length; i &lt; count; i++) {
+        var shape = _self.addItem(points[i],i);
+
+        animate &amp;&amp; _self.animateItem(shape,items[length - 1].get(&#39;prePoint&#39;));
+      }
+
+      //小于现有的点
+      for(var i = length - 1; i &gt;= count; i--){
+        var item = items[i];
+        item.remove();
+      }
+
+    },
+    
+<span id='BUI-Chart-Series-ItemGroup-method-onSelected'>    /**
+</span>     * @protected
+     * 触发选中事件
+     */
+    onSelected : function(item){
+      this.fireUpGroup(&#39;selected&#39;,item);
+    },
+<span id='BUI-Chart-Series-ItemGroup-method-onUnSelected'>    /**
+</span>     * @protected
+     * 触发移除选中
+     */
+    onUnSelected : function(item){
+      this.fireUpGroup(&#39;unselected&#39;,item);
     },
 <span id='BUI-Chart-Series-ItemGroup-method-clearSelected'>    /**
 </span>     * 清除选中
@@ -132,6 +198,7 @@ define(&#39;bui/chart/series/itemgroup&#39;,[&#39;bui/chart/baseseries&#39;],fun
       item = item || _self.getSelected();
       if(item){
         _self.setItemSelected(item,false);
+        _self.onUnSelected(item);
       }
     },
 <span id='BUI-Chart-Series-ItemGroup-method-setItemSelected'>    /**
@@ -189,7 +256,9 @@ define(&#39;bui/chart/series/itemgroup&#39;,[&#39;bui/chart/baseseries&#39;],fun
      * @return {Array} 子项集合
      */
     getItems : function(){
-      return this.get(&#39;group&#39;).get(&#39;children&#39;);
+      var group = this.get(&#39;group&#39;);
+
+      return group ? group.get(&#39;children&#39;) : [];
     },
 <span id='BUI-Chart-Series-ItemGroup-method-animateItems'>    /**
 </span>     * 生成动画
@@ -207,6 +276,19 @@ define(&#39;bui/chart/series/itemgroup&#39;,[&#39;bui/chart/baseseries&#39;],fun
           item.attr(&#39;path&#39;,path);
         });
       },callback);
+    },
+<span id='BUI-Chart-Series-ItemGroup-method-animateItem'>    /**
+</span>     * 执行单个点的动画
+     * @protected
+     */
+    animateItem : function(item,prePoint){
+      var _self = this,
+        point = item.get(&#39;point&#39;),
+        path = _self.pointToPath(point);
+
+      item.animate({
+        path : path
+      },_self.get(&#39;changeDuration&#39;));
     },
 <span id='BUI-Chart-Series-ItemGroup-method-removeItem'>    /**
 </span>     * 删除子项

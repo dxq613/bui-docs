@@ -120,7 +120,7 @@ define(&#39;bui/data/treestore&#39;,[&#39;bui/common&#39;,&#39;bui/data/node&#39
       
     },
 <span id='BUI-Data-TreeStore-cfg-dataProperty'>    /**
-</span>     * 返回数据标示数据的字段&lt;/br&gt;
+</span>     * 返回数据标示数据的字段&lt;br/&gt;
      * 异步加载数据时，返回数据可以使数组或者对象
      * - 如果返回的是对象,可以附加其他信息,那么取对象对应的字段 {nodes : [],hasError:false}
      * - 如何获取附加信息参看 @see {BUI.Data.AbstractStore-event-beforeprocessload}
@@ -168,7 +168,7 @@ define(&#39;bui/data/treestore&#39;,[&#39;bui/common&#39;,&#39;bui/data/node&#39
         &#39;remove&#39;,
 <span id='BUI-Data-TreeStore-event-load'>        /**  
 </span>        * 节点加载完毕触发该事件
-        * &lt;pre&gt;&lt;/code&gt;
+        * &lt;pre&gt;&lt;code&gt;
         *   //异步加载节点,此时节点已经附加到加载节点的后面
         *   store.on(&#39;load&#39;,function(ev){
         *     var params = ev.params,

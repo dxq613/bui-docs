@@ -26,7 +26,7 @@ define(&#39;bui/chart/plotitem&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#39;]
 		Graphic = require(&#39;bui/graphic&#39;);
 
 	function initClassAttrs(c){
-    if(c._attrs || c == Item){
+    if(c._attrs || c == Graphic.Group){
       return;
     }
 
@@ -50,6 +50,25 @@ define(&#39;bui/chart/plotitem&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#39;]
 		initClassAttrs(this.constructor);
 		Item.superclass.constructor.call(this,cfg);
 	};
+
+  Item.ATTRS = {
+<span id='BUI-Chart-PlotItem-property-itemName'>    /**
+</span>     * 活动子项的名称，用于组成 itemactived,itemunactived的事件
+     * @protected
+     * @type {String}
+     */
+    itemName : {
+      value : &#39;item&#39;
+    },
+<span id='BUI-Chart-PlotItem-property-groupName'>    /**
+</span>     * 所属分组的名称,用于事件中标示父元素
+     * @protected
+     * @type {String}
+     */
+    groupName : {
+      value : &#39;&#39;
+    }
+  };
 
 	BUI.extend(Item,Graphic.Group);
 
@@ -83,7 +102,39 @@ define(&#39;bui/chart/plotitem&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#39;]
         }
       }
 			return rst;
-		}
+		},
+<span id='BUI-Chart-PlotItem-method-fireUp'>    /**
+</span>     * 在顶层图表控件上触发事件
+     * @param {String} name 事件名称
+     * @param  {Object} ev 事件对象
+     */
+    fireUp : function(name,ev){
+      var _self = this,
+        canvas = _self.get(&#39;canvas&#39;),
+        chart = canvas.chart;
+      if(chart){
+        ev.target = ev.target || _self;
+        chart.fire(name,ev);
+      }
+    },
+<span id='BUI-Chart-PlotItem-method-fireUpGroup'>    /**
+</span>     * @protected
+     * 在分组上触发事件
+     * @param  {String} name 事件名称
+     * @param  {Object} item 触发事件的子项
+     * @param  {Object} obj  事件对象
+     */
+    fireUpGroup : function(name,item,obj){
+      var _self = this,
+        itemName = _self.get(&#39;itemName&#39;),
+        groupName = _self.get(&#39;groupName&#39;);
+      obj = obj || {};
+      obj[itemName] =  item;
+      if(groupName){
+        obj[groupName] = _self.get(&#39;parent&#39;)
+      }
+      _self.fireUp(itemName.toLowerCase() + name,obj);
+    }
 	});
 
 	return Item;

@@ -128,10 +128,18 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
     },
 <span id='BUI-Chart-SeriesGroup-property-data'>    /**
 </span>     * 可以设置数据序列共同的数据源
-     * @type {Data}
+     * @type {Array}
      */
     data : {
 
+    },
+<span id='BUI-Chart-SeriesGroup-property-itemName'>    /**
+</span>     * 活动子项的名称，用于组成 itemactived,itemunactived的事件
+     * @protected
+     * @type {String}
+     */
+    itemName : {
+      value : &#39;series&#39;
     }
 
   };
@@ -433,7 +441,8 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
         min,
         max,
         interval,
-        autoUtil;
+        autoUtil,
+        rst;
         if(type == &#39;number&#39; || type == &#39;radius&#39;) {
           min = axis.getCfgAttr(&#39;min&#39;);
           max = axis.getCfgAttr(&#39;max&#39;);
@@ -470,9 +479,16 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
       }else{
         data = _self.getSeriesData(axis,name);
       }
-      cfg.data = data;
+      if(data.length){
+        cfg.data = data;
 
-      var rst =  autoUtil.caculate(cfg,stackType);
+        rst =  autoUtil.caculate(cfg,stackType);
+      }else{
+        rst = {
+          ticks : []
+        };
+      }
+      
 
       return rst;
 
@@ -511,7 +527,11 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
 
       BUI.each(series,function(item){
         if(item.get(name) == axis){
-          data.push(item.getData(name));
+          var arr = item.getData(name);
+          if(arr.length){
+            data.push(arr);
+          }
+          
         }
       });
 
@@ -564,12 +584,6 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
         if(_self._hasRelativeSeries(item,name)){
           if(item.get(&#39;autoTicks&#39;)){
             var info = _self._caculateAxisInfo(item,name);
-            /*if(item.get(&#39;type&#39;) == &#39;category&#39;){
-
-            }else{
-              item.set(&#39;tickInterval&#39;,info.interval);
-              item.set(&#39;ticks&#39;,info.ticks);
-            }*/
             item.changeInfo(info);
             
           }

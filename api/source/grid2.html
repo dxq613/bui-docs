@@ -248,6 +248,14 @@ define(&#39;bui/chart/grid&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plotitem&#3
       		gridLine.attr(&#39;path&#39;,cfg.path);
       	}
       	
+      }else if(items &amp;&amp; items.length){
+      	var lineCfg;
+      	if(cls == CLS_GRID + &#39;-line&#39;){
+      		lineCfg = _self.get(&#39;line&#39;);
+      	}else{
+      		lineCfg = _self.get(&#39;minorLine&#39;);
+      	}
+      	_self._drawGridLines(items,lineCfg,cls);
       }
 		},
 		_linesToPath : function(items,lineCfg){

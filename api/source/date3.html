@@ -78,7 +78,7 @@ define(&#39;bui/form/datefield&#39;,[&#39;bui/common&#39;,&#39;bui/form/basefiel
       var _self = this,
         datePicker = _self.get(&#39;datePicker&#39;);
 
-      if(datePicker.get(&#39;showTime&#39;)){
+      if(datePicker.showTime || (datePicker.get &amp;&amp; datePicker.get(&#39;showTime&#39;))){
         return &#39;yyyy-mm-dd HH:MM:ss&#39;;
       }
       return &#39;yyyy-mm-dd&#39;;
