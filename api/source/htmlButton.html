@@ -27,20 +27,12 @@ define(&#39;bui/uploader/button/htmlButton&#39;, [&#39;bui/uploader/button/base&
     ButtonBase = require(&#39;bui/uploader/button/base&#39;),
     UA = BUI.UA;
 
-  var HtmlButtonView = Component.View.extend([ButtonBase.View], {
-
-  },{
-    ATTRS: {
-    }
-  });
-
 <span id='BUI-Uploader-Button-HtmlButton'>  /**
 </span>   * 文件上传按钮，ajax和iframe上传方式使用,使用的是input[type=file]
    * @class BUI.Uploader.Button.HtmlButton
-   * @extends BUI.Component.Controller
-   * @mixins BUI.Uploader.Button
+   * @extends BUI.Uploader.Button
    */
-  var HtmlButton = Component.Controller.extend([ButtonBase], {
+  var HtmlButton = ButtonBase.extend({
     renderUI: function(){
       var _self = this;
       _self._createInput();
@@ -167,6 +159,9 @@ define(&#39;bui/uploader/button/htmlButton&#39;, [&#39;bui/uploader/button/base&
       //accept是html5的属性，所以ie8以下是不支持的
       filter.type &amp;&amp; fileInput.attr(&#39;accept&#39;, filter.type);
       return filter;
+    },
+    _uiSetName: function(v){
+      $(this.get(&#39;fileInput&#39;)).attr(&#39;name&#39;, v)
     }
   },{
     ATTRS: {
@@ -183,22 +178,6 @@ define(&#39;bui/uploader/button/htmlButton&#39;, [&#39;bui/uploader/button/base&
        * @type {jQuery}
        */
       fileInput: {
-      },
-<span id='BUI-Uploader-Button-HtmlButton-property-name'>      /**
-</span>       * 隐藏的表单上传域的name值
-       * @type String
-       * @default &quot;Filedata&quot;
-       */
-      name : {
-        view: true,
-        value : &#39;Filedata&#39;,
-        setter : function(v) {
-            v &amp;&amp; this.get(&#39;fileInput&#39;) &amp;&amp; $(this.get(&#39;fileInput&#39;)).attr(&#39;name&#39;, v);
-          return v;
-        }
-      },
-      xview: {
-        value: HtmlButtonView
       }
     }
   }, {

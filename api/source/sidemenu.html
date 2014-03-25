@@ -96,16 +96,18 @@ define(&#39;bui/menu/sidemenu&#39;,[&#39;bui/common&#39;,&#39;bui/menu/menu&#39;
         items = item.items,
         subItems = [],
         cfg = {
-          xclass : &#39;menu-item&#39;,
-          elCls : &#39;menu-second&#39;,
-          collapsed : item.collapsed,
           selectable: false,
           children : [{
             xclass : &#39;menu&#39;,
             children : subItems
-          }],
-          content: &#39;&lt;div class=&quot;&#39;+CLS_MENU_TITLE+&#39;&quot;&gt;&lt;s&gt;&lt;/s&gt;&lt;span class=&quot;&#39;+CLS_MENU_TITLE+&#39;-text&quot;&gt;&#39;+item.text+&#39;&lt;/span&gt;&lt;/div&gt;&#39;
+          }]
         };
+
+      BUI.mix(cfg,{
+        xclass : &#39;menu-item&#39;,
+        elCls : &#39;menu-second&#39;
+      },item);
+
       BUI.each(items,function(subItem){
         var subItemCfg = _self._initSubMenuCfg(subItem);
         subItems.push(subItemCfg);
@@ -120,7 +122,7 @@ define(&#39;bui/menu/sidemenu&#39;,[&#39;bui/common&#39;,&#39;bui/menu/menu&#39;
         cfg = {
           xclass : &#39;menu-item&#39;,
           elCls : &#39;menu-leaf&#39;,
-          tpl : &#39;&lt;a href=&quot;{href}&quot;&gt;&lt;em&gt;{text}&lt;/em&gt;&lt;/a&gt;&#39;
+          tpl : _self.get(&#39;subMenuItemTpl&#39;)
         };
       return BUI.mix(cfg,subItem);
     }
@@ -136,6 +138,20 @@ define(&#39;bui/menu/sidemenu&#39;,[&#39;bui/common&#39;,&#39;bui/menu/menu&#39;
        */
       autoInitItems : {
           value : false
+      },
+<span id='BUI-Menu-SideMenu-property-itemTpl'>      /**
+</span>       * 菜单项的模板
+       * @type {String}
+       */
+      itemTpl : {
+        value : &#39;&lt;div class=&quot;&#39;+CLS_MENU_TITLE+&#39;&quot;&gt;&lt;s&gt;&lt;/s&gt;&lt;span class=&quot;&#39;+CLS_MENU_TITLE+&#39;-text&quot;&gt;{text}&lt;/span&gt;&lt;/div&gt;&#39;
+      },
+<span id='BUI-Menu-SideMenu-cfg-subMenuTpl'>      /**
+</span>       * 子菜单的选项模板
+       * @cfg {String} subMenuTpl
+       */
+      subMenuItemTpl : {
+        value : &#39;&lt;a href=&quot;{href}&quot;&gt;&lt;em&gt;{text}&lt;/em&gt;&lt;/a&gt;&#39;
       },
       events : {
         value : {

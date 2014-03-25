@@ -107,6 +107,29 @@ define(&#39;bui/grid/plugins/editing&#39;,function (require) {
     triggerSelected : {
       value : true
     }
+<span id='BUI-Grid-Plugins-Editing-event-accept'>    /**
+</span>     * @event accept 
+     * 确认编辑
+     * @param {Object} ev 事件对象
+     * @param {Object} ev.record 编辑的数据
+     * @param {BUI.Editor.Editor} ev.editor 编辑器
+     */
+    
+<span id='BUI-Grid-Plugins-Editing-event-cancel'>    /**
+</span>     * @event cancel 
+     * 取消编辑
+     * @param {Object} ev 事件对象
+     * @param {Object} ev.record 编辑的数据
+     * @param {BUI.Editor.Editor} ev.editor 编辑器
+     */
+    
+<span id='BUI-Grid-Plugins-Editing-event-editorshow'>    /**
+</span>     * @event editorshow 
+     * editor 显示
+     * @param {Object} ev 事件对象
+     * @param {Object} ev.record 编辑的数据
+     * @param {BUI.Editor.Editor} ev.editor 编辑器
+     */
   };
 
   BUI.augment(Editing,{
@@ -311,10 +334,13 @@ define(&#39;bui/grid/plugins/editing&#39;,function (require) {
       editor.on(&#39;accept&#39;,function(){
         var record = _self.get(&#39;record&#39;);
         _self.updateRecord(store,record,editor);
+        _self.fire(&#39;accept&#39;,{editor : editor,record : record});
         _self.set(&#39;curEditor&#39;,null);
+
       });
 
       editor.on(&#39;cancel&#39;,function(){
+        _self.fire(&#39;cancel&#39;,{editor : editor,record : _self.get(&#39;record&#39;)});
         _self.set(&#39;curEditor&#39;,null);
       });
     },
@@ -368,6 +394,7 @@ define(&#39;bui/grid/plugins/editing&#39;,function (require) {
       editor.show();
       _self.focusEditor(editor,options.field);
       _self.set(&#39;curEditor&#39;,editor);
+      _self.fire(&#39;editorshow&#39;,{editor : editor});
     },
 <span id='BUI-Grid-Plugins-Editing-method-focusEditor'>    /**
 </span>     * @protected

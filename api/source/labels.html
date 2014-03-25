@@ -144,15 +144,25 @@ define(&#39;bui/chart/labels&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plotitem&
 				index = BUI.Array.indexOf(label,_self.get(&#39;children&#39;)),
 				cfg = _self._getLabelCfg(item,index);
 			if(label){
-				if(Util.svg &amp;&amp; _self.get(&#39;animate&#39;)){
-					label.attr(&#39;text&#39;,cfg.text);
-					label.animate({
-						x : cfg.x,
-						y : cfg.y
-					},_self.get(&#39;duration&#39;));
-				}else{
-					label.attr(cfg);
+				label.attr(&#39;text&#39;,cfg.text);
+				if(label.attr(&#39;x&#39;) != cfg.x || label.attr(&#39;y&#39;) != cfg.y){
+					if(Util.svg &amp;&amp; _self.get(&#39;animate&#39;) &amp;&amp; !cfg.rotate){
+						if(cfg.rotate){
+							label.attr(&#39;transform&#39;,&#39;&#39;);
+						}
+						
+						label.animate({
+							x : cfg.x,
+							y : cfg.y
+						},_self.get(&#39;duration&#39;));
+					}else{
+						label.attr(cfg);
+						if(cfg.rotate){
+							label.attr(&#39;transform&#39;,BUI.substitute(&#39;r{rotate} {x} {y}&#39;,cfg));
+						}
+					}
 				}
+				
 			}
 		},
 <span id='BUI-Chart-Labels-method-_createText'>		/**

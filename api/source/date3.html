@@ -188,12 +188,14 @@ define(&#39;bui/form/datefield&#39;,[&#39;bui/common&#39;,&#39;bui/form/basefiel
     },
     PARSER : {
       datePicker : function(el){
+        var _self = this,
+          cfg = _self.get(&#39;datePicker&#39;) || {};
         if(el.hasClass(&#39;calendar-time&#39;)){
-          return {
+          BUI.mix(cfg,{
             showTime : true
-          }
+          }) ;
         }
-        return {};
+        return cfg;
       }
     }
   },{

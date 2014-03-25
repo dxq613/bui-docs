@@ -29,6 +29,7 @@ define(&#39;bui/list/simplelist&#39;,[&#39;bui/common&#39;,&#39;bui/list/domlist
    */
   var BUI = require(&#39;bui/common&#39;),
     UIBase = BUI.Component.UIBase,
+    UA = BUI.UA,
     DomList = require(&#39;bui/list/domlist&#39;),
     KeyNav = require(&#39;bui/list/keynav&#39;),
     Sortable = require(&#39;bui/list/sortable&#39;),
@@ -120,12 +121,12 @@ define(&#39;bui/list/simplelist&#39;,[&#39;bui/common&#39;,&#39;bui/list/domlist
           return;
         }
         
-        /*if(_self.get(&#39;highlightedStatus&#39;) === &#39;hover&#39;){
+        if(!(UA.ie &amp;&amp; UA.ie &lt; 8) &amp;&amp; _self.get(&#39;focusable&#39;) &amp;&amp; _self.get(&#39;highlightedStatus&#39;) === &#39;hover&#39;){
           _self.setHighlighted(item,element)
         }else{
           _self.setItemStatus(item,&#39;hover&#39;,true,element);
-        }*/
-        _self.get(&#39;view&#39;).setElementHover(element,true);
+        }
+        /*_self.get(&#39;view&#39;).setElementHover(element,true);*/
 
       }).delegate(&#39;.&#39;+itemCls,&#39;mouseout&#39;,function(ev){
         if(_self.get(&#39;disabled&#39;)){ //控件禁用后，阻止事件
@@ -199,6 +200,9 @@ define(&#39;bui/list/simplelist&#39;,[&#39;bui/common&#39;,&#39;bui/list/domlist
        * cfg {Boolean} frontSortable
        */
       frontSortable : {
+        value : false
+      },
+      focusable : {
         value : false
       },
 <span id='BUI-List-SimpleList-property-items'>      /**

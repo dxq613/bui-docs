@@ -61,6 +61,7 @@ define(&#39;bui/list/keynav&#39;,[&#39;bui/common&#39;],function (require) {
           this.setItemStatus(lightedItem,highlightedStatus,false,lightedElement);
         }
         this.setItemStatus(item,highlightedStatus,true,element);
+        _self._scrollToItem(item,element);
       }
     },
     _getHighLightedElement : function(){
@@ -166,8 +167,44 @@ define(&#39;bui/list/keynav&#39;,[&#39;bui/common&#39;],function (require) {
       if(rows &lt;= 1){ //单行或者为0时
         return null;
       }
+
       return  this._getNextItem(true,columns,columns * rows);
 
+    },
+    getScrollContainer : function(){
+      return this.get(&#39;el&#39;);
+    },
+<span id='BUI-List-KeyNav-method-isScrollVertical'>    /**
+</span>     * @protected
+     * 只处理上下滚动，不处理左右滚动
+     * @return {Boolean} 是否可以上下滚动
+     */
+    isScrollVertical : function(){
+      var _self = this,
+        el = _self.get(&#39;el&#39;),
+        container = _self.get(&#39;view&#39;).getItemContainer();
+
+      return el.height() &lt; container.height();
+    },
+
+    _scrollToItem : function(item,element){
+      var _self = this;
+
+      if(_self.isScrollVertical()){
+        element = element || _self.findElement(item);
+        var container = _self.getScrollContainer(),
+          top = $(element).position().top,
+          ctop = container.position().top,
+          cHeight = container.height(),
+          distance = top - ctop,
+          height = $(element).height(),
+          scrollTop = container.scrollTop();
+
+        if(distance &lt; 0 || distance &gt; cHeight - height){
+          container.scrollTop(scrollTop + distance);
+        }
+
+      }
     },
     //获取上面一项
     _getUpperItem : function(){

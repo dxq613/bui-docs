@@ -129,6 +129,17 @@ define(&#39;bui/overlay/overlay&#39;,[&#39;bui/common&#39;],function (require) {
         if(effectCfg.callback){
           effectCfg.callback.call(_self);
         }
+        //自动隐藏
+        var delay = _self.get(&#39;autoHideDelay&#39;),
+          delayHandler = _self.get(&#39;delayHandler&#39;);
+        if(delay){
+          delayHandler &amp;&amp; clearTimeout(delayHandler);
+          delayHandler = setTimeout(function(){
+            _self.hide();
+            _self.set(&#39;delayHandler&#39;,null);
+          },delay);
+          _self.set(&#39;delayHandler&#39;,delayHandler);
+        }
       }
 
     },
@@ -181,6 +192,13 @@ define(&#39;bui/overlay/overlay&#39;,[&#39;bui/common&#39;],function (require) {
           duration : 0,
           callback : null
         }
+      },
+<span id='BUI-Overlay-Overlay-property-autoHideDelay'>      /**
+</span>       * 显示后间隔多少秒自动隐藏
+       * @type {Number}
+       */
+      autoHideDelay : {
+
       },
 <span id='BUI-Overlay-Overlay-property-closeable'>      /**
 </span>       * whether this component can be closed.

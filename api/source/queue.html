@@ -84,6 +84,24 @@ define(&#39;bui/uploader/queue&#39;, [&#39;bui/common&#39;, &#39;bui/list&#39;],
         itemTpl = resultTpl[status] || resultTpl[&#39;default&#39;],
         tplData = BUI.mix({}, item.attr, item.result);
       item.resultTpl = BUI.substitute(itemTpl, tplData);
+    },
+<span id='BUI-Uploader-Queue-method-status'>    /**
+</span>     * 获取文件的当前状态
+     * @param {Object} item
+     * @return {String} status 状态名称
+     */
+    status: function(item){
+      var _self = this,
+        itemStatusFields = _self.get(&#39;itemStatusFields&#39;),
+        status;
+
+      BUI.each(itemStatusFields, function(v, k){
+        if (item[v]) {
+          status = v;
+          return false;
+        }
+      });
+      return status;
     }
   }, {
     ATTRS: {
@@ -137,6 +155,7 @@ define(&#39;bui/uploader/queue&#39;, [&#39;bui/common&#39;, &#39;bui/list&#39;],
        */
       itemStatusFields: {
         value: {
+          add: &#39;add&#39;,
           wait: &#39;wait&#39;,
           start: &#39;start&#39;,
           progress: &#39;progress&#39;,

@@ -454,6 +454,9 @@ define(&#39;bui/component/uibase/base&#39;,[&#39;bui/component/manage&#39;],func
      */
     destroy: function () {
         var _self = this;
+        if(_self.destroyed){ //防止返回销毁
+            return _self;
+        }
 <span id='BUI-Component-UIBase-event-beforeDestroy'>        /**
 </span>         * @event beforeDestroy
          * fired before UIBase &#39;s destroy.

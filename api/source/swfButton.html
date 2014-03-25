@@ -37,20 +37,12 @@ define(&#39;bui/uploader/button/swfButton&#39;,[&#39;bui/common&#39;, &#39;./bas
     }
   }
 
-
-  var SwfButtonView = Component.View.extend([ButtonBase.View], {
-  },{
-    ATTRS: {
-    }
-  });
-
 <span id='BUI-Uploader-Button-SwfButton'>  /**
 </span>   * 文件上传按钮，flash上传方式使用,使用的是flash
    * @class BUI.Uploader.Button.SwfButton
-   * @extends BUI.Component.Controller
-   * @mixins BUI.Uploader.Button
+   * @extends BUI.Uploader.Button
    */
-  var SwfButton = Component.Controller.extend([ButtonBase], {
+  var SwfButton = ButtonBase.extend({
     renderUI: function(){
       var _self = this;
       _self._initSwfUploader();
@@ -171,9 +163,6 @@ define(&#39;bui/uploader/button/swfButton&#39;,[&#39;bui/common&#39;, &#39;./bas
       swfTpl:{
         view: true,
         value: &#39;&lt;div class=&quot;uploader-button-swf&quot;&gt;&lt;/div&gt;&#39;
-      },
-      xview: {
-        value: SwfButtonView
       }
     }
   }, {

@@ -460,7 +460,11 @@ define(&#39;bui/chart/baseseries&#39;,[&#39;bui/chart/plotitem&#39;,&#39;bui/cha
       _self.changeShapes(points);
       BUI.each(points,function(point){
         if(labels){
-          labels.items.push(point.value);
+          var item = {};
+          item.text = point.value;
+          item.x = point.x;
+          item.y = point.y;
+          labels.items.push(item);
         }
         if(markers){
           markers.items.push(point);

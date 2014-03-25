@@ -47,41 +47,83 @@ define(&#39;bui/layout/baseitem&#39;,[&#39;bui/common&#39;],function (require) {
 
 	Item.ATTRS = {
 
-<span id='BUI-Layout-Item-property-fit'>		/**
-</span>		 * 自适应内部控件,自适应的类型：
+<span id='BUI-Layout-Item-cfg-fit'>		/**
+</span>		 * 自适应内部控件,自适应的类型,注意设置了适应类型后，不应该再设置控件的对应的宽度或者高度
+		 * 
 		 *   - none : 内部控件不自适应（默认）
 		 *   - width : 内部控件自适应宽度，当layout重新布局时宽度自适应
 		 *   - height : 内部控件自适应高度，当layout重新布局时高度自适应
 		 *   - both : 内部控件自适应宽高，当layout重新布局时宽度、高度自适应
-		 * @type {String}
+		 * 	&lt;pre&gt;
+		 * &lt;code&gt;
+		 *
+		 *  new Controller({
+		 *    ...
+		 *    children : [
+		 *    	{
+		 *    		xclass : &#39;grid&#39;,
+		 *    		layout : {
+		 *    			fit : &#39;width&#39;
+		 *    		}
+		 *    		//width : &#39;100px&#39;,不要再设置宽度
+		 *    	}
+		 *    ],
+		 * 		plugins : [BUI.Layout.Anchor]
+		 *  });
+		 * &lt;/code&gt;
+		 * &lt;/pre&gt;
+		 * 
+		 * @cfg {String} fit
 		 */
 		fit : {
 			value : &#39;none&#39;
 		},
 <span id='BUI-Layout-Item-property-layout'>		/**
 </span>		 * 所属的layout
+		 * @readOnly
 		 * @type {BUI.Layout.Abstract}
 		 */
 		layout : {
 
 		},
 <span id='BUI-Layout-Item-property-control'>		/**
-</span>		 * @private
-		 * 封装的控件
+</span>		 * 封装的控件
+		 * &lt;pre&gt;
+		 * &lt;code&gt;
+		 *  var control =	item.get(&#39;control&#39;);
+		 * &lt;/code&gt;
+		 * &lt;/pre&gt;
 		 * @type {Object}
 		 */
 		control : {
 
 		},
-<span id='BUI-Layout-Item-property-wraperCls'>		/**
-</span>		 * 封装控件的容器的样式，默认为空
-		 * @type {string}
+<span id='BUI-Layout-Item-cfg-wraperCls'>		/**
+</span>		 * 封装控件的容器的样式，默认为空,也可以设置在layout上传递进来
+		 * &lt;pre&gt;
+		 * &lt;code&gt;
+		 *  var layout = new BUI.Layout.Anchor({
+		 *  	defaultCfg : {
+		 *  		fit : &#39;width&#39;,
+		 *  		wraperCls : &#39;b&#39;
+		 *  	},
+		 *  	itemTpl : &#39;&amp;lt;div class=&quot;a&quot;&gt;&amp;lt;div class=&quot;b&quot;&gt;&amp;lt;/div&gt;&amp;lt;/div&gt;&#39;
+		 *  });
+		 *
+		 *  new Controller({
+		 *    ...
+		 * 		plugins : [layout]
+		 *  });
+		 * &lt;/code&gt;
+		 * &lt;/pre&gt;
+		 * @cfg {string} wraperCls
 		 */
 		wraperCls : {
 
 		},
 <span id='BUI-Layout-Item-property-container'>		/**
 </span>		 * 容器
+		 * @readOnly
 		 * @type {jQuery}
 		 */
 		container : {
@@ -111,14 +153,16 @@ define(&#39;bui/layout/baseitem&#39;,[&#39;bui/common&#39;],function (require) {
 
 		},
 <span id='BUI-Layout-Item-property-statusProperties'>		/**
-</span>		 * 状态相关的字段
+</span>		 * @protected
+		 * 状态相关的字段
 		 * @type {Array}
 		 */
 		statusProperties : {
 
 		},
 <span id='BUI-Layout-Item-property-tplProperties'>		/**
-</span>		 * 附加模板
+</span>		 * @protected
+		 * 附加模板
 		 * @type {Object}
 		 */
 		tplProperties : {
@@ -126,6 +170,11 @@ define(&#39;bui/layout/baseitem&#39;,[&#39;bui/common&#39;],function (require) {
 		},
 <span id='BUI-Layout-Item-property-el'>		/**
 </span>		 * 当前项的DOM
+		 * &lt;pre&gt;
+		 * &lt;code&gt;
+		 *  var el =	item.get(&#39;el&#39;);
+		 * &lt;/code&gt;
+		 * &lt;/pre&gt;
 		 * @type {jQuery}
 		 */
 		el : {
@@ -138,9 +187,25 @@ define(&#39;bui/layout/baseitem&#39;,[&#39;bui/common&#39;],function (require) {
 		elCls : {
 
 		},
-<span id='BUI-Layout-Item-property-tpl'>		/**
-</span>		 * 模板
-		 * @type {String}
+<span id='BUI-Layout-Item-cfg-tpl'>		/**
+</span>		 * 模板，也可以直接在layout上设置itemTpl
+		 * &lt;pre&gt;
+		 * &lt;code&gt;
+		 *  var layout = new BUI.Layout.Anchor({
+		 *  	defaultCfg : {
+		 *  		fit : &#39;width&#39;
+		 *  	},
+		 *  	itemTpl : &#39;&amp;lt;div class=&quot;a&quot;&gt;&amp;lt;div class=&quot;b&quot;&gt;&amp;lt;/div&gt;&amp;lt;/div&gt;&#39;,
+		 *  	wraperCls : &#39;b&#39;
+		 *  });
+		 *
+		 *  new Controller({
+		 *    ...
+		 * 		plugins : [layout]
+		 *  });
+		 * &lt;/code&gt;
+		 * &lt;/pre&gt;
+		 * @cfg {String} tpl
 		 */
 		tpl : {
 
@@ -162,6 +227,11 @@ define(&#39;bui/layout/baseitem&#39;,[&#39;bui/common&#39;],function (require) {
 		},
 <span id='BUI-Layout-Item-method-getElement'>		/**
 </span>		 * 获取选项的DOM节点
+		 * &lt;pre&gt;
+		 * &lt;code&gt;
+		 *  var el =	item.getElement();
+		 * &lt;/code&gt;
+		 * &lt;/pre&gt;
 		 * @return {jQuery} 操作节点
 		 */
 		getElement : function(){
@@ -200,7 +270,8 @@ define(&#39;bui/layout/baseitem&#39;,[&#39;bui/common&#39;],function (require) {
 			return el;
 		},
 <span id='BUI-Layout-Item-method-syncItem'>		/**
-</span>		 * 同步属性到子项,同步css和attr
+</span>		 * 同步属性到子项,同步css和attr，一般先设置宽高等信息后,再调用此方法
+		 * @protected
 		 */
 		syncItem : function(attrs){
 			attrs = attrs || this.getLayoutAttrs();
@@ -274,6 +345,20 @@ define(&#39;bui/layout/baseitem&#39;,[&#39;bui/common&#39;],function (require) {
 		},
 <span id='BUI-Layout-Item-method-syncFit'>		/**
 </span>		 * 同步自适应
+		 * &lt;pre&gt;
+		 * &lt;code&gt;
+		 *  var item = layout.getItem(control);
+		 *
+		 *  item.set(&#39;width&#39;,width);
+		 *
+		 *  //也可以设置多个属性
+		 *  item.set({
+		 *  	height : 100,
+		 *  	width : 100
+		 *  });
+		 *  item.syncFit();
+		 * &lt;/code&gt;
+		 * &lt;/pre&gt;
 		 */
 		syncFit : function(){
 			var _self = this,

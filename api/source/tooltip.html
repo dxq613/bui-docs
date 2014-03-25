@@ -243,9 +243,15 @@ define(&#39;bui/chart/tooltip&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#39;,&
 		getInnerBox : function(){
 			var _self = this,
 				textGroup = _self.get(&#39;textGroup&#39;),
+				titleShape = _self.get(&#39;titleShape&#39;),
 				bbx = textGroup.getBBox(),
-				rst = {};
-			rst.width = bbx.x + bbx.width + 8;
+				rst = {},
+				width = bbx.width;
+			if(titleShape){
+				var tbox = titleShape.getBBox();
+				width = Math.max(width,tbox.width);
+			}
+			rst.width = bbx.x + width + 8;
 			rst.height = bbx.height + bbx.y + 10;
 
 			return rst;
@@ -353,6 +359,7 @@ define(&#39;bui/chart/tooltip&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#39;,&
 			var _self = this,
 				bbox = _self.getInnerBox(),
 				borderShape = _self.get(&#39;borderShape&#39;);
+
 
 			borderShape.attr({
 				width : bbox.width,

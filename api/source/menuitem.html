@@ -148,8 +148,13 @@ define(&#39;bui/menu/menuitem&#39;,[&#39;bui/common&#39;],function(require){
         if(!subMenu.get(&#39;parentMenu&#39;)){
           subMenu.set(&#39;parentMenu&#39;,parent);
           if(parent.get(&#39;autoHide&#39;)){
-            subMenu.set(&#39;autoHide&#39;,false);
-          } 
+            if(parent.get(&#39;autoHideType&#39;) == &#39;click&#39;){
+              subMenu.set(&#39;autoHide&#39;,false);
+            }else{
+              subMenu.set(&#39;autoHideType&#39;,&#39;leave&#39;);
+            }
+            
+          } /**/
         }
         $(_self.get(&#39;arrowTpl&#39;)).appendTo(el);
       }
@@ -233,12 +238,15 @@ define(&#39;bui/menu/menuitem&#39;,[&#39;bui/common&#39;],function(require){
     },
     PARSER : {
       subMenu : function(el){
-        var subList = el.find(&#39;ul&#39;),
+        var 
+          subList = el.find(&#39;ul&#39;),
           sub;
         if(subList &amp;&amp; subList.length){
           sub = BUI.Component.create({
             srcNode : subList,
-            xclass : &#39;pop-menu&#39;
+            xclass : &#39;pop-menu&#39;,
+            autoHide : true,
+            autoHideType : &#39;leave&#39;
           });
           subList.appendTo(&#39;body&#39;);
         }

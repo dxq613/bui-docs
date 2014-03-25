@@ -181,6 +181,17 @@ define(&#39;bui/form/valid&#39;,[&#39;bui/common&#39;,&#39;bui/form/rules&#39;],
      */
     error : {
 
+    },
+<span id='BUI-Form-Valid-property-pauseValid'>    /**
+</span>     * 暂停验证
+     * &lt;pre&gt;&lt;code&gt;
+     *   field.set(&#39;pauseValid&#39;,true); //可以调用field.clearErrors()
+     *   field.set(&#39;pauseValid&#39;,false); //可以同时调用field.valid()
+     * &lt;/code&gt;&lt;/pre&gt;
+     * @type {Boolean}
+     */
+    pauseValid : {
+      value : false
     }
   };
 
@@ -190,12 +201,13 @@ define(&#39;bui/form/valid&#39;,[&#39;bui/common&#39;,&#39;bui/form/rules&#39;],
       var _self = this;
       //监听是否禁用
       _self.on(&#39;afterDisabledChange&#39;,function(ev){
-        var disabled = ev.newVal;
-        if(disabled){
-          _self.clearErrors(false,false);
-        }else{
-          _self.valid();
-        }
+        
+          var disabled = ev.newVal;
+          if(disabled){
+            _self.clearErrors(false,false);
+          }else{
+            _self.valid();
+          }
       });
     },
 <span id='BUI-Form-Valid-method-isValid'>    /**
@@ -223,7 +235,10 @@ define(&#39;bui/form/valid&#39;,[&#39;bui/common&#39;,&#39;bui/form/rules&#39;],
     //验证规则
     validRules : function(rules,value){
       if(!rules){
-        return;
+        return null;
+      }
+      if(this.get(&#39;pauseValid&#39;)){
+        return null;
       }
       var _self = this,
         messages = _self._getValidMessages(),
@@ -260,7 +275,7 @@ define(&#39;bui/form/valid&#39;,[&#39;bui/common&#39;,&#39;bui/form/rules&#39;],
 
       error = _self.validRules(_self.get(&#39;defaultRules&#39;),value) || _self.validRules(_self.get(&#39;rules&#39;),value);
 
-      if(!error){
+      if(!error &amp;&amp; !this.get(&#39;pauseValid&#39;)){
         if(_self.parseValue){
           value = _self.parseValue(value);
         }
@@ -288,7 +303,7 @@ define(&#39;bui/form/valid&#39;,[&#39;bui/common&#39;,&#39;bui/form/rules&#39;],
 <span id='BUI-Form-Valid-method-clearErrors'>    /**
 </span>     * 清除错误
      * @param {Boolean} reset 清除错误时是否重置
-     * @param {Boolean} deep 是否清理子控件的错误 
+     * @param {Boolean} [deep = true] 是否清理子控件的错误 
      */
     clearErrors : function(reset,deep){
       deep = deep == null ? true : deep;

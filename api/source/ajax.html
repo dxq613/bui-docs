@@ -21,20 +21,19 @@
  * @ignore
  **/
 define(&#39;bui/uploader/type/ajax&#39;, [&#39;./base&#39;], function(require) {
-    var EMPTY = &#39;&#39;, LOG_PREFIX = &#39;[uploader-Ajax]:&#39;,
-        win = window,
-        doc = document;
+    var EMPTY = &#39;&#39;, LOG_PREFIX = &#39;[uploader-Ajax]:&#39;;
 
     var UploadType = require(&#39;bui/uploader/type/base&#39;);
 
-    function isSubDomain(hostname){
+    
+    /*function isSubDomain(hostname){
         return win.location.host === doc.domain;
     }
 
     function endsWith (str, suffix) {
         var ind = str.length - suffix.length;
         return ind &gt;= 0 &amp;&amp; str.indexOf(suffix, ind) == ind;
-    }
+    }*/
 
 <span id='BUI-Uploader-UploadType-Ajax'>    /**
 </span>     * @class BUI.Uploader.UploadType.Ajax
@@ -164,8 +163,6 @@ define(&#39;bui/uploader/type/ajax&#39;, [&#39;./base&#39;], function(require) {
 </span>         * 表单数据对象
          */
         formData: {
-        },
-        data: {
         },
         xhr: {
         },

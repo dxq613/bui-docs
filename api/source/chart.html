@@ -121,7 +121,7 @@ define(&#39;bui/chart/chart&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#39;,&#3
       if(title){
         if(title.x == null){
           title.x = canvas.get(&#39;width&#39;)/2;
-          title.y = 15;
+          title.y = title.y || 15;
         }
         title = BUI.mix({},theme.title,title);
         canvas.addShape(&#39;label&#39;,title);
@@ -129,7 +129,7 @@ define(&#39;bui/chart/chart&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#39;,&#3
       if(subTitle){
         if(subTitle.x == null){
           subTitle.x = canvas.get(&#39;width&#39;)/2;
-          subTitle.y = 35;
+          subTitle.y = subTitle.y || 35;
         }
         subTitle = BUI.mix({},theme.subTitle,subTitle);
         canvas.addShape(&#39;label&#39;,subTitle);
@@ -162,6 +162,7 @@ define(&#39;bui/chart/chart&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#39;,&#3
       BUI.mix(true,cfg,theme,{
         colors :  attrs.colors,
         data : attrs.data,
+        fields : attrs.fields,
         plotRange : attrs.plotRange,
         series : attrs.series,
         seriesOptions : attrs.seriesOptions,
@@ -341,6 +342,30 @@ define(&#39;bui/chart/chart&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#39;,&#3
        */
       yAxis : {
 
+      },
+<span id='BUI-Chart-Chart-property-fields'>      /**
+</span>       * 数据中使用的字段，用于转换数据使用例如： 
+       *  - fields : [&#39;intelli&#39;,&#39;force&#39;,&#39;political&#39;,&#39;commander&#39;]
+       *  - 数据：
+       * &lt;pre&gt;&lt;code&gt;
+       * [
+       *  {&quot;name&quot; : &quot;张三&quot;,&quot;intelli&quot;:52,&quot;force&quot;:90,&quot;political&quot;:35,&quot;commander&quot; : 85},
+       *   {&quot;name&quot; : &quot;李四&quot;,&quot;intelli&quot;:95,&quot;force&quot;:79,&quot;political&quot;:88,&quot;commander&quot;: 72},
+       *  {&quot;name&quot; : &quot;王五&quot;,&quot;intelli&quot;:80,&quot;force&quot;:42,&quot;political&quot;:92,&quot;commander&quot;: 50}
+       * ]
+       * &lt;/code&gt;&lt;/pre&gt;
+       *  - 转换成
+       *  &lt;pre&gt;&lt;code&gt;
+       * [
+       *   [52,90,35,85],
+       *   [95,79,88,72],
+       *   [80,42,92,50]
+       * ]
+       * &lt;/code&gt;&lt;/pre&gt;
+       * @type {Array}
+       */
+      fields : {
+        
       },
 <span id='BUI-Chart-Chart-property-theme'>      /**
 </span>       * 应用的样式

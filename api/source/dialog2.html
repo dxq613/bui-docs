@@ -94,6 +94,32 @@ define(&#39;bui/grid/plugins/dialogediting&#39;,[&#39;bui/common&#39;],function 
          * @param {Object} e.editType 编辑的类型 add 或者 edit
          */
         recordchange : false
+
+<span id='BUI-Grid-Plugins-DialogEditing-event-accept'>         /**
+</span>         * @event accept 
+         * 确认编辑
+         * @param {Object} ev 事件对象
+         * @param {Object} ev.record 编辑的数据
+         * @param {BUI.Form.Form} form 表单
+         * @param {BUI.Editor.Editor} ev.editor 编辑器
+         */
+        
+<span id='BUI-Grid-Plugins-DialogEditing-event-cancel'>        /**
+</span>         * @event cancel 
+         * 取消编辑
+         * @param {Object} ev 事件对象
+         * @param {Object} ev.record 编辑的数据
+         * @param {BUI.Form.Form} form 表单
+         * @param {BUI.Editor.Editor} ev.editor 编辑器
+         */
+        
+<span id='BUI-Grid-Plugins-DialogEditing-event-editorshow'>        /**
+</span>         * @event editorshow 
+         * editor 显示
+         * @param {Object} ev 事件对象
+         * @param {Object} ev.record 编辑的数据
+         * @param {BUI.Editor.Editor} ev.editor 编辑器
+         */
       }
     },
     editType : {
@@ -158,6 +184,11 @@ define(&#39;bui/grid/plugins/dialogediting&#39;,[&#39;bui/common&#39;],function 
         var form = editor.get(&#39;form&#39;),
           record = form.serializeToObject();
         _self.saveRecord(record);
+        _self.fire(&#39;accept&#39;,{editor : editor,record : _self.get(&#39;record&#39;),form : form});
+      });
+
+      editor.on(&#39;cancel&#39;,function(){
+        _self.fire(&#39;cancel&#39;,{editor : editor,record : _self.get(&#39;record&#39;),form : editor.get(&#39;form&#39;)});
       });
     },
 <span id='BUI-Grid-Plugins-DialogEditing-method-edit'>    /**
@@ -220,6 +251,7 @@ define(&#39;bui/grid/plugins/dialogediting&#39;,[&#39;bui/common&#39;],function 
       editor.setValue(record,true); //设置值，并且隐藏错误
       
       _self.fire(&#39;recordchange&#39;,{record : record,editType : _self.get(&#39;editType&#39;)});
+      _self.fire(&#39;editorshow&#39;,{eidtor : editor,editType : _self.get(&#39;editType&#39;)});
     },
 <span id='BUI-Grid-Plugins-DialogEditing-method-cancel'>    /**
 </span>     * 取消编辑

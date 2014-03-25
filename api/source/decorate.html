@@ -230,7 +230,12 @@ define(&#39;bui/component/uibase/decorate&#39;,[&#39;bui/array&#39;,&#39;bui/jso
           }
           else if(isConfigField(name,decorateCfgFields)){
             name = name.replace(FIELD_PREFIX,&#39;&#39;);
-            config[name] = parseFieldValue(attr.nodeValue);
+            var value = parseFieldValue(attr.nodeValue);
+            if(config[name] &amp;&amp; BUI.isObject(value)){
+              BUI.mix(config[name],value);
+            }else{
+              config[name] = value;
+            }
           }
         }catch(e){
           BUI.log(&#39;parse field error,the attribute is:&#39; + name);

@@ -166,7 +166,7 @@ define(&#39;bui/uploader/type/flash&#39;,[&#39;./base&#39;], function (require) 
 </span>         * 服务器端路径，留意flash必须是绝对路径
          */
         url:{
-            getter:function(v){
+            setter: function(v){
                 var reg = /^http/;
                 //不是绝对路径拼接成绝对路径
                 if(!reg.test(v)){
@@ -183,9 +183,6 @@ define(&#39;bui/uploader/type/flash&#39;,[&#39;./base&#39;], function (require) 
                 }
                 return v;
             }
-        },
-        fileDataName: {
-            value: &#39;Filedata&#39;
         },
 <span id='BUI-Uploader-UploadType-Flash-property-swfUploader'>        /**
 </span>         * ajbridge的uploader组件的实例，必须参数

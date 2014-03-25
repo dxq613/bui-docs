@@ -234,6 +234,7 @@ define(&#39;bui/form/fieldcontainer&#39;,[&#39;bui/common&#39;,&#39;bui/form/fie
           if(value == null){
             value = &#39;&#39;;
           }
+          field.clearErrors(true);//清理错误
           field.set(&#39;value&#39;,value);
         }
       },
@@ -272,7 +273,7 @@ define(&#39;bui/form/fieldcontainer&#39;,[&#39;bui/common&#39;,&#39;bui/form/fie
 </span>       * 清除所有表单域的值
        */
       clearFields : function(){
-        this.clearErrors();
+        this.clearErrors(true);
         this.setRecord({})
       },
 <span id='BUI-Form-FieldContainer-method-setRecord'>      /**

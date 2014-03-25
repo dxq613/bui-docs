@@ -21,7 +21,8 @@
  */
 
 define(&#39;bui/grid/plugins/autofit&#39;,[&#39;bui/common&#39;],function (require) {
-  var BUI = require(&#39;bui/common&#39;);
+  var BUI = require(&#39;bui/common&#39;),
+    UA = BUI.UA;
 
 <span id='BUI-Grid-Plugins-AutoFit'>  /**
 </span>   * 表格自适应宽度
@@ -50,19 +51,25 @@ define(&#39;bui/grid/plugins/autofit&#39;,[&#39;bui/common&#39;],function (requi
           handler = setTimeout(function(){
             _self._autoFit(grid);
           },100);
+          _self.set(&#39;handler&#39;,handler);
         }
         autoFit();
       });
     },
     //自适应宽度
     _autoFit : function(grid){
-      var render = grid.get(&#39;render&#39;),
-          width;
-        grid.set(&#39;visible&#39;,false);
-        width = $(render).width();
+      var _self = this,
+        render = $(grid.get(&#39;render&#39;)),
+        docWidth = $(window).width(),//窗口宽度
+        width,
+        appendWidth = 0,
+        parent = grid.get(&#39;el&#39;).parent();
+      while(parent[0] &amp;&amp; parent[0] != $(&#39;body&#39;)[0]){
+        appendWidth += parent.outerWidth() - parent.width();
+        parent = parent.parent();
+      }
 
-        grid.set(&#39;visible&#39;,true);
-        grid.set(&#39;width&#39;,width);
+      grid.set(&#39;width&#39;,docWidth - appendWidth);
     }
 
   });

@@ -852,6 +852,7 @@ define(&#39;bui/component/controller&#39;,[&#39;bui/component/uibase&#39;,&#39;b
         handleMouseDown: function (ev) {
             var self = this,
                 n,
+                target = $(ev.target),
                 isMouseActionButton = ev[&#39;which&#39;] === 1,
                 el;
             if (isMouseActionButton) {
@@ -860,8 +861,12 @@ define(&#39;bui/component/controller&#39;,[&#39;bui/component/uibase&#39;,&#39;b
                     self.set(&#39;active&#39;, true);
                 }
                 if (self.get(&#39;focusable&#39;)) {
-                    el[0].focus();
-                    self.set(&#39;focused&#39;, true);
+                    //如果不是input,select,area等可以获取焦点的控件，那么设置此控件的focus
+                    /*if(target[0] == el[0] || (!target.is(&#39;input,select,area&#39;) &amp;&amp; !target.attr(&#39;tabindex&#39;))){
+                      el[0].focus(); 
+                      
+                    }*/
+                    self.setInternal(&#39;focused&#39;, true); 
                 }
 
                 if (!self.get(&#39;allowTextSelection&#39;)) {
