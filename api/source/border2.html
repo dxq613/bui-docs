@@ -44,34 +44,90 @@ define(&#39;bui/layout/borderitem&#39;,[&#39;bui/common&#39;,&#39;bui/layout/bas
 
 	Border.ATTRS = {
 
-<span id='BUI-Layout-Item-Border-property-region'>		/**
+<span id='BUI-Layout-Item-Border-cfg-region'>		/**
 </span>		 * 位置
-		 * @type {String}
+		 *&lt;ol&gt;
+     * &lt;li&gt;fit: &#39;none&#39;, 内部控件不跟随布局项的宽高自适应&lt;/li&gt;
+     * &lt;li&gt;fit: &#39;width&#39;,内部控件跟随布局项的宽度进行自适应&lt;/li&gt;
+     * &lt;li&gt;fit: &#39;height&#39;,内部控件跟随布局项的高度进行自适应&lt;/li&gt;
+     * &lt;li&gt;fit: &#39;both&#39;,内部控件跟随布局项的宽度、高度都进行自适应&lt;/li&gt;
+     *&lt;/ol&gt;
+		 * @cfg {String} region
 		 */
 		region : {
 
 		},
-<span id='BUI-Layout-Item-Border-property-titleTpl'>		/**
+<span id='BUI-Layout-Item-Border-cfg-titleTpl'>		/**
 </span>		 * 标题的模板
-		 * @type {Object}
+		 * &lt;pre&gt;&lt;code&gt;
+		 * 	children : [{
+					layout : {
+						title : &#39;north&#39;,
+						region : &#39;north&#39;,
+						height : 50,
+						titleTpl : &#39;&amp;lt;div class=&quot;x-border-title x-border-title-{region}&quot;&gt;{title}&amp;lt;/div&gt;&#39;
+					},
+					width : 100,
+					height :15,
+					elCls : &#39;red&#39;,
+					xclass : &#39;grid&#39;,
+					content : &quot;无自适应&quot;
+				}]
+		 * &lt;/code&gt;&lt;/pre&gt;
+		 * @cfg {Object} titleTpl
 		 */
 		titleTpl : {
 			value : &#39;&lt;div class=&quot;x-border-title x-border-title-{region}&quot;&gt;{title}&lt;/div&gt;&#39;
 		},
-<span id='BUI-Layout-Item-Border-property-collapseTpl'>		/**
-</span>		 * 附加元素
-		 * @type {Object}
+<span id='BUI-Layout-Item-Border-cfg-collapseTpl'>		/**
+</span>		 * 收缩展开的dom的模板
+		 * &lt;pre&gt;&lt;code&gt;
+		 * 	children : [{
+					layout : {
+						title : &#39;north&#39;,
+						region : &#39;north&#39;,
+						height : 50,
+						collapsable : true,//只有callapsable:true，collapseTpl才会生效
+						collapseTpl : &#39;&amp;lt;s class=&quot;x-collapsed-btn x-collapsed-{region}&quot;&gt;&amp;lt;/s&gt;&#39;
+					},
+					width : 100,
+					height :15,
+					elCls : &#39;red&#39;,
+					xclass : &#39;grid&#39;,
+					content : &quot;无自适应&quot;
+				}]
+		 * &lt;/code&gt;&lt;/pre&gt;
+		 * @cfg {Object} collapseTpl
 		 */
 		collapseTpl : {
 			value : &#39;&lt;s class=&quot;x-collapsed-btn x-collapsed-{region}&quot;&gt;&lt;/s&gt;&#39;
 		},
-<span id='BUI-Layout-Item-Border-property-collapsable'>		/**
+<span id='BUI-Layout-Item-Border-cfg-collapsable'>		/**
 </span>		 * 是否可以折叠
-		 * @type {Boolean}
+		 *  &lt;pre&gt;&lt;code&gt;
+		 * 	children : [{
+					layout : {
+						title : &#39;north&#39;,
+						region : &#39;north&#39;,
+						height : 50,
+						collapsable : true
+					},
+					width : 100,
+					height :15,
+					elCls : &#39;red&#39;,
+					xclass : &#39;grid&#39;,
+					content : &quot;无自适应&quot;
+				}]
+		 * &lt;/code&gt;&lt;/pre&gt;
+		 * @cfg {Boolean} collapsable
 		 */
 		collapsable : {
 			value : false
 		},
+<span id='BUI-Layout-Item-Border-cfg-collapsed'>		/**
+</span>		 * 是否默认折叠
+		 * @cfg {Boolean} collapsed
+		 */
 <span id='BUI-Layout-Item-Border-property-collapsed'>		/**
 </span>		 * 是否折叠
 		 * @type {Boolean}
@@ -79,9 +135,9 @@ define(&#39;bui/layout/borderitem&#39;,[&#39;bui/common&#39;,&#39;bui/layout/bas
 		collapsed : {
 			value : false
 		},
-<span id='BUI-Layout-Item-Border-property-leftRange'>		/**
+<span id='BUI-Layout-Item-Border-cfg-leftRange'>		/**
 </span>		 * 收缩后剩余的宽度或者高度，如果存在title，则以title的高度为准
-		 * @type {Object}
+		 * @cfg {Number} leftRange
 		 */
 		leftRange : {
 			value : 28
@@ -121,6 +177,12 @@ define(&#39;bui/layout/borderitem&#39;,[&#39;bui/common&#39;,&#39;bui/layout/bas
 		},
 <span id='BUI-Layout-Item-Border-method-expand'>		/**
 </span>		 * 展开
+		 * &lt;pre&gt;
+		 * &lt;code&gt;
+		 * var item = layout.getItemsByRegion(&#39;west&#39;)[0];
+		 * item &amp;&amp; item.expand()
+		 * &lt;/code&gt;
+		 * &lt;/pre&gt;
 		 */
 		expand : function(range,duration,callback){
 			var _self = this,
@@ -165,6 +227,11 @@ define(&#39;bui/layout/borderitem&#39;,[&#39;bui/common&#39;,&#39;bui/layout/bas
 		},
 <span id='BUI-Layout-Item-Border-method-collapse'>		/**
 </span>		 * 折叠
+		 * &lt;pre&gt;
+		 * &lt;code&gt;
+		 * var item = layout.getItemsByRegion(&#39;west&#39;)[0];
+		 * item &amp;&amp; layout.collapseItem(item);
+		 * &lt;/code&gt;&lt;/pre&gt;
 		 */
 		collapse : function(duration,callback){
 			var _self = this,

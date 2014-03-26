@@ -65,8 +65,8 @@ define(&#39;bui/tab/navtabitem&#39;,[&#39;bui/common&#39;],function(requrie){
     _uiSetTitle : function(v){
       var _self = this,
         el = _self.get(&#39;el&#39;);
-      el.attr(&#39;title&#39;,v);
-      $(&#39;.&#39; + CLS_ITEM_TITLE,el).text(v);
+      //el.attr(&#39;title&#39;,v);
+      $(&#39;.&#39; + CLS_ITEM_TITLE,el).html(v);
     },
     _uiSetActived : function(v){
       var _self = this,

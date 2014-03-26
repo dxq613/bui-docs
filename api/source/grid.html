@@ -509,9 +509,12 @@ define(&#39;bui/grid/grid&#39;,[&#39;bui/common&#39;,&#39;bui/mask&#39;,&#39;bui
     initializer : function(){
         var _self = this,
             render = _self.get(&#39;render&#39;),
+            outerWidth = $(render).width(),
             width = _self.get(&#39;width&#39;);
-        if(!width){
-            _self.set(&#39;width&#39;,$(render).width());
+            
+        if(!width &amp;&amp; outerWidth){
+          var appendWidth = _self.getAppendWidth();
+          _self.set(&#39;width&#39;,outerWidth - appendWidth);
         }
     },
 <span id='global-method-createDom'>    /**
