@@ -211,8 +211,7 @@ define(&#39;bui/layout/borderitem&#39;,[&#39;bui/common&#39;,&#39;bui/layout/bas
 		_getLeftRange : function(){
 			var _self = this,
 				el = _self.get(&#39;el&#39;),
-				left = _self.get(&#39;leftRange&#39;),
-				titleEl = _self.get(&#39;_titleEl&#39;);
+				left = _self.get(&#39;leftRange&#39;);
 			return left;
 		},
 <span id='global-method-getCollapsedRange'>		/**
@@ -222,8 +221,21 @@ define(&#39;bui/layout/borderitem&#39;,[&#39;bui/common&#39;,&#39;bui/layout/bas
 		getCollapsedRange : function(){
 			var _self = this,
 				property = _self.getCollapseProperty(),
-				el = _self.get(&#39;el&#39;);
-			return _self.get(property) - _self._getLeftRange(property);
+				el = _self.get(&#39;el&#39;),
+				val = _self.get(property);
+			if(BUI.isString(val)){
+				var dynacAttrs = _self._getDynacAttrs();
+				if(val.indexOf(&#39;{&#39;) != -1){
+					val = BUI.substitute(val,dynacAttrs);
+					val = BUI.JSON.looseParse(val);
+				}
+				else if(val.indexOf(&#39;%&#39;) != -1){
+					val = parseInt(val,10) * 0.01 * dynacAttrs[property];
+				}else{
+					val = parseInt(val,10);
+				}
+			}
+			return val - _self._getLeftRange(property);
 		},
 <span id='BUI-Layout-Item-Border-method-collapse'>		/**
 </span>		 * 折叠

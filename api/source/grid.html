@@ -500,29 +500,20 @@ define(&#39;bui/grid/grid&#39;,[&#39;bui/common&#39;,&#39;bui/mask&#39;,&#39;bui
    * @extends BUI.List.SimpleList
    */
   var grid = List.SimpleList.extend({
-    
-<span id='global-method-initializer'>    /**
-</span>     * 初始化，如果未设置宽度，则使用表格容器的宽度
-     * @protected
-     * @ignore
-     */
-    initializer : function(){
-        var _self = this,
-            render = _self.get(&#39;render&#39;),
-            outerWidth = $(render).width(),
-            width = _self.get(&#39;width&#39;);
-            
-        if(!width &amp;&amp; outerWidth){
-          var appendWidth = _self.getAppendWidth();
-          _self.set(&#39;width&#39;,outerWidth - appendWidth);
-        }
-    },
 <span id='global-method-createDom'>    /**
 </span>     * @protected
      * @ignore
      */
     createDom:function () {
-      var _self = this;
+      var _self = this,
+            render = _self.get(&#39;render&#39;),
+            outerWidth = $(render).width(),
+            width = _self.get(&#39;width&#39;);
+            
+      if(!width &amp;&amp; outerWidth){
+        var appendWidth = _self.getAppendWidth();
+        _self.set(&#39;width&#39;,outerWidth - appendWidth);
+      }
 
       // 提前,中途设置宽度时会失败！！
       if (_self.get(&#39;width&#39;)) {
