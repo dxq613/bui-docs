@@ -216,7 +216,16 @@ define(&#39;bui/data/abstractstore&#39;,[&#39;bui/common&#39;,&#39;bui/data/prox
         * @param {Object} e.field 排序的字段
         * @param {Object} e.direction 排序的方向 &#39;ASC&#39;，&#39;DESC&#39;
         */
-        &#39;localsort&#39;
+        &#39;localsort&#39;,
+
+<span id='BUI-Data-AbstractStore-event-filtered'>        /**  
+</span>        * 前端发生过滤时触发
+        * @event  
+        * @param {jQuery.Event} e  事件对象
+        * @param {Array} e.data 过滤完成的数据
+        * @param {Function} e.filter 过滤器
+        */
+        &#39;filtered&#39;
       ]
     },
 <span id='BUI-Data-AbstractStore-cfg-data'>    /**
@@ -372,6 +381,11 @@ define(&#39;bui/data/abstractstore&#39;,[&#39;bui/common&#39;,&#39;bui/data/prox
         _self.afterProcessLoad(data,params);
       }
     },
+<span id='BUI-Data-AbstractStore-method-getResult'>    /**
+</span>     * 获取当前缓存的纪录
+     */
+    getResult : function(){
+    },
 <span id='BUI-Data-AbstractStore-method-filter'>    /**
 </span>     * 过滤数据，此函数的执行同属性 remoteFilter关联密切
      *
@@ -386,12 +400,17 @@ define(&#39;bui/data/abstractstore&#39;,[&#39;bui/common&#39;,&#39;bui/data/prox
             remoteFilter = _self.get(&#39;remoteFilter&#39;),
             result;
 
+        filter = filter || _self.get(&#39;filter&#39;);
+
         if(remoteFilter){
             _self.load({filter : filter});
-        }else{
+        }else if(filter){
             _self.set(&#39;filter&#39;,filter);
-            result = _self._filterLocal(filter);
-            _self.onFiltered(result,filter);
+            //如果result有值时才会进行filter
+            if(_self.getResult().length &gt; 0){
+                result = _self._filterLocal(filter);
+                _self.onFiltered(result,filter);
+            }
         }
     },
 <span id='BUI-Data-AbstractStore-method-_filterLocal'>    /**
@@ -403,10 +422,21 @@ define(&#39;bui/data/abstractstore&#39;,[&#39;bui/common&#39;,&#39;bui/data/prox
     _filterLocal : function(fn){
         
     },
+<span id='BUI-Data-AbstractStore-method-getFilterResult'>    /**
+</span>     * 获取过滤后的数据，仅当本地过滤(remoteFilter = false)时有效
+     * @return {Array} 过滤过的数据
+     */
+    getFilterResult: function(){
+        var filter = this.get(&#39;filter&#39;);
+        if(filter) {
+            return this._filterLocal(filter);
+        }
+        else {
+            return this.getResult();
+        }
+    },
     _clearLocalFilter : function(){
-        this._filterLocal(function(){
-            return true;
-        });
+        this.set(&#39;filter&#39;, null);
     },
 <span id='BUI-Data-AbstractStore-method-clearFilter'>    /**
 </span>     * 清理过滤
@@ -420,6 +450,8 @@ define(&#39;bui/data/abstractstore&#39;,[&#39;bui/common&#39;,&#39;bui/data/prox
             _self.load({filter : &#39;&#39;});
         }else{
             _self._clearLocalFilter();
+            result = _self.getFilterResult();
+            _self.onFiltered(result, null);
         }
     },
 <span id='BUI-Data-AbstractStore-method-processLoad'>    /**

@@ -145,6 +145,9 @@ define(&#39;bui/component/uibase/bindable&#39;,function(){
 			store.on(&#39;localsort&#39;,function(e){
 				_self.onLocalSort(e);
 			});
+			store.on(&#39;filtered&#39;,function(e){
+				_self.onFiltered(e);
+			});
 		},
 		__syncUI : function(){
 			var _self = this,
@@ -225,6 +228,15 @@ define(&#39;bui/component/uibase/bindable&#39;,function(){
 		*/
 		onLocalSort : function(e){
 			
+		},
+<span id='BUI-Component-UIBase-Bindable-method-onFiltered'>		/**
+</span>		* @protected
+    * @template
+		* after filter data to store
+		* @param {Object} e The event object
+		* @see {@link BUI.Data.Store#event-filtered}
+		*/
+		onFiltered : function(e){
 		}
 	});
 

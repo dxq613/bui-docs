@@ -21,7 +21,7 @@
  */
 
 define(&#39;bui/chart/tooltip&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#39;,&#39;bui/chart/plotitem&#39;],function (require) {
-	
+
 	var BUI = require(&#39;bui/common&#39;),
 		PlotItem = require(&#39;bui/chart/plotitem&#39;),
 		Util = require(&#39;bui/graphic&#39;).Util;
@@ -168,7 +168,7 @@ define(&#39;bui/chart/tooltip&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#39;,&
 			_self._renderText();
 			_self._renderItemGroup();
 			_self._renderCrossLine();
-			
+
 		},
 		//渲染边框
 		_renderBorer : function(){
@@ -288,7 +288,7 @@ define(&#39;bui/chart/tooltip&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#39;,&
 			var hideHandler = setTimeout(function(){
 				Tooltip.superclass.hide.call(_self);
 				_self.set(&#39;hideHandler&#39;,null);
-			},500);
+			},_self.get(&#39;duration&#39;));
 			_self.set(&#39;hideHandler&#39;,hideHandler);
 			crossShape &amp;&amp; crossShape.hide();
 		},
@@ -340,7 +340,7 @@ define(&#39;bui/chart/tooltip&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#39;,&
 						y : y
 					},_self.get(&#39;duration&#39;));
 				}
-				
+
 				_self.move(x,y);/**/
 
 				if(crossShape){
@@ -404,7 +404,7 @@ define(&#39;bui/chart/tooltip&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#39;,&
 		  	itemValue = valueSuffix ? item.value + &#39; &#39; + valueSuffix : item.value;
 		  	addValue(itemValue);
 		  }
-		  	
+
 		  function addValue (text,params){
 		  	var cfg = BUI.merge(value,{
 					x : width,
@@ -413,7 +413,7 @@ define(&#39;bui/chart/tooltip&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#39;,&
 				},params);
 			  return group.addShape(&#39;text&#39;,cfg);
 		  }
-		  
+
 
 		},
 <span id='BUI-Chart-Tooltip-method-setItems'>		/**
@@ -422,7 +422,7 @@ define(&#39;bui/chart/tooltip&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#39;,&
 		 * - name : 序列的标题
 		 * - value : 序列的值
 		 * - color : 序列的颜色
-		 * 
+		 *
 		 * @param {Array} items 信息列表
 		 */
 		setItems : function(items){
@@ -459,6 +459,7 @@ define(&#39;bui/chart/tooltip&#39;,[&#39;bui/common&#39;,&#39;bui/graphic&#39;,&
 
 	return Tooltip;
 
-});</pre>
+});
+</pre>
 </body>
 </html>

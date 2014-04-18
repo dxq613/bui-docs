@@ -38,6 +38,15 @@ define(&#39;bui/overlay/dialog&#39;,[&#39;bui/overlay/overlay&#39;],function (re
    */
   var dialogView = Overlay.View.extend([UIBase.StdModView,UIBase.MaskView],{
 
+<span id='global-method-getContentElement'>    /**
+</span>     * 子组件将要渲染到的节点，在 render 类上覆盖对应方法
+     * @protected
+     * @ignore
+     */
+    getContentElement: function () {
+      return this.get(&#39;body&#39;);
+    },
+
     _uiSetTitle:function(v){
       var _self = this,
         el = _self.get(&#39;el&#39;);

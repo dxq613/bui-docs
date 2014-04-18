@@ -106,7 +106,7 @@ define(&#39;bui/component/uibase/autoshow&#39;,function () {
      * @type {Object}
      */
     triggerActiveCls : {
-
+      
     },
 <span id='BUI-Component-UIBase-AutoShow-property-curTrigger'>    /**
 </span>     * 控件显示时由此trigger触发，当配置项 trigger 选择器代表多个DOM 对象时，
@@ -224,6 +224,9 @@ define(&#39;bui/component/uibase/autoshow&#39;,function () {
 
       //触发显示
       function tiggerShow (ev) {
+        if(_self.get(&#39;disabled&#39;)){ //如果禁用则中断
+          return;
+        }
         var prevTrigger = _self.get(&#39;curTrigger&#39;),
           curTrigger = isDelegate ?$(ev.currentTarget) : $(this),
           align = _self.get(&#39;align&#39;);

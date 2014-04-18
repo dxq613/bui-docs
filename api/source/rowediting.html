@@ -65,6 +65,13 @@ define(&#39;bui/grid/plugins/rowediting&#39;,[&#39;bui/common&#39;,&#39;bui/grid
      */
     triggerCls : {
       value : CLS_ROW
+    },
+<span id='BUI-Grid-Plugins-RowEditing-property-editor'>    /**
+</span>     * 编辑器的默认配置信息
+     * @type {Object}
+     */
+    editor : {
+
     }
   };
 
@@ -78,17 +85,21 @@ define(&#39;bui/grid/plugins/rowediting&#39;,[&#39;bui/common&#39;,&#39;bui/grid
      * @param  {Array} fields 字段配置
      */ 
     getEditorCfgs : function(fields){
-      var rst = [];
-      rst.push({
-        changeSourceEvent : null,
-        autoUpdate : false,
-        form : {
-          children : fields,
-          buttonBar : {
-            elCls : &#39;centered toolbar&#39;
+      var _self = this,
+        editor = _self.get(&#39;editor&#39;),
+        rst = [],
+        cfg = BUI.mix(true,{
+          changeSourceEvent : null,
+          autoUpdate : false,
+          form : {
+            children : fields,
+            buttonBar : {
+              elCls : &#39;centered toolbar&#39;
+            }
           }
-        }
-      });
+        },editor);
+        
+      rst.push(cfg);
       return rst;
     },
 <span id='BUI-Grid-Plugins-RowEditing-method-wrapValidator'>    /**

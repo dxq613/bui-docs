@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview
+ * @ignore
+ */
+define(&#39;bui/extensions/search&#39;, [&#39;bui/common&#39;, &#39;bui/form&#39;], function(require) {
+
+  var BUI = require(&#39;bui/common&#39;),
+    Form = require(&#39;bui/form&#39;);
+
+  function Search(config) {
+    Search.superclass.constructor.call(this, config);
+  }
+
+  BUI.extend(Search, BUI.Base);
+
+  Search.ATTRS = {
+    tpl: {
+      value: &#39;&lt;p&gt;&lt;input type=&quot;text&quot; name=&quot;key&quot;/&gt; &lt;button class=&quot;button button-small&quot;&gt;确定&lt;/button&gt;&lt;/p&gt;&#39;
+    }
+  }
+
+  BUI.augment(Search, {
+    createDom: function(control){
+      var _self = this,
+        el = $(&#39;&lt;div&gt;&lt;/div&gt;&#39;).append(_self.get(&#39;tpl&#39;)),
+        group = new Form.Group( {
+          srcNode : el
+        }).render();
+
+      _self.set(&#39;el&#39;, el);
+      _self.set(&#39;group&#39;, group);
+    },
+    renderUI: function(control){
+      var el = control.get(&#39;el&#39;);
+      el.before(this.get(&#39;el&#39;));
+    },
+    bindUI: function(control){
+      var _self = this,
+        el = _self.get(&#39;el&#39;),
+        store = control.get(&#39;store&#39;),
+        group = _self.get(&#39;group&#39;);
+
+      el.find(&#39;.button&#39;).on(&#39;click&#39;, function(ev){
+        store.load(group.getRecord());
+      })
+    }
+  });
+
+  return Search;
+});</pre>
+</body>
+</html>

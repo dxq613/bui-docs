@@ -52,7 +52,7 @@ define(&#39;bui/form/remote&#39;,[&#39;bui/common&#39;],function(require) {
       var _self = this,
         loadingEl = _self.get(&#39;loadingEl&#39;),
         loadingTpl = _self.get(&#39;loadingTpl&#39;);
-      if(!loadingEl){
+      if(loadingTpl &amp;&amp; !loadingEl){
         loadingEl = $(loadingTpl).appendTo(_self.getLoadingContainer());
         _self.setInternal(&#39;loadingEl&#39;,loadingEl);
       }

@@ -16,33 +16,15 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='global-property-'>/**
-</span> * @fileOverview 布局模块的入口文件
+</span> * @fileOverview 选择框命名空间入口文件
  * @ignore
  */
-(function(){
-	var BASE = &#39;bui/layout/&#39;;
-	define(&#39;bui/layout&#39;,[&#39;bui/common&#39;,BASE + &#39;abstract&#39;,BASE + &#39;absolute&#39;,BASE + &#39;anchor&#39;, BASE + &#39;flow&#39;,BASE + &#39;columns&#39;,BASE + &#39;table&#39;,
-		BASE + &#39;border&#39;, BASE + &#39;accordion&#39;,BASE + &#39;viewport&#39;],function (r) {
 
-		var BUI = r(&#39;bui/common&#39;);
+define(&#39;bui/extensions/multiselect&#39;, [&#39;bui/common&#39;, &#39;bui/extensions/multiselect/multilist&#39;, &#39;bui/extensions/multiselect/multilistpicker&#39;,&#39;bui/extensions/multiselect/multiselect&#39;, &#39;bui/extensions/search&#39;], function (require) {
 
-		var Layout = BUI.namespace(&#39;Layout&#39;);
-
-		BUI.mix(Layout,{
-			Abstract : r(BASE + &#39;abstract&#39;),
-			Anchor : r(BASE + &#39;anchor&#39;),
-			Flow : r(BASE + &#39;flow&#39;),
-			Absolute : r(BASE + &#39;absolute&#39;),
-			Columns : r(BASE + &#39;columns&#39;),
-			Table : r(BASE + &#39;table&#39;),
-			Border :r(BASE + &#39;border&#39;), 
-			Accordion : r(BASE + &#39;accordion&#39;),
-			Viewport : r(BASE + &#39;viewport&#39;)
-		});
-
-		return Layout;
-	});
-
-})();</pre>
+  var BUI = require(&#39;bui/common&#39;),
+    multiselect = require(&#39;bui/extensions/multiselect/multiselect&#39;);
+  return multiselect;
+});</pre>
 </body>
 </html>

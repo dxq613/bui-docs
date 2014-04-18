@@ -60,10 +60,11 @@ define(&#39;bui/layout/tabitem&#39;,[&#39;bui/common&#39;,&#39;bui/layout/baseit
 				el = _self.get(&#39;el&#39;),
 				bodyEl = _self.get(&#39;bodyEl&#39;);
 			bodyEl.animate({height : bodyHeight},duration,function(){
-				_self.set(&#39;collapsed&#39;,false);
+				
 				el.removeClass(CLS_COLLAPSED);
 				_self.syncFit();
 			});
+			_self.set(&#39;collapsed&#39;,false);
 		},
 <span id='BUI-Layout-Item-Tab-method-collapse'>		/**
 </span>		 * 折叠
@@ -73,9 +74,10 @@ define(&#39;bui/layout/tabitem&#39;,[&#39;bui/common&#39;,&#39;bui/layout/baseit
 				el = _self.get(&#39;el&#39;),
 				bodyEl = _self.get(&#39;bodyEl&#39;);
 			bodyEl.animate({height : 0},duration,function(){
-				_self.set(&#39;collapsed&#39;,true);
 				el.addClass(CLS_COLLAPSED);
 			});
+			_self.set(&#39;collapsed&#39;,true);
+
 		}
 	});
 

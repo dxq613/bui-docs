@@ -187,6 +187,15 @@ define(&#39;bui/list/simplelist&#39;,[&#39;bui/common&#39;,&#39;bui/list/domlist
         store = _self.get(&#39;store&#39;),
         items = store.getResult();
       _self.set(&#39;items&#39;,items);
+    },
+<span id='BUI-List-SimpleList-method-onFiltered'>    /**
+</span>     * 过滤数据
+     * @protected
+     */
+    onFiltered: function(e){
+      var _self = this,
+        items = e.data;
+      _self.set(&#39;items&#39;, items);
     }
   },{
     ATTRS : 

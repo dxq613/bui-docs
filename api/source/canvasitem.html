@@ -37,9 +37,11 @@ define(&#39;bui/graphic/canvasitem&#39;,[&#39;bui/common&#39;],function(require)
 		 */
 		toFront : function(){
 			this.get(&#39;el&#39;).toFront();
+			return this;
 		},
 		toBack : function(){
 			this.get(&#39;el&#39;).toBack();
+			return this;
 		},
 <span id='BUI-Graphic-CanvasItem-method-translate'>		/**
 </span>		 * 移动
@@ -50,6 +52,7 @@ define(&#39;bui/graphic/canvasitem&#39;,[&#39;bui/common&#39;],function(require)
 			var _self = this,
   			el = _self.get(&#39;el&#39;);
   		el.translate(dx,dy);
+			return this;
 		},
 		index : function(){
 			var _self = this,
@@ -65,12 +68,21 @@ define(&#39;bui/graphic/canvasitem&#39;,[&#39;bui/common&#39;],function(require)
 		 */
 		animate : function(params,ms,easing,callback){
 			this.get(&#39;el&#39;).animate(params,ms,easing,callback);
+			return this;
 		},
 <span id='BUI-Graphic-CanvasItem-method-stopAnimate'>		/**
 </span>		 * 停止当前动画
 		 */
 		stopAnimate : function(){
 			this.get(&#39;el&#39;).stop();
+			return this;
+		},
+<span id='BUI-Graphic-CanvasItem-method-drag'>		/**
+</span>		 * 拖动方法
+		 */
+		drag : function(onmove, onstart, onend, mcontext, scontext, econtext){
+			this.get(&#39;el&#39;).drag(onmove, onstart, onend, mcontext, scontext, econtext)
+			return this;
 		}
 	});
 

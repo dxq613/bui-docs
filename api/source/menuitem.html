@@ -84,7 +84,8 @@ define(&#39;bui/menu/menuitem&#39;,[&#39;bui/common&#39;],function(require){
      */
     handleMouseEnter : function (ev) {
       var _self = this;
-      if(this.get(&#39;subMenu&#39;)){
+
+      if(this.get(&#39;subMenu&#39;) &amp;&amp; this.get(&#39;openable&#39;)){
         this.set(&#39;open&#39;,true);
       }
       menuItem.superclass.handleMouseEnter.call(this,ev);
@@ -94,13 +95,15 @@ define(&#39;bui/menu/menuitem&#39;,[&#39;bui/common&#39;],function(require){
      * @protected
      */
     handleMouseLeave :function (ev) {
-      var _self = this,
-        subMenu = _self.get(&#39;subMenu&#39;),
-        toElement = ev.toElement || ev.relatedTarget;;
-      if(toElement &amp;&amp; subMenu &amp;&amp; subMenu.containsElement(toElement)){
-        _self.set(&#39;open&#39;,true);
-      }else{
-        _self.set(&#39;open&#39;,false);
+      if(this.get(&#39;openable&#39;)){
+        var _self = this,
+          subMenu = _self.get(&#39;subMenu&#39;),
+          toElement = ev.toElement || ev.relatedTarget;;
+        if(toElement &amp;&amp; subMenu &amp;&amp; subMenu.containsElement(toElement)){
+          _self.set(&#39;open&#39;,true);
+        }else{
+          _self.set(&#39;open&#39;,false);
+        }
       }
       menuItem.superclass.handleMouseLeave.call(this,ev);
     },
@@ -120,21 +123,23 @@ define(&#39;bui/menu/menuitem&#39;,[&#39;bui/common&#39;],function(require){
     }, 
     //设置打开子菜单 
     _uiSetOpen : function (v) {
-      var _self = this,
-        subMenu = _self.get(&#39;subMenu&#39;),
-        subMenuAlign = _self.get(&#39;subMenuAlign&#39;);
-      if(subMenu){
-        if(v){
-          subMenuAlign.node = _self.get(&#39;el&#39;);
-          subMenu.set(&#39;align&#39;,subMenuAlign);
-          subMenu.show();
-        }else{
-          var menuAlign = subMenu.get(&#39;align&#39;);
-          //防止子菜单被公用时
-          if(!menuAlign || menuAlign.node == _self.get(&#39;el&#39;)){
-            subMenu.hide();
+      if(this.get(&#39;openable&#39;)){
+        var _self = this,
+          subMenu = _self.get(&#39;subMenu&#39;),
+          subMenuAlign = _self.get(&#39;subMenuAlign&#39;);
+        if(subMenu){
+          if(v){
+            subMenuAlign.node = _self.get(&#39;el&#39;);
+            subMenu.set(&#39;align&#39;,subMenuAlign);
+            subMenu.show();
+          }else{
+            var menuAlign = subMenu.get(&#39;align&#39;);
+            //防止子菜单被公用时
+            if(!menuAlign || menuAlign.node == _self.get(&#39;el&#39;)){
+              subMenu.hide();
+            }
+            
           }
-          
         }
       }
     },
@@ -197,6 +202,13 @@ define(&#39;bui/menu/menuitem&#39;,[&#39;bui/common&#39;],function(require){
         view : true,
         value : false
       },
+<span id='BUI-Menu-MenuItem-property-openable'>      /**
+</span>       * 是否可以展开
+       * @type {Boolean}
+       */
+      openable : {
+        value : true
+      },
 <span id='BUI-Menu-MenuItem-cfg-subMenu'>      /**
 </span>       * 下级菜单
        * @cfg {BUI.Menu.Menu} subMenu
@@ -234,21 +246,31 @@ define(&#39;bui/menu/menuitem&#39;,[&#39;bui/common&#39;],function(require){
         value : {
           &#39;afterOpenChange&#39; : true
         }
+      },
+      subMenuType : {
+        value : &#39;pop-menu&#39;
       }
     },
     PARSER : {
       subMenu : function(el){
         var 
           subList = el.find(&#39;ul&#39;),
+          type = this.get(&#39;subMenuType&#39;),
           sub;
         if(subList &amp;&amp; subList.length){
           sub = BUI.Component.create({
             srcNode : subList,
-            xclass : &#39;pop-menu&#39;,
-            autoHide : true,
-            autoHideType : &#39;leave&#39;
+            xclass : type
           });
-          subList.appendTo(&#39;body&#39;);
+          if(type == &#39;pop-menu&#39;){
+            subList.appendTo(&#39;body&#39;);
+            sub.setInternal({
+              autoHide : true,
+              autoHideType : &#39;leave&#39;
+            });
+          }else{
+            this.get(&#39;children&#39;).push(sub);
+          }
         }
         return sub;
       }

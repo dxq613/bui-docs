@@ -74,7 +74,7 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
       value : [&#39;circle&#39;,&#39;diamond&#39;,&#39;square&#39;,&#39;triangle&#39;,&#39;triangle-down&#39;]
     },
 <span id='BUI-Chart-SeriesGroup-property-seriesOptions'>    /**
-</span>     * 序列图的统一配置项，不同的序列图有不同的配置项例如： 
+</span>     * 序列图的统一配置项，不同的序列图有不同的配置项例如：
      *
      *  - lineCfg : 折线图的配置项
      *  - columnCfg : 柱状图的配置项
@@ -150,14 +150,14 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
 
   BUI.augment(Group,{
 
-    
+
     //渲染控件
     renderUI : function(){
       var _self = this;
       Group.superclass.renderUI.call(_self);
       //_self._renderTracer();
       _self._renderLegend();
-      
+
       _self._renderSeries();
       _self._renderAxis();
       _self._addSeriesAxis();
@@ -177,9 +177,27 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
     //绑定鼠标在画板上移动事件
     bindCanvasEvent : function(){
       var _self = this,
+        triggerEvent = _self.get(&#39;tipGroup&#39;).get(&#39;triggerEvent&#39;),
         canvas = _self.get(&#39;canvas&#39;);
-      canvas.on(&#39;mousemove&#39;,BUI.wrapBehavior(_self,&#39;onCanvasMove&#39;));
-      canvas.on(&#39;mouseout&#39;,BUI.wrapBehavior(_self,&#39;onMouseOut&#39;));
+
+      if (triggerEvent == &#39;click&#39;) {
+        function __documentClick(ev){
+          if(!$.contains(canvas.get(&#39;node&#39;), ev.target)&amp;&amp;canvas.get(&#39;node&#39;) != ev.target){
+            _self.onTriggerOut(ev);
+            $(document).off(&#39;click&#39;, __documentClick);
+          }
+        }
+        canvas.on(&#39;click&#39;,function(ev){
+          _self.onCanvasMove(ev);
+          setTimeout(function(){
+            $(document).off(&#39;click&#39;, __documentClick).on(&#39;click&#39;, __documentClick);
+          })
+        });
+
+      } else {
+        canvas.on(&#39;mousemove&#39;,BUI.wrapBehavior(_self,&#39;onCanvasMove&#39;));
+        canvas.on(&#39;mouseout&#39;,BUI.wrapBehavior(_self,&#39;onMouseOut&#39;));
+      }
     },
     //处理鼠标在画板上移动
     onCanvasMove : function(ev){
@@ -200,18 +218,13 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
         _self.onMouseOut();
       }
     },
-    
-    onMouseOut : function(ev){
+    // 处理隐藏tip事件
+    onTriggerOut : function(ev){
       var _self = this,
         tipGroup = _self.get(&#39;tipGroup&#39;);
-      if(ev &amp;&amp; ev.target != _self.get(&#39;canvas&#39;).get(&#39;none&#39;)){
-        return;
-      }
       _self.clearActivedItem();
-
       //标志从显示到隐藏
       if(tipGroup.get(&#39;visible&#39;)){
-        
         if(tipGroup.get(&#39;shared&#39;)){
           BUI.each(_self.getVisibleSeries(),function(series){
             var markers = series.get(&#39;markersGroup&#39;);
@@ -220,6 +233,15 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
         }
         _self._hideTip();
       }
+    },
+
+    onMouseOut : function(ev){
+      var _self = this;
+      if(ev &amp;&amp; ev.target != _self.get(&#39;canvas&#39;).get(&#39;none&#39;)){
+        return;
+      }
+      _self.onTriggerOut(ev);
+
     },
 <span id='BUI-Chart-SeriesGroup-method-getSeries'>    /**
 </span>     * 获取所有的数据序列
@@ -253,7 +275,7 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
         if(tipInfo.items.length){
           _self._showTooltip(tipInfo.title,tipInfo.point,tipInfo.items);
         }
-        
+
       }
     },
     //获取显示tooltip的内容
@@ -268,7 +290,7 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
         var info = series.getTrackingInfo(point),
             item = {},
             title;
-        
+
         if(info){
           if(series.get(&#39;visible&#39;)){
             count = count + 1;
@@ -303,7 +325,7 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
               rst.point.x = point.x;
               rst.point.y = point.y;
             }
-            
+
           }
         }
       });
@@ -398,7 +420,7 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
         _self.set(&#39;yAxis&#39;,yAxis);
       }
 
-      
+
     },
     //创建坐标轴
     _createAxis : function(axis){
@@ -458,15 +480,15 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
           }
           autoUtil = Axis.Auto.Time;
         }
-        
+
         interval = axis.getCfgAttr(&#39;tickInterval&#39;);
-      
+
       series = _self.getSeries();
 
       var cfg = {
         min : min,
         max : max,
-        
+
         interval: interval
       };
       if(name == &#39;yAxis&#39;){
@@ -488,7 +510,7 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
           ticks : []
         };
       }
-      
+
 
       return rst;
 
@@ -534,7 +556,7 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
           if(arr.length){
             data.push(arr);
           }
-          
+
         }
       });
 
@@ -596,14 +618,14 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
           if(item.get(&#39;autoTicks&#39;)){
             var info = _self._caculateAxisInfo(item,name);
             item.changeInfo(info);
-            
+
           }
-          
+
           item.paint();
         }
-        
+
       });
-      
+
     },
     //是否存在关联的数据序列
     _hasRelativeSeries : function(axis,name){
@@ -634,7 +656,7 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
 
       _self.set(&#39;stackedData&#39;,null);
       //如果是非自动计算坐标轴，不进行重新计算
-      
+
       axis.change(info);
     },
     _resetSeries : function(){
@@ -776,7 +798,7 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
           item.set(&#39;yAxis&#39;,yAxis[item.get(&#39;yAxis&#39;)]);
         }
       });
-      
+
     },
 <span id='BUI-Chart-SeriesGroup-method-showSeries'>    /**
 </span>     * 显示series
@@ -834,9 +856,9 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
         }else{
           item.data = data;
         }
-        
+
       }
-      
+
       return item;
     },
     //根据类型获取构造函数
@@ -857,6 +879,7 @@ define(&#39;bui/chart/seriesgroup&#39;,[&#39;bui/common&#39;,&#39;bui/chart/plot
   });
 
   return Group;
-});</pre>
+});
+</pre>
 </body>
 </html>

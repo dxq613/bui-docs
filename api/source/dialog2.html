@@ -120,6 +120,11 @@ define(&#39;bui/grid/plugins/dialogediting&#39;,[&#39;bui/common&#39;],function 
          * @param {Object} ev.record 编辑的数据
          * @param {BUI.Editor.Editor} ev.editor 编辑器
          */
+        
+<span id='BUI-Grid-Plugins-DialogEditing-event-editorready'>        /**
+</span>         * @event editorready
+         * editor 创建完成，因为editor延迟创建，所以创建完成grid，等待editor创建成功
+         */
       }
     },
     editType : {
@@ -140,6 +145,7 @@ define(&#39;bui/grid/plugins/dialogediting&#39;,[&#39;bui/common&#39;],function 
       //延迟加载 editor模块
       BUI.use(&#39;bui/editor&#39;,function(Editor){
         _self._initEditor(Editor);
+        _self.fire(&#39;editorready&#39;);
       });
     },
     bindUI : function(grid){

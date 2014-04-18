@@ -17,11 +17,11 @@
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js">(function(){
   var requires = [&#39;bui/util&#39;,&#39;bui/ua&#39;,&#39;bui/json&#39;,&#39;bui/date&#39;,&#39;bui/array&#39;,&#39;bui/keycode&#39;,&#39;bui/observable&#39;,&#39;bui/base&#39;,&#39;bui/component&#39;];
-  if(window.KISSY &amp;&amp; !window.KISSY.Node){ //如果是kissy同时未加载core模块
+  if(window.KISSY &amp;&amp; (!window.KISSY.Node || !window.jQuery)){ //如果是kissy同时未加载core模块
     requires.unshift(&#39;bui/adapter&#39;);
   }
   define(&#39;bui/common&#39;,requires,function(require){
-    if(window.KISSY &amp;&amp; !window.KISSY.Node){
+    if(window.KISSY &amp;&amp; (!window.KISSY.Node || !window.jQuery)){
       require(&#39;bui/adapter&#39;);
     }
     var BUI = require(&#39;bui/util&#39;);

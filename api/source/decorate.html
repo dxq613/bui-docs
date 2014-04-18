@@ -29,6 +29,7 @@ define(&#39;bui/component/uibase/decorate&#39;,[&#39;bui/array&#39;,&#39;bui/jso
     FIELD_CFG = FIELD_PREFIX + &#39;cfg&#39;,
     PARSER = &#39;PARSER&#39;,
     Manager = require(&#39;bui/component/manage&#39;),
+    RE_DASH_WORD = /-([a-z])/g,
     regx = /^[\{\[]/;
 
   function isConfigField(name,cfgFields){
@@ -53,12 +54,30 @@ define(&#39;bui/component/uibase/decorate&#39;,[&#39;bui/array&#39;,&#39;bui/jso
       return constructorChains;
   }
 
+  function camelCase(str) {
+    return str.toLowerCase().replace(RE_DASH_WORD, function(all, letter) {
+      return (letter + &#39;&#39;).toUpperCase()
+    })
+  }
+
   //如果属性为对象或者数组，则进行转换
   function parseFieldValue(value){
+
     value = $.trim(value);
-    if(regx.test(value)){
-      value = JSON.looseParse(value);
+    if (value.toLowerCase() === &#39;false&#39;) {
+      value = false
     }
+    else if (value.toLowerCase() === &#39;true&#39;) {
+      value = true
+    }else if(regx.test(value)){
+      value = JSON.looseParse(value);
+    }else if (/\d/.test(value) &amp;&amp; /[^a-z]/i.test(value)) {
+      var number = parseFloat(value)
+      if (number + &#39;&#39; === value) {
+        value = number
+      }
+    }
+    
     return value;
   }
 
@@ -229,8 +248,13 @@ define(&#39;bui/component/uibase/decorate&#39;,[&#39;bui/array&#39;,&#39;bui/jso
               BUI.mix(config,cfg);
           }
           else if(isConfigField(name,decorateCfgFields)){
-            name = name.replace(FIELD_PREFIX,&#39;&#39;);
-            var value = parseFieldValue(attr.nodeValue);
+            var value = attr.nodeValue;
+            if(name.indexOf(FIELD_PREFIX) !== -1){
+              name = name.replace(FIELD_PREFIX,&#39;&#39;);
+              name = camelCase(name);
+              value = parseFieldValue(value);
+            }
+            
             if(config[name] &amp;&amp; BUI.isObject(value)){
               BUI.mix(config[name],value);
             }else{

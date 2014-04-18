@@ -119,7 +119,7 @@ define(&#39;bui/select/select&#39;,[&#39;bui/common&#39;,&#39;bui/picker&#39;],f
         picker.set(&#39;triggerEvent&#39;, _self.get(&#39;triggerEvent&#39;));
         picker.set(&#39;autoSetValue&#39;, _self.get(&#39;autoSetValue&#39;));
         picker.set(&#39;textField&#39;,textEl);
-        
+
         picker.render();
         _self.set(&#39;list&#39;,picker.get(&#39;list&#39;));
       },
@@ -195,6 +195,14 @@ define(&#39;bui/select/select&#39;,[&#39;bui/common&#39;,&#39;bui/picker&#39;],f
           }
           
         }
+      },
+      //禁用
+      _uiSetDisabled : function(v){
+        var _self = this,
+          picker = _self.get(&#39;picker&#39;),
+          textEl = _self._getTextEl();
+        picker.set(&#39;disabled&#39;,v);
+        textEl &amp;&amp; textEl.attr(&#39;disabled&#39;,v);
       },
       _getTextEl : function(){
          var _self = this,

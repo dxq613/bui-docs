@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">&#39;use strict&#39;;
+
+var gulp = require(&#39;gulp&#39;);
+var clean = require(&#39;gulp-clean&#39;);
+var concat = require(&#39;gulp-concat&#39;);
+var rename = require(&#39;gulp-rename&#39;);
+var uglify = require(&#39;gulp-uglify&#39;);
+var less = require(&#39;gulp-less&#39;);
+var minifyCSS = require(&#39;gulp-minify-css&#39;);
+var n2a = require(&#39;gulp-native2ascii&#39;);
+var chug = require( &#39;gulp-chug&#39; );
+
+// gulp.task(&#39;prepare&#39;, function() {
+//   gulp.src(&#39;./build/uploader.js&#39;)
+//     .pipe(clean());
+// });
+
+
+//合并js 
+gulp.task(&#39;uploader.js&#39;, function(){
+  gulp.src([
+      &#39;./button/ajbridge.js&#39;,
+      &#39;./button/filter.js&#39;,
+      &#39;./button/base.js&#39;,
+      &#39;./button/htmlButton.js&#39;,
+      &#39;./button/swfButton.js&#39;,
+      &#39;./type/base.js&#39;,
+      &#39;./type/ajax.js&#39;,
+      &#39;./type/flash.js&#39;,
+      &#39;./type/iframe.js&#39;,
+      &#39;./queue.js&#39;,
+      &#39;./theme.js&#39;,
+      &#39;./validator.js&#39;,
+      &#39;./factory.js&#39;,
+      &#39;./uploader.js&#39;,
+      &#39;./base.js&#39;
+    ]).pipe(concat(&#39;uploader.js&#39;))
+    .pipe(gulp.dest(&#39;../../build&#39;));
+});
+
+
+// 默认任务
+gulp.task(&#39;default&#39;, function() {
+  gulp.start(&#39;uploader.js&#39;);
+});
+</pre>
+</body>
+</html>

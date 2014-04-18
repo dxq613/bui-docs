@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * list左右选择
+ * @fileOverview
+ * @ignore
+ */
+define(&#39;bui/extensions/multiselect/multilist&#39;, [&#39;bui/common&#39;, &#39;bui/list&#39;], function(require){
+  var BUI = require(&#39;bui/common&#39;),
+    Component = BUI.Component,
+    List = require(&#39;bui/list&#39;);
+
+  //设置Controller的属性
+  function setControllerAttr(control, key, value) {
+    if (BUI.isFunction(control.set)) {
+      control.set(key, value);
+    }
+    else {
+      control[key] = value;
+    }
+  }
+
+  var PREFIX = BUI.prefix,
+    CLS_SOURCE = PREFIX + &#39;multilist-source&#39;,
+    CLS_TARGET = PREFIX + &#39;multilist-target&#39;,
+    CLS_BUTTON_RIGHT = PREFIX + &#39;multilist-btn-right&#39;,
+    CLS_BUTTON_LEFT = PREFIX + &#39;multilist-btn-left&#39;;
+
+  var MultiList = Component.Controller.extend({
+    renderUI: function(){
+      var _self = this,
+        source = _self.get(&#39;source&#39;),
+        target = _self.get(&#39;target&#39;);
+
+      source = _self._initControl(source, CLS_SOURCE);
+      target = _self._initControl(target, CLS_TARGET);
+
+      
+      source.render();
+      target.render();
+
+      _self.set(&#39;source&#39;, source);
+      _self.set(&#39;target&#39;, target);
+    },
+    _initControl: function(control, renderCls){
+      var _self = this,
+        el = _self.get(&#39;el&#39;);
+
+      //如果已经是一个控件了，则直接返回
+      if(control.isController){
+        control.set(&#39;render&#39;, el.find(&#39;.&#39; + renderCls));
+        return control;
+      }
+      control.render = el.find(&#39;.&#39; + renderCls);
+      return _self._createControl(control);
+    },
+    _createControl: function(config){
+      if(config.isController){
+        return config;
+      }
+      var multipleSelect = config.multipleSelect || this.get(&#39;multipleSelect&#39;),
+        //如果已经传了xclass则优先使用xclass
+        xclass = config.xclass || multipleSelect ? &#39;listbox&#39; : &#39;simple-list&#39;;
+      config.xclass = xclass;
+      return Component.create(config, this);
+    },
+    bindUI: function(){
+      var _self = this,
+        el = _self.get(&#39;el&#39;),
+        source = _self.get(&#39;source&#39;),
+        target = _self.get(&#39;target&#39;),
+        buttonRight = el.find(&#39;.&#39; + CLS_BUTTON_RIGHT),
+        buttonLeft = el.find(&#39;.&#39; + CLS_BUTTON_LEFT);
+
+      /*source.on(&#39;itemsshow&#39;, function(){
+        _self.syncSourceItems();
+      })*/
+
+      buttonRight.on(&#39;click&#39;, function(ev){
+        var selection = source.getSelection();
+        if(_self.fire(&#39;selected&#39;, {items: selection}) !== false){
+          source.removeItems(selection);
+          target.addItems(selection);
+        }
+      });
+      buttonLeft.on(&#39;click&#39;, function(ev){
+        var selection = target.getSelection();
+        if(_self.fire(&#39;unselected&#39;, {items: selection}) !== false){
+          target.removeItems(selection);
+          source.addItems(selection);
+        }
+      });
+      source.on(&#39;dblclick&#39;,function(ev){
+        var element = $(ev.domTarget).closest(&#39;li&#39;),
+          item = source.getItemByElement(element);
+        if(_self.fire(&#39;selected&#39;, {items: [item]}) !== false){
+          source.removeItem(item);
+          target.addItem(item);
+        }
+      });
+      target.on(&#39;dblclick&#39;,function(ev){
+        var element = $(ev.domTarget).closest(&#39;li&#39;),
+          item = target.getItemByElement(element);
+        if(_self.fire(&#39;unselected&#39;, {items: [item]}) !== false){
+          target.removeItem(item);
+          source.addItem(item);
+        }
+      });
+    },
+    //设置store时直接过滤选项
+    _uiSetStore: function(store){
+      var _self = this,
+        target = _self.get(&#39;target&#39;),
+        idField = target.get(&#39;idField&#39;);
+      store.filter(function(item){
+        var items = target.getItems(),
+          flag = true;
+        BUI.each(items, function(i){
+          if(i[idField] === item[idField]){
+            flag = false;
+            return false;
+          }
+        });
+        return flag;
+      })
+    }
+  }, {
+    ATTRS: {
+      source:{
+        value: {
+          elCls:&#39;bui-select-list&#39;
+        },
+        shared: false
+      },
+      target: {
+        value: {
+          elCls:&#39;bui-select-list&#39;
+        },
+        shared: false
+      },
+      store: {
+        setter: function(v){
+          setControllerAttr(this.get(&#39;source&#39;), &#39;store&#39;, v);
+          return v;
+        }
+      },
+      items: {
+        setter: function(v){
+          var store = new BUI.Data.Store({
+            data: v
+          });
+          this.set(&#39;store&#39;, store);
+          return v;
+        }
+      },
+      url: {
+        setter: function(v){
+          if(!v){
+            return;
+          }
+          var store = new BUI.Data.Store({
+            url: v,
+            autoLoad: true
+          });
+          this.set(&#39;store&#39;, store);
+          return v;
+        }
+      },
+      tpl: {
+        value: &#39;&lt;div class=&quot;row&quot;&gt;&#39; +
+                &#39;&lt;div class=&quot;span5 &#39; + CLS_SOURCE + &#39;&quot;&gt;&lt;/div&gt;&#39; + 
+                &#39;&lt;div class=&quot;span2 bui-multilist-action centered&quot;&gt;&#39; + 
+                &#39;&lt;p&gt;&lt;button  class=&quot;button button-small &#39; + CLS_BUTTON_RIGHT + &#39;&quot; type=&quot;button&quot;&gt;&amp;gt;&amp;gt;&lt;/button&gt;&lt;/p&gt;&#39; + 
+                &#39;&lt;p&gt;&lt;button  class=&quot;button button-small &#39; + CLS_BUTTON_LEFT + &#39;&quot; type=&quot;button&quot;&gt;&amp;lt;&amp;lt;&lt;/button&gt;&lt;/p&gt;&#39; + 
+                &#39;&lt;/div&gt;&#39; + 
+                &#39;&lt;div class=&quot;span5 &#39; + CLS_TARGET + &#39;&quot;&gt;&lt;/div&gt;&#39; + 
+              &#39;&lt;/div&gt;&#39;
+      }
+    }
+  }, {
+    xclass: &#39;multilist&#39;
+  });
+
+  return MultiList;
+<span id='global-property-'>});/**
+</span> * @fileOverview 选择器
+ * @ignore
+ */
+
+define(&#39;bui/extensions/multiselect/multilistpicker&#39;, [&#39;bui/overlay&#39;, &#39;bui/picker&#39;], function (require) {
+  
+  var Dialog = require(&#39;bui/overlay&#39;).Dialog,
+    Mixin = require(&#39;bui/picker&#39;).Mixin;
+
+  var MultilistPicker = Dialog.extend([Mixin], {
+<span id='global-method-setSelectedValue'>    /**
+</span>     * 设置选中的值
+     * @template
+     * @protected
+     * @param {String} val 设置值
+     */
+    setSelectedValue : function(val){
+      var _self = this,
+        innerControl = _self.get(&#39;innerControl&#39;),
+        store = innerControl.get(&#39;store&#39;);
+
+      if(!this.get(&#39;isInit&#39;) &amp;&amp; val){
+        val = val.split(&#39;,&#39;);
+
+        function syncValue(){
+          _self._syncValue(val);
+          store.off(&#39;load&#39;, syncValue);
+        }
+
+        if(store.get(&#39;url&#39;)){
+          store.on(&#39;load&#39;, syncValue);
+        }
+        else{
+          _self._syncValue(val);
+        }
+      }
+    },
+    _syncValue: function(val){
+      var _self = this,
+        innerControl = _self.get(&#39;innerControl&#39;),
+        textField = _self._getTextField(),
+        idField = innerControl.get(&#39;source&#39;).get(&#39;idField&#39;),
+        store = innerControl.get(&#39;store&#39;),
+        result = store.getResult(),
+        target = [],
+        text = [];
+
+      BUI.each(result, function(item){
+        if($.inArray(item[idField], val) !== -1){
+          target.push(item);
+          text.push(item[&#39;text&#39;]);
+        }
+      });
+      $(textField).val(text.join(&#39;,&#39;));
+      //store.setResult(source);
+      BUI.each(target, function(item){
+        store.remove(item);
+      })
+      innerControl.get(&#39;target&#39;).setItems(target);
+    },
+<span id='global-method-getSelectedValue'>    /**
+</span>     * 获取选中的值，多选状态下，值以&#39;,&#39;分割
+     * @template
+     * @protected
+     * @return {String} 选中的值
+     */
+    getSelectedValue : function(){
+      var _self = this, 
+        innerControl = _self.get(&#39;innerControl&#39;),
+        target = innerControl.get(&#39;target&#39;);
+      return _self._getItemsValue(target);
+    },
+<span id='global-method-getSelectedText'>    /**
+</span>     * 获取选中项的文本，多选状态下，文本以&#39;,&#39;分割
+     * @template
+     * @protected
+     * @return {String} 选中的文本
+     */
+    getSelectedText : function(){
+      var _self = this, 
+        innerControl = _self.get(&#39;innerControl&#39;),
+        target = innerControl.get(&#39;target&#39;);
+      return _self._getItemsText(target);
+    },
+    _getItemsText: function(list, items){
+      if(!items){
+        items = list.get(&#39;items&#39;);
+      }
+      return $.map(items, function(item){
+          return list.getItemText(item);
+      });
+    },
+    _getItemsValue: function(list, items){
+      var field = list.get(&#39;idField&#39;);
+      if(!items){
+        items = list.get(&#39;items&#39;);
+      }
+      return $.map(items,function(item){
+        return list.getValueByField(item, field);
+      });
+    }
+  },{
+    ATTRS : {
+<span id='global-cfg-success'>      /**
+</span>      * 点击成功时的回调函数
+      * @cfg {Function} success
+      */
+      success : {
+        value : function(){
+          var _self = this;
+          _self.get(&#39;innerControl&#39;).fire(_self.get(&#39;changeEvent&#39;));
+          this.close();
+        }
+      }
+    }
+  },{
+    xclass:&#39;multilist-picker&#39;
+  });
+
+  return MultilistPicker;
+<span id='global-property-'>});/**
+</span> * list左右选择
+ * @fileOverview
+ * @ignore
+ */
+define(&#39;bui/extensions/multiselect/multiselect&#39;,[&#39;bui/common&#39;, &#39;bui/extensions/multiselect/multilist&#39;, &#39;bui/extensions/multiselect/multilistpicker&#39;, &#39;bui/extensions/search&#39;], function(require){
+  var BUI = require(&#39;bui/common&#39;),
+    Component = BUI.Component,
+    MultiList = require(&#39;bui/extensions/multiselect/multilist&#39;),
+    MultiListPicker = require(&#39;bui/extensions/multiselect/multilistpicker&#39;),
+    Search = require(&#39;bui/extensions/search&#39;);
+
+  var CLS_INPUT = BUI.prefix + &#39;select-input&#39;;
+
+
+  var MultiSelect = Component.Controller.extend({
+    initializer: function(){
+      var _self = this,
+        search = _self.get(&#39;search&#39;),
+        searchTpl = _self.get(&#39;searchTpl&#39;),
+        searchCfg = {},
+        plugins;
+      if(search){
+        if(searchTpl){
+          searchCfg.tpl = searchTpl;
+        }
+        search = new Search(searchCfg);
+        plugins = [search];
+      }
+
+      var multilist = new MultiList({
+        items: _self.get(&#39;items&#39;),
+        url: _self.get(&#39;url&#39;),
+        plugins: plugins
+      });
+
+      _self.set(&#39;multilist&#39;, multilist);
+    },
+    renderUI: function(){
+      var _self = this,
+        el = _self.get(&#39;el&#39;),
+        inputEl = el.find(&#39;.&#39; + CLS_INPUT),
+        multilist = _self.get(&#39;multilist&#39;);
+
+      var picker = new MultiListPicker({
+        trigger: inputEl,
+        autoRender: true,
+        textField: inputEl,
+        valueField: _self.get(&#39;valueField&#39;),
+        children: [multilist]
+      });
+      _self.set(&#39;picker&#39;, picker);
+      _self.set(&#39;textField&#39;, inputEl);
+    },
+    bindUI: function(){
+      var _self = this,
+        multilist = _self.get(&#39;multilist&#39;);
+
+      multilist.on(&#39;selected&#39;, function(ev){
+        var items = ev.items;
+        return _self.fire(&#39;selected&#39;, {items: items});
+      });
+      multilist.on(&#39;unselected&#39;, function(ev){
+        var items = ev.items;
+        return _self.fire(&#39;unselected&#39;, {items: items});
+      })
+    }
+  }, {
+    ATTRS: {
+      elCls: {
+        value: &#39;bui-select&#39;
+      },
+      searchTpl: {
+
+      },
+      search: {
+
+      },
+      url: {
+
+      },
+      items: {
+
+      },
+      source: {
+        getter: function(){
+          return this.get(&#39;multilist&#39;).get(&#39;source&#39;);
+        }
+      },
+      target: {
+        getter: function(){
+          return this.get(&#39;multilist&#39;).get(&#39;target&#39;);
+        }
+      },
+      valueField: {
+        setter: function(v){
+          return $(v);
+        }
+      },
+      textField: {
+
+      },
+      tpl : {
+        view:true,
+        value : &#39;&lt;input type=&quot;text&quot; readonly=&quot;readonly&quot; class=&quot;&#39;+CLS_INPUT+&#39;&quot;/&gt;&lt;span class=&quot;x-icon x-icon-normal&quot;&gt;&lt;i class=&quot;icon icon-caret icon-caret-down&quot;&gt;&lt;/i&gt;&lt;/span&gt;&#39;
+      }
+    }
+  }, {
+    xclass: &#39;multiselect&#39;
+  });
+
+  return MultiSelect;
+<span id='global-property-'>});/**
+</span> * @fileOverview 选择框命名空间入口文件
+ * @ignore
+ */
+
+define(&#39;bui/extensions/multiselect&#39;, [&#39;bui/common&#39;, &#39;bui/extensions/multiselect/multilist&#39;, &#39;bui/extensions/multiselect/multilistpicker&#39;,&#39;bui/extensions/multiselect/multiselect&#39;, &#39;bui/extensions/search&#39;], function (require) {
+
+  var BUI = require(&#39;bui/common&#39;),
+    multiselect = require(&#39;bui/extensions/multiselect/multiselect&#39;);
+  return multiselect;
+});</pre>
+</body>
+</html>

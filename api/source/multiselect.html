@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * list左右选择
+ * @fileOverview
+ * @ignore
+ */
+define(&#39;bui/extensions/multiselect/multiselect&#39;,[&#39;bui/common&#39;, &#39;bui/extensions/multiselect/multilist&#39;, &#39;bui/extensions/multiselect/multilistpicker&#39;, &#39;bui/extensions/search&#39;], function(require){
+  var BUI = require(&#39;bui/common&#39;),
+    Component = BUI.Component,
+    MultiList = require(&#39;bui/extensions/multiselect/multilist&#39;),
+    MultiListPicker = require(&#39;bui/extensions/multiselect/multilistpicker&#39;),
+    Search = require(&#39;bui/extensions/search&#39;);
+
+  var CLS_INPUT = BUI.prefix + &#39;select-input&#39;;
+
+
+  var MultiSelect = Component.Controller.extend({
+    initializer: function(){
+      var _self = this,
+        search = _self.get(&#39;search&#39;),
+        searchTpl = _self.get(&#39;searchTpl&#39;),
+        searchCfg = {},
+        plugins;
+      if(search){
+        if(searchTpl){
+          searchCfg.tpl = searchTpl;
+        }
+        search = new Search(searchCfg);
+        plugins = [search];
+      }
+
+      var multilist = new MultiList({
+        items: _self.get(&#39;items&#39;),
+        url: _self.get(&#39;url&#39;),
+        plugins: plugins
+      });
+
+      _self.set(&#39;multilist&#39;, multilist);
+    },
+    renderUI: function(){
+      var _self = this,
+        el = _self.get(&#39;el&#39;),
+        inputEl = el.find(&#39;.&#39; + CLS_INPUT),
+        multilist = _self.get(&#39;multilist&#39;);
+
+      var picker = new MultiListPicker({
+        trigger: inputEl,
+        autoRender: true,
+        textField: inputEl,
+        valueField: _self.get(&#39;valueField&#39;),
+        children: [multilist]
+      });
+      _self.set(&#39;picker&#39;, picker);
+      _self.set(&#39;textField&#39;, inputEl);
+    },
+    bindUI: function(){
+      var _self = this,
+        multilist = _self.get(&#39;multilist&#39;);
+
+      multilist.on(&#39;selected&#39;, function(ev){
+        var items = ev.items;
+        return _self.fire(&#39;selected&#39;, {items: items});
+      });
+      multilist.on(&#39;unselected&#39;, function(ev){
+        var items = ev.items;
+        return _self.fire(&#39;unselected&#39;, {items: items});
+      })
+    }
+  }, {
+    ATTRS: {
+      elCls: {
+        value: &#39;bui-select&#39;
+      },
+      searchTpl: {
+
+      },
+      search: {
+
+      },
+      url: {
+
+      },
+      items: {
+
+      },
+      source: {
+        getter: function(){
+          return this.get(&#39;multilist&#39;).get(&#39;source&#39;);
+        }
+      },
+      target: {
+        getter: function(){
+          return this.get(&#39;multilist&#39;).get(&#39;target&#39;);
+        }
+      },
+      valueField: {
+        setter: function(v){
+          return $(v);
+        }
+      },
+      textField: {
+
+      },
+      tpl : {
+        view:true,
+        value : &#39;&lt;input type=&quot;text&quot; readonly=&quot;readonly&quot; class=&quot;&#39;+CLS_INPUT+&#39;&quot;/&gt;&lt;span class=&quot;x-icon x-icon-normal&quot;&gt;&lt;i class=&quot;icon icon-caret icon-caret-down&quot;&gt;&lt;/i&gt;&lt;/span&gt;&#39;
+      }
+    }
+  }, {
+    xclass: &#39;multiselect&#39;
+  });
+
+  return MultiSelect;
+});</pre>
+</body>
+</html>

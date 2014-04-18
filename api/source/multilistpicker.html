@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 选择器
+ * @ignore
+ */
+
+define(&#39;bui/extensions/multiselect/multilistpicker&#39;, [&#39;bui/overlay&#39;, &#39;bui/picker&#39;], function (require) {
+  
+  var Dialog = require(&#39;bui/overlay&#39;).Dialog,
+    Mixin = require(&#39;bui/picker&#39;).Mixin;
+
+  var MultilistPicker = Dialog.extend([Mixin], {
+<span id='global-method-setSelectedValue'>    /**
+</span>     * 设置选中的值
+     * @template
+     * @protected
+     * @param {String} val 设置值
+     */
+    setSelectedValue : function(val){
+      var _self = this,
+        innerControl = _self.get(&#39;innerControl&#39;),
+        store = innerControl.get(&#39;store&#39;);
+
+      if(!this.get(&#39;isInit&#39;) &amp;&amp; val){
+        val = val.split(&#39;,&#39;);
+
+        function syncValue(){
+          _self._syncValue(val);
+          store.off(&#39;load&#39;, syncValue);
+        }
+
+        if(store.get(&#39;url&#39;)){
+          store.on(&#39;load&#39;, syncValue);
+        }
+        else{
+          _self._syncValue(val);
+        }
+      }
+    },
+    _syncValue: function(val){
+      var _self = this,
+        innerControl = _self.get(&#39;innerControl&#39;),
+        textField = _self._getTextField(),
+        idField = innerControl.get(&#39;source&#39;).get(&#39;idField&#39;),
+        store = innerControl.get(&#39;store&#39;),
+        result = store.getResult(),
+        target = [],
+        text = [];
+
+      BUI.each(result, function(item){
+        if($.inArray(item[idField], val) !== -1){
+          target.push(item);
+          text.push(item[&#39;text&#39;]);
+        }
+      });
+      $(textField).val(text.join(&#39;,&#39;));
+      //store.setResult(source);
+      BUI.each(target, function(item){
+        store.remove(item);
+      })
+      innerControl.get(&#39;target&#39;).setItems(target);
+    },
+<span id='global-method-getSelectedValue'>    /**
+</span>     * 获取选中的值，多选状态下，值以&#39;,&#39;分割
+     * @template
+     * @protected
+     * @return {String} 选中的值
+     */
+    getSelectedValue : function(){
+      var _self = this, 
+        innerControl = _self.get(&#39;innerControl&#39;),
+        target = innerControl.get(&#39;target&#39;);
+      return _self._getItemsValue(target);
+    },
+<span id='global-method-getSelectedText'>    /**
+</span>     * 获取选中项的文本，多选状态下，文本以&#39;,&#39;分割
+     * @template
+     * @protected
+     * @return {String} 选中的文本
+     */
+    getSelectedText : function(){
+      var _self = this, 
+        innerControl = _self.get(&#39;innerControl&#39;),
+        target = innerControl.get(&#39;target&#39;);
+      return _self._getItemsText(target);
+    },
+    _getItemsText: function(list, items){
+      if(!items){
+        items = list.get(&#39;items&#39;);
+      }
+      return $.map(items, function(item){
+          return list.getItemText(item);
+      });
+    },
+    _getItemsValue: function(list, items){
+      var field = list.get(&#39;idField&#39;);
+      if(!items){
+        items = list.get(&#39;items&#39;);
+      }
+      return $.map(items,function(item){
+        return list.getValueByField(item, field);
+      });
+    }
+  },{
+    ATTRS : {
+<span id='global-cfg-success'>      /**
+</span>      * 点击成功时的回调函数
+      * @cfg {Function} success
+      */
+      success : {
+        value : function(){
+          var _self = this;
+          _self.get(&#39;innerControl&#39;).fire(_self.get(&#39;changeEvent&#39;));
+          this.close();
+        }
+      }
+    }
+  },{
+    xclass:&#39;multilist-picker&#39;
+  });
+
+  return MultilistPicker;
+});</pre>
+</body>
+</html>

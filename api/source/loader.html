@@ -244,7 +244,10 @@ define(&#39;bui/component/loader&#39;,[&#39;bui/util&#39;],function (require) {
      * @default null
      */
     params : {
-
+        setter : function(v){
+            this.set(&#39;lastParams&#39;,params);
+            return v;
+        }
     },
 <span id='BUI-Component-Loader-cfg-appendParams'>    /**
 </span>     * 附加参数，每次请求都带的参数
@@ -420,6 +423,10 @@ define(&#39;bui/component/loader&#39;,[&#39;bui/util&#39;],function (require) {
         callback = _self.get(&#39;callback&#39;),
         renderer = _self.get(&#39;renderer&#39;),
         target = _self.get(&#39;target&#39;);
+
+      if(BUI.isString(data)){
+        target.set(property,&#39;&#39;);//防止2次返回的数据一样
+      }
       target.set(property,renderer.call(_self,data));
 
       /**/
