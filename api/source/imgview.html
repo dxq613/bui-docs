@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 带样式的图片浏览
+ * @ignore
+ */
+
+// 依赖关系数组写在第二参数，这样require关键字就可以压缩成&quot;r&quot;了。
+define(&#39;bui/imgview/imgview&#39;,[&#39;bui/common&#39;,&#39;bui/toolbar&#39;,&#39;bui/imgview/viewcontent&#39;,&#39;bui/imgview/previewlist&#39;],function (r) {
+
+  var BUI = r(&#39;bui/common&#39;),
+    ViewContent = r(&#39;bui/imgview/viewcontent&#39;),
+    PreviewList = r(&#39;bui/imgview/previewlist&#39;),
+    Toolbar = r(&#39;bui/toolbar&#39;);
+
+<span id='BUI-ImgView-ImgView'>  /**
+</span>   * @class BUI.ImgView.ImgView
+   * 自带小图预览及动作条的图片预览.
+   * @extends BUI.Component.Controller
+   */
+  var ImgView = BUI.Component.Controller.extend({
+    initializer : function(){
+      var _self = this,
+        el = _self.get(&#39;el&#39;),
+        children = _self.get(&#39;children&#39;);
+
+      // 根据viewContent的配置项，生成viewContent
+      var viewContent = new ViewContent(BUI.mix(_self.get(&#39;viewContent&#39;),{
+        elCls: &quot;ui-img-view-content&quot;
+      }));
+      // 生成底下的toolBar
+      var toolBar = new Toolbar.Bar({
+        elCls: &quot;ui-img-view-toolbar&quot;,
+        children: _self.get(&#39;commands&#39;),
+        itemTpl: &#39;&lt;a data-cmd=&quot;{cmd}&quot; href=&quot;javascript:;&quot;&gt;{text}&lt;/a&gt;&#39;
+      });
+      // 生成右边的previewList
+      var previewList = new PreviewList({
+        elCls: &quot;ui-img-view-mini-wrap&quot;
+      })
+
+      children.push(viewContent);
+      children.push(previewList);
+      children.push(toolBar);
+      _self.set(&#39;toolBar&#39;,toolBar);
+      _self.set(&#39;viewContent&#39;,viewContent);
+      _self.set(&#39;previewList&#39;,previewList);
+    },
+    renderUI: function(){
+      var _self = this,
+        toolBar = _self.get(&#39;toolBar&#39;),
+        viewContent = _self.get(&#39;viewContent&#39;),
+        el = _self.get(&#39;el&#39;);
+
+      viewContent.get(&#39;el&#39;).append(&#39;&lt;a class=&quot;paintPrev J_paintPrev&quot; href=&quot;#&quot;&gt;&lt;/a&gt;&lt;a class=&quot;paintNext J_paintNext&quot; href=&quot;#&quot;&gt;&lt;/a&gt;&#39;)
+      el.addClass(&quot;img-view-controls-wrap&quot;);
+    },
+    bindUI: function(){
+      // 绑定工具栏事件，包括左右
+      this._bindToolbar();
+      this._bindSelectedChange();
+      this._bindPrevNext();
+    },
+    // 绑定上下按钮的事件
+    _bindPrevNext: function(){
+      var _self = this,
+        viewContent = _self.get(&#39;viewContent&#39;),
+        el = viewContent.get(&#39;el&#39;);
+
+      el.hover(function(){
+        el.find(&quot;.J_paintPrev,.J_paintNext&quot;).show();
+      },function(){
+        el.find(&quot;.J_paintPrev,.J_paintNext&quot;).hide();
+      });
+      el.find(&quot;.J_paintPrev&quot;).on(&#39;click&#39;,function(ev){
+        ev.preventDefault();
+        _self.paintPrev();
+      });
+      el.find(&quot;.J_paintNext&quot;).on(&#39;click&#39;,function(ev){
+        ev.preventDefault();
+        _self.paintNext();
+      });
+    },
+    // 绑定动作条的事件
+    _bindToolbar: function(){
+      var _self = this,
+        viewContent = _self.get(&#39;viewContent&#39;),
+        toolBar = _self.get(&#39;toolBar&#39;);
+
+      toolBar.on(&#39;click&#39;,function(ev){
+        var item = ev.target,
+          command = item.get(&#39;cmd&#39;);
+
+        if (command == &quot;viewImg&quot;) {
+          var imgSrc = viewContent.getSrc();
+          $(ev.domTarget).attr(&quot;href&quot;, imgSrc);
+        } else if (command) {
+          viewContent[command]&amp;&amp;viewContent[command]();
+        }
+      });
+    },
+    // 绑定选中事件
+    _bindSelectedChange: function(){
+      var _self = this;
+
+      _self.get(&#39;previewList&#39;).set(&#39;selectedchange&#39;, function(e, imgNum){
+        // console.log(imgNum);
+        var selectedchange = _self.get(&#39;selectedchange&#39;),
+          viewContent = _self.get(&#39;viewContent&#39;),
+          imgList = _self.get(&#39;imgList&#39;);
+
+        if (imgList.length) {
+          viewContent.set(&#39;imgSrc&#39;, imgList[imgNum].src);
+          _self.set(&#39;imgNum&#39;, imgNum);
+          // selectedchange是imgview的回掉
+          selectedchange(imgNum, imgList[imgNum].src);
+        }
+      });
+    },
+<span id='BUI-ImgView-ImgView-method-getViewContent'>    /**
+</span>     * 获得viewContet对象
+     * @return {Object}
+     * &lt;pre&gt;&lt;code&gt;
+     *  var viewContent = imgview.getViewContent();
+     * &lt;/code&gt;&lt;/pre&gt;
+     */
+    getViewContent: function(){
+      return this.get(&#39;viewContent&#39;);
+    },
+<span id='BUI-ImgView-ImgView-method-paintPrev'>    /**
+</span>     * 显示上一个
+     */
+    paintPrev: function(){
+      var _self = this,
+        imgNum = _self.get(&#39;imgNum&#39;);
+
+      if (imgNum - 1 &gt;= 0) {
+        _self.set(&#39;imgNum&#39;, imgNum - 1);
+      }
+    },
+<span id='BUI-ImgView-ImgView-method-paintNext'>    /**
+</span>     * 显示下一个
+     */
+    paintNext: function(){
+      var _self = this,
+        imgList = _self.get(&#39;imgList&#39;),
+        imgNum = _self.get(&#39;imgNum&#39;);
+
+      if (imgNum + 1 &lt; imgList.length) {
+        _self.set(&#39;imgNum&#39;, imgNum + 1);
+      }
+    },
+<span id='BUI-ImgView-ImgView-method-reset'>    /**
+</span>     * 充值viewcontent的装填
+     */
+    reset: function(){
+      this.getViewContent().reset();
+    },
+<span id='BUI-ImgView-ImgView-method-getLength'>    /**
+</span>     * 获得当前imgList的长度
+     * @return {Number}
+     */
+    getLength: function(){
+      return this.get(&#39;imgList&#39;).length;
+    },
+<span id='BUI-ImgView-ImgView-method-getSrc'>    /**
+</span>     * 获得当前选中图片的src
+     * @return {Number}
+     */
+    getSrc: function(){
+      return this.getViewContent().get(&#39;imgSrc&#39;);
+    },
+    // width修改触发的方法
+    _uiSetWidth: function(width){
+      width = width || this.get(&#39;width&#39;);
+      var sidebarWidth = this.get(&#39;sidebarWidth&#39;);
+
+      this.get(&#39;viewContent&#39;).set(&#39;width&#39;, width - sidebarWidth);
+      this.get(&#39;toolBar&#39;).set(&#39;width&#39;, width - sidebarWidth);
+    },
+    // height修改触发的方法
+    _uiSetHeight: function(height){
+      height = height || this.get(&#39;height&#39;);
+      this.get(&#39;viewContent&#39;).set(&#39;height&#39;, height - this.get(&#39;toolbarHeight&#39;));
+      this.get(&#39;previewList&#39;).set(&#39;height&#39;, height);
+    },
+    // toolbarHeight修改时触发的方法
+    _uiSetToolbarHeight: function(toolbarHeight){
+      this.get(&#39;toolBar&#39;).set(&#39;height&#39;, toolbarHeight);
+      // 如果初始化toolbarHeight的时候触发setHeight，这样初始化会重置一次。
+      // this._uiSetHeight();
+    },
+    // sidebarWidth修改时触发的方法
+    _uiSetSidebarWidth: function(sidebarWidth){
+      this.get(&#39;previewList&#39;).set(&#39;width&#39;, sidebarWidth);
+      // this.get(&#39;toolBar&#39;).set(&#39;height&#39;, toolbarHeight);
+      // this._uiSetWidth();
+    },
+    _uiSetImgNum: function(imgNum){
+      // 控制右边条的切换，通过selectedchange触发图片的切换
+      this.get(&#39;previewList&#39;).set(&#39;selected&#39;, imgNum);
+    },
+    _uiSetImgList: function(imgList){
+      var _self = this,
+        previewList = _self.get(&#39;previewList&#39;);
+
+      // 防止第一次渲染的时候selected先执行了。
+      previewList.set(&#39;items&#39;, imgList);
+    },
+    // 析构函数
+    destructor: function(){
+
+    }
+  },{
+    ATTRS: {
+      imgList: {
+        value: []
+      },
+<span id='BUI-ImgView-ImgView-property-imgNum'>      /**
+</span>       * 默认显示的当前图片
+       * @type {Number}
+       */
+      imgNum: {
+        value: 0
+      },
+<span id='BUI-ImgView-ImgView-property-commands'>      /**
+</span>       * 动作条的默认动作.
+       * @type {Object}
+       */
+      commands: {
+        value: [{
+          cmd: &#39;fitToggle&#39;,
+          text: &#39;自动大小&#39;
+        },{
+          cmd: &#39;resume&#39;,
+          text: &#39;实际大小&#39;
+        },{
+          cmd: &#39;fit&#39;,
+          text: &#39;适合大小&#39;
+        },{
+          cmd: &#39;leftHand&#39;,
+          text: &#39;左旋&#39;
+        },{
+          cmd: &#39;rightHand&#39;,
+          text: &#39;右旋&#39;
+        },{
+          cmd: &#39;zoom&#39;,
+          text: &#39;放大&#39;
+        },{
+          cmd: &#39;micrify&#39;,
+          text: &#39;缩小&#39;
+        },{
+          cmd: &#39;viewImg&#39;,
+          content: &#39;&lt;a href=&quot;#&quot; target=&quot;_blank&quot;&gt;查看原图&lt;/a&gt;&#39;
+        }]
+      },
+<span id='BUI-ImgView-ImgView-property-sidebarWidth'>      /**
+</span>       * 右边滚动条的宽度
+       * @type {Number}
+       */
+      sidebarWidth: {
+        value: 100
+      },
+<span id='BUI-ImgView-ImgView-property-toolbarHeight'>      /**
+</span>       * 底下toolbar的高度
+       * @type {Number}
+       */
+      toolbarHeight: {
+        value: 50
+      },
+<span id='BUI-ImgView-ImgView-property-viewContent'>      /**
+</span>       * viewContent的配置
+       * @type {Object}
+       */
+      viewContent:{
+        value: {
+          rotateTime: 300, // 旋转速度
+          scaleTime: 300, // 缩放时间
+          zoomRate: 1.5, // 放大比率
+          micrifyRate: 0.66, // 缩小比率
+          overflowSize: 100 // 边界回弹数值
+        }
+      },
+      elCls:{
+        value: &quot;ui-img-view-wrap&quot;
+      },
+<span id='BUI-ImgView-ImgView-property-selectedchange'>      /**
+</span>       * 图片变换后出发的事件
+       * @type {Function}
+       */
+      selectedchange: {
+        value: function(){
+
+        }
+      }
+    }
+  });
+
+  BUI.mix(ImgView,{
+    ViewContent: ViewContent,
+    PreviewList: PreviewList
+  })
+
+  return ImgView;
+});
+</pre>
+</body>
+</html>

@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 图片预览控件
+ * @ignore
+ */
+define(&#39;bui/imgview/previewlist&#39;,[&#39;bui/common&#39;,&#39;bui/list&#39;],function (r) {
+
+  var BUI = r(&#39;bui/common&#39;),
+    List = r(&#39;bui/list&#39;);
+
+  var loadCenterImg = function(self, src){
+    var w = self.width(),
+      h = self.height(),
+      targetImg = new Image(),
+      imgObj = jQuery(&quot;&lt;img&gt;&quot;);
+
+    targetImg.onload = function(){
+      var tw = targetImg.width,
+        th = targetImg.height;
+      if((tw/th)&gt;(w/h)){
+        var ih = w/tw*th;
+        imgObj.css({
+          &quot;width&quot;:w,
+          &quot;height&quot;:ih,
+          &quot;marginTop&quot;:(h-ih)/2
+        });
+      }else{
+        var iw = h/th*tw;
+        imgObj.css({
+          &quot;width&quot;:iw,
+          &quot;height&quot;:h,
+          &quot;marginLeft&quot;:(w-iw)/2
+        });
+      }
+      imgObj[0].src = src;
+      self.html(imgObj);
+    }
+    targetImg.src = src;
+    return targetImg;
+  }
+
+  if(!Array.indexOf){
+    Array.prototype.indexOf = function(obj){
+      for(var i=0; i&lt;this.length; i++){
+        if(this[i]==obj){
+          return i;
+        }
+      }
+      return -1;
+    }
+  }
+
+
+  var PreviewList = BUI.Component.Controller.extend({
+    initializer: function(){
+      var _self = this,
+        children = _self.get(&#39;children&#39;),
+        list = new List.SimpleList({
+          elCls: _self.get(&#39;listCls&#39;),
+          itemTpl: _self.get(&#39;itemTpl&#39;)
+        });
+
+      children.push(list);
+      _self.set(&#39;list&#39;, list);
+    },
+    renderUI: function(){
+      var _self = this,
+        list = _self.get(&#39;list&#39;),
+        alignType = _self.get(&#39;alignType&#39;),
+        ul = $(list.get(&#39;el&#39;)).find(&#39;ul&#39;),
+        el = _self.get(&#39;el&#39;);
+
+      _self.set(&#39;ul&#39;, ul);
+      el.prepend(&#39;&lt;a href=&quot;#&quot; class=&quot;ui-previewlist-prev J_previewPrev&quot;&gt;&lt;/a&gt;&#39;);
+      el.append(&#39;&lt;a href=&quot;#&quot; class=&quot;ui-previewlist-next J_previewNext&quot;&gt;&lt;/a&gt;&#39;);
+
+      if (alignType == &quot;width&quot;) {
+        ul.width(10000);
+        el.addClass(&quot;ui-preview-wrap-width&quot;);
+      }
+      ul.addClass(&quot;clearfix&quot;);
+
+      _self._uiSetHeight();
+    },
+    bindUI: function(){
+      this._bindSelect(); // 绑定选中事件
+      this._bindScroll(); // 绑定滚动事件
+    },
+    // 绑定选中事件
+    _bindSelect: function(){
+      var _self = this,
+        list = _self.get(&#39;list&#39;);
+
+      list.on(&#39;selectedchange&#39;,function(e){
+        // 当前选中的位置
+        var items = _self.get(&#39;items&#39;),
+          selected = items.indexOf(e.item),
+          pageSize = _self.get(&#39;pageSize&#39;),
+          selectedchange = _self.get(&#39;selectedchange&#39;);
+
+        _self.set(&#39;selected&#39;, selected);
+        _self.setPage(parseInt(selected / pageSize));
+        selectedchange &amp;&amp; selectedchange(e, selected);
+      });
+    },
+    // 绑定滚动事件
+    _bindScroll: function(){
+      var _self = this,
+        el = _self.get(&#39;el&#39;),
+        itemHeight = _self.get(&#39;itemHeight&#39;);
+
+      el.find(&quot;.J_previewNext&quot;).on(&#39;click&#39;,function(ev){
+        ev.preventDefault();
+        _self.goNext();
+      });
+      el.find(&quot;.J_previewPrev&quot;).on(&#39;click&#39;,function(ev){
+        ev.preventDefault();
+        _self.goPrev();
+      });
+    },
+<span id='global-method-setPage'>    /**
+</span>     * 滚到第几页
+     * @param {Number} 滚动到第几页
+     * @param {Number} 滚动的时间
+     * @return {Boolean} 页码是否属于正常范围之内
+     * * &lt;pre&gt;&lt;code&gt;
+     *  previewList.setPage(2, 500);
+     * &lt;/code&gt;&lt;/pre&gt;
+     */
+    setPage: function(pageNum, scrollTime){
+      var _self = this,
+        pageNum = typeof pageNum == &quot;number&quot; ? pageNum : parseInt(_self.get(&#39;selected&#39;) / _self.get(&#39;pageSize&#39;)),
+        maxPage = _self.get(&#39;maxPage&#39;),
+        returnValue = false;
+
+
+      if (pageNum &gt;= 0 &amp;&amp; pageNum &lt; maxPage) {
+        returnValue = true;
+      } else if (pageNum &gt;= maxPage &amp;&amp; maxPage != 0) {
+        pageNum = maxPage - 1;
+        returnValue = true;
+      }
+      if(returnValue){
+        _self.set(&#39;pageNum&#39;, pageNum);
+      }
+
+      return returnValue;
+    },
+    _uiSetPageNum: function(pageNum){
+      var _self = this,
+        ul = _self.get(&#39;ul&#39;),
+        scrollSize = _self.get(&#39;scrollSize&#39;),
+        scrollTime = _self.get(&#39;scrollTime&#39;),
+        alignType = _self.get(&#39;alignType&#39;);
+
+      if (alignType == &quot;height&quot;) {
+        ul.clearQueue().animate({&#39;marginTop&#39;: -pageNum * scrollSize}, scrollTime);
+      } else if (alignType == &quot;width&quot;) {
+        ul.clearQueue().animate({&#39;marginLeft&#39;: -pageNum * scrollSize}, scrollTime);
+      }
+    },
+<span id='global-method-goPrev'>    /**
+</span>     * 上一页, 到了第一页就进入到尾页
+     */
+    goPrev: function(){
+      this.setPage(this.get(&#39;pageNum&#39;) - 1);
+    },
+<span id='global-method-goNext'>    /**
+</span>     * 下一页, 到了第一页就进入到尾页
+     */
+    goNext: function(){
+      this.setPage(this.get(&#39;pageNum&#39;) + 1);
+    },
+    // 获取当前选中的number
+    getSelect: function(){
+      return this.get(&#39;selected&#39;);
+    },
+    getLength: function(){
+      return this.get(&#39;items&#39;).length || 0;
+    },
+    _uiSetWidth: function(width){
+      width = width || this.get(&#39;width&#39;);
+      var _self = this,
+        list = _self.get(&#39;list&#39;),
+        alignType = _self.get(&#39;alignType&#39;),
+        listWidth = width - 90;
+
+      if (alignType == &quot;width&quot;) {
+        list.set(&#39;width&#39;, listWidth);
+        _self.set(&#39;listWidth&#39;, listWidth);
+        _self.__initPageInfo();
+      }
+    },
+    _uiSetHeight: function(height){
+      height = height || this.get(&#39;height&#39;);
+      var _self = this,
+        list = _self.get(&#39;list&#39;),
+        alignType = _self.get(&#39;alignType&#39;),
+        listHeight = height - 90;
+
+      if (alignType == &quot;height&quot;) {
+        list.set(&#39;height&#39;, listHeight);
+        _self.set(&#39;listHeight&#39;, listHeight);
+        _self.__initPageInfo();
+      }
+    },
+    _uiSetSelected: function(selected){
+      var _self = this,
+        items = _self.get(&#39;items&#39;),
+        pageSize = _self.get(&#39;pageSize&#39;),
+        list = _self.get(&#39;list&#39;);
+
+      if (items.length != 0) {
+        list.setSelected(items[selected]);
+        _self.setPage(parseInt(selected / pageSize));
+      }
+    },
+    _uiSetItems: function(items){
+      var _self = this,
+        itemWidth = _self.get(&#39;itemWidth&#39;),
+        itemHeight = _self.get(&#39;itemHeight&#39;);
+
+      _self.get(&#39;list&#39;).setItems(items);
+      _self.get(&#39;el&#39;).find(&quot;.ui-preview-mini-wrap&quot;).each(function(i){
+        // 因为有4px的border。所以减8
+        $(this).width(itemWidth - 8).height(itemHeight - 8);
+        loadCenterImg($(this), items[i].miniSrc)
+      });
+      _self.__initPageInfo();
+
+      // 防止第一次渲染的时候selected先执行了。
+      if(_self.get(&#39;_rendered&#39;)){
+        // 切换items的时候强制置零
+        _self._uiSetSelected(0);
+        // _self.set(&#39;selected&#39;, &#39;0&#39;);
+      }
+      _self.set(&#39;_rendered&#39;, true);
+    },
+    // 高度变化、items变化都会引起page信息的变更。
+    __initPageInfo: function(){
+      var _self = this,
+        alignType = _self.get(&#39;alignType&#39;),
+        itemHeight = _self.get(&#39;itemHeight&#39;),
+        itemWidth = _self.get(&#39;itemWidth&#39;),
+        listHeight = _self.get(&#39;listHeight&#39;),
+        listWidth = _self.get(&#39;listWidth&#39;),
+        height = _self.get(&#39;height&#39;);
+
+      if (alignType == &quot;width&quot;) {
+        var pageSize = parseInt(listWidth / itemWidth),
+          scrollSize = pageSize * itemWidth,
+          itemsLength = _self.getLength(),
+          maxPage = itemsLength % pageSize == 0 ? itemsLength / pageSize : parseInt(itemsLength / pageSize) + 1;
+
+        // 设置pageSize
+        _self.set(&#39;pageSize&#39;, pageSize);
+        _self.set(&#39;scrollSize&#39;, scrollSize);
+        _self.set(&#39;maxPage&#39;, maxPage);
+      } else if (alignType == &quot;height&quot;) {
+        var pageSize = parseInt(listHeight / itemHeight),
+          scrollSize = pageSize * itemHeight,
+          itemsLength = _self.getLength(),
+          maxPage = itemsLength % pageSize == 0 ? itemsLength / pageSize : parseInt(itemsLength / pageSize) + 1;
+
+        // 设置pageSize
+        _self.set(&#39;pageSize&#39;, pageSize);
+        _self.set(&#39;scrollSize&#39;, scrollSize);
+        _self.set(&#39;maxPage&#39;, maxPage);
+      }
+    },
+    // 析构函数
+    destructor: function(){
+
+    }
+  },{
+    ATTRS: {
+      elCls: {
+        value: &#39;ui-preview-wrap&#39;
+      },
+      listCls: {
+        value: &#39;ui-preview-simple-list&#39;
+      },
+      itemTpl: {
+        value: &#39;&lt;li class=&quot;ui-preview-mini-wrap&quot;&gt;&lt;/li&gt;&#39;
+      },
+      items: {
+        value: []
+      },
+      selectedchange: {
+        value: function(e){
+
+        }
+      },
+      // 初始化、当前选中第几个
+      selected: {
+        value: 0
+      },
+      pageNum: {
+        value: 0
+      },
+      // 单条item的宽度
+      itemWidth: {
+        value: 100
+      },
+      // 单条item的高度
+      itemHeight: {
+        value: 60
+      },
+      // 是否自带controls
+      controls: {
+        value: false
+      },
+      // 上下滑屏速度300
+      scrollTime: {
+        value: 300
+      },
+      // 横竖两种type,默认是height
+      alignType: {
+        value: &#39;height&#39;
+      },
+      _rendered: {
+        value: false
+      }
+    }
+  })
+
+
+  return PreviewList;
+});
+</pre>
+</body>
+</html>

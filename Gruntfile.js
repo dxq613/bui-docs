@@ -30,7 +30,8 @@ module.exports = function(grunt) {
                         "../bui/src/uploader/",
                         "../bui/src/progressbar",
                         "../bui/src/graphic",
-                        "../bui/src/chart"
+                        "../bui/src/chart",
+                        "../bui/src/imgview"
                     // globbing supported!
                 ],
 
