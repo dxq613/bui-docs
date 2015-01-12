@@ -27,7 +27,7 @@ module.exports = function(grunt) {
                     "../bui/bui-extensions/src",
                     "../bui/bui-layout/src",
                     "../bui/bui-module/src",
-                    "../bui/bui-uploader/src",
+                    "../bui/bui/build/uploader.js",
                     "../bui/bui-graphic/src",
                     "../bui/src/imgview"        
                 ],
