@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='BUI'>/**
+</span> * @class BUI
+ * 控件库的工具方法，这些工具方法直接绑定到BUI对象上
+ * &lt;pre&gt;&lt;code&gt;
+ *   BUI.isString(str);
+ *
+ *   BUI.extend(A,B);
+ *
+ *   BUI.mix(A,{a:&#39;a&#39;});
+ * &lt;/code&gt;&lt;/pre&gt;
+ * @singleton
+ */
+
+var $ = require(&#39;jquery&#39;);
+
+//兼容jquery 1.6以下
+(function($) {
+  if ($.fn) {
+    $.fn.on = $.fn.on || $.fn.bind;
+    $.fn.off = $.fn.off || $.fn.unbind;
+  }
+})($);
+<span id='global-method-mixAttrs'>/**
+</span> * @ignore
+ * 处于效率的目的，复制属性
+ */
+function mixAttrs(to, from) {
+
+  for (var c in from) {
+    if (from.hasOwnProperty(c)) {
+      to[c] = to[c] || {};
+      mixAttr(to[c], from[c]);
+    }
+  }
+
+}
+//合并属性
+function mixAttr(attr, attrConfig) {
+  for (var p in attrConfig) {
+    if (attrConfig.hasOwnProperty(p)) {
+      if (p == &#39;value&#39;) {
+        if (BUI.isObject(attrConfig[p])) {
+          attr[p] = attr[p] || {};
+          BUI.mix( /*true,*/ attr[p], attrConfig[p]);
+        } else if (BUI.isArray(attrConfig[p])) {
+          attr[p] = attr[p] || [];
+          //BUI.mix(/*true,*/attr[p], attrConfig[p]);
+          attr[p] = attr[p].concat(attrConfig[p]);
+        } else {
+          attr[p] = attrConfig[p];
+        }
+      } else {
+        attr[p] = attrConfig[p];
+      }
+    }
+  };
+}
+
+var win = window,
+  doc = document,
+  objectPrototype = Object.prototype,
+  toString = objectPrototype.toString,
+  BODY = &#39;body&#39;,
+  DOC_ELEMENT = &#39;documentElement&#39;,
+  SCROLL = &#39;scroll&#39;,
+  SCROLL_WIDTH = SCROLL + &#39;Width&#39;,
+  SCROLL_HEIGHT = SCROLL + &#39;Height&#39;,
+  ATTRS = &#39;ATTRS&#39;,
+  PARSER = &#39;PARSER&#39;,
+  GUID_DEFAULT = &#39;guid&#39;;
+
+window.BUI = window.BUI || {};
+
+$.extend(BUI, {
+<span id='BUI-property-version'>  /**
+</span>   * 版本号
+   * @memberOf BUI
+   * @type {Number}
+   */
+  version: &#39;1.1.0&#39;,
+<span id='BUI-method-isFunction'>  /**
+</span>   * 是否为函数
+   * @param  {*} fn 对象
+   * @return {Boolean}  是否函数
+   */
+  isFunction: function(fn) {
+    return typeof(fn) === &#39;function&#39;;
+  },
+<span id='BUI-method-isArray'>  /**
+</span>   * 是否数组
+   * @method
+   * @param  {*}  obj 是否数组
+   * @return {Boolean}  是否数组
+   */
+  isArray: (&#39;isArray&#39; in Array) ? Array.isArray : function(value) {
+    return toString.call(value) === &#39;[object Array]&#39;;
+  },
+<span id='BUI-method-isDate'>  /**
+</span>   * 是否日期
+   * @param  {*}  value 对象
+   * @return {Boolean}  是否日期
+   */
+  isDate: function(value) {
+    return toString.call(value) === &#39;[object Date]&#39;;
+  },
+<span id='BUI-method-isObject'>  /**
+</span>   * 是否是javascript对象
+   * @param {Object} value The value to test
+   * @return {Boolean}
+   * @method
+   */
+  isObject: (toString.call(null) === &#39;[object Object]&#39;) ?
+    function(value) {
+      // check ownerDocument here as well to exclude DOM nodes
+      return value !== null &amp;&amp; value !== undefined &amp;&amp; toString.call(value) === &#39;[object Object]&#39; &amp;&amp; value.ownerDocument === undefined;
+  } : function(value) {
+    return toString.call(value) === &#39;[object Object]&#39;;
+  },
+<span id='BUI-method-isNumeric'>  /**
+</span>   * 是否是数字或者数字字符串
+   * @param  {String}  value 数字字符串
+   * @return {Boolean}  是否是数字或者数字字符串
+   */
+  isNumeric: function(value) {
+    return !isNaN(parseFloat(value)) &amp;&amp; isFinite(value);
+  },
+<span id='BUI-method-augment'>  /**
+</span>   * 将指定的方法或属性放到构造函数的原型链上，
+   * 函数支持多于2个变量，后面的变量同s1一样将其成员复制到构造函数的原型链上。
+   * @param  {Function} r  构造函数
+   * @param  {Object} s1 将s1 的成员复制到构造函数的原型链上
+   *      @example
+   *      BUI.augment(class1,{
+   *        method1: function(){
+   *
+   *        }
+   *      });
+   */
+  augment: function(r, s1) {
+    if (!BUI.isFunction(r)) {
+      return r;
+    }
+    for (var i = 1; i &lt; arguments.length; i++) {
+      BUI.mix(r.prototype, arguments[i].prototype || arguments[i]);
+    };
+    return r;
+  },
+<span id='BUI-method-cloneObject'>  /**
+</span>   * 拷贝对象
+   * @param  {Object} obj 要拷贝的对象
+   * @return {Object} 拷贝生成的对象
+   */
+  cloneObject: function(obj) {
+    var result = BUI.isArray(obj) ? [] : {};
+
+    return BUI.mix(true, result, obj);
+  },
+<span id='BUI-method-error'>  /**
+</span>   * 抛出错误
+   */
+  error: function(msg) {
+    if (BUI.debug) {
+      throw msg;
+    }
+  },
+
+<span id='BUI-method-extend'>  /**
+</span>   * 实现类的继承，通过父类生成子类
+   * @param  {Function} subclass
+   * @param  {Function} superclass 父类构造函数
+   * @param  {Object} overrides  子类的属性或者方法
+   * @return {Function} 返回的子类构造函数
+   * 示例:
+   *    @example
+   *    //父类
+   *    function base(){
+   *
+   *    }
+   *
+   *    function sub(){
+   *
+   *    }
+   *    //子类
+   *    BUI.extend(sub,base,{
+   *      method : function(){
+   *
+   *      }
+   *    });
+   *
+   *    //或者
+   *    var sub = BUI.extend(base,{});
+   */
+  extend: function(subclass, superclass, overrides, staticOverrides) {
+    //如果只提供父类构造函数，则自动生成子类构造函数
+    if (!BUI.isFunction(superclass)) {
+
+      overrides = superclass;
+      superclass = subclass;
+      subclass = function() {};
+    }
+
+    var create = Object.create ?
+      function(proto, c) {
+        return Object.create(proto, {
+          constructor: {
+            value: c
+          }
+        });
+      } :
+      function(proto, c) {
+        function F() {}
+
+        F.prototype = proto;
+
+        var o = new F();
+        o.constructor = c;
+        return o;
+      };
+    var superObj = create(superclass.prototype, subclass); //new superclass(),//实例化父类作为子类的prototype
+    subclass.prototype = BUI.mix(superObj, subclass.prototype); //指定子类的prototype
+    subclass.superclass = create(superclass.prototype, superclass);
+    BUI.mix(superObj, overrides);
+    BUI.mix(subclass, staticOverrides);
+    return subclass;
+  },
+<span id='BUI-method-guid'>  /**
+</span>   * 生成唯一的Id
+   * @method
+   * @param {String} prefix 前缀
+   * @default &#39;bui-guid&#39;
+   * @return {String} 唯一的编号
+   */
+  guid: (function() {
+    var map = {};
+    return function(prefix) {
+      prefix = prefix || BUI.prefix + GUID_DEFAULT;
+      if (!map[prefix]) {
+        map[prefix] = 1;
+      } else {
+        map[prefix] += 1;
+      }
+      return prefix + map[prefix];
+    };
+  })(),
+<span id='BUI-method-isString'>  /**
+</span>   * 判断是否是字符串
+   * @return {Boolean} 是否是字符串
+   */
+  isString: function(value) {
+    return typeof value === &#39;string&#39;;
+  },
+<span id='BUI-method-isNumber'>  /**
+</span>   * 判断是否数字，由于$.isNumberic方法会把 &#39;123&#39;认为数字
+   * @return {Boolean} 是否数字
+   */
+  isNumber: function(value) {
+    return typeof value === &#39;number&#39;;
+  },
+<span id='BUI-method-isBoolean'>  /**
+</span>   * 是否是布尔类型
+   *
+   * @param {Object} value 测试的值
+   * @return {Boolean}
+   */
+  isBoolean: function(value) {
+    return typeof value === &#39;boolean&#39;;
+  },
+<span id='BUI-method-log'>  /**
+</span>   * 控制台输出日志
+   * @param  {Object} obj 输出的数据
+   */
+  log: function(obj) {
+    if (BUI.debug &amp;&amp; win.console &amp;&amp; win.console.log) {
+      win.console.log(obj);
+    }
+  },
+<span id='BUI-method-merge'>  /**
+</span>   * 将多个对象的属性复制到一个新的对象
+   */
+  merge: function() {
+    var args = $.makeArray(arguments),
+      first = args[0];
+    if (BUI.isBoolean(first)) {
+      args.shift();
+      args.unshift({});
+      args.unshift(first);
+    } else {
+      args.unshift({});
+    }
+
+    return BUI.mix.apply(null, args);
+
+  },
+<span id='BUI-method-mix'>  /**
+</span>   * 封装 jQuery.extend 方法，将多个对象的属性merge到第一个对象中
+   * @return {Object}
+   */
+  mix: function() {
+    return $.extend.apply(null, arguments);
+  },
+<span id='BUI-method-app'>  /**
+</span>   * 创造顶层的命名空间，附加到window对象上,
+   * 包含namespace方法
+   */
+  app: function(name) {
+    if (!window[name]) {
+      window[name] = {
+        namespace: function(nsName) {
+          return BUI.namespace(nsName, window[name]);
+        }
+      };
+    }
+    return window[name];
+  },
+
+  mixAttrs: mixAttrs,
+
+  mixAttr: mixAttr,
+
+<span id='BUI-method-mixin'>  /**
+</span>   * 将其他类作为mixin集成到指定类上面
+   * @param {Function} c 构造函数
+   * @param {Array} mixins 扩展类
+   * @param {Array} attrs 扩展的静态属性，默认为[&#39;ATTRS&#39;]
+   * @return {Function} 传入的构造函数
+   */
+  mixin: function(c, mixins, attrs) {
+    attrs = attrs || [ATTRS, PARSER];
+    var extensions = mixins;
+    if (extensions) {
+      c.mixins = extensions;
+
+      var desc = {
+          // ATTRS:
+          // HTML_PARSER:
+        },
+        constructors = extensions[&#39;concat&#39;](c);
+
+      // [ex1,ex2]，扩展类后面的优先，ex2 定义的覆盖 ex1 定义的
+      // 主类最优先
+      BUI.each(constructors, function(ext) {
+        if (ext) {
+          // 合并 ATTRS/HTML_PARSER 到主类
+          BUI.each(attrs, function(K) {
+            if (ext[K]) {
+              desc[K] = desc[K] || {};
+              // 不覆盖主类上的定义，因为继承层次上扩展类比主类层次高
+              // 但是值是对象的话会深度合并
+              // 注意：最好值是简单对象，自定义 new 出来的对象就会有问题(用 function return 出来)!
+              if (K == &#39;ATTRS&#39;) {
+                //BUI.mix(true,desc[K], ext[K]);
+                mixAttrs(desc[K], ext[K]);
+              } else {
+                BUI.mix(desc[K], ext[K]);
+              }
+
+            }
+          });
+        }
+      });
+
+      BUI.each(desc, function(v, k) {
+        c[k] = v;
+      });
+
+      var prototype = {};
+
+      // 主类最优先
+      BUI.each(constructors, function(ext) {
+        if (ext) {
+          var proto = ext.prototype;
+          // 合并功能代码到主类，不覆盖
+          for (var p in proto) {
+            // 不覆盖主类，但是主类的父类还是覆盖吧
+            if (proto.hasOwnProperty(p)) {
+              prototype[p] = proto[p];
+            }
+          }
+        }
+      });
+
+      BUI.each(prototype, function(v, k) {
+        c.prototype[k] = v;
+      });
+    }
+    return c;
+  },
+<span id='BUI-method-namespace'>  /**
+</span>   * 生成命名空间
+   * @param  {String} name 命名空间的名称
+   * @param  {Object} baseNS 在已有的命名空间上创建命名空间，默认“BUI”
+   * @return {Object} 返回的命名空间对象
+   *    @example
+   *    BUI.namespace(&quot;Grid&quot;); // BUI.Grid
+   */
+  namespace: function(name, baseNS) {
+    baseNS = baseNS || BUI;
+    if (!name) {
+      return baseNS;
+    }
+    var list = name.split(&#39;.&#39;),
+      //firstNS = win[list[0]],
+      curNS = baseNS;
+
+    for (var i = 0; i &lt; list.length; i++) {
+      var nsName = list[i];
+      if (!curNS[nsName]) {
+        curNS[nsName] = {};
+      }
+      curNS = curNS[nsName];
+    };
+    return curNS;
+  },
+<span id='BUI-property-prefix'>  /**
+</span>   * BUI 控件的公用前缀
+   * @type {String}
+   */
+  prefix: &#39;bui-&#39;,
+<span id='BUI-method-substitute'>  /**
+</span>   * 替换字符串中的字段.
+   * @param {String} str 模版字符串
+   * @param {Object} o json data
+   * @param {RegExp} [regexp] 匹配字符串的正则表达式
+   */
+  substitute: function(str, o, regexp) {
+    if (!BUI.isString(str) || (!BUI.isObject(o)) &amp;&amp; !BUI.isArray(o)) {
+      return str;
+    }
+
+    return str.replace(regexp || /\\?\{([^{}]+)\}/g, function(match, name) {
+      if (match.charAt(0) === &#39;\\&#39;) {
+        return match.slice(1);
+      }
+      return (o[name] === undefined) ? &#39;&#39; : o[name];
+    });
+  },
+<span id='BUI-method-unparam'>  /**
+</span>   * 将$.param的反操作
+   * jquery只提供param方法
+   * @return {[type]} [description]
+   */
+  unparam: function(str){
+    if (typeof str != &#39;string&#39; || !(str = $.trim(str))) {
+      return {};
+    }
+    var pairs = str.split(&#39;&amp;&#39;),
+      pairsArr,
+      rst = {};
+    for(var i = pairs.length - 1; i &gt;= 0; i--) {
+      pairsArr = pairs[i].split(&#39;=&#39;);
+      rst[pairsArr[0]] = decodeURIComponent(pairsArr[1]);
+    }
+    return rst;
+  },
+<span id='BUI-method-ucfirst'>  /**
+</span>   * 使第一个字母变成大写
+   * @param  {String} s 字符串
+   * @return {String} 首字母大写后的字符串
+   */
+  ucfirst: function(s) {
+    s += &#39;&#39;;
+    return s.charAt(0).toUpperCase() + s.substring(1);
+  },
+<span id='BUI-method-isInView'>  /**
+</span>   * 页面上的一点是否在用户的视图内
+   * @param {Object} offset 坐标，left,top
+   * @return {Boolean} 是否在视图内
+   */
+  isInView: function(offset) {
+    var left = offset.left,
+      top = offset.top,
+      viewWidth = BUI.viewportWidth(),
+      wiewHeight = BUI.viewportHeight(),
+      scrollTop = BUI.scrollTop(),
+      scrollLeft = BUI.scrollLeft();
+    //判断横坐标
+    if (left &lt; scrollLeft || left &gt; scrollLeft + viewWidth) {
+      return false;
+    }
+    //判断纵坐标
+    if (top &lt; scrollTop || top &gt; scrollTop + wiewHeight) {
+      return false;
+    }
+    return true;
+  },
+<span id='BUI-method-isInVerticalView'>  /**
+</span>   * 页面上的一点纵向坐标是否在用户的视图内
+   * @param {Object} top  纵坐标
+   * @return {Boolean} 是否在视图内
+   */
+  isInVerticalView: function(top) {
+    var wiewHeight = BUI.viewportHeight(),
+      scrollTop = BUI.scrollTop();
+
+    //判断纵坐标
+    if (top &lt; scrollTop || top &gt; scrollTop + wiewHeight) {
+      return false;
+    }
+    return true;
+  },
+<span id='BUI-method-isInHorizontalView'>  /**
+</span>   * 页面上的一点横向坐标是否在用户的视图内
+   * @param {Object} left 横坐标
+   * @return {Boolean} 是否在视图内
+   */
+  isInHorizontalView: function(left) {
+    var viewWidth = BUI.viewportWidth(),
+      scrollLeft = BUI.scrollLeft();
+    //判断横坐标
+    if (left &lt; scrollLeft || left &gt; scrollLeft + viewWidth) {
+      return false;
+    }
+    return true;
+  },
+<span id='BUI-method-viewportWidth'>  /**
+</span>   * 获取窗口可视范围宽度
+   * @return {Number} 可视区宽度
+   */
+  viewportWidth: function() {
+    return $(window).width();
+  },
+<span id='BUI-method-viewportHeight'>  /**
+</span>   * 获取窗口可视范围高度
+   * @return {Number} 可视区高度
+   */
+  viewportHeight: function() {
+    return $(window).height();
+  },
+<span id='BUI-method-scrollLeft'>  /**
+</span>   * 滚动到窗口的left位置
+   */
+  scrollLeft: function() {
+    return $(window).scrollLeft();
+  },
+<span id='BUI-method-scrollTop'>  /**
+</span>   * 滚动到横向位置
+   */
+  scrollTop: function() {
+    return $(window).scrollTop();
+  },
+<span id='BUI-method-docWidth'>  /**
+</span>   * 窗口宽度
+   * @return {Number} 窗口宽度
+   */
+  docWidth: function() {
+    return Math.max(this.viewportWidth(), doc[DOC_ELEMENT][SCROLL_WIDTH], doc[BODY][SCROLL_WIDTH]);
+  },
+<span id='BUI-method-docHeight'>  /**
+</span>   * 窗口高度
+   * @return {Number} 窗口高度
+   */
+  docHeight: function() {
+    return Math.max(this.viewportHeight(), doc[DOC_ELEMENT][SCROLL_HEIGHT], doc[BODY][SCROLL_HEIGHT]);
+  },
+<span id='BUI-method-each'>  /**
+</span>   * 遍历数组或者对象
+   * @param {Object|Array} element/Object 数组中的元素或者对象的值
+   * @param {Function} func 遍历的函数 function(elememt,index){} 或者 function(value,key){}
+   */
+  each: function(elements, func) {
+    if (!elements) {
+      return;
+    }
+    $.each(elements, function(k, v) {
+      return func(v, k);
+    });
+  },
+<span id='BUI-method-wrapBehavior'>  /**
+</span>   * 封装事件，便于使用上下文this,和便于解除事件时使用
+   * @protected
+   * @param  {Object} self   对象
+   * @param  {String} action 事件名称
+   */
+  wrapBehavior: function(self, action) {
+    return self[&#39;__bui_wrap_&#39; + action] = function(e) {
+      if (!self.get(&#39;disabled&#39;)) {
+        self[action](e);
+      }
+    };
+  },
+<span id='BUI-method-getWrapBehavior'>  /**
+</span>   * 获取封装的事件
+   * @protected
+   * @param  {Object} self   对象
+   * @param  {String} action 事件名称
+   */
+  getWrapBehavior: function(self, action) {
+    return self[&#39;__bui_wrap_&#39; + action];
+  },
+<span id='BUI-method-getControl'>  /**
+</span>   * 获取页面上使用了此id的控件
+   * @param  {String} id 控件id
+   * @return {BUI.Component.Controller}  查找的控件
+   */
+  getControl: function(id) {
+    return BUI.Component.Manager.getComponent(id);
+  }
+
+});
+
+<span id='BUI-FormHelper'>/**
+</span> * 表单帮助类，序列化、反序列化，设置值
+ * @class BUI.FormHelper
+ * @singleton
+ */
+var FormHelper = {
+<span id='BUI-FormHelper-method-serializeToObject'>  /**
+</span>   * 将表单格式化成键值对形式
+   * @param {HTMLElement} form 表单
+   * @return {Object} 键值对的对象
+   */
+  serializeToObject: function(form) {
+    var array = $(form).serializeArray(),
+      result = {};
+    BUI.each(array, function(item) {
+      var name = item.name;
+      if (!result[name]) { //如果是单个值，直接赋值
+        result[name] = item.value;
+      } else { //多值使用数组
+        if (!BUI.isArray(result[name])) {
+          result[name] = [result[name]];
+        }
+        result[name].push(item.value);
+      }
+    });
+    return result;
+  },
+<span id='BUI-FormHelper-method-setFields'>  /**
+</span>   * 设置表单的值
+   * @param {HTMLElement} form 表单
+   * @param {Object} obj  键值对
+   */
+  setFields: function(form, obj) {
+    for (var name in obj) {
+      if (obj.hasOwnProperty(name)) {
+        BUI.FormHelper.setField(form, name, obj[name]);
+      }
+    }
+  },
+<span id='BUI-FormHelper-method-clear'>  /**
+</span>   * 清空表单
+   * @param  {HTMLElement} form 表单元素
+   */
+  clear: function(form) {
+    var elements = $.makeArray(form.elements);
+
+    BUI.each(elements, function(element) {
+      if (element.type === &#39;checkbox&#39; || element.type === &#39;radio&#39;) {
+        $(element).attr(&#39;checked&#39;, false);
+      } else {
+        $(element).val(&#39;&#39;);
+      }
+      $(element).change();
+    });
+  },
+<span id='BUI-FormHelper-method-setField'>  /**
+</span>   * 设置表单字段
+   * @param {HTMLElement} form 表单元素
+   * @param {string} field 字段名
+   * @param {string} value 字段值
+   */
+  setField: function(form, fieldName, value) {
+    var fields = form.elements[fieldName];
+    if (fields &amp;&amp; fields.type) {
+      formHelper._setFieldValue(fields, value);
+    } else if (BUI.isArray(fields) || (fields &amp;&amp; fields.length)) {
+      BUI.each(fields, function(field) {
+        formHelper._setFieldValue(field, value);
+      });
+    }
+  },
+  //设置字段的值
+  _setFieldValue: function(field, value) {
+    if (field.type === &#39;checkbox&#39;) {
+      if (field.value == &#39;&#39; + value || (BUI.isArray(value) &amp;&amp; BUI.Array.indexOf(field.value, value) !== -1)) {
+        $(field).attr(&#39;checked&#39;, true);
+      } else {
+        $(field).attr(&#39;checked&#39;, false);
+      }
+    } else if (field.type === &#39;radio&#39;) {
+      if (field.value == &#39;&#39; + value) {
+        $(field).attr(&#39;checked&#39;, true);
+      } else {
+        $(field).attr(&#39;checked&#39;, false);
+      }
+    } else {
+      $(field).val(value);
+    }
+  },
+<span id='BUI-FormHelper-method-getField'>  /**
+</span>   * 获取表单字段值
+   * @param {HTMLElement} form 表单元素
+   * @param {string} field 字段名
+   * @return {String}   字段值
+   */
+  getField: function(form, fieldName) {
+    return BUI.FormHelper.serializeToObject(form)[fieldName];
+  }
+};
+
+
+BUI.FormHelper = FormHelper;
+
+module.exports = BUI;
+</pre>
+</body>
+</html>

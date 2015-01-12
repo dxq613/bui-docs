@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview Mask屏蔽层
+ * @author dxq613@gmail.com
+ * @ignore
+ */
+
+
+var $ = require(&#39;jquery&#39;),
+  BUI = require(&#39;bui-common&#39;),
+  Mask = BUI.namespace(&#39;Mask&#39;),
+  UA = BUI.UA,
+  CLS_MASK = BUI.prefix + &#39;ext-mask&#39;,
+  CLS_MASK_MSG = CLS_MASK + &#39;-msg&#39;;
+
+BUI.mix(Mask,
+<span id='BUI-Mask'>/**
+</span>* 屏蔽层
+* &lt;pre&gt;&lt;code&gt;
+* BUI.use(&#39;bui/mask&#39;,function(Mask){
+*   Mask.maskElement(&#39;#domId&#39;); //屏蔽dom
+*   Mask.unmaskElement(&#39;#domId&#39;); //解除DOM屏蔽
+* });
+* &lt;/code&gt;&lt;/pre&gt;
+* @class BUI.Mask
+* @singleton
+*/
+{
+<span id='BUI-Mask-method-maskElement'>  /**
+</span>   * @description 屏蔽指定元素
+   * @param {String|HTMLElement} element 被屏蔽的元素
+   * @param {String} [msg] 屏蔽元素时显示的文本
+   * @param {String} [msgCls] 显示文本应用的样式
+   * &lt;pre&gt;&lt;code&gt;
+   *   BUI.Mask.maskElement(&#39;#domId&#39;);
+   *   BUI.Mask.maskElement(&#39;body&#39;); //屏蔽整个窗口
+   * &lt;/code&gt;&lt;/pre&gt;
+   */
+  maskElement:function (element, msg, msgCls) {
+    var maskedEl = $(element),
+      maskDiv = maskedEl.children(&#39;.&#39; + CLS_MASK),
+      tpl = null,
+      msgDiv = null,
+      top = null,
+      left = null;
+    if (!maskDiv.length) {
+      maskDiv = $(&#39;&lt;div class=&quot;&#39; + CLS_MASK + &#39;&quot;&gt;&lt;/div&gt;&#39;).appendTo(maskedEl);
+      maskedEl.addClass(&#39;x-masked-relative x-masked&#39;);
+      //屏蔽整个窗口
+      if(element == &#39;body&#39;){
+        if(UA.ie == 6){
+        maskDiv.height(BUI.docHeight());
+        }else{
+        maskDiv.css(&#39;position&#39;,&#39;fixed&#39;);
+        }
+      }else{
+        if (UA.ie === 6) {
+          maskDiv.height(maskedEl.height());
+        }
+      }
+       
+      if (msg) {
+        tpl = [&#39;&lt;div class=&quot;&#39; + CLS_MASK_MSG + &#39;&quot;&gt;&lt;div&gt;&#39;, msg, &#39;&lt;/div&gt;&lt;/div&gt;&#39;].join(&#39;&#39;);
+        msgDiv = $(tpl).appendTo(maskedEl);
+        if (msgCls) {
+          msgDiv.addClass(msgCls);
+        }
+
+        try {
+        //屏蔽整个窗口
+        if(element == &#39;body&#39; &amp;&amp; UA.ie != 6){
+          top = &#39;50%&#39;,
+          left = &#39;50%&#39;;
+          msgDiv.css(&#39;position&#39;,&#39;fixed&#39;);
+        }else{
+          top = (maskDiv.height() - msgDiv.height()) / 2;
+          left = (maskDiv.width() - msgDiv.width()) / 2;            
+        }
+        msgDiv.css({ left:left, top:top });
+
+        } catch (ex) {
+        BUI.log(&#39;mask error occurred&#39;);
+        }
+        
+      }
+    }
+    return maskDiv;
+  },
+<span id='BUI-Mask-method-unmaskElement'>  /**
+</span>   * @description 解除元素的屏蔽
+   * @param {String|HTMLElement} element 屏蔽的元素
+   * &lt;pre&gt;&lt;code&gt;
+   * BUI.Mask.unmaskElement(&#39;#domId&#39;);
+   * &lt;/code&gt;&lt;/pre&gt;
+   */
+  unmaskElement:function (element) {
+    var maskedEl = $(element),
+      msgEl = maskedEl.children(&#39;.&#39; + CLS_MASK_MSG),
+      maskDiv = maskedEl.children(&#39;.&#39; + CLS_MASK);
+    if (msgEl) {
+      msgEl.remove();
+    }
+    if (maskDiv) {
+      maskDiv.remove();
+    }
+    maskedEl.removeClass(&#39;x-masked-relative x-masked&#39;);
+
+  }
+});
+
+module.exports = Mask;
+</pre>
+</body>
+</html>

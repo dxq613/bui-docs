@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 日历控件显示一月的日期
+ * @author dxq613@gmail.com
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;),
+  BUI = require(&#39;bui-common&#39;),
+  Component = BUI.Component,
+  DateUtil = BUI.Date,
+  CLS_DATE = &#39;x-datepicker-date&#39;,
+  CLS_TODAY = &#39;x-datepicker-today&#39;,
+  CLS_DISABLED = &#39;x-datepicker-disabled&#39;,
+  CLS_ACTIVE = &#39;x-datepicker-active&#39;,
+  DATA_DATE = &#39;data-date&#39;,//存储日期对象
+  DATE_MASK = &#39;isoDate&#39;,
+  CLS_SELECTED = &#39;x-datepicker-selected&#39;,
+  SHOW_WEEKS = 6,//当前容器显示6周
+  dateTypes = {
+    deactive : &#39;prevday&#39;,
+    active : &#39;active&#39;,
+    disabled : &#39;disabled&#39;
+  },
+  weekDays = [&#39;Sunday&#39;,&#39;Monday&#39;,&#39;Tuesday&#39;,&#39;Wednesday&#39;,&#39;Thursday&#39;,&#39;Friday&#39;,&#39;Saturday&#39;];
+
+<span id='BUI-Calendar-PanelView'>/**
+</span> * 日历面板的视图类
+ * @class BUI.Calendar.PanelView
+ * @extends BUI.Component.View
+ * @private
+ */
+var panelView = Component.View.extend({
+
+  renderUI : function(){
+    this.updatePanel();
+  },
+
+  //更新容器，当月、年发生改变时
+  updatePanel : function(){
+    var _self = this,
+      el = _self.get(&#39;el&#39;),
+      bodyEl = el.find(&#39;tbody&#39;),
+      innerTem = _self._getPanelInnerTpl();
+
+    bodyEl.empty();
+    $(innerTem).appendTo(bodyEl);
+  },
+  //获取容器内容
+  _getPanelInnerTpl : function(){
+    var _self = this,
+      startDate = _self._getFirstDate(),
+      temps = [];
+
+    for (var i = 0; i &lt; SHOW_WEEKS; i++) {
+      var weekStart = DateUtil.addWeek(i,startDate);
+      temps.push(_self._getWeekTpl(weekStart));
+    };
+
+    return temps.join(&#39;&#39;);
+  },
+  //获取周模版
+  _getWeekTpl : function(startDate){
+    var _self = this,
+      weekTpl = _self.get(&#39;weekTpl&#39;),
+      daysTemps = [];
+    for (var i = 0; i &lt; weekDays.length; i++) {
+      var date = DateUtil.addDay(i,startDate);
+      daysTemps.push(_self._getDayTpl(date));  
+    }
+
+    return BUI.substitute(weekTpl,{
+      daysTpl:daysTemps.join(&#39;&#39;)
+    });
+  },
+  //获取日模版
+  _getDayTpl : function(date){
+    var _self = this,
+      dayTpl = _self.get(&#39;dayTpl&#39;),
+      day = date.getDay(),
+      todayCls = _self._isToday(date) ? CLS_TODAY:&#39;&#39;,
+      dayOfWeek = weekDays[day],
+      dateNumber = date.getDate(),
+      //不是本月则处于不活动状态
+      //不在指定的最大最小范围内，禁止选中
+      dateType = _self._isInRange(date) ? (_self._isCurrentMonth(date) ? dateTypes.active : dateTypes.deactive) : dateTypes.disabled;
+
+    return BUI.substitute(dayTpl,{
+      dayOfWeek : dayOfWeek,
+      dateType : dateType,
+      dateNumber : dateNumber,
+      todayCls : todayCls,
+      date : DateUtil.format(date,DATE_MASK)
+    });
+  },
+  //获取当前容器的第一天
+  _getFirstDate : function(year,month){
+    var _self = this,
+      monthFirstDate = _self._getMonthFirstDate(year,month),
+      day = monthFirstDate.getDay();
+    return DateUtil.addDay(day * -1,monthFirstDate);
+  },
+  //获取当月的第一天
+  _getMonthFirstDate : function(year,month){
+    var _self = this,
+      year = year || _self.get(&#39;year&#39;),
+      month = month || _self.get(&#39;month&#39;);
+    return new Date(year,month);
+  },
+  //是否是当前显示的月
+  _isCurrentMonth : function(date){
+    return date.getMonth() === this.get(&#39;month&#39;);
+  },
+  //是否是今天
+  _isToday : function(date){
+    var tody = new Date();
+    return tody.getFullYear() === date.getFullYear() &amp;&amp; tody.getMonth() === date.getMonth() &amp;&amp; tody.getDate() === date.getDate();
+  },
+  //是否在允许的范围内
+  _isInRange : function(date){
+    var _self = this,
+      maxDate = _self.get(&#39;maxDate&#39;),
+      minDate = _self.get(&#39;minDate&#39;);
+
+    if(minDate &amp;&amp; date &lt; minDate){
+      return false;
+    }
+    if(maxDate &amp;&amp; date &gt; maxDate){
+      return false;
+    }
+    return true;
+  },
+  //清除选中的日期
+  _clearSelectedDate : function(){
+    var _self = this;
+    _self.get(&#39;el&#39;).find(&#39;.&#39;+CLS_SELECTED).removeClass(CLS_SELECTED);
+  },
+  //查找日期对应的DOM节点
+  _findDateElement : function(date){
+    var _self = this,
+      dateStr = DateUtil.format(date,DATE_MASK),
+      activeList = _self.get(&#39;el&#39;).find(&#39;.&#39; + CLS_DATE),
+      result = null;
+    if(dateStr){
+      activeList.each(function(index,item){
+        if($(item).attr(&#39;title&#39;) === dateStr){
+          result = $(item);
+          return false;
+        }
+      });
+    }
+    return result;
+  },
+  //设置选中的日期
+  _setSelectedDate : function(date){
+    var _self = this,
+      dateEl = _self._findDateElement(date);
+
+    _self._clearSelectedDate();
+    if(dateEl){
+      dateEl.addClass(CLS_SELECTED);
+    }
+  }
+},{
+  ATTRS : {
+
+  }
+});
+
+<span id='BUI-Calendar-Panel'>/**
+</span> * 日历控件显示日期的容器
+ * xclass:&#39;calendar-panel&#39;
+ * @class BUI.Calendar.Panel
+ * @private
+ * @extends BUI.Component.Controller
+ */
+var panel = Component.Controller.extend(
+{
+
+<span id='BUI-Calendar-Panel-method-initializer'>  /**
+</span>   * 设置默认年月
+   * @protected
+   */
+  initializer : function(){
+    var _self = this,
+      now = new Date();
+    if(!_self.get(&#39;year&#39;)){
+      _self.set(&#39;year&#39;,now.getFullYear());
+    }
+
+    if(!_self.get(&#39;month&#39;)){
+      _self.set(&#39;month&#39;,now.getMonth());
+    }
+  },
+<span id='global-method-bindUI'>  /**
+</span>   * @protected
+   * @ignore
+   */
+  bindUI : function(){
+    var _self = this,
+      el = _self.get(&#39;el&#39;);
+    el.delegate(&#39;.&#39; + CLS_DATE,&#39;click&#39;,function(e){
+      e.preventDefault();
+    });
+    //阻止禁用的日期被选择
+    el.delegate(&#39;.&#39; + CLS_DISABLED,&#39;mouseup&#39;,function(e){
+      e.stopPropagation();
+    });
+  },
+<span id='global-method-performActionInternal'>  /**
+</span>   * @protected
+   * @ignore
+   */
+  performActionInternal : function(ev){
+    var _self = this,
+      sender = $(ev.target).closest(&#39;.&#39; + CLS_DATE);
+    if(sender){
+      var date = sender.attr(&#39;title&#39;);
+      if(date){
+        date = DateUtil.parse(date);
+        if(_self.get(&#39;view&#39;)._isInRange(date)){
+          _self.set(&#39;selected&#39;,date);
+        }
+        //_self.fire(&#39;click&#39;,{date:date});
+      }
+    }
+  },
+<span id='BUI-Calendar-Panel-method-setMonth'>  /**
+</span>   * 设置年月
+   * @param {Number} year  年
+   * @param {Number} month 月
+   */
+  setMonth : function(year,month){
+    var _self = this,
+      curYear = _self.get(&#39;year&#39;),
+      curMonth = _self.get(&#39;month&#39;);
+    if(year !== curYear || month !== curMonth){
+      _self.set(&#39;year&#39;,year);
+      _self.set(&#39;month&#39;,month);
+  		//if(_self.get(&#39;rendered&#39;)){
+  			_self.get(&#39;view&#39;).updatePanel();
+  		//}
+    }
+  },
+  //选中日期
+  _uiSetSelected : function(date,ev){
+    var _self = this;
+    
+    if(!(ev &amp;&amp; ev.prevVal &amp;&amp; DateUtil.isDateEquals(date,ev.prevVal))){
+      _self.setMonth(date.getFullYear(),date.getMonth());
+      _self.get(&#39;view&#39;)._setSelectedDate(date);
+      _self.fire(&#39;selectedchange&#39;,{date:date});
+    } 
+  },
+  //设置最日期
+  _uiSetMaxDate : function(v){
+    if(v){
+      this.get(&#39;view&#39;).updatePanel();
+    }
+  },
+  //设置最小日期
+  _uiSetMinDate : function(v){
+    if(v){
+      this.get(&#39;view&#39;).updatePanel();
+    }
+  }
+},{
+  ATTRS:
+  {
+<span id='BUI-Calendar-Panel-property-year'>    /**
+</span>     * 展示的月所属年
+     * @type {Number}
+     */
+    year : {
+      view :true
+    },
+<span id='BUI-Calendar-Panel-property-month'>    /**
+</span>     * 展示的月
+     * @type {Number}
+     */
+    month:{
+      view :true
+    },
+<span id='BUI-Calendar-Panel-property-selected'>    /**
+</span>     * 选中的日期
+     * @type {Date}
+     */
+    selected : {
+
+    },
+    focusable:{
+      value:true
+    },
+<span id='BUI-Calendar-Panel-property-dayTpl'>    /**
+</span>     * 日期的模板
+     * @private
+     * @type {Object}
+     */
+    dayTpl:{
+      view : true,
+      value:&#39;&lt;td class=&quot;x-datepicker-date x-datepicker-{dateType} {todayCls} day-{dayOfWeek}&quot; title=&quot;{date}&quot;&gt;&#39;+
+              &#39;&lt;a href=&quot;#&quot; hidefocus=&quot;on&quot; tabindex=&quot;1&quot;&gt;&#39;+
+                &#39;&lt;em&gt;&lt;span&gt;{dateNumber}&lt;/span&gt;&lt;/em&gt;&#39;+
+              &#39;&lt;/a&gt;&#39;+
+            &#39;&lt;/td&gt;&#39;
+    },
+    events:{
+      value : {
+<span id='BUI-Calendar-Panel-event-click'>        /**
+</span>         * @event
+         * @name BUI.Calendar.Panel#click
+         * @param {Object} e 点击事件
+         * @param {Date} e.date
+         */
+        &#39;click&#39; : false,
+<span id='BUI-Calendar-Panel-method-selectedchange'>        /**
+</span>         * @name BUI.Calendar.Panel#selectedchange
+         * @param {Object} e 点击事件
+         * @param {Date} e.date
+         */
+        &#39;selectedchange&#39; : true
+      }
+    },
+<span id='BUI-Calendar-Panel-property-maxDate'>    /**
+</span>     * 最小日期
+     * @type {Date | String}
+     */
+    maxDate : {
+      view : true,
+      setter : function(val){
+        if(val){
+          if(BUI.isString(val)){
+            return DateUtil.parse(val);
+          }
+          return val;
+        }
+      }
+    },
+<span id='BUI-Calendar-Panel-property-minDate'>    /**
+</span>     * 最小日期
+     * @type {Date | String}
+     */
+    minDate : {
+      view : true,
+      setter : function(val){
+        if(val){
+          if(BUI.isString(val)){
+            return DateUtil.parse(val);
+          }
+          return val;
+        }
+      }
+    },
+<span id='BUI-Calendar-Panel-property-weekTpl'>    /**
+</span>     * 周的模板
+     * @private
+     * @type {Object}
+     */
+    weekTpl:{
+      view : true,
+      value : &#39;&lt;tr&gt;{daysTpl}&lt;/tr&gt;&#39;
+    },
+    tpl:{
+      view:true,
+      value:&#39;&lt;table class=&quot;x-datepicker-inner&quot; cellspacing=&quot;0&quot;&gt;&#39; +
+              &#39;&lt;thead&gt;&#39; +
+                 &#39;&lt;tr&gt;&#39; +
+                  &#39;&lt;th  title=&quot;Sunday&quot;&gt;&lt;span&gt;日&lt;/span&gt;&lt;/th&gt;&#39; +
+                  &#39;&lt;th  title=&quot;Monday&quot;&gt;&lt;span&gt;一&lt;/span&gt;&lt;/th&gt;&#39; +
+                  &#39;&lt;th  title=&quot;Tuesday&quot;&gt;&lt;span&gt;二&lt;/span&gt;&lt;/th&gt;&#39; +
+                  &#39;&lt;th  title=&quot;Wednesday&quot;&gt;&lt;span&gt;三&lt;/span&gt;&lt;/th&gt;&#39; +
+                  &#39;&lt;th  title=&quot;Thursday&quot;&gt;&lt;span&gt;四&lt;/span&gt;&lt;/th&gt;&#39; +
+                  &#39;&lt;th  title=&quot;Friday&quot;&gt;&lt;span&gt;五&lt;/span&gt;&lt;/th&gt;&#39; +
+                  &#39;&lt;th  title=&quot;Saturday&quot;&gt;&lt;span&gt;六&lt;/span&gt;&lt;/th&gt;&#39; +
+                &#39;&lt;/tr&gt;&#39; +
+              &#39;&lt;/thead&gt;&#39; +
+              &#39;&lt;tbody class=&quot;x-datepicker-body&quot;&gt;&#39; +
+              &#39;&lt;/tbody&gt;&#39; +
+            &#39;&lt;/table&gt;&#39;
+    },
+    xview : {value : panelView}
+  }
+},{
+  xclass:&#39;calendar-panel&#39;,
+  priority:0
+});
+
+module.exports = panel;
+</pre>
+</body>
+</html>

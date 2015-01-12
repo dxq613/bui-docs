@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">// ┌─────────────────────────────────────────────────────────────────────┐ \\
+// │ Raphaël - JavaScript Vector Library                                 │ \\
+// ├─────────────────────────────────────────────────────────────────────┤ \\
+// │ SVG Module                                                          │ \\
+// ├─────────────────────────────────────────────────────────────────────┤ \\
+// │ Copyright (c) 2008-2011 Dmitry Baranovskiy (http://raphaeljs.com)   │ \\
+// │ Copyright (c) 2008-2011 Sencha Labs (http://sencha.com)             │ \\
+// │ Licensed under the MIT (http://raphaeljs.com/license.html) license. │ \\
+// └─────────────────────────────────────────────────────────────────────┘ \\
+window.Raphael &amp;&amp; window.Raphael.svg &amp;&amp; function(R) {
+    var has = &quot;hasOwnProperty&quot;,
+        Str = String,
+        toFloat = parseFloat,
+        toInt = parseInt,
+        math = Math,
+        mmax = math.max,
+        abs = math.abs,
+        pow = math.pow,
+        separator = /[, ]+/,
+        eve = R.eve,
+        E = &quot;&quot;,
+        S = &quot; &quot;;
+    var xlink = &quot;http://www.w3.org/1999/xlink&quot;,
+        markers = {
+            block: &quot;M5,0 0,2.5 5,5z&quot;,
+            classic: &quot;M5,0 0,2.5 5,5 3.5,3 3.5,2z&quot;,
+            diamond: &quot;M2.5,0 5,2.5 2.5,5 0,2.5z&quot;,
+            open: &quot;M6,1 1,3.5 6,6&quot;,
+            oval: &quot;M2.5,0A2.5,2.5,0,0,1,2.5,5 2.5,2.5,0,0,1,2.5,0z&quot;
+        },
+        markerCounter = {};
+    R.toString = function () {
+        return  &quot;Your browser supports SVG.\nYou are running Rapha\xebl &quot; + this.version;
+    };
+    var $ = function (el, attr) {
+        if (attr) {
+            if (typeof el == &quot;string&quot;) {
+                el = $(el);
+            }
+            for (var key in attr) if (attr[has](key)) {
+                if (key.substring(0, 6) == &quot;xlink:&quot;) {
+                    el.setAttributeNS(xlink, key.substring(6), Str(attr[key]));
+                } else {
+                    el.setAttribute(key, Str(attr[key]));
+                }
+            }
+        } else {
+            el = R._g.doc.createElementNS(&quot;http://www.w3.org/2000/svg&quot;, el);
+            el.style &amp;&amp; (el.style.webkitTapHighlightColor = &quot;rgba(0,0,0,0)&quot;);
+        }
+        return el;
+    },
+    addGradientFill = function (element, gradient) {
+        var type = &quot;linear&quot;,
+            id = element.id + gradient,
+            fx = .5, fy = .5,
+            o = element.node,
+            SVG = element.paper,
+            s = o.style,
+            el = R._g.doc.getElementById(id);
+        if (!el) {
+            gradient = Str(gradient).replace(R._radial_gradient, function (all, _fx, _fy) {
+                type = &quot;radial&quot;;
+                if (_fx &amp;&amp; _fy) {
+                    fx = toFloat(_fx);
+                    fy = toFloat(_fy);
+                    var dir = ((fy &gt; .5) * 2 - 1);
+                    pow(fx - .5, 2) + pow(fy - .5, 2) &gt; .25 &amp;&amp;
+                        (fy = math.sqrt(.25 - pow(fx - .5, 2)) * dir + .5) &amp;&amp;
+                        fy != .5 &amp;&amp;
+                        (fy = fy.toFixed(5) - 1e-5 * dir);
+                }
+                return E;
+            });
+            gradient = gradient.split(/\s*\-\s*/);
+            if (type == &quot;linear&quot;) {
+                var angle = gradient.shift();
+                angle = -toFloat(angle);
+                if (isNaN(angle)) {
+                    return null;
+                }
+                var vector = [0, 0, math.cos(R.rad(angle)), math.sin(R.rad(angle))],
+                    max = 1 / (mmax(abs(vector[2]), abs(vector[3])) || 1);
+                vector[2] *= max;
+                vector[3] *= max;
+                if (vector[2] &lt; 0) {
+                    vector[0] = -vector[2];
+                    vector[2] = 0;
+                }
+                if (vector[3] &lt; 0) {
+                    vector[1] = -vector[3];
+                    vector[3] = 0;
+                }
+            }
+            var dots = R._parseDots(gradient);
+            if (!dots) {
+                return null;
+            }
+            id = id.replace(/[\(\)\s,\xb0#]/g, &quot;_&quot;);
+            
+            if (element.gradient &amp;&amp; id != element.gradient.id) {
+                SVG.defs.removeChild(element.gradient);
+                delete element.gradient;
+            }
+
+            if (!element.gradient) {
+                el = $(type + &quot;Gradient&quot;, {id: id});
+                element.gradient = el;
+                $(el, type == &quot;radial&quot; ? {
+                    fx: fx,
+                    fy: fy
+                } : {
+                    x1: vector[0],
+                    y1: vector[1],
+                    x2: vector[2],
+                    y2: vector[3],
+                    gradientTransform: element.matrix.invert()
+                });
+                SVG.defs.appendChild(el);
+                for (var i = 0, ii = dots.length; i &lt; ii; i++) {
+                    el.appendChild($(&quot;stop&quot;, {
+                        offset: dots[i].offset ? dots[i].offset : i ? &quot;100%&quot; : &quot;0%&quot;,
+                        &quot;stop-color&quot;: dots[i].color || &quot;#fff&quot;
+                    }));
+                }
+            }
+        }
+        $(o, {
+            fill: &quot;url(#&quot; + id + &quot;)&quot;,
+            opacity: 1,
+            &quot;fill-opacity&quot;: 1
+        });
+        s.fill = E;
+        s.opacity = 1;
+        s.fillOpacity = 1;
+        return 1;
+    },
+    updatePosition = function (o) {
+        var bbox = o.getBBox(1);
+        $(o.pattern, {patternTransform: o.matrix.invert() + &quot; translate(&quot; + bbox.x + &quot;,&quot; + bbox.y + &quot;)&quot;});
+    },
+    addArrow = function (o, value, isEnd) {
+        if (o.type == &quot;path&quot;) {
+            var values = Str(value).toLowerCase().split(&quot;-&quot;),
+                p = o.paper,
+                se = isEnd ? &quot;end&quot; : &quot;start&quot;,
+                node = o.node,
+                attrs = o.attrs,
+                stroke = attrs[&quot;stroke-width&quot;],
+                i = values.length,
+                type = &quot;classic&quot;,
+                from,
+                to,
+                dx,
+                refX,
+                attr,
+                w = 3,
+                h = 3,
+                t = 5;
+            while (i--) {
+                switch (values[i]) {
+                    case &quot;block&quot;:
+                    case &quot;classic&quot;:
+                    case &quot;oval&quot;:
+                    case &quot;diamond&quot;:
+                    case &quot;open&quot;:
+                    case &quot;none&quot;:
+                        type = values[i];
+                        break;
+                    case &quot;wide&quot;: h = 5; break;
+                    case &quot;narrow&quot;: h = 2; break;
+                    case &quot;long&quot;: w = 5; break;
+                    case &quot;short&quot;: w = 2; break;
+                }
+            }
+            if (type == &quot;open&quot;) {
+                w += 2;
+                h += 2;
+                t += 2;
+                dx = 1;
+                refX = isEnd ? 4 : 1;
+                attr = {
+                    fill: &quot;none&quot;,
+                    stroke: attrs.stroke
+                };
+            } else {
+                refX = dx = w / 2;
+                attr = {
+                    fill: attrs.stroke,
+                    stroke: &quot;none&quot;
+                };
+            }
+            if (o._.arrows) {
+                if (isEnd) {
+                    o._.arrows.endPath &amp;&amp; markerCounter[o._.arrows.endPath]--;
+                    o._.arrows.endMarker &amp;&amp; markerCounter[o._.arrows.endMarker]--;
+                } else {
+                    o._.arrows.startPath &amp;&amp; markerCounter[o._.arrows.startPath]--;
+                    o._.arrows.startMarker &amp;&amp; markerCounter[o._.arrows.startMarker]--;
+                }
+            } else {
+                o._.arrows = {};
+            }
+            if (type != &quot;none&quot;) {
+                var pathId = &quot;raphael-marker-&quot; + type,
+                    markerId = &quot;raphael-marker-&quot; + se + type + w + h;
+                if (!R._g.doc.getElementById(pathId)) {
+                    p.defs.appendChild($($(&quot;path&quot;), {
+                        &quot;stroke-linecap&quot;: &quot;round&quot;,
+                        d: markers[type],
+                        id: pathId
+                    }));
+                    markerCounter[pathId] = 1;
+                } else {
+                    markerCounter[pathId]++;
+                }
+                var marker = R._g.doc.getElementById(markerId),
+                    use;
+                if (!marker) {
+                    marker = $($(&quot;marker&quot;), {
+                        id: markerId,
+                        markerHeight: h,
+                        markerWidth: w,
+                        orient: &quot;auto&quot;,
+                        refX: refX,
+                        refY: h / 2
+                    });
+                    use = $($(&quot;use&quot;), {
+                        &quot;xlink:href&quot;: &quot;#&quot; + pathId,
+                        transform: (isEnd ? &quot;rotate(180 &quot; + w / 2 + &quot; &quot; + h / 2 + &quot;) &quot; : E) + &quot;scale(&quot; + w / t + &quot;,&quot; + h / t + &quot;)&quot;,
+                        &quot;stroke-width&quot;: (1 / ((w / t + h / t) / 2)).toFixed(4)
+                    });
+                    marker.appendChild(use);
+                    p.defs.appendChild(marker);
+                    markerCounter[markerId] = 1;
+                } else {
+                    markerCounter[markerId]++;
+                    use = marker.getElementsByTagName(&quot;use&quot;)[0];
+                }
+                $(use, attr);
+                var delta = dx * (type != &quot;diamond&quot; &amp;&amp; type != &quot;oval&quot;);
+                if (isEnd) {
+                    from = o._.arrows.startdx * stroke || 0;
+                    to = R.getTotalLength(attrs.path) - delta * stroke;
+                } else {
+                    from = delta * stroke;
+                    to = R.getTotalLength(attrs.path) - (o._.arrows.enddx * stroke || 0);
+                }
+                attr = {};
+                attr[&quot;marker-&quot; + se] = &quot;url(#&quot; + markerId + &quot;)&quot;;
+                if (to || from) {
+                    attr.d = R.getSubpath(attrs.path, from, to);
+                }
+                $(node, attr);
+                o._.arrows[se + &quot;Path&quot;] = pathId;
+                o._.arrows[se + &quot;Marker&quot;] = markerId;
+                o._.arrows[se + &quot;dx&quot;] = delta;
+                o._.arrows[se + &quot;Type&quot;] = type;
+                o._.arrows[se + &quot;String&quot;] = value;
+            } else {
+                if (isEnd) {
+                    from = o._.arrows.startdx * stroke || 0;
+                    to = R.getTotalLength(attrs.path) - from;
+                } else {
+                    from = 0;
+                    to = R.getTotalLength(attrs.path) - (o._.arrows.enddx * stroke || 0);
+                }
+                o._.arrows[se + &quot;Path&quot;] &amp;&amp; $(node, {d: R.getSubpath(attrs.path, from, to)});
+                delete o._.arrows[se + &quot;Path&quot;];
+                delete o._.arrows[se + &quot;Marker&quot;];
+                delete o._.arrows[se + &quot;dx&quot;];
+                delete o._.arrows[se + &quot;Type&quot;];
+                delete o._.arrows[se + &quot;String&quot;];
+            }
+            for (attr in markerCounter) if (markerCounter[has](attr) &amp;&amp; !markerCounter[attr]) {
+                var item = R._g.doc.getElementById(attr);
+                item &amp;&amp; item.parentNode.removeChild(item);
+            }
+        }
+    },
+    dasharray = {
+        &quot;&quot;: [0],
+        &quot;none&quot;: [0],
+        &quot;-&quot;: [3, 1],
+        &quot;.&quot;: [1, 1],
+        &quot;-.&quot;: [3, 1, 1, 1],
+        &quot;-..&quot;: [3, 1, 1, 1, 1, 1],
+        &quot;. &quot;: [1, 3],
+        &quot;- &quot;: [4, 3],
+        &quot;--&quot;: [8, 3],
+        &quot;- .&quot;: [4, 3, 1, 3],
+        &quot;--.&quot;: [8, 3, 1, 3],
+        &quot;--..&quot;: [8, 3, 1, 3, 1, 3]
+    },
+    addDashes = function (o, value, params) {
+        value = dasharray[Str(value).toLowerCase()];
+        if (value) {
+            var width = o.attrs[&quot;stroke-width&quot;] || &quot;1&quot;,
+                butt = {round: width, square: width, butt: 0}[o.attrs[&quot;stroke-linecap&quot;] || params[&quot;stroke-linecap&quot;]] || 0,
+                dashes = [],
+                i = value.length;
+            while (i--) {
+                dashes[i] = value[i] * width + ((i % 2) ? 1 : -1) * butt;
+            }
+            $(o.node, {&quot;stroke-dasharray&quot;: dashes.join(&quot;,&quot;)});
+        }
+    },
+    setFillAndStroke = function (o, params) {
+        var node = o.node,
+            attrs = o.attrs,
+            vis = node.style.visibility;
+        node.style.visibility = &quot;hidden&quot;;
+        for (var att in params) {
+            if (params[has](att)) {
+                if (!R._availableAttrs[has](att)) {
+                    continue;
+                }
+                var value = params[att];
+                attrs[att] = value;
+                switch (att) {
+                    case &quot;blur&quot;:
+                        o.blur(value);
+                        break;
+                    case &quot;href&quot;:
+                    case &quot;title&quot;:
+                        var hl = $(&quot;title&quot;);
+                        var val = R._g.doc.createTextNode(value);
+                        hl.appendChild(val);
+                        node.appendChild(hl);
+                        break;
+                    case &quot;target&quot;:
+                        var pn = node.parentNode;
+                        if (pn.tagName.toLowerCase() != &quot;a&quot;) {
+                            var hl = $(&quot;a&quot;);
+                            pn.insertBefore(hl, node);
+                            hl.appendChild(node);
+                            pn = hl;
+                        }
+                        if (att == &quot;target&quot;) {
+                            pn.setAttributeNS(xlink, &quot;show&quot;, value == &quot;blank&quot; ? &quot;new&quot; : value);
+                        } else {
+                            pn.setAttributeNS(xlink, att, value);
+                        }
+                        break;
+                    case &quot;cursor&quot;:
+                        node.style.cursor = value;
+                        break;
+                    case &quot;transform&quot;:
+                        o.transform(value);
+                        break;
+                    case &quot;arrow-start&quot;:
+                        addArrow(o, value);
+                        break;
+                    case &quot;arrow-end&quot;:
+                        addArrow(o, value, 1);
+                        break;
+                    case &quot;clip-rect&quot;:
+                        var rect = Str(value).split(separator);
+                        if (rect.length == 4) {
+                            o.clip &amp;&amp; o.clip.parentNode.parentNode.removeChild(o.clip.parentNode);
+                            var el = $(&quot;clipPath&quot;),
+                                rc = $(&quot;rect&quot;);
+                            el.id = R.createUUID();
+                            $(rc, {
+                                x: rect[0],
+                                y: rect[1],
+                                width: rect[2],
+                                height: rect[3]
+                            });
+                            el.appendChild(rc);
+                            o.paper.defs.appendChild(el);
+                            $(node, {&quot;clip-path&quot;: &quot;url(#&quot; + el.id + &quot;)&quot;});
+                            o.clip = rc;
+                        }
+                        if (!value) {
+                            var path = node.getAttribute(&quot;clip-path&quot;);
+                            if (path) {
+                                var clip = R._g.doc.getElementById(path.replace(/(^url\(#|\)$)/g, E));
+                                clip &amp;&amp; clip.parentNode.removeChild(clip);
+                                $(node, {&quot;clip-path&quot;: E});
+                                delete o.clip;
+                            }
+                        }
+                    break;
+                    case &quot;path&quot;:
+                        if (o.type == &quot;path&quot;) {
+                            $(node, {d: value ? attrs.path = R._pathToAbsolute(value) : &quot;M0,0&quot;});
+                            o._.dirty = 1;
+                            if (o._.arrows) {
+                                &quot;startString&quot; in o._.arrows &amp;&amp; addArrow(o, o._.arrows.startString);
+                                &quot;endString&quot; in o._.arrows &amp;&amp; addArrow(o, o._.arrows.endString, 1);
+                            }
+                        }
+                        break;
+                    case &quot;width&quot;:
+                        node.setAttribute(att, value);
+                        o._.dirty = 1;
+                        if (attrs.fx) {
+                            att = &quot;x&quot;;
+                            value = attrs.x;
+                        } else {
+                            break;
+                        }
+                    case &quot;x&quot;:
+                        if (attrs.fx) {
+                            value = -attrs.x - (attrs.width || 0);
+                        }
+                    case &quot;rx&quot;:
+                        if (att == &quot;rx&quot; &amp;&amp; o.type == &quot;rect&quot;) {
+                            break;
+                        }
+                    case &quot;cx&quot;:
+                        node.setAttribute(att, value);
+                        o.pattern &amp;&amp; updatePosition(o);
+                        o._.dirty = 1;
+                        break;
+                    case &quot;height&quot;:
+                        node.setAttribute(att, value);
+                        o._.dirty = 1;
+                        if (attrs.fy) {
+                            att = &quot;y&quot;;
+                            value = attrs.y;
+                        } else {
+                            break;
+                        }
+                    case &quot;y&quot;:
+                        if (attrs.fy) {
+                            value = -attrs.y - (attrs.height || 0);
+                        }
+                    case &quot;ry&quot;:
+                        if (att == &quot;ry&quot; &amp;&amp; o.type == &quot;rect&quot;) {
+                            break;
+                        }
+                    case &quot;cy&quot;:
+                        node.setAttribute(att, value);
+                        o.pattern &amp;&amp; updatePosition(o);
+                        o._.dirty = 1;
+                        break;
+                    case &quot;r&quot;:
+                        if (o.type == &quot;rect&quot;) {
+                            $(node, {rx: value, ry: value});
+                        } else {
+                            node.setAttribute(att, value);
+                        }
+                        o._.dirty = 1;
+                        break;
+                    case &quot;src&quot;:
+                        if (o.type == &quot;image&quot;) {
+                            node.setAttributeNS(xlink, &quot;href&quot;, value);
+                        }
+                        break;
+                    case &quot;stroke-width&quot;:
+                        if (o._.sx != 1 || o._.sy != 1) {
+                            value /= mmax(abs(o._.sx), abs(o._.sy)) || 1;
+                        }
+                        if (o.paper._vbSize) {
+                            value *= o.paper._vbSize;
+                        }
+                        node.setAttribute(att, value);
+                        if (attrs[&quot;stroke-dasharray&quot;]) {
+                            addDashes(o, attrs[&quot;stroke-dasharray&quot;], params);
+                        }
+                        if (o._.arrows) {
+                            &quot;startString&quot; in o._.arrows &amp;&amp; addArrow(o, o._.arrows.startString);
+                            &quot;endString&quot; in o._.arrows &amp;&amp; addArrow(o, o._.arrows.endString, 1);
+                        }
+                        break;
+                    case &quot;stroke-dasharray&quot;:
+                        addDashes(o, value, params);
+                        break;
+                    case &quot;fill&quot;:
+                        var isURL = Str(value).match(R._ISURL);
+                        if (isURL) {
+                            el = $(&quot;pattern&quot;);
+                            var ig = $(&quot;image&quot;);
+                            el.id = R.createUUID();
+                            $(el, {x: 0, y: 0, patternUnits: &quot;userSpaceOnUse&quot;, height: 1, width: 1});
+                            $(ig, {x: 0, y: 0, &quot;xlink:href&quot;: isURL[1]});
+                            el.appendChild(ig);
+
+                            (function (el) {
+                                R._preload(isURL[1], function () {
+                                    var w = this.offsetWidth,
+                                        h = this.offsetHeight;
+                                    $(el, {width: w, height: h});
+                                    $(ig, {width: w, height: h});
+                                    o.paper.safari();
+                                });
+                            })(el);
+                            o.paper.defs.appendChild(el);
+                            $(node, {fill: &quot;url(#&quot; + el.id + &quot;)&quot;});
+                            o.pattern = el;
+                            o.pattern &amp;&amp; updatePosition(o);
+                            break;
+                        }
+                        var clr = R.getRGB(value);
+                        if (!clr.error) {
+                            delete params.gradient;
+                            delete attrs.gradient;
+                            !R.is(attrs.opacity, &quot;undefined&quot;) &amp;&amp;
+                                R.is(params.opacity, &quot;undefined&quot;) &amp;&amp;
+                                $(node, {opacity: attrs.opacity});
+                            !R.is(attrs[&quot;fill-opacity&quot;], &quot;undefined&quot;) &amp;&amp;
+                                R.is(params[&quot;fill-opacity&quot;], &quot;undefined&quot;) &amp;&amp;
+                                $(node, {&quot;fill-opacity&quot;: attrs[&quot;fill-opacity&quot;]});
+                        } else if ((o.type == &quot;circle&quot; || o.type == &quot;ellipse&quot; || Str(value).charAt() != &quot;r&quot;) &amp;&amp; addGradientFill(o, value)) {
+                            if (&quot;opacity&quot; in attrs || &quot;fill-opacity&quot; in attrs) {
+                                var gradient = R._g.doc.getElementById(node.getAttribute(&quot;fill&quot;).replace(/^url\(#|\)$/g, E));
+                                if (gradient) {
+                                    var stops = gradient.getElementsByTagName(&quot;stop&quot;);
+                                    $(stops[stops.length - 1], {&quot;stop-opacity&quot;: (&quot;opacity&quot; in attrs ? attrs.opacity : 1) * (&quot;fill-opacity&quot; in attrs ? attrs[&quot;fill-opacity&quot;] : 1)});
+                                }
+                            }
+                            attrs.gradient = value;
+                            attrs.fill = &quot;none&quot;;
+                            break;
+                        }
+                        clr[has](&quot;opacity&quot;) &amp;&amp; $(node, {&quot;fill-opacity&quot;: clr.opacity &gt; 1 ? clr.opacity / 100 : clr.opacity});
+                    case &quot;stroke&quot;:
+                        clr = R.getRGB(value);
+                        node.setAttribute(att, clr.hex);
+                        att == &quot;stroke&quot; &amp;&amp; clr[has](&quot;opacity&quot;) &amp;&amp; $(node, {&quot;stroke-opacity&quot;: clr.opacity &gt; 1 ? clr.opacity / 100 : clr.opacity});
+                        if (att == &quot;stroke&quot; &amp;&amp; o._.arrows) {
+                            &quot;startString&quot; in o._.arrows &amp;&amp; addArrow(o, o._.arrows.startString);
+                            &quot;endString&quot; in o._.arrows &amp;&amp; addArrow(o, o._.arrows.endString, 1);
+                        }
+                        break;
+                    case &quot;gradient&quot;:
+                        (o.type == &quot;circle&quot; || o.type == &quot;ellipse&quot; || Str(value).charAt() != &quot;r&quot;) &amp;&amp; addGradientFill(o, value);
+                        break;
+                    case &quot;opacity&quot;:
+                        if (attrs.gradient &amp;&amp; !attrs[has](&quot;stroke-opacity&quot;)) {
+                            $(node, {&quot;stroke-opacity&quot;: value &gt; 1 ? value / 100 : value});
+                        }
+                        // fall
+                    case &quot;fill-opacity&quot;:
+                        if (attrs.gradient) {
+                            gradient = R._g.doc.getElementById(node.getAttribute(&quot;fill&quot;).replace(/^url\(#|\)$/g, E));
+                            if (gradient) {
+                                stops = gradient.getElementsByTagName(&quot;stop&quot;);
+                                $(stops[stops.length - 1], {&quot;stop-opacity&quot;: value});
+                            }
+                            break;
+                        }
+                    default:
+                        att == &quot;font-size&quot; &amp;&amp; (value = toInt(value, 10) + &quot;px&quot;);
+                        var cssrule = att.replace(/(\-.)/g, function (w) {
+                            return w.substring(1).toUpperCase();
+                        });
+                        node.style[cssrule] = value;
+                        o._.dirty = 1;
+                        node.setAttribute(att, value);
+                        break;
+                }
+            }
+        }
+
+        tuneText(o, params);
+        node.style.visibility = vis;
+    },
+    leading = 1.2,
+    tuneText = function (el, params) {
+        if (el.type != &quot;text&quot; || !(params[has](&quot;text&quot;) || params[has](&quot;font&quot;) || params[has](&quot;font-size&quot;) || params[has](&quot;x&quot;) || params[has](&quot;y&quot;))) {
+            return;
+        }
+        var a = el.attrs,
+            node = el.node,
+            fontSize = node.firstChild ? toInt(R._g.doc.defaultView.getComputedStyle(node.firstChild, E).getPropertyValue(&quot;font-size&quot;), 10) : 10;
+
+        if (params[has](&quot;text&quot;)) {
+            a.text = params.text;
+            while (node.firstChild) {
+                node.removeChild(node.firstChild);
+            }
+            var texts = Str(params.text).split(&quot;\n&quot;),
+                tspans = [],
+                tspan;
+            for (var i = 0, ii = texts.length; i &lt; ii; i++) {
+                tspan = $(&quot;tspan&quot;);
+                i &amp;&amp; $(tspan, {dy: fontSize * leading, x: a.x});
+                tspan.appendChild(R._g.doc.createTextNode(texts[i]));
+                node.appendChild(tspan);
+                tspans[i] = tspan;
+            }
+        } else {
+            tspans = node.getElementsByTagName(&quot;tspan&quot;);
+            for (i = 0, ii = tspans.length; i &lt; ii; i++) if (i) {
+                $(tspans[i], {dy: fontSize * leading, x: a.x});
+            } else {
+                $(tspans[0], {dy: 0});
+            }
+        }
+        $(node, {x: a.x, y: a.y});
+        el._.dirty = 1;
+        var bb = el._getBBox(),
+            dif = a.y - (bb.y + bb.height / 2);
+        dif &amp;&amp; R.is(dif, &quot;finite&quot;) &amp;&amp; $(tspans[0], {dy: dif});
+    },
+    Element = function (node, svg) {
+        var X = 0,
+            Y = 0;
+        /*\
+         * Element.node
+         [ property (object) ]
+         **
+         * Gives you a reference to the DOM object, so you can assign event handlers or just mess around.
+         **
+         * Note: Don’t mess with it.
+         &gt; Usage
+         | // draw a circle at coordinate 10,10 with radius of 10
+         | var c = paper.circle(10, 10, 10);
+         | c.node.onclick = function () {
+         |     c.attr(&quot;fill&quot;, &quot;red&quot;);
+         | };
+        \*/
+        this[0] = this.node = node;
+        /*\
+         * Element.raphael
+         [ property (object) ]
+         **
+         * Internal reference to @Raphael object. In case it is not available.
+         &gt; Usage
+         | Raphael.el.red = function () {
+         |     var hsb = this.paper.raphael.rgb2hsb(this.attr(&quot;fill&quot;));
+         |     hsb.h = 1;
+         |     this.attr({fill: this.paper.raphael.hsb2rgb(hsb).hex});
+         | }
+        \*/
+        node.raphael = true;
+        /*\
+         * Element.id
+         [ property (number) ]
+         **
+         * Unique id of the element. Especially usesful when you want to listen to events of the element, 
+         * because all events are fired in format `&lt;module&gt;.&lt;action&gt;.&lt;id&gt;`. Also useful for @Paper.getById method.
+        \*/
+        this.id = R._oid++;
+        node.raphaelid = this.id;
+        this.matrix = R.matrix();
+        this.realPath = null;
+        /*\
+         * Element.paper
+         [ property (object) ]
+         **
+         * Internal reference to “paper” where object drawn. Mainly for use in plugins and element extensions.
+         &gt; Usage
+         | Raphael.el.cross = function () {
+         |     this.attr({fill: &quot;red&quot;});
+         |     this.paper.path(&quot;M10,10L50,50M50,10L10,50&quot;)
+         |         .attr({stroke: &quot;red&quot;});
+         | }
+        \*/
+        this.paper = svg;
+        this.attrs = this.attrs || {};
+        this._ = {
+            transform: [],
+            sx: 1,
+            sy: 1,
+            deg: 0,
+            dx: 0,
+            dy: 0,
+            dirty: 1
+        };
+        !svg.bottom &amp;&amp; (svg.bottom = this);
+        /*\
+         * Element.prev
+         [ property (object) ]
+         **
+         * Reference to the previous element in the hierarchy.
+        \*/
+        this.prev = svg.top;
+        svg.top &amp;&amp; (svg.top.next = this);
+        svg.top = this;
+        /*\
+         * Element.next
+         [ property (object) ]
+         **
+         * Reference to the next element in the hierarchy.
+        \*/
+        this.next = null;
+    },
+    elproto = R.el;
+
+    Element.prototype = elproto;
+    elproto.constructor = Element;
+
+    R._engine.path = function (pathString, SVG) {
+        var el = $(&quot;path&quot;);
+        SVG.canvas &amp;&amp; SVG.canvas.appendChild(el);
+        var p = new Element(el, SVG);
+        p.type = &quot;path&quot;;
+        setFillAndStroke(p, {
+            fill: &quot;none&quot;,
+            stroke: &quot;#000&quot;,
+            path: pathString
+        });
+        return p;
+    };
+    /*\
+     * Element.rotate
+     [ method ]
+     **
+     * Deprecated! Use @Element.transform instead.
+     * Adds rotation by given angle around given point to the list of
+     * transformations of the element.
+     &gt; Parameters
+     - deg (number) angle in degrees
+     - cx (number) #optional x coordinate of the centre of rotation
+     - cy (number) #optional y coordinate of the centre of rotation
+     * If cx &amp; cy aren’t specified centre of the shape is used as a point of rotation.
+     = (object) @Element
+    \*/
+    elproto.rotate = function (deg, cx, cy) {
+        if (this.removed) {
+            return this;
+        }
+        deg = Str(deg).split(separator);
+        if (deg.length - 1) {
+            cx = toFloat(deg[1]);
+            cy = toFloat(deg[2]);
+        }
+        deg = toFloat(deg[0]);
+        (cy == null) &amp;&amp; (cx = cy);
+        if (cx == null || cy == null) {
+            var bbox = this.getBBox(1);
+            cx = bbox.x + bbox.width / 2;
+            cy = bbox.y + bbox.height / 2;
+        }
+        this.transform(this._.transform.concat([[&quot;r&quot;, deg, cx, cy]]));
+        return this;
+    };
+    /*\
+     * Element.scale
+     [ method ]
+     **
+     * Deprecated! Use @Element.transform instead.
+     * Adds scale by given amount relative to given point to the list of
+     * transformations of the element.
+     &gt; Parameters
+     - sx (number) horisontal scale amount
+     - sy (number) vertical scale amount
+     - cx (number) #optional x coordinate of the centre of scale
+     - cy (number) #optional y coordinate of the centre of scale
+     * If cx &amp; cy aren’t specified centre of the shape is used instead.
+     = (object) @Element
+    \*/
+    elproto.scale = function (sx, sy, cx, cy) {
+        if (this.removed) {
+            return this;
+        }
+        sx = Str(sx).split(separator);
+        if (sx.length - 1) {
+            sy = toFloat(sx[1]);
+            cx = toFloat(sx[2]);
+            cy = toFloat(sx[3]);
+        }
+        sx = toFloat(sx[0]);
+        (sy == null) &amp;&amp; (sy = sx);
+        (cy == null) &amp;&amp; (cx = cy);
+        if (cx == null || cy == null) {
+            var bbox = this.getBBox(1);
+        }
+        cx = cx == null ? bbox.x + bbox.width / 2 : cx;
+        cy = cy == null ? bbox.y + bbox.height / 2 : cy;
+        this.transform(this._.transform.concat([[&quot;s&quot;, sx, sy, cx, cy]]));
+        return this;
+    };
+    /*\
+     * Element.translate
+     [ method ]
+     **
+     * Deprecated! Use @Element.transform instead.
+     * Adds translation by given amount to the list of transformations of the element.
+     &gt; Parameters
+     - dx (number) horisontal shift
+     - dy (number) vertical shift
+     = (object) @Element
+    \*/
+    elproto.translate = function (dx, dy) {
+        if (this.removed) {
+            return this;
+        }
+        dx = Str(dx).split(separator);
+        if (dx.length - 1) {
+            dy = toFloat(dx[1]);
+        }
+        dx = toFloat(dx[0]) || 0;
+        dy = +dy || 0;
+        this.transform(this._.transform.concat([[&quot;t&quot;, dx, dy]]));
+        return this;
+    };
+    /*\
+     * Element.transform
+     [ method ]
+     **
+     * Adds transformation to the element which is separate to other attributes,
+     * i.e. translation doesn’t change `x` or `y` of the rectange. The format
+     * of transformation string is similar to the path string syntax:
+     | &quot;t100,100r30,100,100s2,2,100,100r45s1.5&quot;
+     * Each letter is a command. There are four commands: `t` is for translate, `r` is for rotate, `s` is for
+     * scale and `m` is for matrix.
+     *
+     * There are also alternative “absolute” translation, rotation and scale: `T`, `R` and `S`. They will not take previous transformation into account. For example, `...T100,0` will always move element 100 px horisontally, while `...t100,0` could move it vertically if there is `r90` before. Just compare results of `r90t100,0` and `r90T100,0`.
+     *
+     * So, the example line above could be read like “translate by 100, 100; rotate 30° around 100, 100; scale twice around 100, 100;
+     * rotate 45° around centre; scale 1.5 times relative to centre”. As you can see rotate and scale commands have origin
+     * coordinates as optional parameters, the default is the centre point of the element.
+     * Matrix accepts six parameters.
+     &gt; Usage
+     | var el = paper.rect(10, 20, 300, 200);
+     | // translate 100, 100, rotate 45°, translate -100, 0
+     | el.transform(&quot;t100,100r45t-100,0&quot;);
+     | // if you want you can append or prepend transformations
+     | el.transform(&quot;...t50,50&quot;);
+     | el.transform(&quot;s2...&quot;);
+     | // or even wrap
+     | el.transform(&quot;t50,50...t-50-50&quot;);
+     | // to reset transformation call method with empty string
+     | el.transform(&quot;&quot;);
+     | // to get current value call it without parameters
+     | console.log(el.transform());
+     &gt; Parameters
+     - tstr (string) #optional transformation string
+     * If tstr isn’t specified
+     = (string) current transformation string
+     * else
+     = (object) @Element
+    \*/
+    elproto.transform = function (tstr) {
+        var _ = this._;
+        if (tstr == null) {
+            return _.transform;
+        }
+        R._extractTransform(this, tstr);
+
+        this.clip &amp;&amp; $(this.clip, {transform: this.matrix.invert()});
+        this.pattern &amp;&amp; updatePosition(this);
+        this.node &amp;&amp; $(this.node, {transform: this.matrix});
+    
+        if (_.sx != 1 || _.sy != 1) {
+            var sw = this.attrs[has](&quot;stroke-width&quot;) ? this.attrs[&quot;stroke-width&quot;] : 1;
+            this.attr({&quot;stroke-width&quot;: sw});
+        }
+
+        return this;
+    };
+    /*\
+     * Element.hide
+     [ method ]
+     **
+     * Makes element invisible. See @Element.show.
+     = (object) @Element
+    \*/
+    elproto.hide = function () {
+        !this.removed &amp;&amp; this.paper.safari(this.node.style.display = &quot;none&quot;);
+        return this;
+    };
+    /*\
+     * Element.show
+     [ method ]
+     **
+     * Makes element visible. See @Element.hide.
+     = (object) @Element
+    \*/
+    elproto.show = function () {
+        !this.removed &amp;&amp; this.paper.safari(this.node.style.display = &quot;&quot;);
+        return this;
+    };
+    /*\
+     * Element.remove
+     [ method ]
+     **
+     * Removes element from the paper.
+    \*/
+    elproto.remove = function () {
+        if (this.removed || !this.node.parentNode) {
+            return;
+        }
+        var paper = this.paper;
+        paper.__set__ &amp;&amp; paper.__set__.exclude(this);
+        eve.unbind(&quot;raphael.*.*.&quot; + this.id);
+        if (this.gradient) {
+            paper.defs.removeChild(this.gradient);
+        }
+        R._tear(this, paper);
+        if (this.node.parentNode.tagName.toLowerCase() == &quot;a&quot;) {
+            this.node.parentNode.parentNode.removeChild(this.node.parentNode);
+        } else {
+            this.node.parentNode.removeChild(this.node);
+        }
+        for (var i in this) {
+            this[i] = typeof this[i] == &quot;function&quot; ? R._removedFactory(i) : null;
+        }
+        this.removed = true;
+    };
+    elproto._getBBox = function () {
+        if (this.node.style.display == &quot;none&quot;) {
+            this.show();
+            var hide = true;
+        }
+        var bbox = {};
+        try {
+            bbox = this.node.getBBox();
+        } catch(e) {
+            // Firefox 3.0.x plays badly here
+        } finally {
+            bbox = bbox || {};
+        }
+        hide &amp;&amp; this.hide();
+        return bbox;
+    };
+    /*\
+     * Element.attr
+     [ method ]
+     **
+     * Sets the attributes of the element.
+     &gt; Parameters
+     - attrName (string) attribute’s name
+     - value (string) value
+     * or
+     - params (object) object of name/value pairs
+     * or
+     - attrName (string) attribute’s name
+     * or
+     - attrNames (array) in this case method returns array of current values for given attribute names
+     = (object) @Element if attrsName &amp; value or params are passed in.
+     = (...) value of the attribute if only attrsName is passed in.
+     = (array) array of values of the attribute if attrsNames is passed in.
+     = (object) object of attributes if nothing is passed in.
+     &gt; Possible parameters
+     # &lt;p&gt;Please refer to the &lt;a href=&quot;http://www.w3.org/TR/SVG/&quot; title=&quot;The W3C Recommendation for the SVG language describes these properties in detail.&quot;&gt;SVG specification&lt;/a&gt; for an explanation of these parameters.&lt;/p&gt;
+     o arrow-end (string) arrowhead on the end of the path. The format for string is `&lt;type&gt;[-&lt;width&gt;[-&lt;length&gt;]]`. Possible types: `classic`, `block`, `open`, `oval`, `diamond`, `none`, width: `wide`, `narrow`, `medium`, length: `long`, `short`, `midium`.
+     o clip-rect (string) comma or space separated values: x, y, width and height
+     o cursor (string) CSS type of the cursor
+     o cx (number) the x-axis coordinate of the center of the circle, or ellipse
+     o cy (number) the y-axis coordinate of the center of the circle, or ellipse
+     o fill (string) colour, gradient or image
+     o fill-opacity (number)
+     o font (string)
+     o font-family (string)
+     o font-size (number) font size in pixels
+     o font-weight (string)
+     o height (number)
+     o href (string) URL, if specified element behaves as hyperlink
+     o opacity (number)
+     o path (string) SVG path string format
+     o r (number) radius of the circle, ellipse or rounded corner on the rect
+     o rx (number) horisontal radius of the ellipse
+     o ry (number) vertical radius of the ellipse
+     o src (string) image URL, only works for @Element.image element
+     o stroke (string) stroke colour
+     o stroke-dasharray (string) [“”, “`-`”, “`.`”, “`-.`”, “`-..`”, “`. `”, “`- `”, “`--`”, “`- .`”, “`--.`”, “`--..`”]
+     o stroke-linecap (string) [“`butt`”, “`square`”, “`round`”]
+     o stroke-linejoin (string) [“`bevel`”, “`round`”, “`miter`”]
+     o stroke-miterlimit (number)
+     o stroke-opacity (number)
+     o stroke-width (number) stroke width in pixels, default is &#39;1&#39;
+     o target (string) used with href
+     o text (string) contents of the text element. Use `\n` for multiline text
+     o text-anchor (string) [“`start`”, “`middle`”, “`end`”], default is “`middle`”
+     o title (string) will create tooltip with a given text
+     o transform (string) see @Element.transform
+     o width (number)
+     o x (number)
+     o y (number)
+     &gt; Gradients
+     * Linear gradient format: “`‹angle›-‹colour›[-‹colour›[:‹offset›]]*-‹colour›`”, example: “`90-#fff-#000`” – 90°
+     * gradient from white to black or “`0-#fff-#f00:20-#000`” – 0° gradient from white via red (at 20%) to black.
+     *
+     * radial gradient: “`r[(‹fx›, ‹fy›)]‹colour›[-‹colour›[:‹offset›]]*-‹colour›`”, example: “`r#fff-#000`” –
+     * gradient from white to black or “`r(0.25, 0.75)#fff-#000`” – gradient from white to black with focus point
+     * at 0.25, 0.75. Focus point coordinates are in 0..1 range. Radial gradients can only be applied to circles and ellipses.
+     &gt; Path String
+     # &lt;p&gt;Please refer to &lt;a href=&quot;http://www.w3.org/TR/SVG/paths.html#PathData&quot; title=&quot;Details of a path’s data attribute’s format are described in the SVG specification.&quot;&gt;SVG documentation regarding path string&lt;/a&gt;. Raphaël fully supports it.&lt;/p&gt;
+     &gt; Colour Parsing
+     # &lt;ul&gt;
+     #     &lt;li&gt;Colour name (“&lt;code&gt;red&lt;/code&gt;”, “&lt;code&gt;green&lt;/code&gt;”, “&lt;code&gt;cornflowerblue&lt;/code&gt;”, etc)&lt;/li&gt;
+     #     &lt;li&gt;#••• — shortened HTML colour: (“&lt;code&gt;#000&lt;/code&gt;”, “&lt;code&gt;#fc0&lt;/code&gt;”, etc)&lt;/li&gt;
+     #     &lt;li&gt;#•••••• — full length HTML colour: (“&lt;code&gt;#000000&lt;/code&gt;”, “&lt;code&gt;#bd2300&lt;/code&gt;”)&lt;/li&gt;
+     #     &lt;li&gt;rgb(•••, •••, •••) — red, green and blue channels’ values: (“&lt;code&gt;rgb(200,&amp;nbsp;100,&amp;nbsp;0)&lt;/code&gt;”)&lt;/li&gt;
+     #     &lt;li&gt;rgb(•••%, •••%, •••%) — same as above, but in %: (“&lt;code&gt;rgb(100%,&amp;nbsp;175%,&amp;nbsp;0%)&lt;/code&gt;”)&lt;/li&gt;
+     #     &lt;li&gt;rgba(•••, •••, •••, •••) — red, green and blue channels’ values: (“&lt;code&gt;rgba(200,&amp;nbsp;100,&amp;nbsp;0, .5)&lt;/code&gt;”)&lt;/li&gt;
+     #     &lt;li&gt;rgba(•••%, •••%, •••%, •••%) — same as above, but in %: (“&lt;code&gt;rgba(100%,&amp;nbsp;175%,&amp;nbsp;0%, 50%)&lt;/code&gt;”)&lt;/li&gt;
+     #     &lt;li&gt;hsb(•••, •••, •••) — hue, saturation and brightness values: (“&lt;code&gt;hsb(0.5,&amp;nbsp;0.25,&amp;nbsp;1)&lt;/code&gt;”)&lt;/li&gt;
+     #     &lt;li&gt;hsb(•••%, •••%, •••%) — same as above, but in %&lt;/li&gt;
+     #     &lt;li&gt;hsba(•••, •••, •••, •••) — same as above, but with opacity&lt;/li&gt;
+     #     &lt;li&gt;hsl(•••, •••, •••) — almost the same as hsb, see &lt;a href=&quot;http://en.wikipedia.org/wiki/HSL_and_HSV&quot; title=&quot;HSL and HSV - Wikipedia, the free encyclopedia&quot;&gt;Wikipedia page&lt;/a&gt;&lt;/li&gt;
+     #     &lt;li&gt;hsl(•••%, •••%, •••%) — same as above, but in %&lt;/li&gt;
+     #     &lt;li&gt;hsla(•••, •••, •••, •••) — same as above, but with opacity&lt;/li&gt;
+     #     &lt;li&gt;Optionally for hsb and hsl you could specify hue as a degree: “&lt;code&gt;hsl(240deg,&amp;nbsp;1,&amp;nbsp;.5)&lt;/code&gt;” or, if you want to go fancy, “&lt;code&gt;hsl(240°,&amp;nbsp;1,&amp;nbsp;.5)&lt;/code&gt;”&lt;/li&gt;
+     # &lt;/ul&gt;
+    \*/
+    elproto.attr = function (name, value) {
+        if (this.removed) {
+            return this;
+        }
+        if (name == null) {
+            var res = {};
+            for (var a in this.attrs) if (this.attrs[has](a)) {
+                res[a] = this.attrs[a];
+            }
+            res.gradient &amp;&amp; res.fill == &quot;none&quot; &amp;&amp; (res.fill = res.gradient) &amp;&amp; delete res.gradient;
+            res.transform = this._.transform;
+            return res;
+        }
+        if (value == null &amp;&amp; R.is(name, &quot;string&quot;)) {
+            if (name == &quot;fill&quot; &amp;&amp; this.attrs.fill == &quot;none&quot; &amp;&amp; this.attrs.gradient) {
+                return this.attrs.gradient;
+            }
+            if (name == &quot;transform&quot;) {
+                return this._.transform;
+            }
+            var names = name.split(separator),
+                out = {};
+            for (var i = 0, ii = names.length; i &lt; ii; i++) {
+                name = names[i];
+                if (name in this.attrs) {
+                    out[name] = this.attrs[name];
+                } else if (R.is(this.paper.customAttributes[name], &quot;function&quot;)) {
+                    out[name] = this.paper.customAttributes[name].def;
+                } else {
+                    out[name] = R._availableAttrs[name];
+                }
+            }
+            return ii - 1 ? out : out[names[0]];
+        }
+        if (value == null &amp;&amp; R.is(name, &quot;array&quot;)) {
+            out = {};
+            for (i = 0, ii = name.length; i &lt; ii; i++) {
+                out[name[i]] = this.attr(name[i]);
+            }
+            return out;
+        }
+        if (value != null) {
+            var params = {};
+            params[name] = value;
+        } else if (name != null &amp;&amp; R.is(name, &quot;object&quot;)) {
+            params = name;
+        }
+        for (var key in params) {
+            eve(&quot;raphael.attr.&quot; + key + &quot;.&quot; + this.id, this, params[key]);
+        }
+        for (key in this.paper.customAttributes) if (this.paper.customAttributes[has](key) &amp;&amp; params[has](key) &amp;&amp; R.is(this.paper.customAttributes[key], &quot;function&quot;)) {
+            var par = this.paper.customAttributes[key].apply(this, [].concat(params[key]));
+            this.attrs[key] = params[key];
+            for (var subkey in par) if (par[has](subkey)) {
+                params[subkey] = par[subkey];
+            }
+        }
+        setFillAndStroke(this, params);
+        return this;
+    };
+    /*\
+     * Element.toFront
+     [ method ]
+     **
+     * Moves the element so it is the closest to the viewer’s eyes, on top of other elements.
+     = (object) @Element
+    \*/
+    elproto.toFront = function () {
+        if (this.removed) {
+            return this;
+        }
+        if (this.node.parentNode.tagName.toLowerCase() == &quot;a&quot;) {
+            this.node.parentNode.parentNode.appendChild(this.node.parentNode);
+        } else {
+            this.node.parentNode.appendChild(this.node);
+        }
+        var svg = this.paper;
+        svg.top != this &amp;&amp; R._tofront(this, svg);
+        return this;
+    };
+    /*\
+     * Element.toBack
+     [ method ]
+     **
+     * Moves the element so it is the furthest from the viewer’s eyes, behind other elements.
+     = (object) @Element
+    \*/
+    elproto.toBack = function () {
+        if (this.removed) {
+            return this;
+        }
+        var parent = this.node.parentNode;
+        if (parent.tagName.toLowerCase() == &quot;a&quot;) {
+            parent.parentNode.insertBefore(this.node.parentNode, this.node.parentNode.parentNode.firstChild); 
+        } else if (parent.firstChild != this.node) {
+            parent.insertBefore(this.node, this.node.parentNode.firstChild);
+        }
+        R._toback(this, this.paper);
+        var svg = this.paper;
+        return this;
+    };
+    /*\
+     * Element.insertAfter
+     [ method ]
+     **
+     * Inserts current object after the given one.
+     = (object) @Element
+    \*/
+    elproto.insertAfter = function (element) {
+        if (this.removed) {
+            return this;
+        }
+        var node = element.node || element[element.length - 1].node;
+        if (node.nextSibling) {
+            node.parentNode.insertBefore(this.node, node.nextSibling);
+        } else {
+            node.parentNode.appendChild(this.node);
+        }
+        R._insertafter(this, element, this.paper);
+        return this;
+    };
+    /*\
+     * Element.insertBefore
+     [ method ]
+     **
+     * Inserts current object before the given one.
+     = (object) @Element
+    \*/
+    elproto.insertBefore = function (element) {
+        if (this.removed) {
+            return this;
+        }
+        var node = element.node || element[0].node;
+        node.parentNode.insertBefore(this.node, node);
+        R._insertbefore(this, element, this.paper);
+        return this;
+    };
+    elproto.blur = function (size) {
+        // Experimental. No Safari support. Use it on your own risk.
+        var t = this;
+        if (+size !== 0) {
+            var fltr = $(&quot;filter&quot;),
+                blur = $(&quot;feGaussianBlur&quot;);
+            t.attrs.blur = size;
+            fltr.id = R.createUUID();
+            $(blur, {stdDeviation: +size || 1.5});
+            fltr.appendChild(blur);
+            t.paper.defs.appendChild(fltr);
+            t._blur = fltr;
+            $(t.node, {filter: &quot;url(#&quot; + fltr.id + &quot;)&quot;});
+        } else {
+            if (t._blur) {
+                t._blur.parentNode.removeChild(t._blur);
+                delete t._blur;
+                delete t.attrs.blur;
+            }
+            t.node.removeAttribute(&quot;filter&quot;);
+        }
+        return t;
+    };
+    R._engine.circle = function (svg, x, y, r) {
+        var el = $(&quot;circle&quot;);
+        svg.canvas &amp;&amp; svg.canvas.appendChild(el);
+        var res = new Element(el, svg);
+        res.attrs = {cx: x, cy: y, r: r, fill: &quot;none&quot;, stroke: &quot;#000&quot;};
+        res.type = &quot;circle&quot;;
+        $(el, res.attrs);
+        return res;
+    };
+    R._engine.rect = function (svg, x, y, w, h, r) {
+        var el = $(&quot;rect&quot;);
+        svg.canvas &amp;&amp; svg.canvas.appendChild(el);
+        var res = new Element(el, svg);
+        res.attrs = {x: x, y: y, width: w, height: h, r: r || 0, rx: r || 0, ry: r || 0, fill: &quot;none&quot;, stroke: &quot;#000&quot;};
+        res.type = &quot;rect&quot;;
+        $(el, res.attrs);
+        return res;
+    };
+    R._engine.ellipse = function (svg, x, y, rx, ry) {
+        var el = $(&quot;ellipse&quot;);
+        svg.canvas &amp;&amp; svg.canvas.appendChild(el);
+        var res = new Element(el, svg);
+        res.attrs = {cx: x, cy: y, rx: rx, ry: ry, fill: &quot;none&quot;, stroke: &quot;#000&quot;};
+        res.type = &quot;ellipse&quot;;
+        $(el, res.attrs);
+        return res;
+    };
+    R._engine.image = function (svg, src, x, y, w, h) {
+        var el = $(&quot;image&quot;);
+        $(el, {x: x, y: y, width: w, height: h, preserveAspectRatio: &quot;none&quot;});
+        el.setAttributeNS(xlink, &quot;href&quot;, src);
+        svg.canvas &amp;&amp; svg.canvas.appendChild(el);
+        var res = new Element(el, svg);
+        res.attrs = {x: x, y: y, width: w, height: h, src: src};
+        res.type = &quot;image&quot;;
+        return res;
+    };
+    R._engine.text = function (svg, x, y, text) {
+        var el = $(&quot;text&quot;);
+        svg.canvas &amp;&amp; svg.canvas.appendChild(el);
+        var res = new Element(el, svg);
+        res.attrs = {
+            x: x,
+            y: y,
+            &quot;text-anchor&quot;: &quot;middle&quot;,
+            text: text,
+            font: R._availableAttrs.font,
+            stroke: &quot;none&quot;,
+            fill: &quot;#000&quot;
+        };
+        res.type = &quot;text&quot;;
+        setFillAndStroke(res, res.attrs);
+        return res;
+    };
+
+    R._engine.setSize = function (width, height) {
+        this.width = width || this.width;
+        this.height = height || this.height;
+        this.canvas.setAttribute(&quot;width&quot;, this.width);
+        this.canvas.setAttribute(&quot;height&quot;, this.height);
+        if (this._viewBox) {
+            this.setViewBox.apply(this, this._viewBox);
+        }
+        return this;
+    };
+    R._engine.create = function () {
+        var con = R._getContainer.apply(0, arguments),
+            container = con &amp;&amp; con.container,
+            x = con.x,
+            y = con.y,
+            width = con.width,
+            height = con.height;
+        if (!container) {
+            throw new Error(&quot;SVG container not found.&quot;);
+        }
+        var cnvs = $(&quot;svg&quot;),
+            css = &quot;overflow:hidden;&quot;,
+            isFloating;
+        x = x || 0;
+        y = y || 0;
+        width = width || 512;
+        height = height || 342;
+        $(cnvs, {
+            height: height,
+            version: 1.1,
+            width: width,
+            xmlns: &quot;http://www.w3.org/2000/svg&quot;
+        });
+        if (container == 1) {
+            cnvs.style.cssText = css + &quot;position:absolute;left:&quot; + x + &quot;px;top:&quot; + y + &quot;px&quot;;
+            R._g.doc.body.appendChild(cnvs);
+            isFloating = 1;
+        } else {
+            cnvs.style.cssText = css + &quot;position:relative&quot;;
+            if (container.firstChild) {
+                container.insertBefore(cnvs, container.firstChild);
+            } else {
+                container.appendChild(cnvs);
+            }
+        }
+        container = new R._Paper;
+        container.width = width;
+        container.height = height;
+        container.canvas = cnvs;
+        container.clear();
+        container._left = container._top = 0;
+        isFloating &amp;&amp; (container.renderfix = function () {});
+        container.renderfix();
+        return container;
+    };
+    R._engine.setViewBox = function (x, y, w, h, fit) {
+        eve(&quot;raphael.setViewBox&quot;, this, this._viewBox, [x, y, w, h, fit]);
+        var size = mmax(w / this.width, h / this.height),
+            top = this.top,
+            aspectRatio = fit ? &quot;meet&quot; : &quot;xMinYMin&quot;,
+            vb,
+            sw;
+        if (x == null) {
+            if (this._vbSize) {
+                size = 1;
+            }
+            delete this._vbSize;
+            vb = &quot;0 0 &quot; + this.width + S + this.height;
+        } else {
+            this._vbSize = size;
+            vb = x + S + y + S + w + S + h;
+        }
+        $(this.canvas, {
+            viewBox: vb,
+            preserveAspectRatio: aspectRatio
+        });
+        while (size &amp;&amp; top) {
+            sw = &quot;stroke-width&quot; in top.attrs ? top.attrs[&quot;stroke-width&quot;] : 1;
+            top.attr({&quot;stroke-width&quot;: sw});
+            top._.dirty = 1;
+            top._.dirtyT = 1;
+            top = top.prev;
+        }
+        this._viewBox = [x, y, w, h, !!fit];
+        return this;
+    };
+
+
+    /*\
+     * Paper.renderfix
+     [ method ]
+     **
+     * Fixes the issue of Firefox and IE9 regarding subpixel rendering. If paper is dependant
+     * on other elements after reflow it could shift half pixel which cause for lines to lost their crispness.
+     * This method fixes the issue.
+     **
+       Special thanks to Mariusz Nowak (http://www.medikoo.com/) for this method.
+    \*/
+    R.prototype.renderfix = function () {
+        var cnvs = this.canvas,
+            s = cnvs.style,
+            pos;
+        try {
+            pos = cnvs.getScreenCTM() || cnvs.createSVGMatrix();
+        } catch (e) {
+            pos = cnvs.createSVGMatrix();
+        }
+        var left = -pos.e % 1,
+            top = -pos.f % 1;
+        if (left || top) {
+            if (left) {
+                this._left = (this._left + left) % 1;
+                s.left = this._left + &quot;px&quot;;
+            }
+            if (top) {
+                this._top = (this._top + top) % 1;
+                s.top = this._top + &quot;px&quot;;
+            }
+        }
+    };
+    /*\
+     * Paper.clear
+     [ method ]
+     **
+     * Clears the paper, i.e. removes all the elements.
+    \*/
+    R.prototype.clear = function () {
+        R.eve(&quot;raphael.clear&quot;, this);
+        var c = this.canvas;
+        while (c.firstChild) {
+            c.removeChild(c.firstChild);
+        }
+        this.bottom = this.top = null;
+        (this.desc = $(&quot;desc&quot;)).appendChild(R._g.doc.createTextNode(&quot;Created with Rapha\xebl &quot; + R.version));
+        c.appendChild(this.desc);
+        c.appendChild(this.defs = $(&quot;defs&quot;));
+    };
+    /*\
+     * Paper.remove
+     [ method ]
+     **
+     * Removes the paper from the DOM.
+    \*/
+    R.prototype.remove = function () {
+        eve(&quot;raphael.remove&quot;, this);
+        this.canvas.parentNode &amp;&amp; this.canvas.parentNode.removeChild(this.canvas);
+        for (var i in this) {
+            this[i] = typeof this[i] == &quot;function&quot; ? R._removedFactory(i) : null;
+        }
+    };
+    var setproto = R.st;
+    for (var method in elproto) if (elproto[has](method) &amp;&amp; !setproto[has](method)) {
+        setproto[method] = (function (methodname) {
+            return function () {
+                var arg = arguments;
+                return this.forEach(function (el) {
+                    el[methodname].apply(el, arg);
+                });
+            };
+        })(method);
+    }
+
+    
+}(window.Raphael);
+</pre>
+</body>
+</html>

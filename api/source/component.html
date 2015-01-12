@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview Component命名空间的入口文件
+ * @ignore
+ */
+
+<span id='BUI-Component'>/**
+</span> * @class BUI.Component
+ * &lt;p&gt;
+ * &lt;img src=&quot;../assets/img/class-common.jpg&quot;/&gt;
+ * &lt;/p&gt;
+ * 控件基类的命名空间
+ */
+var Component = {};
+
+BUI.mix(Component, {
+  Manager: require(&#39;./manage&#39;),
+  UIBase: require(&#39;./uibase/uibase&#39;),
+  View: require(&#39;./view&#39;),
+  Controller: require(&#39;./controller&#39;)
+});
+
+function create(component, self) {
+  var childConstructor, xclass;
+  if (component &amp;&amp; (xclass = component.xclass)) {
+    if (self &amp;&amp; !component.prefixCls) {
+      component.prefixCls = self.get(&#39;prefixCls&#39;);
+    }
+    childConstructor = Component.Manager.getConstructorByXClass(xclass);
+    if (!childConstructor) {
+      BUI.error(&#39;can not find class by xclass desc : &#39; + xclass);
+    }
+    component = new childConstructor(component);
+  }
+  return component;
+}
+
+<span id='BUI-Component-static-method-create'>/**
+</span> * 根据Xclass创建对象
+ * @method
+ * @static
+ * @param  {Object} component 控件的配置项或者控件
+ * @param  {Object} self      父类实例
+ * @return {Object} 实例对象
+ */
+Component.create = create;
+
+module.exports = Component;
+</pre>
+</body>
+</html>

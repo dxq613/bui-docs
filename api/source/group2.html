@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var BUI = require(&#39;bui-common&#39;);
+
+window.Raphael &amp;&amp; function  (R) {
+
+	/*
+	 * 创建分组
+	 */
+	R.fn.group = function(){
+		var out = R._engine.group(this);
+      this.__set__ &amp;&amp; this.__set__.push(out);
+    return out;
+	};
+
+
+
+	//添加group的默认path
+	R._getPath.group = function(el){
+      var bbox = el._getBBox();
+      return  R._rectPath(0,0, bbox.width, bbox.height);
+  }
+
+  /*
+   * 分组构造函数
+   */
+  var Group = function(node,svg){
+      Group.superclass.constructor.call(this,node,svg);
+  },
+  groupproto;
+
+
+
+  BUI.extend(Group,R.el.constructor);
+
+  groupproto = Group.prototype;
+
+  //级联添加分组
+  groupproto.group = function(){
+    var canvas = this.paper,
+      out = canvas.group();
+    this.node.appendChild(out.node);
+    return out;
+  };
+
+  //use svg
+  if(window.Raphael.svg){
+    function createNode(tagName){
+      return R._g.doc.createElementNS(&quot;http://www.w3.org/2000/svg&quot;, tagName)
+    }
+  	R._engine.group = function(svg){
+        var el = createNode(&quot;g&quot;);
+        svg.canvas &amp;&amp; svg.canvas.appendChild(el);
+        var res = new Group(el, svg);
+        res.type = &quot;group&quot;;
+        return res;
+    };
+
+   
+
+
+    groupproto.add = function(json){
+      var rest = this.paper.add(json),
+          el = this.node;
+      rest.forEach(function(element){
+          el.appendChild(element.node);
+      });
+      return rest;
+    };
+  }
+  
+  //use vml
+  if(window.Raphael.vml){
+  	var createNode = function (tagName) {
+      return R._g.doc.createElement(&#39;div&#39;);
+    };
+    //获取path
+    R._getPath.group = function(el){
+      var node = el.node,
+        set = el.__set,
+        width = 0,
+        height = 0;
+      if(set){
+        set.forEach(function(element){
+          var bbox = element.getBBox();
+          if(width &lt; bbox.width){
+            width =  width;
+          }
+          if(height &lt;  bbox.height){
+            height = bbox.height;
+          }
+        });
+      }/**/
+      return  R._rectPath(0,0, width, height);
+    }
+    //添加子节点
+    groupproto.add = function(json){
+        var rest = this.paper.add(json),
+            el = this.node,
+            set = this.__set;
+        rest.forEach(function(element){
+            el.appendChild(element.node);
+            if(set){
+                set.push(element);
+            }
+        });
+        if(!this.__set){
+            this.__set = rest;
+        }
+        return rest;
+    };
+
+    groupproto.translate = function(dx,dy){
+      var el = $(this.node),
+        top = parseFloat(el.css(&#39;top&#39;),10) || 0,
+        left = parseFloat(el.css(&#39;left&#39;),10) || 0;
+      el.css({
+        top : top + dy,
+        left : left + dx
+      });
+    };
+
+    groupproto.move = function(x,y){
+      var el = $(this.node);
+      el.css({
+        top : y,
+        left : x
+      });
+    };
+
+    groupproto.animate = function(params,ms,easing,callback){
+
+      var el = $(this.node);
+      el.animate({
+        top : params.y,
+        left : params.x
+      },ms,easing,callback);
+      
+    };
+    /**/
+    
+    //翻转
+    groupproto.transform = function(tstr){
+        var set = this.__set;
+        if(set){
+            set.forEach(function(element){
+                element.transform(tstr);
+            }); 
+        }
+        Group.superclass.transform.call(this,tstr);
+    };
+    /**/
+    //创建分组
+    R._engine.group = function(vml){
+        var el = createNode();
+        vml.canvas.appendChild(el);
+        var res = new Group(el,vml);
+        res.type = &quot;group&quot;;
+        el.style.position = &quot;relative&quot;;
+
+        return res;
+    }
+    
+  }
+
+}(window.Raphael);
+</pre>
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 表单异步请求，异步校验、远程获取数据
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;),
+  BUI = require(&#39;bui-common&#39;);
+
+<span id='BUI-Form-RemoteView'>/**
+</span> * @class BUI.Form.RemoteView
+ * @private
+ * 表单异步请求类的视图类
+ */
+var RemoteView = function () {
+  // body...
+};
+
+RemoteView.ATTRS = {
+  isLoading : {},
+  loadingEl : {}
+};
+
+RemoteView.prototype = {
+
+<span id='BUI-Form-RemoteView-method-getLoadingContainer'>  /**
+</span>   * 获取显示加载状态的容器
+   * @protected
+   * @template
+   * @return {jQuery} 加载状态的容器
+   */
+  getLoadingContainer : function () {
+    // body...
+  },
+  _setLoading : function () {
+    var _self = this,
+      loadingEl = _self.get(&#39;loadingEl&#39;),
+      loadingTpl = _self.get(&#39;loadingTpl&#39;);
+    if(loadingTpl &amp;&amp; !loadingEl){
+      loadingEl = $(loadingTpl).appendTo(_self.getLoadingContainer());
+      _self.setInternal(&#39;loadingEl&#39;,loadingEl);
+    }
+  },
+  _clearLoading : function () {
+    var _self = this,
+      loadingEl = _self.get(&#39;loadingEl&#39;);
+    if(loadingEl){
+      loadingEl.remove();
+      _self.setInternal(&#39;loadingEl&#39;,null);
+    }
+  },
+  _uiSetIsLoading : function (v) {
+    var _self = this;
+    if(v){
+      _self._setLoading();
+    }else{
+      _self._clearLoading();
+    }
+  }
+};
+
+<span id='BUI-Form-Remote'>/**
+</span> * @class  BUI.Form.Remote
+ * 表单异步请求，所有需要实现异步校验、异步请求的类可以使用。
+ */
+var Remote = function(){
+
+};
+
+Remote.ATTRS = {
+
+<span id='BUI-Form-Remote-property-defaultRemote'>  /**
+</span>   * 默认的异步请求配置项：
+   * method : &#39;GET&#39;,
+   * cache : true,
+   * dataType : &#39;text&#39;
+   * @protected
+   * @type {Object}
+   */
+  defaultRemote : {
+    value : {
+      method : &#39;GET&#39;,
+      cache : true,
+      callback : function (data) {
+        return data;
+      }
+    }
+  },
+<span id='BUI-Form-Remote-property-remoteDaly'>  /**
+</span>   * 异步请求延迟的时间，当字段验证通过后，不马上进行异步请求，等待继续输入，
+   * 300（默认）毫秒后，发送请求，在这个过程中，继续输入，则取消异步请求。
+   * @type {Object}
+   */
+  remoteDaly : {
+    value : 500
+  },
+<span id='BUI-Form-Remote-property-cacheMap'>  /**
+</span>   * @private
+   * 缓存验证结果，如果验证过对应的值，则直接返回
+   * @type {Object}
+   */
+  cacheMap : {
+    value : {
+
+    }
+  },
+<span id='BUI-Form-Remote-property-loadingTpl'>  /**
+</span>   * 加载的模板
+   * @type {String}
+   */
+  loadingTpl : {
+    view : true,
+    value : &#39;&lt;img src=&quot;http://img02.taobaocdn.com/tps/i2/T1NU8nXCVcXXaHNz_X-16-16.gif&quot; alt=&quot;loading&quot;/&gt;&#39;
+  },
+<span id='BUI-Form-Remote-property-isLoading'>  /**
+</span>   * 是否正在等待异步请求结果
+   * @type {Boolean}
+   */
+  isLoading : {
+    view : true,
+    value : false
+  },
+<span id='BUI-Form-Remote-property-remote'>  /**
+</span>   * 异步请求的配置项，参考jQuery的 ajax配置项，如果为字符串则为 url。
+   * 请不要覆盖success属性，如果需要回调则使用 callback 属性
+   *
+   *        {
+   *          remote : {
+   *            url : &#39;test.php&#39;,
+   *            dataType:&#39;json&#39;,//默认为字符串
+   *            callback : function(data){
+   *              if(data.success){ //data为默认返回的值
+   *                return &#39;&#39;  //返回值为空时，验证成功
+   *              }else{
+   *                return &#39;验证失败，XX错误！&#39; //显示返回的字符串为错误
+   *              }
+   *            }
+   *          }
+   *        }
+   * @type {String|Object}
+   */
+  remote : {
+    setter : function  (v) {
+      if(BUI.isString(v)){
+        v = {url : v}
+      }
+      return v;
+    }
+  },
+<span id='BUI-Form-Remote-property-remoteHandler'>  /**
+</span>   * 异步请求的函数指针，仅内部使用
+   * @private
+   * @type {Number}
+   */
+  remoteHandler : {
+
+  },
+  events : {
+    value : {
+<span id='BUI-Form-Remote-event-remotecomplete'>      /**
+</span>       * 异步请求结束
+       * @event
+       * @param {Object} e 事件对象
+       * @param {*} e.error 是否验证成功
+       */
+      remotecomplete : false,
+<span id='BUI-Form-Remote-event-remotestart'>      /**
+</span>       * 异步请求开始
+       * @event
+       * @param {Object} e 事件对象
+       * @param {Object} e.data 发送的对象，是一个键值对，可以修改此对象，附加信息
+       */
+      remotestart : false
+    }
+  }
+};
+
+Remote.prototype = {
+
+  __bindUI : function(){
+    var _self = this;
+
+    _self.on(&#39;valid&#39;,function (ev) {
+      if(_self.get(&#39;remote&#39;) &amp;&amp; _self.isValid() &amp;&amp; !_self.get(&#39;pauseValid&#39;)){
+        var value = _self.getControlValue(),
+          data = _self.getRemoteParams();
+        _self._startRemote(data,value);
+      }
+    });
+
+    _self.on(&#39;error&#39;,function (ev) {
+      if(_self.get(&#39;remote&#39;)){
+        _self._cancelRemote();
+      }
+    });
+
+  },
+  //开始异步请求
+  _startRemote : function(data,value){
+    var _self = this,
+      remoteHandler = _self.get(&#39;remoteHandler&#39;),
+      cacheMap = _self.get(&#39;cacheMap&#39;),
+      remoteDaly = _self.get(&#39;remoteDaly&#39;);
+    if(remoteHandler){
+      //如果前面已经发送过异步请求，取消掉
+      _self._cancelRemote(remoteHandler);
+    }
+    if(cacheMap[value] != null){
+      _self._validResult(_self._getCallback(),cacheMap[value]);
+      return;
+    }
+    //使用闭包进行异步请求
+    function dalayFunc(){
+      _self._remoteValid(data,remoteHandler,value);
+      _self.set(&#39;isLoading&#39;,true);
+    }
+    remoteHandler = setTimeout(dalayFunc,remoteDaly);
+    _self.setInternal(&#39;remoteHandler&#39;,remoteHandler);
+    
+  },
+  _validResult : function(callback,data){
+    var _self = this,
+      error = callback(data);
+    _self.onRemoteComplete(error,data);
+  },
+  onRemoteComplete : function(error,data,remoteHandler){
+    var _self = this;
+    //确认当前返回的错误是当前请求的结果，防止覆盖后面的请求
+    if(remoteHandler == _self.get(&#39;remoteHandler&#39;)){
+        _self.fire(&#39;remotecomplete&#39;,{error : error,data : data});
+        _self.set(&#39;isLoading&#39;,false);
+        _self.setInternal(&#39;remoteHandler&#39;,null);
+    } 
+  },
+  _getOptions : function(data){
+    var _self = this,
+      remote = _self.get(&#39;remote&#39;),
+      defaultRemote = _self.get(&#39;defaultRemote&#39;),
+      options = BUI.merge(defaultRemote,remote,{data : data});
+    return options;
+  },
+  _getCallback : function(){
+    return this._getOptions().callback;
+  },
+  //异步请求
+  _remoteValid : function(data,remoteHandler,value){
+    var _self = this,
+      cacheMap = _self.get(&#39;cacheMap&#39;),
+      options = _self._getOptions(data);
+    options.success = function (data) {
+      var callback = options.callback,
+        error = callback(data);
+      cacheMap[value] = data; //缓存异步结果
+      _self.onRemoteComplete(error,data,remoteHandler);
+    };
+
+    options.error = function (jqXHR, textStatus,errorThrown){
+      _self.onRemoteComplete(errorThrown,null,remoteHandler);
+    };
+
+    _self.fire(&#39;remotestart&#39;,{data : data});
+    $.ajax(options);
+  },
+<span id='BUI-Form-Remote-method-getRemoteParams'>  /**
+</span>   * 获取异步请求的键值对
+   * @template
+   * @protected
+   * @return {Object} 远程验证的参数，键值对
+   */
+  getRemoteParams : function() {
+
+  },
+<span id='BUI-Form-Remote-method-clearCache'>  /**
+</span>   * 清楚异步验证的缓存
+   */
+  clearCache : function(){
+    this.set(&#39;cacheMap&#39;,{});
+  },
+  //取消异步请求
+  _cancelRemote : function(remoteHandler){
+    var _self = this;
+
+    remoteHandler = remoteHandler || _self.get(&#39;remoteHandler&#39;);
+    if(remoteHandler){
+      clearTimeout(remoteHandler);
+      _self.setInternal(&#39;remoteHandler&#39;,null);
+    }
+    _self.set(&#39;isLoading&#39;,false);
+  }
+
+};
+
+Remote.View = RemoteView;
+
+module.exports = Remote;
+</pre>
+</body>
+</html>

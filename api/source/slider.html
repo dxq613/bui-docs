@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-use strict'>/**
+</span> * @fileOverview 滑块
+ * @ignore
+ */
+
+&#39;use strict&#39;;
+
+var $ = require(&#39;jquery&#39;),
+  doc = document,
+  BUI = require(&#39;bui-common&#39;),
+  CLS_HANDLE = &#39;x-slider-handle&#39;,
+  CLS_VERTICLE = &#39;x-slider-vertical&#39;,
+  CLS_HORI = &#39;x-slider-horizontal&#39;,
+  CLS_BACK = &#39;x-slider-back&#39;,
+  CLS_START = CLS_HANDLE + &#39;-start&#39;,
+  CLS_END = CLS_HANDLE + &#39;-end&#39;;
+
+function parsePercet(v,total) {
+  if(v &gt; total){
+    v = total;
+  }
+  if(v &lt; 0){
+    v = 0;
+  }
+  return (v/total) * 100;
+}
+
+var SliderView = BUI.Component.View.extend({
+  renderUI : function(){
+    var _self = this,
+      isVertical = _self.get(&#39;isVertical&#39;);
+    if(isVertical){
+      _self.get(&#39;el&#39;).addClass(CLS_VERTICLE);
+    }else{
+      _self.get(&#39;el&#39;).addClass(CLS_HORI);
+    }
+  },
+  //设置范围
+  setRange : function(start,end,anim){
+    if(start &gt; end){
+      start = end;
+    }
+    var _self = this,
+      backEl = _self.get(&#39;backEl&#39;),
+      isVertical = _self.get(&#39;isVertical&#39;),
+      handleEl = _self.get(&#39;handleEl&#39;),
+      handleCount = handleEl.length,
+      range = end - start,
+      duration = anim ? _self.get(&#39;duration&#39;) : null,
+      rangeAttr = isVertical ? &#39;height&#39; : &#39;width&#39;,
+      posAttr = isVertical ? &#39;bottom&#39; : &#39;left&#39;,
+      method = anim ? &#39;animate&#39; : &#39;css&#39;,
+      backCss = {},
+      handleCss = {};
+
+<span id='global-method-getPos'>     /**
+</span>     * @private
+     * @ignore
+     * 垂直时使用bottom
+     */
+    function getPos(pos){
+      return pos + &#39;%&#39;;
+    }
+
+    if(backEl){
+      backCss[rangeAttr] = range + &#39;%&#39;;
+      backCss[posAttr] = start + &#39;%&#39;;//getPos(start);
+      backEl[method](backCss,duration);
+    }
+    
+    if(handleCount === 1){
+      handleCss[posAttr] = getPos(end);
+      handleEl[method](handleCss,duration);
+    }else if(handleCount === 2){
+
+      handleCss[posAttr] = getPos(start);
+      if(handleEl[0].style[posAttr] !== handleCss[posAttr]){
+        $(handleEl[0])[method](handleCss,duration);
+        //$(handleEl[0]).focus();
+      }
+     
+      handleCss[posAttr] = getPos(end);
+      if(handleEl[1].style[posAttr] !== handleCss[posAttr]){
+        $(handleEl[1])[method](handleCss,duration);
+        //$(handleEl[1]).focus();
+      }
+    }
+
+   
+  },
+  //设置背景色
+  _uiSetBackTpl : function(v){
+    var _self = this,
+      el = _self.get(&#39;el&#39;),
+      backEl = $(v).appendTo(el);
+    backEl.addClass(CLS_BACK);
+    _self.setInternal(&#39;backEl&#39;,backEl);
+  },
+  //设置可拖动的滑块
+  _uiSetHandleTpl : function(v){
+    var _self = this,
+      el = _self.get(&#39;el&#39;),
+      range = _self.get(&#39;range&#39;),
+      handleEl;
+   
+    if(!range){
+      _self._createHandleEl(v);
+    }else{
+      _self._createHandleEl(v,CLS_START);
+      _self._createHandleEl(v,CLS_END);
+    }
+    handleEl = el.find(&#39;.&#39; + CLS_HANDLE);
+    _self.setInternal(&#39;handleEl&#39;,handleEl);
+  },
+  _createHandleEl : function(tpl,cls){
+    var _self = this,
+      el = _self.get(&#39;el&#39;),
+      handleEl = $(tpl).appendTo(el);
+    handleEl.addClass(CLS_HANDLE);
+    handleEl.attr(&#39;tabindex&#39;,&#39;0&#39;);
+    if(cls){
+      handleEl.addClass(cls);
+    }
+  }
+
+},{
+  ATTRS : {
+    backEl : {},
+    handleEl : {}
+  }
+});
+
+<span id='BUI-Slider-Slider'>/**
+</span> * @class BUI.Slider.Slider
+ * 滑动控件
+ * @extends BUI.Component.Controller
+ */
+var Slider = BUI.Component.Controller.extend({
+<span id='BUI-Slider-Slider-method-slideTo'>  /**
+</span>   * 滑动到指定位置
+   * @param  {Number|Array} v 滑动到位置，传入数组标示指定滑块的上下范围
+   */
+  slideTo : function(v){
+    this.set(&#39;value&#39;,v);
+  },
+  //绑定事件
+  bindUI : function(){
+    var _self = this,
+      el = _self.get(&#39;el&#39;);
+    el.find(&#39;.x-slider-handle&#39;).on(&#39;click&#39;,function(ev){
+      ev.preventDefault();
+    });
+    el.on(&#39;mousedown&#39;,function(ev){
+      var sender = $(ev.target),
+        offset = el.offset();
+      if(sender.hasClass(&#39;x-slider-handle&#39;)){
+        ev.preventDefault();
+        _self._handleDrag(ev);
+      }else{
+        offset = {
+          left : ev.pageX - offset.left,
+          top : ev.pageY - offset.top
+        };
+       _self._slideByOffset(offset,true);
+      }
+    });
+  },
+  //根据容器位置确定滑块的位置
+  _slideByOffset : function(offset,anim){
+    var _self = this,
+      curVal = _self.get(&#39;value&#39;),
+      value = _self._formatValue(offset);
+    if(curVal === value || (BUI.isArray(value) &amp;&amp; BUI.Array.equals(value,curVal))){ //当前值如果等于变化值，不处理
+      return;
+    }
+    if(anim){
+      _self.set(&#39;value&#39;,value);
+    }else{
+      _self.setInternal(&#39;value&#39;,value);
+      _self._setValue(value,false);
+    }
+  },
+  //处理拖拽
+  _handleDrag : function(ev){
+    
+    var _self = this,
+      isVertical = _self.get(&#39;isVertical&#39;),
+      handleEl = $(ev.target),
+      pos = handleEl.position();
+    if(ev.which == 1){
+      _self.set(&#39;draging&#39;,{
+          elX: pos.left,
+          elY: isVertical ?(pos.top + handleEl.height()) : (pos.top),
+          startX : ev.pageX,
+          startY : ev.pageY
+      });
+      registEvent();
+    }
+
+<span id='BUI-Slider-Slider-method-mouseMove'>    /**
+</span>     * @private
+     */
+    function mouseMove(e){
+      var draging = _self.get(&#39;draging&#39;);
+      if(draging){
+        e.preventDefault();
+        var endX = e.pageX,
+          endY = e.pageY,
+          curOffset = {};
+        curOffset.left = draging.elX + (endX - draging.startX);
+        curOffset.top = draging.elY + (endY - draging.startY);
+        _self._slideByOffset(curOffset,false);
+      }
+    }
+
+<span id='BUI-Slider-Slider-method-registEvent'>    /**
+</span>     * @private
+     */
+    function registEvent(){
+        $(doc).on(&#39;mousemove&#39;,mouseMove);
+        $(doc).on(&#39;mouseup&#39;,mouseUp);
+    }
+<span id='BUI-Slider-Slider-method-unregistEvent'>    /**
+</span>     * @private
+     */
+    function unregistEvent(){
+        $(doc).off(&#39;mousemove&#39;,mouseMove);
+        $(doc).off(&#39;mouseup&#39;,mouseUp);
+    }
+
+    
+<span id='BUI-Slider-Slider-method-mouseUp'>    /**
+</span>     * @private
+     */
+    function mouseUp(e){
+      if(e.which == 1){
+        _self.set(&#39;draging&#39;,false);
+        unregistEvent();
+      }
+    }
+    
+  },
+  _getCalcValue : function(offset){
+    var _self = this,
+      el = _self.get(&#39;el&#39;),
+      max = _self.get(&#39;max&#39;),
+      min = _self.get(&#39;min&#39;),
+      step = _self.get(&#39;step&#39;),
+      isVertical = _self.get(&#39;isVertical&#39;),
+      total = isVertical ? el.height() : el.width(),
+      pos,
+      calValue;
+
+    if(isVertical){
+      pos = parsePercet(el.height() - offset.top,total);
+    }else{
+      pos = parsePercet(offset.left,total);
+    }
+    calValue = (max - min) * pos/100 + min;
+    if(step){
+      calValue = parseInt(calValue,10);
+      var left = calValue % step;
+      if(left){
+        calValue = calValue + (step - left);
+      }
+    }
+    return calValue;
+  },
+  _formatValue : function(offset){
+    var _self = this,
+      curVal = _self.get(&#39;value&#39;),
+      calValue = _self._getCalcValue(offset);
+    if(BUI.isNumber(curVal)){
+      return calValue;
+    }
+    if(BUI.isArray(curVal)){
+
+      var disStart = Math.abs(curVal[0] - calValue),
+        disEnd = Math.abs(curVal[1] - calValue);
+      if(disStart &lt; disEnd){ //距离开始小于结束，则滑动开始
+        return [calValue,curVal[1]];
+      }
+
+      return [curVal[0],calValue];
+    }
+    return curVal;
+  },
+  //设置值
+  _uiSetValue : function(v){
+    this._setValue(v,true);
+  },
+  //设置值
+  _setValue : function(value,anim){
+    var _self = this,
+      min = _self.get(&#39;min&#39;),
+      max = _self.get(&#39;max&#39;),
+      total = max - min,
+      start,
+      end;
+    if(min == max){
+      start = 0;
+      end = 100;
+    }else if(BUI.isNumber(value)){
+      start = 0;
+      end = parsePercet(value - min,total);
+    }else if(BUI.isArray(value)){
+      start = parsePercet(value[0] - min,total);
+      end = parsePercet(value[1] - min,total);
+    }
+    _self._setRange(start,end,anim);
+    _self.fire(&#39;change&#39;,{value : value});
+  },
+  //设置范围
+  _setRange : function(start,end,anim){
+    this.get(&#39;view&#39;).setRange(start,end,anim);
+  }
+
+},{
+  ATTRS : {
+
+<span id='BUI-Slider-Slider-cfg-min'>    /**
+</span>     * 最小值
+     * @cfg {Number}
+     */
+    min : {
+      value : 0
+    },
+<span id='BUI-Slider-Slider-property-duration'>    /**
+</span>     * 滑动动画的执行间隔
+     * @type {Object}
+     */
+    duration : {
+      view : true,
+      value : 400
+    },
+<span id='BUI-Slider-Slider-cfg-max'>    /**
+</span>     * 最大值
+     * @cfg {Number}
+     */
+    max : {
+      value : 100
+    },
+<span id='BUI-Slider-Slider-property-value'>    /**
+</span>     * 当前值
+     * @type {Number}
+     */
+    value : {
+      view :true
+    },
+<span id='BUI-Slider-Slider-property-step'>    /**
+</span>     * 最小滑动单位
+     * @type {Number}
+     */
+    step : {
+      value : 1
+    },
+<span id='BUI-Slider-Slider-property-handleTpl'>    /**
+</span>     * 拖拽的滑块的模板
+     * @type {String}
+     */
+    handleTpl : {
+      view :true,
+      value : &#39;&lt;span&gt;&lt;/span&gt;&#39;
+    },
+<span id='BUI-Slider-Slider-property-isVertical'>    /**
+</span>     * 是否垂直
+     * @type {Boolean}
+     */
+    isVertical : {
+      view : true,
+      value : false
+    },
+<span id='BUI-Slider-Slider-property-range'>    /**
+</span>     * 是否滑动范围，默认状态下只能调整最大值，无法调整最小值
+     * @type {Boolean}
+     */
+    range : {
+      view : true,
+      value : false
+    },
+<span id='BUI-Slider-Slider-property-backTpl'>    /**
+</span>     * 用于显示滑动背景的模板
+     * @type {String}
+     */
+    backTpl : {
+      view : true,
+      value : &#39;&lt;div&gt;&lt;/div&gt;&#39;
+    },
+    xview : {
+      value : SliderView
+    }
+<span id='BUI-Slider-Slider-event-change'>    /**
+</span>     * @event change
+     * 滑动值改变
+     * @param {Object} e 事件对象
+     * @param {Number|Array} e.value
+     */
+  }
+}, {
+  xclass : &#39;slider&#39;
+});
+
+module.exports = Slider;
+</pre>
+</body>
+</html>

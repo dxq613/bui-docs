@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='BUI'>/**
+</span> * @fileOverview 经典的边框布局
+ * @ignore
+ */
+var BUI = require(&#39;bui-common&#39;),
+	Abstract = require(&#39;./abstract&#39;),
+	Item = require(&#39;./item/border&#39;),
+	Collapsable = require(&#39;./collapsable&#39;),
+	CLS_TOP = &#39;x-border-top&#39;,
+	CLS_MIDDLE = &#39;x-border-middle&#39;,
+	CLS_BOTTOM = &#39;x-border-bottom&#39;,
+	REGINS = Item.REGINS;
+
+<span id='BUI-Layout-Border'>/**
+</span> * @class BUI.Layout.Border
+ * 边框布局
+ * @extends BUI.Layout.Abstract
+ * &lt;pre&gt;
+ * 	&lt;code&gt;
+ * 	var layout = new Border(),
+			control = new BUI.Component.Controller({
+			width:600,
+			height:500,
+			render : &#39;#J_Layout&#39;,
+			elCls : &#39;ext-border-layout&#39;,
+			children : [{
+				layout : {
+					title : &#39;north&#39;,
+					region : &#39;north&#39;,
+					height : 50
+				},
+				width : 100,
+				height :15,
+				elCls : &#39;red&#39;,
+				xclass : &#39;controller&#39;,
+				content : &quot;一 无自适应&quot;
+			},{
+				xclass : &#39;controller&#39;,
+				elCls : &#39;red&#39;,
+				layout : {
+					region : &#39;south&#39;,
+					title : &#39;south&#39;,
+					fit : &#39;height&#39;,
+					
+					height : 50
+				},
+				width : 250,
+				content : &#39;二 自适应高，但是不自适应宽&#39;
+			},{
+				xclass : &#39;controller&#39;,
+				layout : {
+					region : &#39;east&#39;,
+					fit : &#39;both&#39;,
+					title : &#39;east&#39;,
+					width : 150
+				},
+				elCls : &#39;red&#39;,
+				content : &quot;三 自适应宽高&quot;
+			},{
+				xclass : &#39;controller&#39;,
+				layout : {
+					region : &#39;west&#39;,
+					fit : &#39;width&#39;,
+					width : 100
+				},
+				elCls : &#39;red&#39;,
+				content : &quot;四 自适应宽&quot;
+			},{
+				xclass : &#39;controller&#39;,
+				layout : {
+					region : &#39;center&#39;,
+					fit : &#39;both&#39;
+				},
+				
+				elCls : &#39;blue&#39;,
+				content : &#39;居中 自适应宽高&#39;
+			}],
+			plugins : [layout]
+		});
+
+		control.render();
+ * 	&lt;/code&gt;
+ * &lt;/pre&gt;
+ * @mixins BUI.Layout.Collapsable
+ */
+var Border = function(config){
+	Border.superclass.constructor.call(this,config);
+};
+
+Border.ATTRS = {
+<span id='BUI-Layout-Border-property-layoutEvents'>	/**
+</span>	 * 控件的的那些事件会引起重新布局
+	 * @type {Array}
+	 */
+	layoutEvents : {
+		value : [&#39;afterAddChild&#39;,&#39;afterRemoveChild&#39;]
+	},
+	itemConstructor : {
+		value : Item
+	},
+	wraperCls : {
+		value : &#39;x-border-body&#39;
+	},
+	duration : {
+		value : 200
+	},
+<span id='BUI-Layout-Border-property-triggerCls'>	/**
+</span>	 * 触发展开折叠的样式
+	 * @type {String}
+	 */
+	triggerCls : {
+		value : &#39;x-collapsed-btn&#39;
+	},
+	tpl : {
+		value : &#39;&lt;div class=&quot;x-layout-border&quot;&gt;\
+				&lt;div class=&quot;&#39; + CLS_TOP + &#39;&quot;&gt;&lt;/div&gt;\
+				&lt;div class=&quot;&#39; + CLS_MIDDLE + &#39;&quot;&gt;&lt;/div&gt;\
+				&lt;div class=&quot;&#39; + CLS_BOTTOM + &#39;&quot;&gt;&lt;/div&gt;\
+			&lt;/div&gt;&#39;
+	},
+	itemTpl : {
+		value : &#39;&lt;div class=&quot;x-border-{region} x-layout-item-border&quot;&gt;&lt;div class=&quot;x-border-body&quot;&gt;&lt;/div&gt;&lt;/div&gt;&#39;
+	}
+};
+
+BUI.extend(Border,Abstract);
+
+BUI.mixin(Border,[Collapsable]);
+
+BUI.augment(Border,{
+
+<span id='BUI-Layout-Border-method-appendEvent'>	/**
+</span>	 * @protected
+	 * 附加事件
+	 * @param  {Object} control 使用layout的控件
+	 */
+	appendEvent : function(){
+		this.bindCollapseEvent(); //绑定收缩事件
+	},
+<span id='BUI-Layout-Border-method-afterWraper'>	/**
+</span>	 * @protected
+	 * 容器初始化完毕开始渲染布局子项
+	 */
+	afterWraper : function(){
+		var _self = this,
+			container = _self.get(&#39;container&#39;),
+			topEl = container.find(&#39;.&#39; + CLS_TOP),
+			middleEl = container.find(&#39;.&#39; + CLS_MIDDLE),
+			bottomEl = container.find(&#39;.&#39; + CLS_BOTTOM);
+
+		_self.set(&#39;topEl&#39;,topEl);
+		_self.set(&#39;middleEl&#39;,middleEl);
+		_self.set(&#39;bottomEl&#39;,bottomEl);
+	},
+<span id='BUI-Layout-Border-method-afterInitItems'>	/**
+</span>	 * 布局选项初始化完毕
+	 * @protected
+	 */
+	afterInitItems : function(){
+		this._setMiddleDimension();
+	},
+	//设置中间部分的高度和margin,
+	_setMiddleDimension : function(){
+		var _self = this,
+			middleEl = _self.get(&#39;middleEl&#39;),
+			middleHeight = _self._getMiddleHeight(),
+			left = _self._getMiddleLeft(),
+			right = _self._getMiddleRight(),
+			items = _self.get(&#39;items&#39;),
+			center = _self.getItemsByRegion(&#39;center&#39;)[0];
+		middleEl.height(middleHeight);
+		if(center){
+			var el = center.get(&#39;el&#39;);
+			el.css({&#39;marginLeft&#39;:left,&#39;marginRight&#39; : right});
+		}
+		_self._fitMiddleControl();
+	},
+	//自适应中间部分的控件，高度、宽度
+	_fitMiddleControl : function(){
+		var _self = this,
+			items = _self.getItems();
+		BUI.each(items,function(item){
+			var region = item.get(&#39;region&#39;);
+			if(region == REGINS.EAST || region == REGINS.WEST || region == REGINS.CENTER){
+				item.syncFit();
+			}
+		});
+	},
+	//获取中间位置的高度
+	_getMiddleHeight : function(){
+		var _self = this,
+			container = _self.get(&#39;container&#39;),
+			totalHeight = container.height(),
+			middleEl = _self.get(&#39;middleEl&#39;),
+			topEl = _self.get(&#39;topEl&#39;),
+			appendHeight,
+			middleHeight;
+		if(topEl.children().length){
+			middleHeight = totalHeight - topEl.outerHeight() - _self.get(&#39;bottomEl&#39;).outerHeight();
+		}else{
+			middleHeight = totalHeight - _self.get(&#39;bottomEl&#39;).outerHeight();
+		}
+		 
+		appendHeight = middleEl.outerHeight() - middleEl.height();
+
+		return middleHeight - appendHeight;
+	},
+<span id='BUI-Layout-Border-method-getItemsByRegion'>	/**
+</span>	 * 获取选项，根据位置类型
+	 * &lt;pre&gt;
+	 * &lt;code&gt;
+	 * var item = layout.getItemsByRegion(&#39;west&#39;)[0];
+	 * item &amp;&amp; layout.collapseItem(item);
+	 * &lt;/code&gt;&lt;/pre&gt;
+	 * @param  {String} region 类型
+	 * @return {Array}  选项集合
+	 */
+	getItemsByRegion : function(region){
+		return  this.getItemsBy(function(item){
+				return item.get(&#39;region&#39;) === region;
+		});
+	},
+	//获取中间部分左边的宽度
+	_getMiddleLeft : function(){
+		var _self = this,
+			westItems = _self.getItemsByRegion(&#39;west&#39;),
+			leftWidth = 0;
+			BUI.each(westItems,function(item){
+				leftWidth += item.get(&#39;el&#39;).outerWidth();
+			});
+		return leftWidth;
+	},
+	//获取中间部分右边的宽度
+	_getMiddleRight : function(){
+		var _self = this,
+			eastItems = _self.getItemsByRegion(&#39;east&#39;),
+			rightWidth = 0;
+			BUI.each(eastItems,function(item){
+				rightWidth += item.get(&#39;el&#39;).outerWidth();
+			});
+		return rightWidth;
+	},
+<span id='BUI-Layout-Border-method-getItemContainer'>	/**
+</span>	 * @protected
+	 * 获取布局选项的容器
+	 */
+	getItemContainer : function(itemAttrs){
+		var _self = this,
+			rst;
+		switch(itemAttrs.region){
+			case REGINS.NORTH : 
+				rst = _self.get(&#39;topEl&#39;);
+				break;
+			case REGINS.SOUTH : 
+				rst = _self.get(&#39;bottomEl&#39;);
+			  break;
+			default : 
+				rst = _self.get(&#39;middleEl&#39;);
+				break;
+		}
+		return rst;
+	},
+<span id='BUI-Layout-Border-method-beforeExpanded'>	/**
+</span>	 * 展开选项前
+	 * @protected
+	 */
+	beforeExpanded : function(item,range){
+		this.beforeCollapsedChange(item,range,false);
+	},
+	//收缩展开前
+	beforeCollapsedChange : function(item,range,collapsed){
+		var _self = this,
+			property = item.getCollapseProperty(),
+			factor = collapsed ? 1 : -1,
+			duration = _self.get(&#39;duration&#39;);
+		if(property == &#39;height&#39;){
+			_self._setMiddleHeight(range * factor,duration);
+		}else{
+			_self._setCenterWidth(item.get(&#39;region&#39;),range * factor * -1,duration);
+		}
+
+	},
+	//设置中间的高度
+	_setMiddleHeight : function(range,duration){
+		var _self = this,
+			middleEl = _self.get(&#39;middleEl&#39;),
+			preHeight = middleEl.height(),
+			height = preHeight + range;
+
+		middleEl.animate({height : height},duration);
+		
+	},
+	//设置中间的宽度
+	_setCenterWidth : function(region,range,duration){
+		var _self = this,
+			center = _self.getItemsByRegion(&#39;center&#39;)[0],
+			property = region == REGINS.EAST ? &#39;marginRight&#39; : &#39;marginLeft&#39;,
+			centerEl,
+			prev,
+			css = {};
+		if(center){
+			centerEl = center.get(&#39;el&#39;);
+		}
+		prev = parseFloat(centerEl.css(property));
+		css[property] = range + prev;
+		centerEl.animate(css,duration);
+	},
+<span id='global-method-getCollapsedRange'>	/**
+</span>	 * @protected
+	 * @ignore
+	 * 获取折叠的长度或者宽度
+	 */
+	getCollapsedRange : function(item){
+		return item.getCollapsedRange();
+	},
+<span id='BUI-Layout-Border-method-beforeCollapsed'>	/**
+</span>	 * 折叠选项后
+	 * @protected
+	 */
+	beforeCollapsed : function(item,range){
+		this.beforeCollapsedChange(item,range,true);
+	},
+	/**/
+	afterExpanded : function(){
+		if(BUI.UA.ie == 6){
+			return;
+		}
+		this._fitMiddleControl();
+	},
+	afterCollapsed : function(){
+		if(BUI.UA.ie == 6){
+			return;
+		}
+		this._fitMiddleControl();
+	},
+<span id='BUI-Layout-Border-method-resetLayout'>	/**
+</span>	 * @protected
+	 * 覆写重新布局方法
+	 */
+	resetLayout : function(){
+		var _self = this;
+		
+		Border.superclass.resetLayout.call(_self);
+		_self._setMiddleDimension();
+	}
+
+});
+
+module.exports = Border;
+</pre>
+</body>
+</html>

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-use strict'>/**
+</span> * @fileOverview 组合框可用于选择输入文本
+ * @ignore
+ */
+
+&#39;use strict&#39;;
+var $ = require(&#39;jquery&#39;),
+  BUI = require(&#39;bui-common&#39;),
+  Combox = require(&#39;./combox&#39;),
+  TIMER_DELAY = 200,
+  EMPTY = &#39;&#39;;
+
+<span id='BUI-Select-Suggest'>/**
+</span> * 组合框 用于提示输入
+ * xclass:&#39;suggest&#39;
+ * ** 简单使用静态数据 **
+ * &lt;pre&gt;&lt;code&gt;
+ * BUI.use(&#39;bui/select&#39;,function (Select) {
+ *
+ *  var suggest = new Select.Suggest({
+ *     render:&#39;#c2&#39;,
+ *     name:&#39;suggest&#39;, //形成输入框的name
+ *     data:[&#39;1222224&#39;,&#39;234445&#39;,&#39;122&#39;,&#39;1111111&#39;]
+ *   });
+ *   suggest.render();
+ *   
+ * });
+ * &lt;/code&gt;&lt;/pre&gt;
+ * ** 查询服务器数据 **
+ * &lt;pre&gt;&lt;code&gt;
+ * BUI.use(&#39;bui/select&#39;,function(Select){
+ *
+ *  var suggest = new Select.Suggest({
+ *    render:&#39;#s1&#39;,
+ *    name:&#39;suggest&#39;, 
+ *    url:&#39;server-data.php&#39;
+ *  });
+ *  suggest.render();
+ *
+ * });
+ * &lt;/code&gt;&lt;/pre&gt;
+ * @class BUI.Select.Suggest
+ * @extends BUI.Select.Combox
+ */
+var suggest = Combox.extend({
+  bindUI : function(){
+    var _self = this,
+      textEl = _self.get(&#39;el&#39;).find(&#39;input&#39;),
+      triggerEvent = (_self.get(&#39;triggerEvent&#39;) === &#39;keyup&#39;) ? &#39;keyup&#39; : &#39;keyup click&#39;;
+
+    //监听 keyup 事件
+    textEl.on(triggerEvent, function(){
+      _self._start();
+    });
+  },
+  //启动计时器，开始监听用户输入
+  _start:function(){
+    var _self = this;
+    _self._timer = _self.later(function(){
+      _self._updateContent();
+     // _self._timer = _self.later(arguments.callee, TIMER_DELAY);
+    }, TIMER_DELAY);
+  },
+  //更新提示层的数据
+  _updateContent:function(){
+    var _self = this,
+      isStatic = _self.get(&#39;data&#39;),
+      textEl = _self.get(&#39;el&#39;).find(&#39;input&#39;),
+      text;
+
+    //检测是否需要更新。注意：加入空格也算有变化
+    if (!isStatic &amp;&amp; (textEl.val() === _self.get(&#39;query&#39;))) {
+      return;
+    }
+
+    _self.set(&#39;query&#39;, textEl.val());
+    text = textEl.val();
+    //输入为空时,直接返回
+    if (!isStatic &amp;&amp; !text) {
+      /*        _self.set(&#39;items&#39;,EMPTY_ARRAY);
+      picker.hide();*/
+      return;
+    }
+
+    //3种加载方式选择
+    var cacheable = _self.get(&#39;cacheable&#39;),
+      store = _self.get(&#39;store&#39;),
+      url = _self.get(&#39;url&#39;),
+      data = _self.get(&#39;data&#39;);
+
+    if (cacheable &amp;&amp; (url || store)) {
+      var dataCache = _self.get(&#39;dataCache&#39;);
+      if (dataCache[text] !== undefined) {
+        //从缓存读取
+        //BUI.log(&#39;use cache&#39;);
+        _self._handleResponse(dataCache[text]);
+      }else{
+        //请求服务器数据
+        //BUI.log(&#39;no cache, data from server&#39;);
+        _self._requestData();
+      }
+    }else if (url || store) {
+      //从服务器获取数据
+      //BUI.log(&#39;no cache, data always from server&#39;);
+      _self._requestData();
+    }else if (data) {
+      //使用静态数据源
+      //BUI.log(&#39;use static datasource&#39;);
+      _self._handleResponse(data,true);
+    }
+  },
+  //如果存在数据源
+  _getStore : function(){
+    var _self = this,
+      picker = _self.get(&#39;picker&#39;),
+      list = picker.get(&#39;list&#39;);
+    if(list){
+      return list.get(&#39;store&#39;);
+    }
+  },
+  //通过 script 元素异步加载数据
+  _requestData:function(){
+    var _self = this,
+      textEl = _self.get(&#39;el&#39;).find(&#39;input&#39;),
+      callback = _self.get(&#39;callback&#39;),
+      store = _self.get(&#39;store&#39;),
+      param = {};
+
+    param[textEl.attr(&#39;name&#39;)] = textEl.val();
+    if(store){
+      param.start = 0; //回滚到第一页
+      store.load(param,callback);
+    }else{
+      $.ajax({
+        url:_self.get(&#39;url&#39;),
+        type:&#39;post&#39;,
+        dataType:_self.get(&#39;dataType&#39;),
+        data:param,
+        success:function(data){
+          _self._handleResponse(data);
+          if(callback){
+            callback(data);
+          }
+        }
+      });
+    }
+    
+  },
+  //处理获取的数据
+  _handleResponse:function(data,filter){
+    var _self = this,
+      items = filter ? _self._getFilterItems(data) : data;
+    _self.set(&#39;items&#39;,items);
+
+    if(_self.get(&#39;cacheable&#39;)){
+      _self.get(&#39;dataCache&#39;)[_self.get(&#39;query&#39;)] = items;
+    }
+  },
+  //如果列表记录是对象获取显示的文本
+  _getItemText : function(item){
+    var _self = this,
+      picker = _self.get(&#39;picker&#39;),
+      list = picker.get(&#39;list&#39;);
+    if(list){
+      return list.getItemText(item);
+    }
+    return &#39;&#39;;
+  },
+  //获取过滤的文本
+  _getFilterItems:function(data){
+    var _self = this,
+      result = [],
+      textEl = _self.get(&#39;el&#39;).find(&#39;input&#39;),
+      text = textEl.val(),
+      isStatic = _self.get(&#39;data&#39;);
+    data = data || [];
+<span id='global-method-push'>    /**
+</span>     * @private
+     * @ignore
+     */
+    function push(str,item){
+      if(BUI.isString(item)){
+        result.push(str);
+      }else{
+        result.push(item);
+      }
+    }
+    BUI.each(data, function(item){
+      var str = BUI.isString(item) ? item : _self._getItemText(item);
+      if(isStatic){
+        if(str.indexOf($.trim(text)) !== -1){
+          push(str,item);
+        }
+      }else{
+        push(str,item);
+      }
+    });
+    
+    return result;
+  },
+<span id='BUI-Select-Suggest-method-later'>  /**
+</span>   * 延迟执行指定函数 fn
+   * @protected
+   * @return {Object} 操作定时器的对象
+   */
+  later:function (fn, when, periodic) {
+    when = when || 0;
+    var r = periodic ? setInterval(fn, when) : setTimeout(fn, when);
+
+    return {
+      id:r,
+      interval:periodic,
+      cancel:function () {
+        if (this.interval) {
+          clearInterval(r);
+        } else {
+          clearTimeout(r);
+        }
+      }
+    };
+  }
+},{
+  ATTRS : 
+  {
+<span id='BUI-Select-Suggest-cfg-data'>    /**
+</span>     * 用于显示提示的数据源
+     * &lt;pre&gt;&lt;code&gt;
+     *   var suggest = new Select.Suggest({
+     *     render:&#39;#c2&#39;,
+     *     name:&#39;suggest&#39;, //形成输入框的name
+     *     data:[&#39;1222224&#39;,&#39;234445&#39;,&#39;122&#39;,&#39;1111111&#39;]
+     *   });
+     * &lt;/code&gt;&lt;/pre&gt;
+     * @cfg {Array} data
+     */
+<span id='BUI-Select-Suggest-property-data'>    /**
+</span>     * 用于显示提示的数据源
+     * @type {Array}
+     */
+    data:{
+      value : null
+    },
+<span id='BUI-Select-Suggest-property-query'>    /**
+</span>     * 输入框的值
+     * @type {String}
+     * @private
+     */
+    query:{
+      value : EMPTY
+    },
+<span id='BUI-Select-Suggest-cfg-cacheable'>    /**
+</span>     * 是否允许缓存
+     * @cfg {Boolean} cacheable
+     */
+<span id='BUI-Select-Suggest-property-cacheable'>    /**
+</span>     * 是否允许缓存
+     * @type {Boolean}
+     */
+    cacheable:{
+      value:false
+    },
+<span id='BUI-Select-Suggest-property-dataCache'>    /**
+</span>     * 缓存的数据
+     * @private
+     */
+    dataCache:{
+      shared:false,
+      value:{}
+    },
+<span id='BUI-Select-Suggest-cfg-dataType'>    /**
+</span>     * 请求返回的数据格式默认为&#39;jsonp&#39;
+     * &lt;pre&gt;&lt;code&gt;
+     *  var suggest = new Select.Suggest({
+     *    render:&#39;#s1&#39;,
+     *    name:&#39;suggest&#39;, 
+     *    dataType : &#39;json&#39;,
+     *    url:&#39;server-data.php&#39;
+     *  }); 
+     * &lt;/code&gt;&lt;/pre&gt;
+     * @cfg {Object} [dataType = &#39;jsonp&#39;]
+     */
+    dataType : {
+      value : &#39;jsonp&#39;
+    },
+<span id='BUI-Select-Suggest-cfg-url'>    /**
+</span>     * 请求数据的url
+     * &lt;pre&gt;&lt;code&gt;
+     *  var suggest = new Select.Suggest({
+     *    render:&#39;#s1&#39;,
+     *    name:&#39;suggest&#39;, 
+     *    dataType : &#39;json&#39;,
+     *    url:&#39;server-data.php&#39;
+     *  }); 
+     * &lt;/code&gt;&lt;/pre&gt;
+     * @cfg {String} url
+     */
+    url : {
+
+    },
+   
+<span id='BUI-Select-Suggest-property-callback'>    /**
+</span>     * 请求完数据的回调函数
+     * &lt;pre&gt;&lt;code&gt;
+     *  var suggest = new Select.Suggest({
+     *    render:&#39;#s1&#39;,
+     *    name:&#39;suggest&#39;, 
+     *    dataType : &#39;json&#39;,
+     *    callback : function(data){
+     *      //do something
+     *    },
+     *    url:&#39;server-data.php&#39;
+     *  }); 
+     * &lt;/code&gt;&lt;/pre&gt;
+     * @type {Function}
+     */
+    callback : {
+
+    },
+<span id='BUI-Select-Suggest-cfg-triggerEvent'>    /**
+</span>     * 触发的事件
+     * @cfg {String} triggerEvent
+     * @default &#39;click&#39;
+     */
+    triggerEvent:{
+      valueFn:function(){
+        if(this.get(&#39;data&#39;)){
+          return &#39;click&#39;;
+        }
+        return &#39;keyup&#39;;
+      }
+    },
+<span id='BUI-Select-Suggest-property-autoSetValue'>    /**
+</span>     * suggest不提供自动设置选中文本功能
+     * @type {Boolean}
+     */
+    autoSetValue:{
+      value:false
+    }
+  }
+},{
+  xclass:&#39;suggest&#39;
+});
+
+module.exports = suggest;
+</pre>
+</body>
+</html>

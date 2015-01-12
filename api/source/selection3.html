@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='BUI'>/**
+</span> * @fileOverview 树的选中，跟列表的选中有所差异
+ * @ignore
+ */
+
+
+
+var BUI = require(&#39;bui-common&#39;),
+	SimpleList = require(&#39;bui-list&#39;).SimpleList;
+
+<span id='BUI-Tree-Selection'>/**
+</span> * @class BUI.Tree.Selection
+ * 扩展树的选择
+ */
+var Selection = function(){
+
+};
+
+Selection.ATTRS = {};
+
+BUI.augment(Selection,{
+<span id='BUI-Tree-Selection-method-getSelection'>	/**
+</span>	 * 获取选中的节点，一般用于多选状态下
+	 * @return {Array} 获取选中的节点
+	 */
+	getSelection : function(){
+		var _self = this,
+			field = _self.getStatusField(&#39;selected&#39;),
+			store;
+		if(field){
+			store = _self.get(&#39;store&#39;);
+			return store.findNodesBy(function(node){
+				return node[field];
+			});
+		}
+		return SimpleList.prototype.getSelection.call(this);
+	},
+<span id='BUI-Tree-Selection-method-getSelected'>	/**
+</span>	 * 获取选中的一个节点，如果是多选则返回第一个
+	 * @return {Object} 获取选中的一个节点
+	 */
+	getSelected : function(){
+		var _self = this,
+			field = _self.getStatusField(&#39;selected&#39;),
+			store;
+		if(field){
+			store = _self.get(&#39;store&#39;);
+			return store.findNodeBy(function(node){
+				return node[field];
+			});
+		}
+		return SimpleList.prototype.getSelected.call(this);
+	}
+});
+
+module.exports = Selection;
+</pre>
+</body>
+</html>

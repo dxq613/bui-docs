@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 级联表格
+ * @ignore
+ */
+
+
+var $ = require(&#39;jquery&#39;),
+  BUI = require(&#39;bui-common&#39;),
+  PREFIX = BUI.prefix,
+  CLS_GRID_CASCADE = &#39;&#39;,
+  DATA_RECORD = &#39;data-record&#39;,
+  CLS_CASCADE = PREFIX + &#39;grid-cascade&#39;,
+  CLS_CASCADE_EXPAND = CLS_CASCADE + &#39;-expand&#39;,
+  CLS_CASCADE_ROW = CLS_CASCADE + &#39;-row&#39;,
+  CLS_CASCADE_CELL = CLS_CASCADE + &#39;-cell&#39;,
+  CLS_CASCADE_ROW_COLLAPSE = CLS_CASCADE + &#39;-collapse&#39;;
+
+<span id='BUI-Grid-Plugins-Cascade'>/**
+</span> * 级联表格
+ * &lt;pre&gt;&lt;code&gt;
+ *  // 实例化 Grid.Plugins.Cascade 插件
+ *    var cascade = new Grid.Plugins.Cascade({
+ *      renderer : function(record){
+ *        return &#39;&lt;div style=&quot;padding: 10px 20px;&quot;&gt;&lt;h2&gt;详情信息&lt;/h2&gt;&lt;p&gt;&#39; + record.detail + &#39;&lt;/p&gt;&lt;/div&gt;&#39;;
+ *      }
+ *    });
+ *    var store = new Store({
+ *        data : data,
+ *        autoLoad:true
+ *      }),
+ *      grid = new Grid.Grid({
+ *        render:&#39;#grid&#39;,
+ *        columns : columns,
+ *        store: store,
+ *        plugins: [cascade]  // Grid.Plugins.Cascade 插件
+ *      });
+ *
+ *    grid.render();
+ *    
+ *    cascade.expandAll();//展开所有
+ * &lt;/code&gt;&lt;/pre&gt;
+ * @class BUI.Grid.Plugins.Cascade
+ * @extends BUI.Base
+ */
+var cascade = function(config){
+  cascade.superclass.constructor.call(this, config);
+};
+
+BUI.extend(cascade,BUI.Base);
+
+cascade.ATTRS = 
+{
+<span id='BUI-Grid-Plugins-Cascade-cfg-width'>  /**
+</span>   * 显示展开按钮列的宽度
+   * @cfg {Number} width
+   */
+<span id='BUI-Grid-Plugins-Cascade-property-width'>  /**
+</span>   * 显示展开按钮列的宽度
+   * @type {Number}
+   * @default 40
+   */
+  width:{
+    value:40
+  },
+<span id='BUI-Grid-Plugins-Cascade-property-cellInner'>  /**
+</span>   * 展开列的默认内容
+   * @type {String}
+   * @protected
+   */
+  cellInner:{
+    value:&#39;&lt;span class=&quot;&#39; + CLS_CASCADE + &#39;&quot;&gt;&lt;i class=&quot;&#39; + CLS_CASCADE + &#39;-icon&quot;&gt;&lt;/i&gt;&lt;/span&gt;&#39;
+  },
+<span id='BUI-Grid-Plugins-Cascade-property-rowTpl'>  /**
+</span>   * 展开行的模版
+   * @protected
+   * @type {String}
+   */
+  rowTpl : {
+    value:&#39;&lt;tr class=&quot;&#39; + CLS_CASCADE_ROW + &#39;&quot;&gt;&lt;td class=&quot;&#39;+ CLS_CASCADE_CELL + &#39;&quot;&gt;&lt;/td&gt;&lt;/tr&gt;&#39;
+  },
+<span id='BUI-Grid-Plugins-Cascade-cfg-renderer'>  /**
+</span>   * 生成级联列时需要渲染的内容
+   * @cfg {Function} renderer
+   */
+<span id='BUI-Grid-Plugins-Cascade-property-renderer'>  /**
+</span>   * 生成级联列时需要渲染的内容
+   * @type {Function}
+   */
+  renderer:{
+
+  },
+  events : [
+<span id='BUI-Grid-Plugins-Cascade-event-expand'>    /**
+</span>     * 展开级联内容时触发
+     * @name  BUI.Grid.Plugins.Cascade#expand
+     * @event
+     * @param {jQuery.Event} e  事件对象
+     * @param {Object} e.record 级联内容对应的纪录
+     * @param {HTMLElement} e.row 级联的行DOM
+     */
+    &#39;expand&#39;,
+<span id='BUI-Grid-Plugins-Cascade-event-collapse'>    /**
+</span>     * 折叠级联内容时触发
+     * @name  BUI.Grid.Plugins.Cascade#collapse
+     * @event
+     * @param {jQuery.Event} e  事件对象
+     * @param {Object} e.record 级联内容对应的纪录
+     * @param {HTMLElement} e.row 级联的行DOM
+     */
+    &#39;collapse&#39;,
+<span id='BUI-Grid-Plugins-Cascade-event-removed'>    /**
+</span>     * 删除级联内容时触发
+     * @name  BUI.Grid.Plugins.Cascade#removed
+     * @event
+     * @param {jQuery.Event} e  事件对象
+     * @param {Object} e.record 级联内容对应的纪录
+     * @param {HTMLElement} e.row 级联的行DOM
+     */
+    &#39;removed&#39;
+  ]
+};
+
+BUI.augment(cascade,
+{
+<span id='BUI-Grid-Plugins-Cascade-method-initializer'>  /**
+</span>   * 初始化
+   * @protected
+   */
+  initializer:function(grid){
+    var _self = this;
+    var cfg = {
+          title : &#39;&#39;,
+          elCls:&#39;center&#39;,//居中对齐
+          width : _self.get(&#39;width&#39;),
+          resizable:false,
+          fixed : true,
+          sortable : false,
+          cellTpl : _self.get(&#39;cellInner&#39;)
+      },
+      expandColumn = grid.addColumn(cfg,0);
+    //列之间的线去掉
+    grid.set(&#39;innerBorder&#39;,false);
+
+    _self.set(&#39;grid&#39;,grid);
+  },
+<span id='BUI-Grid-Plugins-Cascade-method-bindUI'>  /**
+</span>   * 绑定事件
+   * @protected
+   */
+  bindUI:function(grid){
+    var _self = this;
+    grid.on(&#39;cellclick&#39;,function(ev){
+      var sender = $(ev.domTarget),
+        cascadeEl = sender.closest(&#39;.&#39; + CLS_CASCADE);
+      //如果点击展开、折叠按钮
+      if(cascadeEl.length){
+        if(!cascadeEl.hasClass(CLS_CASCADE_EXPAND)){
+          _self._onExpand(ev.record,ev.row,cascadeEl);
+        }else{
+          _self._onCollapse(ev.record,ev.row,cascadeEl);
+        }
+      }
+    });
+
+    grid.on(&#39;columnvisiblechange&#39;,function(){
+      _self._resetColspan();
+    });
+
+    grid.on(&#39;rowremoved&#39;,function(ev){
+      _self.remove(ev.record);
+    });
+
+    grid.on(&#39;clear&#39;,function(){
+      _self.removeAll();
+    });
+  },
+<span id='BUI-Grid-Plugins-Cascade-method-expandAll'>  /**
+</span>   * 展开所有级联数据
+   * &lt;pre&gt;&lt;code&gt;
+   *   cascade.expandAll();
+   * &lt;/code&gt;&lt;/pre&gt;
+   */
+  expandAll : function(){
+    var _self = this,
+      grid = _self.get(&#39;grid&#39;),
+      records = grid.getRecords();
+      $.each(records,function(index,record){
+        _self.expand(record);
+      });
+  },
+<span id='BUI-Grid-Plugins-Cascade-method-expand'>  /**
+</span>   * 展开某条纪录
+   * &lt;pre&gt;&lt;code&gt;
+   *   var record = grid.getItem(&#39;a&#39;);
+   *   cascade.expand(record);
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @param  {Object} record 纪录
+   */
+  expand : function(record){
+    var _self = this,
+      grid = _self.get(&#39;grid&#39;);
+
+    var row = grid.findRow(record);
+    if(row){
+      _self._onExpand(record,row);
+    }
+  },
+<span id='BUI-Grid-Plugins-Cascade-method-collapse'>  /**
+</span>   * 折叠某条纪录
+   * &lt;pre&gt;&lt;code&gt;
+   *   var record = grid.getItem(&#39;a&#39;);
+   *   cascade.collapse(record);
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @param  {Object} record 纪录
+   */
+  collapse : function(record){
+    var _self = this,
+      grid = _self.get(&#39;grid&#39;);
+
+    var row = grid.findRow(record);
+    if(row){
+      _self._onCollapse(record,row);
+    }
+  },
+<span id='BUI-Grid-Plugins-Cascade-method-removeAll'>  /**
+</span>   * 移除所有级联数据的ＤＯＭ
+   * @protected
+   */
+  removeAll : function(){
+    var _self = this,
+      rows = _self._getAllCascadeRows();
+
+    rows.each(function(index,row){
+    
+      _self._removeCascadeRow(row);
+    });
+  },
+<span id='BUI-Grid-Plugins-Cascade-method-remove'>  /**
+</span>   * 根据纪录删除级联信息
+   * @protected
+   * @param  {Object} record 级联信息对应的纪录
+   */
+  remove : function(record){
+    var _self = this,
+      cascadeRow = _self._findCascadeRow(record);
+    if(cascadeRow){
+      _self._removeCascadeRow(cascadeRow);
+    }
+
+  },
+<span id='BUI-Grid-Plugins-Cascade-method-collapseAll'>  /**
+</span>   * 折叠所有级联数据
+   * &lt;pre&gt;&lt;code&gt;
+   *  cascade.collapseAll();
+   * &lt;/code&gt;&lt;/pre&gt;
+   */
+  collapseAll : function(){
+    var _self = this,
+      grid = _self.get(&#39;grid&#39;),
+      records = grid.getRecords();
+      $.each(records,function(index,record){
+        _self.collapse(record);
+      });
+  },
+  //获取级联数据
+  _getRowRecord : function(cascadeRow){
+    return $(cascadeRow).data(DATA_RECORD);
+  },
+  //移除级联行
+  _removeCascadeRow : function(row){
+
+    this.fire(&#39;removed&#39;,{record: $(row).data(DATA_RECORD),row : row});
+    $(row).remove();
+  },
+  //通过纪录查找
+  _findCascadeRow: function(record){
+    var _self = this,
+      rows = _self._getAllCascadeRows(),
+      result = null;
+
+    $.each(rows,function(index,row){
+      if(_self._getRowRecord(row) === record){
+        result = row;
+        return false;
+      }
+    });
+    return result;
+  },
+  _getAllCascadeRows : function(){
+    var _self = this,
+      grid = _self.get(&#39;grid&#39;);
+    return grid.get(&#39;el&#39;).find(&#39;.&#39; + CLS_CASCADE_ROW);
+  },
+  //获取生成的级联行
+  _getCascadeRow : function(gridRow){
+    var nextRow = $(gridRow).next();
+    if((nextRow).hasClass(CLS_CASCADE_ROW)){
+      return nextRow;
+    }
+    return null;
+    //return $(gridRow).next(&#39;.&#39; + CLS_CASCADE_ROW);
+  },
+  //获取级联内容
+  _getRowContent : function(record){
+    var _self = this,
+      renderer = _self.get(&#39;renderer&#39;),
+      content = renderer ? renderer(record) : &#39;&#39;;
+    return content;
+  },
+  //创建级联行
+  _createCascadeRow : function(record,gridRow){
+    var _self = this,
+      rowTpl = _self.get(&#39;rowTpl&#39;),
+      content = _self._getRowContent(record),
+      rowEl = $(rowTpl).insertAfter(gridRow);
+
+    rowEl.find(&#39;.&#39; + CLS_CASCADE_CELL).append($(content));
+    rowEl.data(DATA_RECORD,record);
+    return rowEl;
+  },
+  //展开
+  _onExpand : function(record,row,cascadeEl){
+    var _self = this,
+      cascadeRow = _self._getCascadeRow(row),
+      colspan = _self._getColumnCount(row);
+
+    cascadeEl = cascadeEl || $(row).find(&#39;.&#39;+CLS_CASCADE);
+    cascadeEl.addClass(CLS_CASCADE_EXPAND);
+
+    if(!cascadeRow || !cascadeRow.length){
+      cascadeRow = _self._createCascadeRow(record,row);
+    }
+    $(cascadeRow).removeClass(CLS_CASCADE_ROW_COLLAPSE);
+
+    _self._setColSpan(cascadeRow,row);
+    
+    _self.fire(&#39;expand&#39;,{record : record,row : cascadeRow[0]});
+  },
+  //折叠
+  _onCollapse : function(record,row,cascadeEl){
+
+    var _self = this,
+      cascadeRow = _self._getCascadeRow(row);
+    cascadeEl = cascadeEl || $(row).find(&#39;.&#39;+CLS_CASCADE);
+    cascadeEl.removeClass(CLS_CASCADE_EXPAND);
+
+    if(cascadeRow || !cascadeRow.length){
+      $(cascadeRow).addClass(CLS_CASCADE_ROW_COLLAPSE);
+      _self.fire(&#39;collapse&#39;,{record : record,row : cascadeRow[0]});
+    }
+    
+  },
+  //获取显示的列数
+  _getColumnCount : function(row){
+    return $(row).children().filter(function(){
+      return $(this).css(&#39;display&#39;) !== &#39;none&#39;;
+    }).length;
+  },
+  //设置colspan
+  _setColSpan : function(cascadeRow,gridRow){
+    gridRow = gridRow || $(cascadeRow).prev();
+    var _self = this,
+      colspan = _self._getColumnCount(gridRow);
+
+    $(cascadeRow).find(&#39;.&#39; + CLS_CASCADE_CELL).attr(&#39;colspan&#39;,colspan)
+  },
+  //重置所有的colspan
+  _resetColspan : function(){
+    var _self = this,
+      cascadeRows =  _self._getAllCascadeRows();
+    $.each(cascadeRows,function(index,cascadeRow){
+      _self._setColSpan(cascadeRow);
+    });
+  },
+<span id='BUI-Grid-Plugins-Cascade-method-destructor'>  /**
+</span>   * 析构函数
+   */
+  destructor : function(){
+    var _self = this;
+    _self.removeAll();
+    _self.off();
+    _self.clearAttrVals();
+  }
+});
+
+module.exports = cascade;
+</pre>
+</body>
+</html>

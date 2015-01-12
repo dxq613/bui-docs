@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 选择年月
+ * @author dxq613@gmail.com
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;),
+  BUI = require(&#39;bui-common&#39;),
+  Component = BUI.Component,
+  Overlay = require(&#39;bui-overlay&#39;).Overlay,
+  List = require(&#39;bui-list&#39;).SimpleList,
+  Toolbar = require(&#39;bui-toolbar&#39;),
+  PREFIX = BUI.prefix,
+  CLS_MONTH = &#39;x-monthpicker-month&#39;,
+  DATA_MONTH = &#39;data-month&#39;,
+  DATA_YEAR = &#39;data-year&#39;,
+  CLS_YEAR = &#39;x-monthpicker-year&#39;,
+  CLS_YEAR_NAV = &#39;x-monthpicker-yearnav&#39;,
+  CLS_SELECTED = &#39;x-monthpicker-selected&#39;,
+  CLS_ITEM = &#39;x-monthpicker-item&#39;,
+  months = [&#39;一月&#39;,&#39;二月&#39;,&#39;三月&#39;,&#39;四月&#39;,&#39;五月&#39;,&#39;六月&#39;,&#39;七月&#39;,&#39;八月&#39;,&#39;九月&#39;,&#39;十月&#39;,&#39;十一月&#39;,&#39;十二月&#39;];
+
+function getMonths(){
+  return $.map(months,function(month,index){
+    return {text:month,value:index};
+  });
+}
+
+var MonthPanel = List.extend({
+
+  
+  bindUI : function(){
+    var _self = this;
+    _self.get(&#39;el&#39;).delegate(&#39;a&#39;,&#39;click&#39;,function(ev){
+      ev.preventDefault();
+    }).delegate(&#39;.&#39; + CLS_MONTH,&#39;dblclick&#39;,function(){
+      _self.fire(&#39;monthdblclick&#39;);
+    });
+  }
+},{
+  ATTRS:{
+    itemTpl:{
+      view:true,
+      value : &#39;&lt;li class=&quot;&#39;+CLS_ITEM+&#39; x-monthpicker-month&quot;&gt;&lt;a href=&quot;#&quot; hidefocus=&quot;on&quot;&gt;{text}&lt;/a&gt;&lt;/li&gt;&#39;
+    },
+    
+    itemCls : {
+      value : CLS_ITEM
+    },
+    items:{
+      view:true,
+      value:getMonths()
+    },
+    elCls : {
+      view:true,
+      value:&#39;x-monthpicker-months&#39;
+    }
+  }
+},{
+  xclass:&#39;calendar-month-panel&#39;
+});
+
+
+var YearPanel = List.extend({
+
+  bindUI : function(){
+    var _self = this,
+      el = _self.get(&#39;el&#39;);
+    el.delegate(&#39;a&#39;,&#39;click&#39;,function(ev){
+      ev.preventDefault();
+    });
+
+    el.delegate(&#39;.&#39; + CLS_YEAR,&#39;dblclick&#39;,function(){
+      _self.fire(&#39;yeardblclick&#39;);
+    });
+
+    el.delegate(&#39;.x-icon&#39;,&#39;click&#39;,function(ev){
+      var sender = $(ev.currentTarget);
+
+      if(sender.hasClass(CLS_YEAR_NAV + &#39;-prev&#39;)){
+        _self._prevPage();
+      }else if(sender.hasClass(CLS_YEAR_NAV + &#39;-next&#39;)){
+        _self._nextPage();
+      }
+    });
+    _self.on(&#39;itemselected&#39;,function(ev){
+      if(ev.item){
+        _self.setInternal(&#39;year&#39;,ev.item.value);
+      }
+      
+    });
+  },
+  _prevPage : function(){
+    var _self = this,
+      start = _self.get(&#39;start&#39;),
+      yearCount = _self.get(&#39;yearCount&#39;);
+    _self.set(&#39;start&#39;,start - yearCount);
+  },
+  _nextPage : function(){
+    var _self = this,
+      start = _self.get(&#39;start&#39;),
+      yearCount = _self.get(&#39;yearCount&#39;);
+    _self.set(&#39;start&#39;,start + yearCount);
+  },
+  _uiSetStart : function(){
+    var _self = this;
+    _self._setYearsContent();
+  },
+  _uiSetYear : function(v){
+    var _self = this,
+      item = _self.findItemByField(&#39;value&#39;,v);
+    if(item){
+      _self.setSelectedByField(v);
+    }else{
+      _self.set(&#39;start&#39;,v);
+    }
+  },
+  _setYearsContent : function(){
+    var _self = this,
+      year = _self.get(&#39;year&#39;),
+      start = _self.get(&#39;start&#39;),
+      yearCount = _self.get(&#39;yearCount&#39;),
+      items = [];
+
+    for(var i = start;i&lt; start + yearCount;i++){
+      var text = i.toString();
+
+      items.push({text:text,value:i});
+    }
+    _self.set(&#39;items&#39;,items);
+    _self.setSelectedByField(year);
+  }
+
+},{
+  ATTRS:{
+    items:{
+      view:true,
+      value:[]
+    },
+    elCls : {
+      view:true,
+      value:&#39;x-monthpicker-years&#39;
+    },
+    itemCls : {
+      value : CLS_ITEM
+    },
+    year:{
+
+    },
+<span id='global-property-start'>    /**
+</span>     * 起始年
+     * @private
+     * @ignore
+     * @type {Number}
+     */
+    start:{
+      value: new Date().getFullYear()
+    },
+<span id='global-property-yearCount'>    /**
+</span>     * 年数
+     * @private
+     * @ignore
+     * @type {Number}
+     */
+    yearCount:{
+      value:10
+    },
+    itemTpl : {
+      view:true,
+      value : &#39;&lt;li class=&quot;&#39;+CLS_ITEM+&#39; &#39;+CLS_YEAR+&#39;&quot;&gt;&lt;a href=&quot;#&quot; hidefocus=&quot;on&quot;&gt;{text}&lt;/a&gt;&lt;/li&gt;&#39;
+    },
+    tpl : {
+      view:true,
+      value:&#39;&lt;div class=&quot;&#39;+CLS_YEAR_NAV+&#39;&quot;&gt;&#39;+
+            &#39;&lt;span class=&quot;&#39;+CLS_YEAR_NAV+&#39;-prev x-icon x-icon-normal x-icon-small&quot;&gt;&lt;span class=&quot;icon icon-caret icon-caret-left&quot;&gt;&lt;/span&gt;&lt;/span&gt;&#39;+
+            &#39;&lt;span class=&quot;&#39;+CLS_YEAR_NAV+&#39;-next x-icon x-icon-normal x-icon-small&quot;&gt;&lt;span class=&quot;icon icon-caret icon-caret-right&quot;&gt;&lt;/span&gt;&lt;/span&gt;&#39;+
+            &#39;&lt;/div&gt;&#39;+
+            &#39;&lt;ul&gt;&lt;/ul&gt;&#39;
+    }
+  }
+},{
+  xclass:&#39;calendar-year-panel&#39;
+});
+
+<span id='BUI-Calendar-MonthPicker'>/**
+</span> * 月份选择器
+ * xclass : &#39;calendar-monthpicker&#39;
+ * @class BUI.Calendar.MonthPicker
+ * @extends BUI.Overlay.Overlay
+ */
+var monthPicker = Overlay.extend({
+
+  initializer : function(){
+    var _self = this,
+      children = _self.get(&#39;children&#39;),
+      monthPanel = new MonthPanel(),
+      yearPanel = new YearPanel(),
+      footer = _self._createFooter();
+
+    children.push(monthPanel);
+    children.push(yearPanel);
+    children.push(footer);
+
+    _self.set(&#39;yearPanel&#39;,yearPanel);
+    _self.set(&#39;monthPanel&#39;,monthPanel);
+  },
+  bindUI : function(){
+    var _self = this;
+
+    _self.get(&#39;monthPanel&#39;).on(&#39;itemselected&#39;,function(ev){
+      if(ev.item){
+        _self.setInternal(&#39;month&#39;,ev.item.value);
+      }
+    }).on(&#39;monthdblclick&#39;,function(){
+      _self._successCall();
+    });
+
+    _self.get(&#39;yearPanel&#39;).on(&#39;itemselected&#39;,function(ev){
+      if(ev.item){
+        _self.setInternal(&#39;year&#39;,ev.item.value);
+      }
+    }).on(&#39;yeardblclick&#39;,function(){
+      _self._successCall();
+    });
+
+  },
+  _successCall : function(){
+    var _self = this,
+      callback = _self.get(&#39;success&#39;);
+
+    if(callback){
+      callback.call(_self);
+    }
+  },
+  _createFooter : function(){
+    var _self = this;
+    return new Toolbar.Bar({
+        elCls : PREFIX + &#39;clear x-monthpicker-footer&#39;,
+        children:[
+          {
+            xclass:&#39;bar-item-button&#39;,
+            text:&#39;确定&#39;,
+            btnCls: &#39;button button-small button-primary&#39;,
+            handler:function(){
+              _self._successCall();
+            }
+          },{
+            xclass:&#39;bar-item-button&#39;,
+            text:&#39;取消&#39;,
+            btnCls:&#39;button button-small last&#39;,
+            handler:function(){
+              var callback = _self.get(&#39;cancel&#39;);
+              if(callback){
+                callback.call(_self);
+              }
+            }
+          }
+        ]
+      });
+  },
+  _uiSetYear : function(v){
+    this.get(&#39;yearPanel&#39;).set(&#39;year&#39;,v);
+  },
+  _uiSetMonth:function(v){
+    this.get(&#39;monthPanel&#39;).setSelectedByField(v);
+  }
+},{
+  ATTRS:
+  {
+<span id='BUI-Calendar-MonthPicker-property-footer'>    /**
+</span>     * 下部工具栏
+     * @private
+     * @type {Object}
+     */
+    footer : {
+
+    },
+    align : {
+      value : {}
+    },
+<span id='BUI-Calendar-MonthPicker-property-year'>    /**
+</span>     * 选中的年
+     * @type {Number}
+     */
+    year : {
+      
+    },
+<span id='BUI-Calendar-MonthPicker-property-success'>    /**
+</span>     * 成功的回调函数
+     * @type {Function}
+     */
+    success:{
+      value : function(){
+
+      }
+    },
+<span id='BUI-Calendar-MonthPicker-property-cancel'>    /**
+</span>     * 取消的回调函数
+     * @type {Function}
+     */
+    cancel :{
+
+    value : function(){} 
+
+    },
+    width:{
+      value:180
+    },
+<span id='BUI-Calendar-MonthPicker-property-month'>    /**
+</span>     * 选中的月
+     * @type {Number}
+     */
+    month:{
+      
+    },
+<span id='BUI-Calendar-MonthPicker-property-yearPanel'>    /**
+</span>     * 选择年的控件
+     * @private
+     * @type {Object}
+     */
+    yearPanel : {
+
+    },
+<span id='BUI-Calendar-MonthPicker-property-monthPanel'>    /**
+</span>     * 选择月的控件
+     * @private
+     * @type {Object}
+     */
+    monthPanel:{
+
+    }
+
+  }
+},{
+  xclass :&#39;monthpicker&#39;
+});
+
+module.exports = monthPicker;
+</pre>
+</body>
+</html>

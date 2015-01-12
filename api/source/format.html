@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview this class details some util tools of grid,like loadMask, formatter for grid&#39;s cell render
+ * @author dxq613@gmail.com, yiminghe@gmail.com
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;);
+
+function formatTimeUnit(v) {
+    if (v &lt; 10) {
+        return &#39;0&#39; + v;
+    }
+    return v;
+}
+
+<span id='BUI-Grid-Format'>/**
+</span> * This class specifies some formatter for grid&#39;s cell renderer
+ * @class BUI.Grid.Format
+ * @singleton
+ */
+var Format =
+{
+<span id='BUI-Grid-Format-method-dateRenderer'>    /**
+</span>     * 日期格式化函数
+     * @param {Number|Date} d 格式话的日期，一般为1970 年 1 月 1 日至今的毫秒数
+     * @return {String} 格式化后的日期格式为 2011-10-31
+     * @example
+     * 一般用法：&lt;br&gt;
+     * BUI.Grid.Format.dateRenderer(1320049890544);输出：2011-10-31 &lt;br&gt;
+     * 表格中用于渲染列：&lt;br&gt;
+     * {title:&quot;出库日期&quot;,dataIndex:&quot;date&quot;,renderer:BUI.Grid.Format.dateRenderer}
+     */
+    dateRenderer:function (d) {
+        if (!d) {
+            return &#39;&#39;;
+        }
+        if (BUI.isString(d)) {
+            return d;
+        }
+        var date = null;
+        try {
+            date = new Date(d);
+        } catch (e) {
+            return &#39;&#39;;
+        }
+        if (!date || !date.getFullYear) {
+            return &#39;&#39;;
+        }
+        return date.getFullYear() + &#39;-&#39; + formatTimeUnit(date.getMonth() + 1) + &#39;-&#39; + formatTimeUnit(date.getDate());
+    },
+<span id='BUI-Grid-Format-method-datetimeRenderer'>    /**
+</span>     * @description 日期时间格式化函数
+     * @param {Number|Date} d 格式话的日期，一般为1970 年 1 月 1 日至今的毫秒数
+     * @return {String} 格式化后的日期格式时间为 2011-10-31 16 : 41 : 02
+     */
+    datetimeRenderer:function (d) {
+        if (!d) {
+            return &#39;&#39;;
+        }
+        if (BUI.isString(d)) {
+            return d;
+        }
+        var date = null;
+        try {
+            date = new Date(d);
+        } catch (e) {
+            return &#39;&#39;;
+        }
+        if (!date || !date.getFullYear) {
+            return &#39;&#39;;
+        }
+        return date.getFullYear() + &#39;-&#39; + formatTimeUnit(date.getMonth() + 1) + &#39;-&#39; + formatTimeUnit(date.getDate()) + &#39; &#39; + formatTimeUnit(date.getHours()) + &#39;:&#39; + formatTimeUnit(date.getMinutes()) + &#39;:&#39; + formatTimeUnit(date.getSeconds());
+    },
+<span id='BUI-Grid-Format-method-cutTextRenderer'>    /**
+</span>     * 文本截取函数，当文本超出一定数字时，会截取文本，添加...
+     * @param {Number} length 截取多少字符
+     * @return {Function} 返回处理函数 返回截取后的字符串，如果本身小于指定的数字，返回原字符串。如果大于，则返回截断后的字符串，并附加...
+     */
+    cutTextRenderer:function (length) {
+        return function (value) {
+            value = value || &#39;&#39;;
+            if (value.toString().length &gt; length) {
+                return value.toString().substring(0, length) + &#39;...&#39;;
+            }
+            return value;
+        };
+    },
+<span id='BUI-Grid-Format-method-enumRenderer'>    /**
+</span>     * 枚举格式化函数
+     * @param {Object} enumObj 键值对的枚举对象 {&quot;1&quot;:&quot;大&quot;,&quot;2&quot;:&quot;小&quot;}
+     * @return {Function} 返回指定枚举的格式化函数
+     * @example
+     * //Grid 的列定义
+     *  {title:&quot;状态&quot;,dataIndex:&quot;status&quot;,renderer:BUI.Grid.Format.enumRenderer({&quot;1&quot;:&quot;入库&quot;,&quot;2&quot;:&quot;出库&quot;})}
+     */
+    enumRenderer:function (enumObj) {
+        return function (value) {
+            return enumObj[value] || &#39;&#39;;
+        };
+    },
+<span id='BUI-Grid-Format-method-multipleItemsRenderer'>    /**
+</span>     * 将多个值转换成一个字符串
+     * @param {Object} enumObj 键值对的枚举对象 {&quot;1&quot;:&quot;大&quot;,&quot;2&quot;:&quot;小&quot;}
+     * @return {Function} 返回指定枚举的格式化函数
+     * @example
+     * &lt;code&gt;
+     *  //Grid 的列定义
+     *  {title:&quot;状态&quot;,dataIndex:&quot;status&quot;,renderer:BUI.Grid.Format.multipleItemsRenderer({&quot;1&quot;:&quot;入库&quot;,&quot;2&quot;:&quot;出库&quot;,&quot;3&quot;:&quot;退货&quot;})}
+     *  //数据源是[1,2] 时，则返回 &quot;入库,出库&quot;
+     * &lt;/code&gt;
+     */
+    multipleItemsRenderer:function (enumObj) {
+        var enumFun = Format.enumRenderer(enumObj);
+        return function (values) {
+            var result = [];
+            if (!values) {
+                return &#39;&#39;;
+            }
+            if (!BUI.isArray(values)) {
+                values = values.toString().split(&#39;,&#39;);
+            }
+            $.each(values, function (index,value) {
+                result.push(enumFun(value));
+            });
+
+            return result.join(&#39;,&#39;);
+        };
+    },
+<span id='BUI-Grid-Format-method-moneyCentRenderer'>    /**
+</span>     * 将财务数据分转换成元
+     * @param {Number|String} enumObj 键值对的枚举对象 {&quot;1&quot;:&quot;大&quot;,&quot;2&quot;:&quot;小&quot;}
+     * @return {Number} 返回将分转换成元的数字
+     */
+    moneyCentRenderer:function (v) {
+        if (BUI.isString(v)) {
+            v = parseFloat(v);
+        }
+        if ($.isNumberic(v)) {
+            return (v * 0.01).toFixed(2);
+        }
+        return v;
+    }
+};
+
+module.exports = Format;
+</pre>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='CLS_RELATIVE'>/**
+</span> * @fileOverview 绝对位置布局
+ * @ignore
+ */
+
+
+var CLS_RELATIVE = &#39;x-layout-relative&#39;,
+	BUI = require(&#39;bui-common&#39;),
+	Abstract = require(&#39;./abstract&#39;),
+	AbsoluteItem = require(&#39;./item/absolute&#39;);
+
+<span id='BUI-Layout-Absolute'>/**
+</span> * @class BUI.Layout.Absolute
+ * 绝对位置布局控件
+ * @extends BUI.Layout.Abstract
+ * &lt;pre&gt;&lt;code&gt;
+ * 	var layout = new Absolute(),
+			control = new BUI.Component.Controller({
+			width:800,
+			height:500,
+			elCls : &#39;layout-test&#39;,
+			children : [{
+				layout : {
+					top : 0,
+					left : 0,
+					width:&#39;100%&#39;,
+					elCls : &#39;north&#39;,
+					height: 50
+				},
+				xclass : &#39;controller&#39;,
+				content : &#39;一&#39;
+			},{
+				xclass : &#39;controller&#39;,
+				layout : {
+					width:&#39;20%&#39;,
+					height : &#39;{height} - 100&#39;,
+					top:50,
+					elCls : &#39;east&#39;,
+					left : 0
+				},
+				content : &#39;二&#39;
+			},{
+				xclass : &#39;controller&#39;,
+				layout : {
+					width:&#39;80%&#39;,
+					height : &#39;{height} - 100&#39;,
+					left : &#39;20%&#39;,
+					top:50,
+					elCls : &#39;center&#39;
+				},
+				content : &#39;中间内容区&#39;
+			},{
+				xclass : &#39;controller&#39;,
+				layout : {
+					bottom : 0,
+					left : 0,
+					width: &#39;100%&#39;,
+					height:48,
+					elCls : &#39;south&#39;
+				},
+				width:&#39;100%&#39;,
+				content : &#39;三&#39;
+			}],
+			plugins : [layout]
+		});
+
+		control.render();
+ * &lt;/code&gt;&lt;/pre&gt;
+ */
+var Absolute = function(config){
+	Absolute.superclass.constructor.call(this,config);
+};
+
+Absolute.ATTRS = {
+	itemConstructor : {
+		value : AbsoluteItem
+	},
+<span id='BUI-Layout-Absolute-property-elCls'>	/**
+</span>	 * 标示布局的控件
+	 * @type {String}
+	 */
+	elCls : {
+		value : CLS_RELATIVE
+	},
+<span id='BUI-Layout-Absolute-property-tpl'>	/**
+</span>	 * 布局相关的模板,将所有的子控件放置其中
+	 * @type {String}
+	 */
+	tpl : {
+
+	},
+	itemTpl : {
+		value : &#39;&lt;div class=&quot;x-layout-item-absolute&quot;&gt;&lt;/div&gt;&#39;
+	}
+};
+
+BUI.extend(Absolute,Abstract);
+
+module.exports = Absolute;
+</pre>
+</body>
+</html>

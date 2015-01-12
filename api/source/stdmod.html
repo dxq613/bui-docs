@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview
+ * 控件包含头部（head)、内容(content)和尾部（foot)
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;),
+  CLS_PREFIX = BUI.prefix + &#39;stdmod-&#39;;
+
+
+<span id='BUI-Component-UIBase-StdModView'>/**
+</span> * 标准模块组织的视图类
+ * @class BUI.Component.UIBase.StdModView
+ * @private
+ */
+function StdModView() {}
+
+StdModView.ATTRS = {
+  header: {},
+  body: {},
+  footer: {},
+  bodyStyle: {},
+  footerStyle: {},
+  headerStyle: {},
+  headerContent: {},
+  bodyContent: {},
+  footerContent: {}
+};
+
+StdModView.PARSER = {
+  header: function(el) {
+    return el.one(&quot;.&quot; + CLS_PREFIX + &quot;header&quot;);
+  },
+  body: function(el) {
+    return el.one(&quot;.&quot; + CLS_PREFIX + &quot;body&quot;);
+  },
+  footer: function(el) {
+    return el.one(&quot;.&quot; + CLS_PREFIX + &quot;footer&quot;);
+  }
+}; /**/
+
+function createUI(self, part) {
+  var el = self.get(&#39;contentEl&#39;),
+    partEl = self.get(part);
+  if (!partEl) {
+    partEl = $(&#39;&lt;div class=&quot;&#39; +
+      CLS_PREFIX + part + &#39;&quot;&#39; +
+      &#39; &#39; +
+      &#39; &gt;&#39; +
+      &#39;&lt;/div&gt;&#39;);
+    partEl.appendTo(el);
+    self.setInternal(part, partEl);
+  }
+}
+
+
+function _setStdModRenderContent(self, part, v) {
+  part = self.get(part);
+  if (BUI.isString(v)) {
+    part.html(v);
+  } else {
+    part.html(&#39;&#39;)
+      .append(v);
+  }
+}
+
+StdModView.prototype = {
+
+  __renderUI: function() { //createDom
+    createUI(this, &#39;header&#39;);
+    createUI(this, &#39;body&#39;);
+    createUI(this, &#39;footer&#39;);
+  },
+
+  _uiSetBodyStyle: function(v) {
+    this.get(&#39;body&#39;).css(v);
+  },
+
+  _uiSetHeaderStyle: function(v) {
+    this.get(&#39;header&#39;).css(v);
+  },
+  _uiSetFooterStyle: function(v) {
+    this.get(&#39;footer&#39;).css(v);
+  },
+
+  _uiSetBodyContent: function(v) {
+    _setStdModRenderContent(this, &#39;body&#39;, v);
+  },
+
+  _uiSetHeaderContent: function(v) {
+    _setStdModRenderContent(this, &#39;header&#39;, v);
+  },
+
+  _uiSetFooterContent: function(v) {
+    _setStdModRenderContent(this, &#39;footer&#39;, v);
+  }
+};
+
+<span id='BUI-Component-UIBase-StdMod'>/**
+</span> * @class BUI.Component.UIBase.StdMod
+ * StdMod extension class.
+ * Generate head, body, foot for component.
+ */
+function StdMod() {}
+
+StdMod.ATTRS = {
+<span id='BUI-Component-UIBase-StdMod-property-header'>  /**
+</span>   * 控件的头部DOM. Readonly
+   * @readOnly
+   * @type {jQuery}
+   */
+  header: {
+    view: 1
+  },
+<span id='BUI-Component-UIBase-StdMod-property-body'>  /**
+</span>   * 控件的内容DOM. Readonly
+   * @readOnly
+   * @type {jQuery}
+   */
+  body: {
+    view: 1
+  },
+<span id='BUI-Component-UIBase-StdMod-property-footer'>  /**
+</span>   * 控件的底部DOM. Readonly
+   * @readOnly
+   * @type {jQuery}
+   */
+  footer: {
+    view: 1
+  },
+<span id='BUI-Component-UIBase-StdMod-cfg-bodyStyle'>  /**
+</span>   * 应用到控件内容的css属性，键值对形式
+   * @cfg {Object} bodyStyle
+   */
+<span id='BUI-Component-UIBase-StdMod-property-bodyStyle'>  /**
+</span>   * 应用到控件内容的css属性，键值对形式
+   * @type {Object}
+   * @protected
+   */
+  bodyStyle: {
+    view: 1
+  },
+<span id='BUI-Component-UIBase-StdMod-cfg-footerStyle'>  /**
+</span>   * 应用到控件底部的css属性，键值对形式
+   * @cfg {Object} footerStyle
+   */
+<span id='BUI-Component-UIBase-StdMod-property-footerStyle'>  /**
+</span>   * 应用到控件底部的css属性，键值对形式
+   * @type {Object}
+   * @protected
+   */
+  footerStyle: {
+    view: 1
+  },
+<span id='BUI-Component-UIBase-StdMod-cfg-headerStyle'>  /**
+</span>   * 应用到控件头部的css属性，键值对形式
+   * @cfg {Object} headerStyle
+   */
+<span id='BUI-Component-UIBase-StdMod-property-headerStyle'>  /**
+</span>   * 应用到控件头部的css属性，键值对形式
+   * @type {Object}
+   * @protected
+   */
+  headerStyle: {
+    view: 1
+  },
+<span id='BUI-Component-UIBase-StdMod-cfg-headerContent'>  /**
+</span>   * 控件头部的html
+   * &lt;pre&gt;&lt;code&gt;
+   * var dialog = new Dialog({
+   *     headerContent: &#39;&amp;lt;div class=&quot;header&quot;&amp;gt;&amp;lt;/div&amp;gt;&#39;,
+   *     bodyContent : &#39;#c1&#39;,
+   *     footerContent : &#39;&amp;lt;div class=&quot;footer&quot;&amp;gt;&amp;lt;/div&amp;gt;&#39;
+   * });
+   * dialog.show();
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {jQuery|String} headerContent
+   */
+<span id='BUI-Component-UIBase-StdMod-property-headerContent'>  /**
+</span>   * 控件头部的html
+   * @type {jQuery|String}
+   */
+  headerContent: {
+    view: 1
+  },
+<span id='BUI-Component-UIBase-StdMod-cfg-bodyContent'>  /**
+</span>   * 控件内容的html
+   * &lt;pre&gt;&lt;code&gt;
+   * var dialog = new Dialog({
+   *     headerContent: &#39;&amp;lt;div class=&quot;header&quot;&amp;gt;&amp;lt;/div&amp;gt;&#39;,
+   *     bodyContent : &#39;#c1&#39;,
+   *     footerContent : &#39;&amp;lt;div class=&quot;footer&quot;&amp;gt;&amp;lt;/div&amp;gt;&#39;
+   * });
+   * dialog.show();
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {jQuery|String} bodyContent
+   */
+<span id='BUI-Component-UIBase-StdMod-property-bodyContent'>  /**
+</span>   * 控件内容的html
+   * @type {jQuery|String}
+   */
+  bodyContent: {
+    view: 1
+  },
+<span id='BUI-Component-UIBase-StdMod-cfg-footerContent'>  /**
+</span>   * 控件底部的html
+   * &lt;pre&gt;&lt;code&gt;
+   * var dialog = new Dialog({
+   *     headerContent: &#39;&amp;lt;div class=&quot;header&quot;&amp;gt;&amp;lt;/div&amp;gt;&#39;,
+   *     bodyContent : &#39;#c1&#39;,
+   *     footerContent : &#39;&amp;lt;div class=&quot;footer&quot;&amp;gt;&amp;lt;/div&amp;gt;&#39;
+   * });
+   * dialog.show();
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {jQuery|String} footerContent
+   */
+<span id='BUI-Component-UIBase-StdMod-property-footerContent'>  /**
+</span>   * 控件底部的html
+   * @type {jQuery|String}
+   */
+  footerContent: {
+    view: 1
+  }
+};
+
+StdMod.View = StdModView;
+
+module.exports = StdMod;
+</pre>
+</body>
+</html>

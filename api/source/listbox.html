@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 可选择的列表
+ * @author dengbin
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;),
+  SimpleList = require(&#39;./simplelist&#39;);
+<span id='BUI-List-Listbox'>/**
+</span> * 列表选择框
+ * @extends BUI.List.SimpleList
+ * @class BUI.List.Listbox
+ */
+var listbox = SimpleList.extend({
+  bindUI : function(){
+  	var _self = this;
+    
+  	_self.on(&#39;selectedchange&#39;,function(e){
+  		var item = e.item,
+  			sender = $(e.domTarget),
+  			checkbox =sender.find(&#39;input&#39;);
+  		if(item){
+  			checkbox.attr(&#39;checked&#39;,e.selected);
+  		}
+  	});
+  }
+},{
+  ATTRS : {
+<span id='BUI-List-Listbox-property-itemTpl'>    /**
+</span>     * 选项模板
+     * @override
+     * @type {String}
+     */
+    itemTpl : {
+      value : &#39;&lt;li&gt;&lt;span class=&quot;x-checkbox&quot;&gt;&lt;/span&gt;{text}&lt;/li&gt;&#39;
+    },
+<span id='BUI-List-Listbox-property-multipleSelect'>    /**
+</span>     * 选项模板
+     * @override
+     * @type {Boolean}
+     */
+    multipleSelect : {
+      value : true
+    }
+  }
+},{
+  xclass: &#39;listbox&#39;
+});
+
+module.exports = listbox;
+</pre>
+</body>
+</html>

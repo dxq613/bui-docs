@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 子控件的默认配置项
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;);
+
+<span id='BUI-Component-UIBase-ChildCfg'>/**
+</span> * @class BUI.Component.UIBase.ChildCfg
+ * 子控件默认配置项的扩展类
+ */
+var childCfg = function(config) {
+  this._init();
+};
+
+childCfg.ATTRS = {
+<span id='BUI-Component-UIBase-ChildCfg-cfg-defaultChildCfg'>  /**
+</span>   * 默认的子控件配置项,在初始化控件时配置
+   *
+   *  - 如果控件已经渲染过，此配置项无效，
+   *  - 控件生成后，修改此配置项无效。
+   * &lt;pre&gt;&lt;code&gt;
+   *   var control = new Control({
+   *     defaultChildCfg : {
+   *       tpl : &#39;&amp;lt;li&amp;gt;{text}&amp;lt;/li&amp;gt;&#39;,
+   *       xclass : &#39;a-b&#39;
+   *     }
+   *   });
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {Object} defaultChildCfg
+   */
+<span id='global-property-defaultChildCfg'>  /**
+</span>   * @ignore
+   */
+  defaultChildCfg: {
+
+  }
+};
+
+childCfg.prototype = {
+
+  _init: function() {
+    var _self = this,
+      defaultChildCfg = _self.get(&#39;defaultChildCfg&#39;);
+    if (defaultChildCfg) {
+      _self.on(&#39;beforeAddChild&#39;, function(ev) {
+        var child = ev.child;
+        if ($.isPlainObject(child)) {
+          BUI.each(defaultChildCfg, function(v, k) {
+            if (child[k] == null) { //如果未在配置项中设置，则使用默认值
+              child[k] = v;
+            }
+          });
+        }
+      });
+    }
+  }
+
+};
+
+module.exports = childCfg;
+</pre>
+</body>
+</html>

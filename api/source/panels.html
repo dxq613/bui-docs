@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 拥有多个面板的容器
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;);
+
+<span id='BUI-Tab-Panels'>/**
+</span> * @class BUI.Tab.Panels
+ * 包含面板的标签的扩展类
+ */
+var Panels = function(){
+  //this._initPanels();
+};
+
+Panels.ATTRS = {
+
+<span id='BUI-Tab-Panels-property-panelTpl'>  /**
+</span>   * 面板的模板
+   * @type {String}
+   */
+  panelTpl : {
+
+  },
+<span id='BUI-Tab-Panels-property-panelContainer'>  /**
+</span>   * 面板的容器，如果是id直接通过id查找，如果是非id，那么从el开始查找,例如：
+   *   -#id ： 通过$(&#39;#id&#39;)查找
+   *   -.cls : 通过 this.get(&#39;el&#39;).find(&#39;.cls&#39;) 查找
+   *   -DOM/jQuery ：不需要查找
+   * @type {String|HTMLElement|jQuery}
+   */
+  panelContainer : {
+    
+  },
+<span id='BUI-Tab-Panels-property-panelCls'>  /**
+</span>   * panel 面板使用的样式，如果初始化时，容器内已经存在有该样式的DOM，则作为面板使用
+   * 对应同一个位置的标签项,如果为空，默认取面板容器的子元素
+   * @type {String}
+   */
+  panelCls : {
+
+  }
+};
+
+BUI.augment(Panels,{
+
+  __renderUI : function(){
+    var _self = this,
+      children = _self.get(&#39;children&#39;),
+      panelContainer = _self._initPanelContainer(),
+      panelCls = _self.get(&#39;panelCls&#39;),
+      panels = panelCls ? panelContainer.find(&#39;.&#39; + panels) : panelContainer.children();
+
+    BUI.each(children,function(item,index){
+      var panel = panels[index];
+      _self._initPanelItem(item,panel);
+    });
+  },
+
+  __bindUI : function(){
+    var _self = this;
+    _self.on(&#39;beforeAddChild&#39;,function(ev){
+      var item = ev.child;
+      _self._initPanelItem(item);
+    });
+  },
+  //初始化容器
+  _initPanelContainer : function(){
+    var _self = this,
+      panelContainer = _self.get(&#39;panelContainer&#39;);
+    if(panelContainer &amp;&amp; BUI.isString(panelContainer)){
+      if(panelContainer.indexOf(&#39;#&#39;) == 0){ //如果是id
+        panelContainer = $(panelContainer);
+      }else{
+        panelContainer = _self.get(&#39;el&#39;).find(panelContainer);
+      }
+      _self.setInternal(&#39;panelContainer&#39;,panelContainer);
+    }
+    return panelContainer;
+  },
+  //初始化面板配置信息
+  _initPanelItem : function(item,panel){
+    var _self = this;
+
+    if(item.set){
+      if(!item.get(&#39;panel&#39;)){
+        panel = panel || _self._getPanel(item.get(&#39;userConfig&#39;));
+        item.set(&#39;panel&#39;,panel);
+      }
+    }else{
+      if(!item.panel){
+        panel = panel || _self._getPanel(item);
+        item.panel = panel;
+      }
+    }
+  },
+  //获取面板
+  _getPanel : function(item){
+    var _self = this,
+      panelContainer = _self.get(&#39;panelContainer&#39;),
+      panelTpl = BUI.substitute(_self.get(&#39;panelTpl&#39;),item);
+    
+    return $(panelTpl).appendTo(panelContainer);
+  }
+});
+
+module.exports = Panels;
+</pre>
+</body>
+</html>

@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">/*
+ * @fileOverview Date Format 1.2.3
+ * @ignore
+ * (c) 2007-2009 Steven Levithan &lt;stevenlevithan.com&gt;
+ * MIT license
+ *
+ * Includes enhancements by Scott Trenda &lt;scott.trenda.net&gt;
+ * and Kris Kowal &lt;cixar.com/~kris.kowal/&gt;
+ *
+ * Accepts a date, a mask, or a date and a mask.
+ * Returns a formatted version of the given date.
+ * The date defaults to the current date/time.
+ * The mask defaults to dateFormat.masks.default.
+ *
+ * Last modified by jayli 拔赤 2010-09-09
+ * - 增加中文的支持
+ * - 简单的本地化，对w（星期x）的支持
+ *
+ */
+
+var dateRegex = /^(?:(?!0000)[0-9]{4}([-/.]+)(?:(?:0?[1-9]|1[0-2])\1(?:0?[1-9]|1[0-9]|2[0-8])|(?:0?[13-9]|1[0-2])\1(?:29|30)|(?:0?[13578]|1[02])\1(?:31))|(?:[0-9]{2}(?:0[48]|[2468][048]|[13579][26])|(?:0[48]|[2468][048]|[13579][26])00)([-/.]?)0?2\2(?:29))(\s+([01]|([01][0-9]|2[0-3])):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9]))?$/;
+
+function dateParse(val, format) {
+  if (val instanceof Date) {
+    return val;
+  }
+  if (typeof(format) == &quot;undefined&quot; || format == null || format == &quot;&quot;) {
+    var checkList = new Array(&#39;y-m-d&#39;, &#39;yyyy-mm-dd&#39;, &#39;yyyy-mm-dd HH:MM:ss&#39;, &#39;H:M:s&#39;);
+    for (var i = 0; i &lt; checkList.length; i++) {
+      var d = dateParse(val, checkList[i]);
+      if (d != null) {
+        return d;
+      }
+    }
+    return null;
+  };
+  val = val + &quot;&quot;;
+  var i_val = 0;
+  var i_format = 0;
+  var c = &quot;&quot;;
+  var token = &quot;&quot;;
+  var x, y;
+  var now = new Date();
+  var year = now.getYear();
+  var month = now.getMonth() + 1;
+  var date = 1;
+  var hh = 00;
+  var mm = 00;
+  var ss = 00;
+  this.isInteger = function(val) {
+    return /^\d*$/.test(val);
+  };
+  this.getInt = function(str, i, minlength, maxlength) {
+    for (var x = maxlength; x &gt;= minlength; x--) {
+      var token = str.substring(i, i + x);
+      if (token.length &lt; minlength) {
+        return null;
+      }
+      if (this.isInteger(token)) {
+        return token;
+      }
+    }
+    return null;
+  };
+
+  while (i_format &lt; format.length) {
+    c = format.charAt(i_format);
+    token = &quot;&quot;;
+    while ((format.charAt(i_format) == c) &amp;&amp; (i_format &lt; format.length)) {
+      token += format.charAt(i_format++);
+    }
+    if (token == &quot;yyyy&quot; || token == &quot;yy&quot; || token == &quot;y&quot;) {
+      if (token == &quot;yyyy&quot;) {
+        x = 4;
+        y = 4;
+      }
+      if (token == &quot;yy&quot;) {
+        x = 2;
+        y = 2;
+      }
+      if (token == &quot;y&quot;) {
+        x = 2;
+        y = 4;
+      }
+      year = this.getInt(val, i_val, x, y);
+      if (year == null) {
+        return null;
+      }
+      i_val += year.length;
+      if (year.length == 2) {
+        year = year &gt; 70 ? 1900 + (year - 0) : 2000 + (year - 0);
+      }
+    } else if (token == &quot;mm&quot; || token == &quot;m&quot;) {
+      month = this.getInt(val, i_val, token.length, 2);
+      if (month == null || (month &lt; 1) || (month &gt; 12)) {
+        return null;
+      }
+      i_val += month.length;
+    } else if (token == &quot;dd&quot; || token == &quot;d&quot;) {
+      date = this.getInt(val, i_val, token.length, 2);
+      if (date == null || (date &lt; 1) || (date &gt; 31)) {
+        return null;
+      }
+      i_val += date.length;
+    } else if (token == &quot;hh&quot; || token == &quot;h&quot;) {
+      hh = this.getInt(val, i_val, token.length, 2);
+      if (hh == null || (hh &lt; 1) || (hh &gt; 12)) {
+        return null;
+      }
+      i_val += hh.length;
+    } else if (token == &quot;HH&quot; || token == &quot;H&quot;) {
+      hh = this.getInt(val, i_val, token.length, 2);
+      if (hh == null || (hh &lt; 0) || (hh &gt; 23)) {
+        return null;
+      }
+      i_val += hh.length;
+    } else if (token == &quot;MM&quot; || token == &quot;M&quot;) {
+      mm = this.getInt(val, i_val, token.length, 2);
+      if (mm == null || (mm &lt; 0) || (mm &gt; 59)) {
+        return null;
+      }
+      i_val += mm.length;
+    } else if (token == &quot;ss&quot; || token == &quot;s&quot;) {
+      ss = this.getInt(val, i_val, token.length, 2);
+      if (ss == null || (ss &lt; 0) || (ss &gt; 59)) {
+        return null;
+      }
+      i_val += ss.length;
+    } else {
+      if (val.substring(i_val, i_val + token.length) != token) {
+        return null;
+      } else {
+        i_val += token.length;
+      }
+    }
+  }
+  if (i_val != val.length) {
+    return null;
+  }
+  if (month == 2) {
+    if (((year % 4 == 0) &amp;&amp; (year % 100 != 0)) || (year % 400 == 0)) { // leap year
+      if (date &gt; 29) {
+        return null;
+      }
+    } else {
+      if (date &gt; 28) {
+        return null;
+      }
+    }
+  }
+  if ((month == 4) || (month == 6) || (month == 9) || (month == 11)) {
+    if (date &gt; 30) {
+      return null;
+    }
+  }
+  return new Date(year, month - 1, date, hh, mm, ss);
+}
+
+function DateAdd(strInterval, NumDay, dtDate) {
+  var dtTmp = new Date(dtDate);
+  if (isNaN(dtTmp)) {
+    dtTmp = new Date();
+  }
+  NumDay = parseInt(NumDay, 10);
+  switch (strInterval) {
+    case &#39;s&#39;:
+      dtTmp = new Date(dtTmp.getTime() + (1000 * NumDay));
+      break;
+    case &#39;n&#39;:
+      dtTmp = new Date(dtTmp.getTime() + (60000 * NumDay));
+      break;
+    case &#39;h&#39;:
+      dtTmp = new Date(dtTmp.getTime() + (3600000 * NumDay));
+      break;
+    case &#39;d&#39;:
+      dtTmp = new Date(dtTmp.getTime() + (86400000 * NumDay));
+      break;
+    case &#39;w&#39;:
+      dtTmp = new Date(dtTmp.getTime() + ((86400000 * 7) * NumDay));
+      break;
+    case &#39;m&#39;:
+      dtTmp = new Date(dtTmp.getFullYear(), (dtTmp.getMonth()) + NumDay, dtTmp.getDate(), dtTmp.getHours(), dtTmp.getMinutes(), dtTmp.getSeconds());
+      break;
+    case &#39;y&#39;:
+      //alert(dtTmp.getFullYear());
+      dtTmp = new Date(dtTmp.getFullYear() + NumDay, dtTmp.getMonth(), dtTmp.getDate(), dtTmp.getHours(), dtTmp.getMinutes(), dtTmp.getSeconds());
+      //alert(dtTmp);
+      break;
+  }
+  return dtTmp;
+}
+
+var dateFormat = function() {
+  var token = /w{1}|d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloSZ]|&quot;[^&quot;]*&quot;|&#39;[^&#39;]*&#39;/g,
+    timezone = /\b(?:[PMCEA][SDP]T|(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time|(?:GMT|UTC)(?:[-+]\d{4})?)\b/g,
+    timezoneClip = /[^-+\dA-Z]/g,
+    pad = function(val, len) {
+      val = String(val);
+      len = len || 2;
+      while (val.length &lt; len) {
+        val = &#39;0&#39; + val;
+      }
+      return val;
+    },
+    // Some common format strings
+    masks = {
+      &#39;default&#39;: &#39;ddd mmm dd yyyy HH:MM:ss&#39;,
+      shortDate: &#39;m/d/yy&#39;,
+      //mediumDate:   &#39;mmm d, yyyy&#39;,
+      longDate: &#39;mmmm d, yyyy&#39;,
+      fullDate: &#39;dddd, mmmm d, yyyy&#39;,
+      shortTime: &#39;h:MM TT&#39;,
+      //mediumTime:   &#39;h:MM:ss TT&#39;,
+      longTime: &#39;h:MM:ss TT Z&#39;,
+      isoDate: &#39;yyyy-mm-dd&#39;,
+      isoTime: &#39;HH:MM:ss&#39;,
+      isoDateTime: &quot;yyyy-mm-dd&#39;T&#39;HH:MM:ss&quot;,
+      isoUTCDateTime: &quot;UTC:yyyy-mm-dd&#39;T&#39;HH:MM:ss&#39;Z&#39;&quot;,
+
+      //added by jayli
+      localShortDate: &#39;yy年mm月dd日&#39;,
+      localShortDateTime: &#39;yy年mm月dd日 hh:MM:ss TT&#39;,
+      localLongDate: &#39;yyyy年mm月dd日&#39;,
+      localLongDateTime: &#39;yyyy年mm月dd日 hh:MM:ss TT&#39;,
+      localFullDate: &#39;yyyy年mm月dd日 w&#39;,
+      localFullDateTime: &#39;yyyy年mm月dd日 w hh:MM:ss TT&#39;
+
+    },
+
+    // Internationalization strings
+    i18n = {
+      dayNames: [
+        &#39;Sun&#39;, &#39;Mon&#39;, &#39;Tue&#39;, &#39;Wed&#39;, &#39;Thu&#39;, &#39;Fri&#39;, &#39;Sat&#39;,
+        &#39;Sunday&#39;, &#39;Monday&#39;, &#39;Tuesday&#39;, &#39;Wednesday&#39;, &#39;Thursday&#39;, &#39;Friday&#39;, &#39;Saturday&#39;,
+        &#39;星期日&#39;, &#39;星期一&#39;, &#39;星期二&#39;, &#39;星期三&#39;, &#39;星期四&#39;, &#39;星期五&#39;, &#39;星期六&#39;
+      ],
+      monthNames: [
+        &#39;Jan&#39;, &#39;Feb&#39;, &#39;Mar&#39;, &#39;Apr&#39;, &#39;May&#39;, &#39;Jun&#39;, &#39;Jul&#39;, &#39;Aug&#39;, &#39;Sep&#39;, &#39;Oct&#39;, &#39;Nov&#39;, &#39;Dec&#39;,
+        &#39;January&#39;, &#39;February&#39;, &#39;March&#39;, &#39;April&#39;, &#39;May&#39;, &#39;June&#39;, &#39;July&#39;, &#39;August&#39;, &#39;September&#39;, &#39;October&#39;, &#39;November&#39;, &#39;December&#39;
+      ]
+    };
+
+  // Regexes and supporting functions are cached through closure
+  return function(date, mask, utc) {
+
+    // You can&#39;t provide utc if you skip other args (use the &quot;UTC:&quot; mask prefix)
+    if (arguments.length === 1 &amp;&amp; Object.prototype.toString.call(date) === &#39;[object String]&#39; &amp;&amp; !/\d/.test(date)) {
+      mask = date;
+      date = undefined;
+    }
+
+    // Passing date through Date applies Date.parse, if necessary
+    date = date ? new Date(date) : new Date();
+    if (isNaN(date)) {
+      throw SyntaxError(&#39;invalid date&#39;);
+    }
+
+    mask = String(masks[mask] || mask || masks[&#39;default&#39;]);
+
+    // Allow setting the utc argument via the mask
+    if (mask.slice(0, 4) === &#39;UTC:&#39;) {
+      mask = mask.slice(4);
+      utc = true;
+    }
+
+    var _ = utc ? &#39;getUTC&#39; : &#39;get&#39;,
+      d = date[_ + &#39;Date&#39;](),
+      D = date[_ + &#39;Day&#39;](),
+      m = date[_ + &#39;Month&#39;](),
+      y = date[_ + &#39;FullYear&#39;](),
+      H = date[_ + &#39;Hours&#39;](),
+      M = date[_ + &#39;Minutes&#39;](),
+      s = date[_ + &#39;Seconds&#39;](),
+      L = date[_ + &#39;Milliseconds&#39;](),
+      o = utc ? 0 : date.getTimezoneOffset(),
+      flags = {
+        d: d,
+        dd: pad(d, undefined),
+        ddd: i18n.dayNames[D],
+        dddd: i18n.dayNames[D + 7],
+        w: i18n.dayNames[D + 14],
+        m: m + 1,
+        mm: pad(m + 1, undefined),
+        mmm: i18n.monthNames[m],
+        mmmm: i18n.monthNames[m + 12],
+        yy: String(y).slice(2),
+        yyyy: y,
+        h: H % 12 || 12,
+        hh: pad(H % 12 || 12, undefined),
+        H: H,
+        HH: pad(H, undefined),
+        M: M,
+        MM: pad(M, undefined),
+        s: s,
+        ss: pad(s, undefined),
+        l: pad(L, 3),
+        L: pad(L &gt; 99 ? Math.round(L / 10) : L, undefined),
+        t: H &lt; 12 ? &#39;a&#39; : &#39;p&#39;,
+        tt: H &lt; 12 ? &#39;am&#39; : &#39;pm&#39;,
+        T: H &lt; 12 ? &#39;A&#39; : &#39;P&#39;,
+        TT: H &lt; 12 ? &#39;AM&#39; : &#39;PM&#39;,
+        Z: utc ? &#39;UTC&#39; : (String(date).match(timezone) || [&#39;&#39;]).pop().replace(timezoneClip, &#39;&#39;),
+        o: (o &gt; 0 ? &#39;-&#39; : &#39;+&#39;) + pad(Math.floor(Math.abs(o) / 60) * 100 + Math.abs(o) % 60, 4),
+        S: [&#39;th&#39;, &#39;st&#39;, &#39;nd&#39;, &#39;rd&#39;][d % 10 &gt; 3 ? 0 : (d % 100 - d % 10 !== 10) * d % 10]
+      };
+
+    return mask.replace(token, function($0) {
+      return $0 in flags ? flags[$0] : $0.slice(1, $0.length - 1);
+    });
+  };
+}();
+
+<span id='BUI-Date'>/**
+</span> * 日期的工具方法
+ * @class BUI.Date
+ */
+var DateUtil = {
+<span id='BUI-Date-method-add'>  /**
+</span>   * 日期加法
+   * @param {String} strInterval 加法的类型，s(秒),n(分),h(时),d(天),w(周),m(月),y(年)
+   * @param {Number} Num     数量，如果为负数，则为减法
+   * @param {Date} dtDate    起始日期，默认为此时
+   */
+  add: function(strInterval, Num, dtDate) {
+    return DateAdd(strInterval, Num, dtDate);
+  },
+<span id='BUI-Date-method-addHour'>  /**
+</span>   * 小时的加法
+   * @param {Number} hours 小时
+   * @param {Date} date 起始日期
+   */
+  addHour: function(hours, date) {
+    return DateAdd(&#39;h&#39;, hours, date);
+  },
+<span id='BUI-Date-method-addMinute'>  /**
+</span>   * 分的加法
+   * @param {Number} minutes 分
+   * @param {Date} date 起始日期
+   */
+  addMinute: function(minutes, date) {
+    return DateAdd(&#39;n&#39;, minutes, date);
+  },
+<span id='BUI-Date-method-addSecond'>  /**
+</span>   * 秒的加法
+   * @param {Number} seconds 秒
+   * @param {Date} date 起始日期
+   */
+  addSecond: function(seconds, date) {
+    return DateAdd(&#39;s&#39;, seconds, date);
+  },
+<span id='BUI-Date-method-addDay'>  /**
+</span>   * 天的加法
+   * @param {Number} days 天数
+   * @param {Date} date 起始日期
+   */
+  addDay: function(days, date) {
+    return DateAdd(&#39;d&#39;, days, date);
+  },
+<span id='BUI-Date-method-addWeek'>  /**
+</span>   * 增加周
+   * @param {Number} weeks 周数
+   * @param {Date} date  起始日期
+   */
+  addWeek: function(weeks, date) {
+    return DateAdd(&#39;w&#39;, weeks, date);
+  },
+<span id='BUI-Date-method-addMonths'>  /**
+</span>   * 增加月
+   * @param {Number} months 月数
+   * @param {Date} date  起始日期
+   */
+  addMonths: function(months, date) {
+    return DateAdd(&#39;m&#39;, months, date);
+  },
+<span id='BUI-Date-method-addYear'>  /**
+</span>   * 增加年
+   * @param {Number} years 年数
+   * @param {Date} date  起始日期
+   */
+  addYear: function(years, date) {
+    return DateAdd(&#39;y&#39;, years, date);
+  },
+<span id='BUI-Date-method-isDateEquals'>  /**
+</span>   * 日期是否相等，忽略时间
+   * @param  {Date}  d1 日期对象
+   * @param  {Date}  d2 日期对象
+   * @return {Boolean}  是否相等
+   */
+  isDateEquals: function(d1, d2) {
+
+    return d1.getFullYear() === d2.getFullYear() &amp;&amp; d1.getMonth() === d2.getMonth() &amp;&amp; d1.getDate() === d2.getDate();
+  },
+<span id='BUI-Date-method-isEquals'>  /**
+</span>   * 日期时间是否相等，包含时间
+   * @param  {Date}  d1 日期对象
+   * @param  {Date}  d2 日期对象
+   * @return {Boolean}  是否相等
+   */
+  isEquals: function(d1, d2) {
+    if (d1 == d2) {
+      return true;
+    }
+    if (!d1 || !d2) {
+      return false;
+    }
+    if (!d1.getTime || !d2.getTime) {
+      return false;
+    }
+    return d1.getTime() == d2.getTime();
+  },
+<span id='BUI-Date-method-isDateString'>  /**
+</span>   * 字符串是否是有效的日期类型
+   * @param {String} str 字符串
+   * @return 字符串是否能转换成日期
+   */
+  isDateString: function(str) {
+    return dateRegex.test(str);
+  },
+<span id='BUI-Date-method-format'>  /**
+</span>   * 将日期格式化成字符串
+   * @param  {Date} date 日期
+   * @param  {String} mask 格式化方式
+   * @param  {Date} utc  是否utc时间
+   * @return {String}    日期的字符串
+   */
+  format: function(date, mask, utc) {
+    return dateFormat(date, mask, utc);
+  },
+<span id='BUI-Date-method-parse'>  /**
+</span>   * 转换成日期
+   * @param  {String|Date} date 字符串或者日期
+   * @param  {String} dateMask  日期的格式,如:yyyy-MM-dd
+   * @return {Date}    日期对象
+   */
+  parse: function(date, s) {
+    if (BUI.isString(date)) {
+      date = date.replace(&#39;\/&#39;, &#39;-&#39;);
+    }
+    return dateParse(date, s);
+  },
+<span id='BUI-Date-method-today'>  /**
+</span>   * 当前天
+   * @return {Date} 当前天 00:00:00
+   */
+  today: function() {
+    var now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  },
+<span id='BUI-Date-method-getDate'>  /**
+</span>   * 返回当前日期
+   * @return {Date} 日期的 00:00:00
+   */
+  getDate: function(date) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  }
+};
+
+module.exports = DateUtil;
+</pre>
+</body>
+</html>

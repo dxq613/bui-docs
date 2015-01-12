@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='BUI'>/**
+</span> * @fileOverview 
+ * @ignore
+ */
+
+
+var BUI = require(&#39;bui-common&#39;),
+  TabItem = require(&#39;./tabitem&#39;),
+  PanelItem = require(&#39;./panelitem&#39;),
+  CLS_TITLE = &#39;bui-tab-item-text&#39;,
+  Component = BUI.Component;
+
+<span id='BUI-Tab-TabPanelItemView'>/**
+</span> * @private
+ * @class BUI.Tab.TabPanelItemView
+ * @extends BUI.Tab.TabItemView
+ * 存在面板的标签项视图层对象
+ */
+var itemView = TabItem.View.extend([Component.UIBase.Close.View],{
+  _uiSetTitle : function(v){
+    var _self = this,
+      el = _self.get(&#39;el&#39;),
+      titleEl = el.find(&#39;.&#39; + CLS_TITLE);
+    titleEl.text(v);
+  }
+},{
+  xclass:&#39;tab-panel-item-view&#39;
+});
+
+
+<span id='BUI-Tab-TabPanelItem'>/**
+</span> * 标签项
+ * @class BUI.Tab.TabPanelItem
+ * @extends BUI.Tab.TabItem
+ * @mixins BUI.Tab.PanelItem
+ * @mixins BUI.Component.UIBase.Close
+ */
+var item = TabItem.extend([PanelItem,Component.UIBase.Close],{
+  
+},{
+  ATTRS : 
+  {
+<span id='BUI-Tab-TabPanelItem-property-closeAction'>    /**
+</span>     * 关闭时直接销毁标签项，执行remove方法
+     * @type {String}
+     */
+    closeAction : {
+      value : &#39;remove&#39;
+    },
+<span id='BUI-Tab-TabPanelItem-cfg-title'>    /**
+</span>     * 标题
+     * @cfg {String} title 
+     */
+<span id='BUI-Tab-TabPanelItem-property-title'>    /**
+</span>     * 标题
+     * @type {String}
+     * &lt;code&gt;
+     *   tab.getItem(&#39;id&#39;).set(&#39;title&#39;,&#39;new title&#39;);
+     * &lt;/code&gt;
+     */
+    title : {
+      view : true,
+      sync : false
+
+    },
+<span id='BUI-Tab-TabPanelItem-property-tpl'>    /**
+</span>     * 标签项的模板,因为之前没有title属性，所以默认用text，所以也兼容text，但是在最好直接使用title，方便更改
+     * @type {String}
+     */
+    tpl : {
+      value : &#39;&lt;span class=&quot;&#39; + CLS_TITLE + &#39;&quot;&gt;{text}{title}&lt;/span&gt;&#39;
+    },
+    closeable : {
+      value : false
+    },
+    events : {
+      value : {
+        beforeclosed : true
+      }
+    },
+    xview:{
+      value:itemView
+    }
+  }
+},{
+  xclass:&#39;tab-panel-item&#39;
+});
+
+item.View = itemView;
+
+module.exports = item;
+</pre>
+</body>
+</html>

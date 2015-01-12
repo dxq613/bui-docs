@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 使用弹出框作为编辑器
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;),
+  Dialog = require(&#39;bui-overlay&#39;).Dialog,
+  Mixin = require(&#39;./mixin&#39;);
+
+<span id='BUI-Editor-DialogEditor'> /**
+</span> * @class BUI.Editor.DialogEditor
+ * @extends BUI.Overlay.Dialog
+ * @mixins BUI.Editor.Mixin
+ * 编辑器
+ */
+var editor = Dialog.extend([Mixin],{
+<span id='BUI-Editor-DialogEditor-method-getSourceValue'>  /**
+</span>   * @protected
+   * @override
+   * 获取编辑的源数据
+   * @return {String} 返回需要编辑的文本
+   */
+  getSourceValue : function(){
+    return this.get(&#39;record&#39;);
+  },
+<span id='BUI-Editor-DialogEditor-method-handleNavEnter'>  /**
+</span>   * @protected
+   * @override
+   * 处理enter键
+   */
+  handleNavEnter : function(ev){
+    var _self = this,
+      success = _self.get(&#39;success&#39;),
+      sender = ev.target;
+    if(sender.tagName === &#39;TEXTAREA&#39;){ //文本输入框，不确定隐藏
+      return;
+    }
+    if(sender.tagName === &#39;BUTTON&#39;){
+      $(sender).trigger(&#39;click&#39;);
+    }
+    if(success){
+      success.call(_self);
+    }else{
+      this.accept();
+    }
+  },
+<span id='BUI-Editor-DialogEditor-method-cancel'>  /**
+</span>   * 取消编辑
+   */
+  cancel : function(){
+    //if(this.onCancel()!== false){
+      this.fire(&#39;cancel&#39;);
+      this.clearValue();
+      this.close();
+    //} 
+  },
+<span id='BUI-Editor-DialogEditor-method-updateSource'>  /**
+</span>   * @protected
+   * 更新文本
+   * @param  {Object} value 编辑器的值
+   */
+  updateSource : function(value){
+    var _self = this,
+      record = _self.get(&#39;record&#39;);
+    BUI.mix(record,value);
+  },
+  _uiSetRecord : function(v){
+    this.setValue(v);
+  }
+},{
+  ATTRS : {
+    /*autoHide : {
+      value : false
+    },*/
+<span id='BUI-Editor-DialogEditor-property-innerValueField'>    /**
+</span>     * 内部控件的代表Value的字段
+     * @protected
+     * @override
+     * @type {String}
+     */
+    innerValueField : {
+      value : &#39;record&#39;
+    },
+<span id='BUI-Editor-DialogEditor-property-acceptEvent'>    /**
+</span>     * 接受更改的事件
+     * @type {String}
+     */
+    acceptEvent : {
+      value : &#39;&#39;
+    },
+<span id='BUI-Editor-DialogEditor-property-record'>    /**
+</span>     * 编辑的记录
+     * @type {Object}
+     */
+    record : {
+      value : {}
+    },
+<span id='BUI-Editor-DialogEditor-property-emptyValue'>    /**
+</span>     * 空值的数据，清空编辑器时使用
+     * @protected
+     * @type {*}
+     */
+    emptyValue : {
+      shared : false,
+      value : {}
+    },
+<span id='BUI-Editor-DialogEditor-property-controlCfgField'>    /**
+</span>     * 内部控件配置项的字段
+     * @protected
+     * @type {String}
+     */
+    controlCfgField : {
+      value : &#39;form&#39;
+    },
+<span id='BUI-Editor-DialogEditor-property-changeSourceEvent'>    /**
+</span>     * dialog 编辑器一般由按钮触发，在触发时设置数据源
+     * @override
+     * @type {String}
+     */
+    changeSourceEvent : {
+      value : &#39;&#39;
+    },
+<span id='BUI-Editor-DialogEditor-property-defaultChildCfg'>    /**
+</span>     * 默认的字段域配置项
+     * @type {Object}
+     */
+    defaultChildCfg : {
+      value : {
+        xclass : &#39;form-horizontal&#39;
+      }
+    },
+<span id='BUI-Editor-DialogEditor-property-focusable'>    /**
+</span>     * 设置可以获取交单
+     * @type {Boolean}
+     */
+    focusable : {
+      value : false
+    },
+    success : {
+      value : function () {
+        this.accept();
+      }
+    },
+    cancel : {
+      value : function(){
+        this.cancel();
+      }
+    },
+<span id='BUI-Editor-DialogEditor-property-form'>    /**
+</span>     * 编辑器内表单的配置项
+     * @type {Object}
+     */
+    form : {
+      value : {}
+    }
+  }
+},{
+  xclass : &#39;dialog-editor&#39;
+});
+
+module.exports = editor;
+</pre>
+</body>
+</html>

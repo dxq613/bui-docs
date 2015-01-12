@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 列表
+ * @ignore
+ */
+  
+var $ = require(&#39;jquery&#39;),
+  BUI = require(&#39;bui-common&#39;),
+  Component = BUI.Component,
+  UIBase = Component.UIBase;
+
+<span id='BUI-List-List'>/**
+</span> * 列表
+ * &lt;p&gt;
+ * &lt;img src=&quot;../assets/img/class-list.jpg&quot;/&gt;
+ * &lt;/p&gt;
+ * xclass:&#39;list&#39;
+ * @class BUI.List.List
+ * @extends BUI.Component.Controller
+ * @mixins BUI.Component.UIBase.ChildList
+ */
+var list = Component.Controller.extend([UIBase.ChildList],{
+  
+},{
+  ATTRS : 
+  {
+    elTagName:{
+      view:true,
+      value:&#39;ul&#39;
+    },
+    idField:{
+      value:&#39;id&#39;
+    },
+<span id='BUI-List-List-property-defaultChildClass'>    /**
+</span>     * 子类的默认类名，即类的 xclass
+     * @type {String}
+     * @override
+     * @default &#39;list-item&#39;
+     */
+    defaultChildClass : {
+      value : &#39;list-item&#39;
+    }
+  }
+},{
+  xclass:&#39;list&#39;
+});
+
+module.exports = list;
+</pre>
+</body>
+</html>

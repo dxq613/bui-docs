@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 列表项的选择器
+ * @ignore
+ */
+
+
+var $ = require(&#39;jquery&#39;),
+  List = require(&#39;bui-list&#39;),
+  Picker = require(&#39;./picker&#39;),
+<span id='BUI-Picker-ListPicker'>  /**
+</span>   * 列表选择器,xclass = &#39;list-picker&#39;
+   * &lt;pre&gt;&lt;code&gt;
+   * BUI.use([&#39;bui/picker&#39;],function(Picker){
+   *
+   * var items = [
+   *       {text:&#39;选项1&#39;,value:&#39;a&#39;},
+   *       {text:&#39;选项2&#39;,value:&#39;b&#39;},
+   *      {text:&#39;选项3&#39;,value:&#39;c&#39;}
+   *     ],
+   *   picker = new Picker.ListPicker({
+   *     trigger : &#39;#show&#39;,  
+   *     valueField : &#39;#hide&#39;, //如果需要列表返回的value，放在隐藏域，那么指定隐藏域
+   *     width:100,  //指定宽度
+   *     children : [{
+   *        elCls:&#39;bui-select-list&#39;,
+   *        items : items
+   *     }] //配置picker内的列表
+   *   });
+   * picker.render();
+   * });
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @class BUI.Picker.ListPicker
+   * @extends BUI.Picker.Picker
+   */
+  listPicker = Picker.extend({
+    initializer : function(){
+      var _self = this,
+        children = _self.get(&#39;children&#39;),
+        list = _self.get(&#39;list&#39;);
+      if(!list){
+        children.push({
+
+        });
+      }
+    },
+<span id='BUI-Picker-ListPicker-method-setSelectedValue'>    /**
+</span>     * 设置选中的值
+     * @override
+     * @param {String} val 设置值
+     */
+    setSelectedValue : function(val){
+      val = val ? val.toString() : &#39;&#39;;
+      if(!this.get(&#39;isInit&#39;)){
+        this._initControl();
+      }
+      var _self = this,
+        list = _self.get(&#39;list&#39;),
+        selectedValue = _self.getSelectedValue();
+      if(val !== selectedValue &amp;&amp; list.getCount()){
+        if(list.get(&#39;multipleSelect&#39;)){
+          list.clearSelection();
+        }
+        list.setSelectionByField(val.split(&#39;,&#39;));
+      }   
+    },
+<span id='global-method-onChange'>    /**
+</span>     * @protected
+     * @ignore
+     */
+    onChange : function(selText,selValue,ev){
+      var _self = this,
+        curTrigger = _self.get(&#39;curTrigger&#39;);
+      //curTrigger &amp;&amp; curTrigger.trigger(&#39;change&#39;); //触发改变事件
+      _self.fire(&#39;selectedchange&#39;,{value : selValue,text : selText,curTrigger : curTrigger,item : ev.item});
+    },
+<span id='BUI-Picker-ListPicker-method-getSelectedValue'>    /**
+</span>     * 获取选中的值，多选状态下，值以&#39;,&#39;分割
+     * @return {String} 选中的值
+     */
+    getSelectedValue : function(){
+      if(!this.get(&#39;isInit&#39;)){
+        this._initControl();
+      }
+      return this.get(&#39;list&#39;).getSelectionValues().join(&#39;,&#39;);
+    },
+<span id='BUI-Picker-ListPicker-method-getSelectedText'>    /**
+</span>     * 获取选中项的文本，多选状态下，文本以&#39;,&#39;分割
+     * @return {String} 选中的文本
+     */
+    getSelectedText : function(){
+      if(!this.get(&#39;isInit&#39;)){
+        this._initControl();
+      }
+      return this.get(&#39;list&#39;).getSelectionText().join(&#39;,&#39;);
+    }
+  },{
+    ATTRS : {
+<span id='BUI-Picker-ListPicker-property-defaultChildClass'>      /**
+</span>       * 默认子控件的样式,默认为&#39;simple-list&#39;
+       * @type {String}
+       * @override
+       */
+      defaultChildClass:{
+        value : &#39;simple-list&#39;
+      },
+<span id='BUI-Picker-ListPicker-property-list'>      /**
+</span>       * 选择的列表
+       * &lt;pre&gt;&lt;code&gt;
+       *  var list = picker.get(&#39;list&#39;);
+       *  list.getSelected();
+       * &lt;/code&gt;&lt;/pre&gt;
+       * @type {BUI.List.SimpleList}
+       * @readOnly
+       */
+      list : {
+        getter:function(){
+          return this.get(&#39;children&#39;)[0];
+        }
+      }
+<span id='BUI-Picker-ListPicker-event-selectedchange'>      /**
+</span>       * @event selectedchange
+       * 选择发生改变事件
+       * @param {Object} e 事件对象
+       * @param {String} e.text 选中的文本
+       * @param {string} e.value 选中的值
+       * @param {Object} e.item 发生改变的选项
+       * @param {jQuery} e.curTrigger 当前触发picker的元素
+       */
+    }
+  },{
+    xclass : &#39;list-picker&#39;
+  });
+
+module.exports = listPicker;
+</pre>
+</body>
+</html>

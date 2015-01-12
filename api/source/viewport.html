@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 全屏容器，一般情况下用于布局
+ * @ignore
+ */
+
+
+var $ = require(&#39;jquery&#39;),
+	BUI = require(&#39;bui-common&#39;),
+	CLS_VIEW_CONTAINER = &#39;x-viewport-container&#39;,
+	UA = BUI.UA,
+	win = window;
+
+<span id='BUI-Layout-Viewport'>/**
+</span> * @class BUI.Layout.Viewport
+ * 窗口视图控件，窗口发生改变时，自适应宽高，通常使用布局插件
+ * @extends BUI.Component.Controller
+ * ** 此控件通常跟布局控件一起使用： **
+ * &lt;pre&gt;&lt;code&gt;
+ * 	var port = new Viewport({
+			elCls : &#39;ext-border-layout&#39;,
+			children : [{
+				layout : {
+					title : &#39;顶部&#39;,
+					collapsable : true,
+					region : &#39;north&#39;,
+					height : 100
+				},
+				xclass : &#39;controller&#39;,
+				content : &quot;一&quot;
+			},{
+				xclass : &#39;controller&#39;,
+				layout : {
+					region : &#39;south&#39;,
+					title : &#39;下部&#39;,
+					collapsable : true,
+					height : 100
+				},
+				content : &#39;二&#39;
+			},{
+				xclass : &#39;controller&#39;,
+				layout : {
+					region : &#39;east&#39;,
+					title : &#39;右侧&#39;,
+					collapsable : true,
+					width : 150
+				},
+				content : &quot;三&quot;
+			},{
+				xclass : &#39;controller&#39;,
+				layout : {
+					region : &#39;west&#39;,
+					title : &#39;左侧&#39;,
+					collapsable : true,
+					width : 300
+				},
+				content : &quot;四&quot;
+			},{
+				xclass : &#39;controller&#39;,
+				layout : {
+					title : &#39;居中&#39;,
+					region : &#39;center&#39;
+				},
+				content : &#39;居中&#39;
+			}],
+			plugins : [Border]
+		});
+	port.render();
+ * &lt;/code&gt;&lt;/pre&gt;
+ */
+var Viewport = BUI.Component.Controller.extend({
+	renderUI : function(){
+		this.reset();
+		var _self = this,
+			render = _self.get(&#39;render&#39;);
+		$(render).addClass(CLS_VIEW_CONTAINER);
+	},
+	bindUI : function(){
+		var _self = this;
+		$(win).on(&#39;resize&#39;,BUI.wrapBehavior(_self,&#39;onResize&#39;));
+	},
+	//窗口发生改变时
+	onResize : function(){
+		this.reset();
+	},
+<span id='BUI-Layout-Viewport-method-reset'>	/**
+</span>	 * 重新适应窗口大小,一般场景下此控件会随着窗口的变化而变化，但是特殊场景下需要手工调用
+	 * &lt;pre&gt;&lt;code&gt;
+	 * viewport.reset();
+	 * &lt;/code&gt;&lt;/pre&gt;
+	 */
+	reset : function(){
+		var _self = this,
+			el = _self.get(&#39;el&#39;),
+			viewportHeight = BUI.viewportHeight(), //ie6,7下问题
+			viewportWidth = BUI.viewportWidth(),
+			appendWidth = _self.getAppendWidth(),
+			appendHeight = _self.getAppendHeight();
+		_self.set(&#39;width&#39;,viewportWidth - appendWidth);
+		_self.set(&#39;height&#39;,viewportHeight - appendHeight);
+		_self.fire(&#39;resize&#39;);
+
+	},
+	destructor : function(){
+		$(win).off(&#39;resize&#39;,BUI.getWrapBehavior(this,&#39;onResize&#39;));
+	}
+},{
+	ATTRS : {
+		render : {
+			value : &#39;body&#39;
+		}
+
+<span id='BUI-Layout-Viewport-event-resize'>		/**
+</span>		 * @event resize
+		 * ViewPort 重新布局
+		 */
+	}
+},{
+	xclass : &#39;view-port&#39;
+});
+
+module.exports = Viewport;
+
+</pre>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 垂直表单
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;),
+  BUI = require(&#39;bui-common&#39;),
+  Form = require(&#39;./form&#39;);
+
+<span id='BUI-Form-HForm'>/**
+</span> * @class BUI.Form.HForm
+ * 水平表单，字段水平排列
+ * @extends BUI.Form.Form
+ * 
+ */
+var Horizontal = Form.extend({
+<span id='BUI-Form-HForm-method-getDefaultButtonBarCfg'>  /**
+</span>   * 获取按钮栏默认的配置项
+   * @protected
+   * @return {Object} 
+   */
+  getDefaultButtonBarCfg : function(){
+    var _self = this,
+      buttons = _self.get(&#39;buttons&#39;);
+    return {
+      autoRender : true,
+      elCls : &#39;actions-bar toolbar row&#39;,
+      tpl : &#39;&lt;div class=&quot;form-actions span21 offset3&quot;&gt;&lt;/div&gt;&#39;,
+      childContainer : &#39;.form-actions&#39;,
+      render : _self.get(&#39;el&#39;),
+      items : buttons,
+      defaultChildClass : &#39;bar-item-button&#39;
+    };
+  }
+},{
+  ATTRS : {
+    defaultChildClass : {
+      value : &#39;form-row&#39;
+    },
+    errorTpl : {
+      value : &#39;&lt;span class=&quot;valid-text&quot;&gt;&lt;span class=&quot;estate error&quot;&gt;&lt;span class=&quot;x-icon x-icon-mini x-icon-error&quot;&gt;!&lt;/span&gt;&lt;em&gt;{error}&lt;/em&gt;&lt;/span&gt;&lt;/span&gt;&#39;
+    },
+    elCls : {
+      value : &#39;form-horizontal&#39;
+    }
+  },
+  PARSER : {
+    
+  }
+},{
+  xclass : &#39;form-horizontal&#39;
+});
+
+module.exports = Horizontal;
+</pre>
+</body>
+</html>

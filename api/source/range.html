@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Group'>/**
+</span> * @fileOverview 范围的字段组，比如日期范围等
+ * @ignore
+ */
+
+var Group = require(&#39;./base&#39;);
+
+function testRange (self,curVal,prevVal) {
+  var allowEqual = self.get(&#39;allowEqual&#39;);
+
+  if(allowEqual){
+    return prevVal &lt;= curVal;
+  }
+
+  return prevVal &lt; curVal;
+}
+<span id='BUI-Form-Group-Range'>/**
+</span> * @class BUI.Form.Group.Range
+ * 字段范围分组，用于日期范围，数字范围等场景
+ * @extends BUI.Form.Group
+ */
+var Range = Group.extend({
+
+},{
+  ATTRS : {
+<span id='BUI-Form-Group-Range-property-rangeText'>    /**
+</span>     * 默认的验证函数失败后显示的文本。
+     * @type {Object}
+     */
+    rangeText : {
+      value : &#39;开始不能大于结束！&#39;
+    },
+<span id='BUI-Form-Group-Range-property-allowEqual'>    /**
+</span>     * 是否允许前后相等
+     * @type {Boolean}
+     */
+    allowEqual : {
+      value : true
+    },
+<span id='BUI-Form-Group-Range-property-validator'>    /**
+</span>     * 验证器
+     * @override
+     * @type {Function}
+     */
+    validator : {
+      value : function (record) {
+        var _self = this,
+          fields = _self.getFields(),
+          valid = true;
+        for(var i = 1; i &lt; fields.length ; i ++){
+          var cur = fields[i],
+            prev = fields[i-1],
+            curVal,
+            prevVal;
+          if(cur &amp;&amp; prev){
+            curVal = cur.get(&#39;value&#39;);
+            prevVal = prev.get(&#39;value&#39;);
+            if(!testRange(_self,curVal,prevVal)){
+              valid = false;
+              break;
+            }
+          }
+        }
+        if(!valid){
+          return _self.get(&#39;rangeText&#39;);
+        }
+        return null;
+      }
+    }
+  }
+},{
+  xclass : &#39;form-group-range&#39;
+});
+
+module.exports = Range;
+</pre>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='BUI'>/**
+</span> * @fileOverview 对象编辑器
+ * @ignore
+ */
+
+var BUI = require(&#39;bui-common&#39;),
+  Editor = require(&#39;./editor&#39;);
+
+<span id='BUI-Editor-RecordEditor'>/**
+</span> * @class BUI.Editor.RecordEditor
+ * @extends BUI.Editor.Editor
+ * 编辑器
+ */
+var editor = Editor.extend({
+<span id='BUI-Editor-RecordEditor-method-getSourceValue'>  /**
+</span>   * @protected
+   * @override
+   * 获取编辑的源数据
+   * @return {String} 返回需要编辑的文本
+   */
+  getSourceValue : function(){
+    return this.get(&#39;record&#39;);
+  },
+<span id='BUI-Editor-RecordEditor-method-updateSource'>  /**
+</span>   * @protected
+   * 更新文本
+   * @param  {Object} value 编辑器的值
+   */
+  updateSource : function(value){
+    var _self = this,
+      record = _self.get(&#39;record&#39;);
+    BUI.mix(record,value);
+  },
+  _uiSetRecord : function(v){
+    this.setValue(v);
+  }
+},{
+  ATTRS : {
+
+<span id='BUI-Editor-RecordEditor-property-innerValueField'>    /**
+</span>     * 内部控件的代表Value的字段
+     * @protected
+     * @override
+     * @type {String}
+     */
+    innerValueField : {
+      value : &#39;record&#39;
+    },
+<span id='BUI-Editor-RecordEditor-property-acceptEvent'>    /**
+</span>     * 接受更改的事件
+     * @type {String}
+     */
+    acceptEvent : {
+      value : &#39;&#39;
+    },
+<span id='BUI-Editor-RecordEditor-property-emptyValue'>    /**
+</span>     * 空值的数据，清空编辑器时使用
+     * @protected
+     * @type {*}
+     */
+    emptyValue : {
+      value : {}
+    },
+<span id='BUI-Editor-RecordEditor-property-autoHide'>    /**
+</span>     * 是否自动隐藏
+     * @override
+     * @type {Boolean}
+     */
+    autoHide : {
+      value : false
+    },
+<span id='BUI-Editor-RecordEditor-property-record'>    /**
+</span>     * 编辑的记录
+     * @type {Object}
+     */
+    record : {
+      value : {}
+    },
+<span id='BUI-Editor-RecordEditor-property-controlCfgField'>    /**
+</span>     * 内部控件配置项的字段
+     * @protected
+     * @type {String}
+     */
+    controlCfgField : {
+      value : &#39;form&#39;
+    },
+<span id='BUI-Editor-RecordEditor-property-form'>    /**
+</span>     * 编辑器内表单的配置项
+     * @type {Object}
+     */
+    form : {
+      value : {}
+    },
+<span id='BUI-Editor-RecordEditor-property-errorAlign'>    /**
+</span>     * 错误信息的对齐方式
+     * @type {Object}
+     */
+    errorAlign : {
+      value : {
+        points: [&#39;tr&#39;,&#39;tl&#39;],
+        offset : [10,0]
+      }
+    },
+<span id='BUI-Editor-RecordEditor-property-defaultChildCfg'>    /**
+</span>     * 默认的字段域配置项
+     * @type {Object}
+     */
+    defaultChildCfg : {
+      valueFn : function(){
+        var _self = this;
+        return {
+          xclass : &#39;form&#39;,
+          errorTpl : &#39;&#39;,
+          showError : true,
+          showChildError : true,
+          defaultChildCfg : {
+            elCls : &#39;bui-inline-block&#39;,
+            tpl : &#39;&#39;,
+            forceFit : true
+          },
+          buttons : [
+          {
+            btnCls : &#39;button button-primary&#39;,
+            text : &#39;确定&#39;,
+            handler : function(){
+              _self.accept();
+            }
+          },
+          {
+            btnCls : &#39;button&#39;,
+            text : &#39;取消&#39;,
+            handler : function(){
+              _self.cancel();
+            }
+          }]
+        }
+      }
+    }
+  }
+},{
+  xclass : &#39;record-editor&#39;
+});
+
+module.exports = editor;
+</pre>
+</body>
+</html>

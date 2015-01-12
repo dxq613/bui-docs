@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 拥有内容的标签项的扩展类，每个标签项都有一个分离的容器作为面板
+ * @ignore
+ */
+var $ = require(&#39;jquery&#39;);
+<span id='BUI-Tab-PanelItem'>/**
+</span> * @class BUI.Tab.PanelItem
+ * 包含面板的标签项的扩展
+ */
+var PanelItem = function(){
+
+};
+
+PanelItem.ATTRS = {
+
+<span id='BUI-Tab-PanelItem-cfg-panel'>  /**
+</span>   * 标签项对应的面板容器，当标签选中时，面板显示
+   * @cfg {String|HTMLElement|jQuery} panel
+   * @internal 面板属性一般由 tabPanel设置而不应该由用户手工设置
+   */
+<span id='BUI-Tab-PanelItem-property-panel'>  /**
+</span>   * 标签项对应的面板容器，当标签选中时，面板显示
+   * @type {String|HTMLElement|jQuery}
+   * @readOnly
+   */
+  panel : {
+
+  },
+<span id='BUI-Tab-PanelItem-property-panelContent'>  /**
+</span>   * 面板的内容
+   * @type {String}
+   */
+  panelContent : {
+
+  },
+<span id='BUI-Tab-PanelItem-property-panelVisibleStatus'>  /**
+</span>   * 关联面板显示隐藏的属性名
+   * @protected
+   * @type {string}
+   */
+  panelVisibleStatus : {
+    value : &#39;selected&#39;
+  },
+<span id='BUI-Tab-PanelItem-property-defaultLoaderCfg'>  /**
+</span>     * 默认的加载控件内容的配置,默认值：
+     * &lt;pre&gt;
+     *  {
+     *   property : &#39;panelContent&#39;,
+     *   lazyLoad : {
+     *       event : &#39;active&#39;
+     *   },
+     *     loadMask : {
+     *       el : _self.get(&#39;panel&#39;)
+     *   }
+     * }
+     * &lt;/pre&gt;
+     * @type {Object}
+     */
+    defaultLoaderCfg  : {
+      valueFn :function(){
+        var _self = this,
+          eventName = _self._getVisibleEvent();
+        return {
+          property : &#39;panelContent&#39;,
+          autoLoad : false,
+          lazyLoad : {
+            event : eventName
+          },
+          loadMask : {
+            el : _self.get(&#39;panel&#39;)
+          }
+        }
+      } 
+    },
+<span id='BUI-Tab-PanelItem-property-panelDestroyable'>  /**
+</span>   * 面板是否跟随标签一起释放
+   * @type {Boolean}
+   */
+  panelDestroyable : {
+    value : true
+  }
+}
+
+
+BUI.augment(PanelItem,{
+
+  __renderUI : function(){
+    this._resetPanelVisible();
+  },
+  __bindUI : function(){
+    var _self = this,
+    eventName = _self._getVisibleEvent();
+
+    _self.on(eventName,function(ev){
+      _self._setPanelVisible(ev.newVal);
+    });
+  },
+  _resetPanelVisible : function(){
+    var _self = this,
+      status = _self.get(&#39;panelVisibleStatus&#39;),
+      visible = _self.get(status);
+    _self._setPanelVisible(visible);
+  },
+  //获取显示隐藏的事件
+  _getVisibleEvent : function(){
+    var _self = this,
+      status = _self.get(&#39;panelVisibleStatus&#39;);
+
+    return &#39;after&#39; + BUI.ucfirst(status) + &#39;Change&#39;;;
+  },
+<span id='BUI-Tab-PanelItem-method-_setPanelVisible'>  /**
+</span>   * @private
+   * 设置面板的可见
+   * @param {Boolean} visible 显示或者隐藏
+   */
+  _setPanelVisible : function(visible){
+    var _self = this,
+      panel = _self.get(&#39;panel&#39;),
+      method = visible ? &#39;show&#39; : &#39;hide&#39;;
+    if(panel){
+      $(panel)[method]();
+    }
+  },
+  __destructor : function(){
+    var _self = this,
+      panel = _self.get(&#39;panel&#39;);
+    if(panel &amp;&amp; _self.get(&#39;panelDestroyable&#39;)){
+      $(panel).remove();
+    }
+  },
+  _setPanelContent : function(panel,content){
+    var panelEl = $(panel);
+    $(panel).html(content);
+  },
+  _uiSetPanelContent : function(v){
+    var _self = this,
+      panel = _self.get(&#39;panel&#39;);
+    //$(panel).html(v);
+    _self._setPanelContent(panel,v);
+  },
+  //设置panel
+  _uiSetPanel : function(v){
+    var _self = this,
+      content = _self.get(&#39;panelContent&#39;);
+    if(content){
+      _self._setPanelContent(v,content);
+    }
+    _self._resetPanelVisible();
+  }
+});
+
+module.exports = PanelItem;
+</pre>
+</body>
+</html>

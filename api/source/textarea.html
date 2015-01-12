@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Field'>/**
+</span> * @fileOverview 表单文本域
+ * @author dxq613@gmail.com
+ * @ignore
+ */
+
+var Field = require(&#39;./base&#39;);
+
+<span id='BUI-Form-Field-TextArea'>/**
+</span> * 表单文本域
+ * @class BUI.Form.Field.TextArea
+ * @extends BUI.Form.Field
+ */
+var TextAreaField = Field.extend({
+  //设置行
+  _uiSetRows : function(v){
+    var _self = this,
+      innerControl = _self.getInnerControl();
+    if(v){
+      innerControl.attr(&#39;rows&#39;,v);
+    }
+  },
+  //设置列
+  _uiSetCols : function(v){
+    var _self = this,
+      innerControl = _self.getInnerControl();
+    if(v){
+      innerControl.attr(&#39;cols&#39;,v);
+    }
+  }
+},{
+  ATTRS : {
+<span id='BUI-Form-Field-TextArea-property-controlTpl'>    /**
+</span>     * 内部表单元素的容器
+     * @type {String}
+     */
+    controlTpl : {
+      value : &#39;&lt;textarea&gt;&lt;/textarea&gt;&#39;
+    },
+<span id='BUI-Form-Field-TextArea-property-rows'>    /**
+</span>     * 行
+     * @type {Number}
+     */
+    rows : {
+
+    },
+<span id='BUI-Form-Field-TextArea-property-cols'>    /**
+</span>     * 列
+     * @type {Number}
+     */
+    cols : {
+
+    },
+    decorateCfgFields : {
+      value : {
+        &#39;rows&#39; : true,
+        &#39;cols&#39; : true
+      }
+    }
+  }
+},{
+  xclass : &#39;form-field-textarea&#39;
+});
+
+module.exports = TextAreaField;
+</pre>
+</body>
+</html>

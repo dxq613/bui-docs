@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var $ = require(&#39;jquery&#39;),
+  BUI = require(&#39;bui-common&#39;);
+
+
+<span id='BUI-Grid-Plugins-ColumnChecked'>/**
+</span> * 表格自适应宽度
+ * @class BUI.Grid.Plugins.ColumnChecked
+ * @extends BUI.Base
+ */
+var Checked = function(cfg){
+  Checked.superclass.constructor.call(this,cfg);
+};
+
+BUI.extend(Checked,BUI.Base);
+
+Checked.ATTRS = {
+
+<span id='BUI-Grid-Plugins-ColumnChecked-property-triggerCls'>  /**
+</span>   * 触发的样式，默认 ： x-col-checkbox
+   * @type {String}
+   */
+  triggerCls : {
+    value : &#39;x-col-checkbox&#39;
+  },
+<span id='BUI-Grid-Plugins-ColumnChecked-property-uncheckedTpl'>  /**
+</span>   * 未选中的模板
+   * @type {String}
+   */
+  uncheckedTpl : {
+    value : &#39;&lt;span class=&quot;x-col-checkbox&quot;&gt;&lt;/span&gt;&#39;
+  },
+<span id='BUI-Grid-Plugins-ColumnChecked-property-checkedTpl'>  /**
+</span>   * 选中的模板
+   * @type {String}
+   */
+  checkedTpl : {
+    value : &#39;&lt;span class=&quot;x-col-checkbox x-col-checkbox-checked&quot;&gt;&lt;/span&gt;&#39;
+  }
+};
+
+BUI.augment(Checked,{
+
+  renderUI : function(grid){
+    var _self = this,
+      columns = grid.get(&#39;columns&#39;),
+      uncheckedTpl = _self.get(&#39;uncheckedTpl&#39;),
+      checkedTpl = _self.get(&#39;checkedTpl&#39;);
+
+    BUI.each(columns,function(column){
+      if(column.get(&#39;checkable&#39;)){
+        var renderer = column.get(&#39;renderer&#39;);
+        var newRender = function(value,obj){
+          var text = renderer ? renderer(value,obj) : &#39;&#39;;
+          if(value){
+            text = checkedTpl + text;
+          }else{
+            text = uncheckedTpl + text;
+          }
+          return text;
+        };
+
+        column.set(&#39;renderer&#39;,newRender);
+      }
+    });
+  },
+  bindUI : function(grid){
+    var _self = this,
+      triggerCls = _self.get(&#39;triggerCls&#39;),
+      store = grid.get(&#39;store&#39;);
+
+    grid.on(&#39;cellclick&#39;,function(ev){
+      var sender = $(ev.domTarget);
+      if(sender.hasClass(triggerCls)){
+        var  record = ev.record,
+          field = ev.field,
+          value = record[field];
+        store.setValue(record,field,!value);
+        return false; //阻止默认行为
+      }
+    });
+  }
+});
+
+
+module.exports = Checked;</pre>
+</body>
+</html>

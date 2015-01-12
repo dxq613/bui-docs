@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 使用wrapper
+ * @ignore
+ */
+
+
+var $ = require(&#39;jquery&#39;),
+  ArrayUtil = require(&#39;../../array&#39;),
+  JSON = require(&#39;../../json&#39;),
+  prefixCls = BUI.prefix,
+  FIELD_PREFIX = &#39;data-&#39;,
+  FIELD_CFG = FIELD_PREFIX + &#39;cfg&#39;,
+  PARSER = &#39;PARSER&#39;,
+  Manager = require(&#39;../manage&#39;),
+  RE_DASH_WORD = /-([a-z])/g,
+  regx = /^[\{\[]/;
+
+function isConfigField(name, cfgFields) {
+  if (cfgFields[name]) {
+    return true;
+  }
+  var reg = new RegExp(&quot;^&quot; + FIELD_PREFIX);
+  if (name !== FIELD_CFG &amp;&amp; reg.test(name)) {
+    return true;
+  }
+  return false;
+}
+
+// 收集单继承链，子类在前，父类在后
+function collectConstructorChains(self) {
+  var constructorChains = [],
+    c = self.constructor;
+  while (c) {
+    constructorChains.push(c);
+    c = c.superclass &amp;&amp; c.superclass.constructor;
+  }
+  return constructorChains;
+}
+
+function camelCase(str) {
+  return str.toLowerCase().replace(RE_DASH_WORD, function(all, letter) {
+    return (letter + &#39;&#39;).toUpperCase()
+  })
+}
+
+//如果属性为对象或者数组，则进行转换
+function parseFieldValue(value) {
+
+  value = $.trim(value);
+  if (value.toLowerCase() === &#39;false&#39;) {
+    value = false
+  } else if (value.toLowerCase() === &#39;true&#39;) {
+    value = true
+  } else if (regx.test(value)) {
+    value = JSON.looseParse(value);
+  } else if (/\d/.test(value) &amp;&amp; /[^a-z]/i.test(value)) {
+    var number = parseFloat(value)
+    if (number + &#39;&#39; === value) {
+      value = number
+    }
+  }
+
+  return value;
+}
+
+function setConfigFields(self, cfg) {
+
+  var userConfig = self.userConfig || {};
+  for (var p in cfg) {
+    // 用户设置过那么这里不从 dom 节点取
+    // 用户设置 &gt; html parser &gt; default value
+    if (!(p in userConfig)) {
+      self.setInternal(p, cfg[p]);
+    }
+  }
+}
+
+function applyParser(srcNode, parser) {
+  var self = this,
+    p, v,
+    userConfig = self.userConfig || {};
+
+  // 从 parser 中，默默设置属性，不触发事件
+  for (p in parser) {
+    // 用户设置过那么这里不从 dom 节点取
+    // 用户设置 &gt; html parser &gt; default value
+    if (!(p in userConfig)) {
+      v = parser[p];
+      // 函数
+      if (BUI.isFunction(v)) {
+        self.setInternal(p, v.call(self, srcNode));
+      }
+      // 单选选择器
+      else if (typeof v == &#39;string&#39;) {
+        self.setInternal(p, srcNode.find(v));
+      }
+      // 多选选择器
+      else if (BUI.isArray(v) &amp;&amp; v[0]) {
+        self.setInternal(p, srcNode.find(v[0]))
+      }
+    }
+  }
+}
+
+function initParser(self, srcNode) {
+
+  var c = self.constructor,
+    len,
+    p,
+    constructorChains;
+
+  constructorChains = collectConstructorChains(self);
+
+  // 从父类到子类开始从 html 读取属性
+  for (len = constructorChains.length - 1; len &gt;= 0; len--) {
+    c = constructorChains[len];
+    if (p = c[PARSER]) {
+      applyParser.call(self, srcNode, p);
+    }
+  }
+}
+
+function initDecorate(self) {
+  var _self = self,
+    srcNode = _self.get(&#39;srcNode&#39;),
+    userConfig,
+    decorateCfg;
+  if (srcNode) {
+    srcNode = $(srcNode);
+    _self.setInternal(&#39;el&#39;, srcNode);
+    _self.setInternal(&#39;srcNode&#39;, srcNode);
+
+    userConfig = _self.get(&#39;userConfig&#39;);
+    decorateCfg = _self.getDecorateConfig(srcNode);
+    setConfigFields(self, decorateCfg);
+
+    //如果从DOM中读取子控件
+    if (_self.get(&#39;isDecorateChild&#39;) &amp;&amp; _self.decorateInternal) {
+      _self.decorateInternal(srcNode);
+    }
+    initParser(self, srcNode);
+  }
+}
+
+<span id='BUI-Component-UIBase-Decorate'>/**
+</span> * @class BUI.Component.UIBase.Decorate
+ * 将DOM对象封装成控件
+ */
+function decorate() {
+  initDecorate(this);
+}
+
+decorate.ATTRS = {
+
+<span id='BUI-Component-UIBase-Decorate-cfg-srcNode'>  /**
+</span>   * 配置控件的根节点的DOM
+   * &lt;pre&gt;&lt;code&gt;
+   * new Form.Form({
+   *   srcNode : &#39;#J_Form&#39;
+   * }).render();
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {jQuery} srcNode
+   */
+<span id='BUI-Component-UIBase-Decorate-property-srcNode'>  /**
+</span>   * 配置控件的根节点的DOM
+   * @type {jQuery}
+   */
+  srcNode: {
+    view: true
+  },
+<span id='BUI-Component-UIBase-Decorate-property-isDecorateChild'>  /**
+</span>   * 是否根据DOM生成子控件
+   * @type {Boolean}
+   * @protected
+   */
+  isDecorateChild: {
+    value: false
+  },
+<span id='BUI-Component-UIBase-Decorate-property-decorateCfgFields'>  /**
+</span>   * 此配置项配置使用那些srcNode上的节点作为配置项
+   *  - 当时用 decorate 时，取 srcNode上的节点的属性作为控件的配置信息
+   *  - 默认id,name,value,title 都会作为属性传入
+   *  - 使用 &#39;data-cfg&#39; 作为整体的配置属性
+   *  &lt;pre&gt;&lt;code&gt;
+   *     &lt;input id=&quot;c1&quot; type=&quot;text&quot; name=&quot;txtName&quot; id=&quot;id&quot;,data-cfg=&quot;{allowBlank:false}&quot; /&gt;
+   *     //会生成以下配置项：
+   *     {
+   *         name : &#39;txtName&#39;,
+   *         id : &#39;id&#39;,
+   *         allowBlank:false
+   *     }
+   *     new Form.Field({
+   *        src:&#39;#c1&#39;
+   *     }).render();
+   *  &lt;/code&gt;&lt;/pre&gt;
+   * @type {Object}
+   * @protected
+   */
+  decorateCfgFields: {
+    value: {
+      &#39;id&#39;: true,
+      &#39;name&#39;: true,
+      &#39;value&#39;: true,
+      &#39;title&#39;: true
+    }
+  }
+};
+
+decorate.prototype = {
+
+<span id='BUI-Component-UIBase-Decorate-method-getDecorateConfig'>  /**
+</span>   * 获取控件的配置信息
+   * @protected
+   */
+  getDecorateConfig: function(el) {
+    if (!el.length) {
+      return null;
+    }
+    var _self = this,
+      dom = el[0],
+      attributes = dom.attributes,
+      decorateCfgFields = _self.get(&#39;decorateCfgFields&#39;),
+      config = {},
+      statusCfg = _self._getStautsCfg(el);
+
+    BUI.each(attributes, function(attr) {
+      var name = attr.nodeName;
+      try {
+        if (name === FIELD_CFG) {
+          var cfg = parseFieldValue(attr.nodeValue);
+          BUI.mix(config, cfg);
+        } else if (isConfigField(name, decorateCfgFields)) {
+          var value = attr.nodeValue;
+          if (name.indexOf(FIELD_PREFIX) !== -1) {
+            name = name.replace(FIELD_PREFIX, &#39;&#39;);
+            name = camelCase(name);
+            value = parseFieldValue(value);
+          }
+
+          if (config[name] &amp;&amp; BUI.isObject(value)) {
+            BUI.mix(config[name], value);
+          } else {
+            config[name] = value;
+          }
+        }
+      } catch (e) {
+        BUI.log(&#39;parse field error,the attribute is:&#39; + name);
+      }
+    });
+    return BUI.mix(config, statusCfg);
+  },
+  //根据css class获取状态属性
+  //如： selected,disabled等属性
+  _getStautsCfg: function(el) {
+    var _self = this,
+      rst = {},
+      statusCls = _self.get(&#39;statusCls&#39;);
+    BUI.each(statusCls, function(v, k) {
+      if (el.hasClass(v)) {
+        rst[k] = true;
+      }
+    });
+    return rst;
+  },
+<span id='BUI-Component-UIBase-Decorate-method-getDecorateElments'>  /**
+</span>   * 获取封装成子控件的节点集合
+   * @protected
+   * @return {Array} 节点集合
+   */
+  getDecorateElments: function() {
+    var _self = this,
+      el = _self.get(&#39;el&#39;),
+      contentContainer = _self.get(&#39;childContainer&#39;);
+    if (contentContainer) {
+      return el.find(contentContainer).children();
+    } else {
+      return el.children();
+    }
+  },
+
+<span id='BUI-Component-UIBase-Decorate-method-decorateInternal'>  /**
+</span>   * 封装所有的子控件
+   * @protected
+   * @param {jQuery} el Root element of current component.
+   */
+  decorateInternal: function(el) {
+    var self = this;
+    self.decorateChildren(el);
+  },
+<span id='BUI-Component-UIBase-Decorate-method-findXClassByNode'>  /**
+</span>   * 获取子控件的xclass类型
+   * @protected
+   * @param {jQuery} childNode 子控件的根节点
+   */
+  findXClassByNode: function(childNode, ignoreError) {
+    var _self = this,
+      cls = childNode.attr(&quot;class&quot;) || &#39;&#39;,
+      childClass = _self.get(&#39;defaultChildClass&#39;); //如果没有样式或者查找不到对应的类，使用默认的子控件类型
+
+    // 过滤掉特定前缀
+    cls = cls.replace(new RegExp(&quot;\\b&quot; + prefixCls, &quot;ig&quot;), &quot;&quot;);
+
+    var UI = Manager.getConstructorByXClass(cls) || Manager.getConstructorByXClass(childClass);
+
+    if (!UI &amp;&amp; !ignoreError) {
+      BUI.log(childNode);
+      BUI.error(&quot;can not find ui &quot; + cls + &quot; from this markup&quot;);
+    }
+    return Manager.getXClassByConstructor(UI);
+  },
+  // 生成一个组件
+  decorateChildrenInternal: function(xclass, c) {
+    var _self = this,
+      children = _self.get(&#39;children&#39;);
+    children.push({
+      xclass: xclass,
+      srcNode: c
+    });
+  },
+<span id='BUI-Component-UIBase-Decorate-method-decorateChildren'>  /**
+</span>   * 封装子控件
+   * @private
+   * @param {jQuery} el component&#39;s root element.
+   */
+  decorateChildren: function(el) {
+    var _self = this,
+      children = _self.getDecorateElments();
+    BUI.each(children, function(c) {
+      var xclass = _self.findXClassByNode($(c));
+      _self.decorateChildrenInternal(xclass, $(c));
+    });
+  }
+};
+
+module.exports = decorate;
+</pre>
+</body>
+</html>

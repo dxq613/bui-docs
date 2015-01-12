@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 跟指定的元素项对齐的方式
+ * @author yiminghe@gmail.com
+ * copied by dxq613@gmail.com
+ * @ignore
+ */
+
+
+var $ = require(&#39;jquery&#39;),
+  UA = require(&#39;../../ua&#39;),
+  CLS_ALIGN_PREFIX =&#39;x-align-&#39;,
+  win = window;
+
+// var ieMode = document.documentMode || UA.ie;
+
+/*
+ inspired by closure library by Google
+ see http://yiminghe.iteye.com/blog/1124720
+ */
+
+<span id='global-method-getOffsetParent'>/**
+</span> * 得到会导致元素显示不全的祖先元素
+ * @ignore
+ */
+function getOffsetParent(element) {
+  // ie 这个也不是完全可行
+<span id='global-property-'>  /**
+</span>   &lt;div style=&quot;width: 50px;height: 100px;overflow: hidden&quot;&gt;
+   &lt;div style=&quot;width: 50px;height: 100px;position: relative;&quot; id=&quot;d6&quot;&gt;
+   元素 6 高 100px 宽 50px&lt;br/&gt;
+   &lt;/div&gt;
+   &lt;/div&gt;
+   @ignore
+   **/
+  // element.offsetParent does the right thing in ie7 and below. Return parent with layout!
+  //  In other browsers it only includes elements with position absolute, relative or
+  // fixed, not elements with overflow set to auto or scroll.
+  //    if (UA.ie &amp;&amp; ieMode &lt; 8) {
+  //      return element.offsetParent;
+  //    }
+      // 统一的 offsetParent 方法
+  var doc = element.ownerDocument,
+    body = doc.body,
+    parent,
+    positionStyle = $(element).css(&#39;position&#39;),
+    skipStatic = positionStyle == &#39;fixed&#39; || positionStyle == &#39;absolute&#39;;
+
+  if (!skipStatic) {
+    return element.nodeName.toLowerCase() == &#39;html&#39; ? null : element.parentNode;
+  }
+
+  for (parent = element.parentNode; parent &amp;&amp; parent != body; parent = parent.parentNode) {
+    positionStyle = $(parent).css(&#39;position&#39;);
+    if (positionStyle != &#39;static&#39;) {
+      return parent;
+    }
+  }
+  return null;
+}
+
+<span id='global-method-getVisibleRectForElement'>/**
+</span> * 获得元素的显示部分的区域
+ * @private
+ * @ignore
+ */
+function getVisibleRectForElement(element) {
+  var visibleRect = {
+      left:0,
+      right:Infinity,
+      top:0,
+      bottom:Infinity
+    },
+    el,
+    scrollX,
+    scrollY,
+    winSize,
+    doc = element.ownerDocument,
+    body = doc.body,
+    documentElement = doc.documentElement;
+
+  // Determine the size of the visible rect by climbing the dom accounting for
+  // all scrollable containers.
+  for (el = element; el = getOffsetParent(el);) {
+    // clientWidth is zero for inline block elements in ie.
+    if ((!UA.ie || el.clientWidth != 0) &amp;&amp;
+      // body may have overflow set on it, yet we still get the entire
+      // viewport. In some browsers, el.offsetParent may be
+      // document.documentElement, so check for that too.
+      (el != body &amp;&amp; el != documentElement &amp;&amp; $(el).css(&#39;overflow&#39;) != &#39;visible&#39;)) {
+      var pos = $(el).offset();
+      // add border
+      pos.left += el.clientLeft;
+      pos.top += el.clientTop;
+
+      visibleRect.top = Math.max(visibleRect.top, pos.top);
+      visibleRect.right = Math.min(visibleRect.right,
+        // consider area without scrollBar
+        pos.left + el.clientWidth);
+      visibleRect.bottom = Math.min(visibleRect.bottom,
+        pos.top + el.clientHeight);
+      visibleRect.left = Math.max(visibleRect.left, pos.left);
+    }
+  }
+
+  // Clip by window&#39;s viewport.
+  scrollX = $(win).scrollLeft();
+  scrollY = $(win).scrollTop();
+  visibleRect.left = Math.max(visibleRect.left, scrollX);
+  visibleRect.top = Math.max(visibleRect.top, scrollY);
+  winSize = {
+    width:BUI.viewportWidth(),
+    height:BUI.viewportHeight()
+  };
+  visibleRect.right = Math.min(visibleRect.right, scrollX + winSize.width);
+  visibleRect.bottom = Math.min(visibleRect.bottom, scrollY + winSize.height);
+  return visibleRect.top &gt;= 0 &amp;&amp; visibleRect.left &gt;= 0 &amp;&amp;
+    visibleRect.bottom &gt; visibleRect.top &amp;&amp;
+    visibleRect.right &gt; visibleRect.left ?
+    visibleRect : null;
+}
+
+function getElFuturePos(elRegion, refNodeRegion, points, offset) {
+  var xy,
+    diff,
+    p1,
+    p2;
+
+  xy = {
+    left:elRegion.left,
+    top:elRegion.top
+  };
+
+  p1 = getAlignOffset(refNodeRegion, points[0]);
+  p2 = getAlignOffset(elRegion, points[1]);
+
+  diff = [p2.left - p1.left, p2.top - p1.top];
+
+  return {
+    left:xy.left - diff[0] + (+offset[0]),
+    top:xy.top - diff[1] + (+offset[1])
+  };
+}
+
+function isFailX(elFuturePos, elRegion, visibleRect) {
+  return elFuturePos.left &lt; visibleRect.left ||
+    elFuturePos.left + elRegion.width &gt; visibleRect.right;
+}
+
+function isFailY(elFuturePos, elRegion, visibleRect) {
+  return elFuturePos.top &lt; visibleRect.top ||
+    elFuturePos.top + elRegion.height &gt; visibleRect.bottom;
+}
+
+function adjustForViewport(elFuturePos, elRegion, visibleRect, overflow) {
+  var pos = BUI.cloneObject(elFuturePos),
+    size = {
+      width:elRegion.width,
+      height:elRegion.height
+    };
+
+  if (overflow.adjustX &amp;&amp; pos.left &lt; visibleRect.left) {
+    pos.left = visibleRect.left;
+  }
+
+  // Left edge inside and right edge outside viewport, try to resize it.
+  if (overflow[&#39;resizeWidth&#39;] &amp;&amp;
+    pos.left &gt;= visibleRect.left &amp;&amp;
+    pos.left + size.width &gt; visibleRect.right) {
+    size.width -= (pos.left + size.width) - visibleRect.right;
+  }
+
+  // Right edge outside viewport, try to move it.
+  if (overflow.adjustX &amp;&amp; pos.left + size.width &gt; visibleRect.right) {
+    // 保证左边界和可视区域左边界对齐
+    pos.left = Math.max(visibleRect.right - size.width, visibleRect.left);
+  }
+
+  // Top edge outside viewport, try to move it.
+  if (overflow.adjustY &amp;&amp; pos.top &lt; visibleRect.top) {
+    pos.top = visibleRect.top;
+  }
+
+  // Top edge inside and bottom edge outside viewport, try to resize it.
+  if (overflow[&#39;resizeHeight&#39;] &amp;&amp;
+    pos.top &gt;= visibleRect.top &amp;&amp;
+    pos.top + size.height &gt; visibleRect.bottom) {
+    size.height -= (pos.top + size.height) - visibleRect.bottom;
+  }
+
+  // Bottom edge outside viewport, try to move it.
+  if (overflow.adjustY &amp;&amp; pos.top + size.height &gt; visibleRect.bottom) {
+    // 保证上边界和可视区域上边界对齐
+    pos.top = Math.max(visibleRect.bottom - size.height, visibleRect.top);
+  }
+
+  return BUI.mix(pos, size);
+}
+
+
+function flip(points, reg, map) {
+  var ret = [];
+  $.each(points, function (index,p) {
+    ret.push(p.replace(reg, function (m) {
+      return map[m];
+    }));
+  });
+  return ret;
+}
+
+function flipOffset(offset, index) {
+  offset[index] = -offset[index];
+  return offset;
+}
+
+
+<span id='BUI-Component-UIBase-Align'>/**
+</span> * @class BUI.Component.UIBase.Align
+ * Align extension class.
+ * Align component with specified element.
+ * &lt;img src=&quot;http://images.cnitblog.com/blog/111279/201304/09180221-201343d4265c46e7987e6b1c46d5461a.jpg&quot;/&gt;
+ */
+function Align() {
+}
+
+
+Align.__getOffsetParent = getOffsetParent;
+
+Align.__getVisibleRectForElement = getVisibleRectForElement;
+
+Align.ATTRS =
+{
+<span id='BUI-Component-UIBase-Align-cfg-align'>  /**
+</span>   * 对齐配置，详细说明请参看： &lt;a href=&quot;http://www.cnblogs.com/zaohe/archive/2013/04/09/3010651.html&quot;&gt;JS控件 对齐&lt;/a&gt;
+   * @cfg {Object} align
+   * &lt;pre&gt;&lt;code&gt;
+   *  var overlay = new Overlay( {  
+   *     align :{
+   *     node: null,     // 参考元素, falsy 或 window 为可视区域, &#39;trigger&#39; 为触发元素, 其他为指定元素
+   *     points: [&#39;cc&#39;,&#39;cc&#39;], // [&#39;tr&#39;, &#39;tl&#39;] 表示 overlay 的 tl 与参考节点的 tr 对齐
+   *     offset: [0, 0]    // 有效值为 [n, m]
+   *     }
+   *   }); 
+   * &lt;/code&gt;&lt;/pre&gt;
+   */
+
+<span id='BUI-Component-UIBase-Align-property-align'>  /**
+</span>   * 设置对齐属性
+   * @type {Object}
+   * @field
+   * &lt;code&gt;
+   *   var align =  {
+   *    node: null,     // 参考元素, falsy 或 window 为可视区域, &#39;trigger&#39; 为触发元素, 其他为指定元素
+   *    points: [&#39;cc&#39;,&#39;cc&#39;], // [&#39;tr&#39;, &#39;tl&#39;] 表示 overlay 的 tl 与参考节点的 tr 对齐
+   *    offset: [0, 0]    // 有效值为 [n, m]
+   *   };
+   *   overlay.set(&#39;align&#39;,align);
+   * &lt;/code&gt;
+   */
+  align:{
+    shared : false,
+    value:{}
+  }
+};
+
+function getRegion(node) {
+  var offset, w, h;
+  if (node.length &amp;&amp; !$.isWindow(node[0])) {
+    offset = node.offset();
+    w = node.outerWidth();
+    h = node.outerHeight();
+  } else {
+    offset = { left:BUI.scrollLeft(), top:BUI.scrollTop() };
+    w = BUI.viewportWidth();
+    h = BUI.viewportHeight();
+  }
+  offset.width = w;
+  offset.height = h;
+  return offset;
+}
+
+<span id='BUI-Component-UIBase-Align-method-getAlignOffset'>/**
+</span> * 获取 node 上的 align 对齐点 相对于页面的坐标
+ * @param region
+ * @param align
+ */
+function getAlignOffset(region, align) {
+  var V = align.charAt(0),
+    H = align.charAt(1),
+    w = region.width,
+    h = region.height,
+    x, y;
+
+  x = region.left;
+  y = region.top;
+
+  if (V === &#39;c&#39;) {
+    y += h / 2;
+  } else if (V === &#39;b&#39;) {
+    y += h;
+  }
+
+  if (H === &#39;c&#39;) {
+    x += w / 2;
+  } else if (H === &#39;r&#39;) {
+    x += w;
+  }
+
+  return { left:x, top:y };
+}
+
+//清除对齐的css样式
+function clearAlignCls(el){
+  var cls = el.attr(&#39;class&#39;),
+    regex = new RegExp(&#39;\s?&#39;+CLS_ALIGN_PREFIX+&#39;[a-z]{2}-[a-z]{2}&#39;,&#39;ig&#39;),
+    arr = regex.exec(cls);
+  if(arr){
+    el.removeClass(arr.join(&#39; &#39;));
+  }
+}
+
+Align.prototype =
+{
+  _uiSetAlign:function (v,ev) {
+    var alignCls = &#39;&#39;,
+      el,   
+      selfAlign; //points 的第二个参数，是自己对齐于其他节点的的方式
+    if (v &amp;&amp; v.points) {
+      this.align(v.node, v.points, v.offset, v.overflow);
+      this.set(&#39;cachePosition&#39;,null);
+      el = this.get(&#39;el&#39;);
+      clearAlignCls(el);
+      selfAlign = v.points.join(&#39;-&#39;);
+      alignCls = CLS_ALIGN_PREFIX + selfAlign;
+      el.addClass(alignCls);
+      /**/
+    }
+  },
+  __bindUI : function(){
+    var _self = this;
+
+    var fn = BUI.wrapBehavior(_self,&#39;handleWindowResize&#39;);
+    
+    _self.on(&#39;show&#39;,function(){
+      $(window).on(&#39;resize&#39;,fn);
+    });
+
+    _self.on(&#39;hide&#39;,function(){
+      $(window).off(&#39;resize&#39;,fn);
+    });
+  },
+  //处理window resize事件
+  handleWindowResize : function(){
+    var _self = this,
+      align = _self.get(&#39;align&#39;);
+
+    _self.set(&#39;align&#39;,align);
+  },
+  /*
+   对齐 Overlay 到 node 的 points 点, 偏移 offset 处
+   @method
+   @ignore
+   @param {Element} node 参照元素, 可取配置选项中的设置, 也可是一元素
+   @param {String[]} points 对齐方式
+   @param {Number[]} [offset] 偏移
+   */
+  align:function (refNode, points, offset, overflow) {
+    refNode = $(refNode || win);
+    offset = offset &amp;&amp; [].concat(offset) || [0, 0];
+    overflow = overflow || {};
+
+    var self = this,
+      el = self.get(&#39;el&#39;),
+      fail = 0,
+    // 当前节点可以被放置的显示区域
+      visibleRect = getVisibleRectForElement(el[0]),
+    // 当前节点所占的区域, left/top/width/height
+      elRegion = getRegion(el),
+    // 参照节点所占的区域, left/top/width/height
+      refNodeRegion = getRegion(refNode),
+    // 当前节点将要被放置的位置
+      elFuturePos = getElFuturePos(elRegion, refNodeRegion, points, offset),
+    // 当前节点将要所处的区域
+      newElRegion = BUI.merge(elRegion, elFuturePos);
+
+    // 如果可视区域不能完全放置当前节点时允许调整
+    if (visibleRect &amp;&amp; (overflow.adjustX || overflow.adjustY)) {
+
+      // 如果横向不能放下
+      if (isFailX(elFuturePos, elRegion, visibleRect)) {
+        fail = 1;
+        // 对齐位置反下
+        points = flip(points, /[lr]/ig, {
+          l:&#39;r&#39;,
+          r:&#39;l&#39;
+        });
+        // 偏移量也反下
+        offset = flipOffset(offset, 0);
+      }
+
+      // 如果纵向不能放下
+      if (isFailY(elFuturePos, elRegion, visibleRect)) {
+        fail = 1;
+        // 对齐位置反下
+        points = flip(points, /[tb]/ig, {
+          t:&#39;b&#39;,
+          b:&#39;t&#39;
+        });
+        // 偏移量也反下
+        offset = flipOffset(offset, 1);
+      }
+
+      // 如果失败，重新计算当前节点将要被放置的位置
+      if (fail) {
+        elFuturePos = getElFuturePos(elRegion, refNodeRegion, points, offset);
+        BUI.mix(newElRegion, elFuturePos);
+      }
+
+      var newOverflowCfg = {};
+
+      // 检查反下后的位置是否可以放下了
+      // 如果仍然放不下只有指定了可以调整当前方向才调整
+      newOverflowCfg.adjustX = overflow.adjustX &amp;&amp;
+        isFailX(elFuturePos, elRegion, visibleRect);
+
+      newOverflowCfg.adjustY = overflow.adjustY &amp;&amp;
+        isFailY(elFuturePos, elRegion, visibleRect);
+
+      // 确实要调整，甚至可能会调整高度宽度
+      if (newOverflowCfg.adjustX || newOverflowCfg.adjustY) {
+        newElRegion = adjustForViewport(elFuturePos, elRegion,
+          visibleRect, newOverflowCfg);
+      }
+    }
+
+    // 新区域位置发生了变化
+    if (newElRegion.left != elRegion.left) {
+      self.setInternal(&#39;x&#39;, null);
+      self.get(&#39;view&#39;).setInternal(&#39;x&#39;, null);
+      self.set(&#39;x&#39;, newElRegion.left);
+    }
+
+    if (newElRegion.top != elRegion.top) {
+      // https://github.com/kissyteam/kissy/issues/190
+      // 相对于屏幕位置没变，而 left/top 变了
+      // 例如 &lt;div &#39;relative&#39;&gt;&lt;el absolute&gt;&lt;/div&gt;
+      // el.align(div)
+      self.setInternal(&#39;y&#39;, null);
+      self.get(&#39;view&#39;).setInternal(&#39;y&#39;, null);
+      self.set(&#39;y&#39;, newElRegion.top);
+    }
+
+    // 新区域高宽发生了变化
+    if (newElRegion.width != elRegion.width) {
+      el.width(el.width() + newElRegion.width - elRegion.width);
+    }
+    if (newElRegion.height != elRegion.height) {
+      el.height(el.height() + newElRegion.height - elRegion.height);
+    }
+
+    return self;
+  },
+
+<span id='BUI-Component-UIBase-Align-method-center'>  /**
+</span>   * 对齐到元素的中间，查看属性 {@link BUI.Component.UIBase.Align#property-align} .
+   * &lt;pre&gt;&lt;code&gt;
+   *  control.center(&#39;#t1&#39;); //控件处于容器#t1的中间位置
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @param {undefined|String|HTMLElement|jQuery} node
+   * 
+   */
+  center:function (node) {
+    var self = this;
+    self.set(&#39;align&#39;, {
+      node:node,
+      points:[&#39;cc&#39;, &#39;cc&#39;],
+      offset:[0, 0]
+    });
+    return self;
+  }
+};
+
+module.exports = Align;
+</pre>
+</body>
+</html>

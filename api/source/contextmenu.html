@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='BUI'>/**
+</span> * @fileOverview 弹出菜单，一般用于右键菜单
+ * @author dxq613@gmail.com
+ * @ignore
+ */
+
+
+var BUI = require(&#39;bui-common&#39;),
+  MenuItem = require(&#39;./menuitem&#39;),
+  PopMenu = require(&#39;./popmenu&#39;),
+  PREFIX = BUI.prefix,
+  CLS_Link = PREFIX + &#39;menu-item-link&#39;,
+  CLS_ITEM_ICON =  PREFIX + &#39;menu-item-icon&#39;,
+  Component = BUI.Component,
+  UIBase = Component.UIBase;
+
+<span id='BUI-Menu-ContextMenuItem'>/**
+</span> * 上下文菜单项
+ * xclass:&#39;context-menu-item&#39;
+ * @class BUI.Menu.ContextMenuItem 
+ * @extends BUI.Menu.MenuItem
+ */
+var contextMenuItem = MenuItem.extend({
+ 
+  bindUI:function(){
+    var _self = this;
+
+    _self.get(&#39;el&#39;).delegate(&#39;.&#39; + CLS_Link,&#39;click&#39;,function(ev){
+      ev.preventDefault();
+    });
+  }, 
+  //设置图标样式
+  _uiSetIconCls : function (v,ev) {
+    var _self = this,
+      preCls = ev.prevVal,
+      iconEl = _self.get(&#39;el&#39;).find(&#39;.&#39;+CLS_ITEM_ICON);
+    iconEl.removeClass(preCls);
+    iconEl.addClass(v);
+  }
+},{
+
+  ATTRS:
+  {
+<span id='BUI-Menu-ContextMenuItem-property-text'>    /**
+</span>     * 显示的文本
+     * @type {String}
+     */
+    text:{
+      veiw:true,
+      value:&#39;&#39;
+    },
+<span id='BUI-Menu-ContextMenuItem-property-iconCls'>    /**
+</span>     * 菜单项图标的样式
+     * @type {String}
+     */
+    iconCls:{
+      sync:false,
+      value:&#39;&#39;
+    },
+    tpl:{
+      value:&#39;&lt;a class=&quot;&#39; + CLS_Link + &#39;&quot; href=&quot;#&quot;&gt;\
+      &lt;span class=&quot;&#39; + CLS_ITEM_ICON + &#39; {iconCls}&quot;&gt;&lt;/span&gt;&lt;span class=&quot;&#39; + PREFIX + &#39;menu-item-text&quot;&gt;{text}&lt;/span&gt;&lt;/a&gt;&#39;
+    }
+  }
+},{
+  xclass:&#39;context-menu-item&#39;
+});
+
+<span id='BUI-Menu-ContextMenu'>/**
+</span> * 上下文菜单，一般用于弹出菜单
+ * xclass:&#39;context-menu&#39;
+ * @class BUI.Menu.ContextMenu
+ * @extends BUI.Menu.PopMenu
+ */
+var contextMenu = PopMenu.extend({
+
+},{
+  ATTRS:{
+<span id='BUI-Menu-ContextMenu-property-defaultChildClass'>    /**
+</span>     * 子类的默认类名，即类的 xclass
+     * @type {String}
+     * @override
+     * @default &#39;menu-item&#39;
+     */
+    defaultChildClass : {
+      value : &#39;context-menu-item&#39;
+    },
+    align : {
+      value : null
+    }
+  }
+},{
+  xclass:&#39;context-menu&#39;
+});
+
+contextMenu.Item = contextMenuItem;
+
+module.exports = contextMenu;
+</pre>
+</body>
+</html>

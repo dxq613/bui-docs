@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='BUI'>/**
+</span> * @fileOverview 菜单基类
+ * @author dxq613@gmail.com
+ * @ignore
+ */
+
+
+var BUI = require(&#39;bui-common&#39;),
+  Component =  BUI.Component,
+  UIBase = Component.UIBase;
+
+<span id='BUI-Menu-Menu'>/**
+</span> * 菜单
+ * xclass:&#39;menu&#39;
+ * &lt;img src=&quot;../assets/img/class-menu.jpg&quot;/&gt;
+ * @class BUI.Menu.Menu
+ * @extends BUI.Component.Controller
+ * @mixins BUI.Component.UIBase.ChildList
+ */
+var Menu = Component.Controller.extend([UIBase.ChildList],{
+<span id='BUI-Menu-Menu-method-bindUI'>  /**
+</span>   * 绑定事件
+   * @protected
+   */
+  bindUI:function(){
+    var _self = this;
+
+    _self.on(&#39;click&#39;,function(e){
+      var item = e.target,
+        multipleSelect = _self.get(&#39;multipleSelect&#39;);
+      if(_self != item){
+        //单选情况下，允许自动隐藏，且没有子菜单的情况下，菜单隐藏
+        if(!multipleSelect &amp;&amp; _self.get(&#39;clickHide&#39;) &amp;&amp; !item.get(&#39;subMenu&#39;)){
+          _self.getTopAutoHideMenu().hide();
+        }
+      }
+    });
+
+    _self.on(&#39;afterOpenChange&#39;,function (ev) {
+      var target = ev.target,
+        opened = ev.newVal,
+        children = _self.get(&#39;children&#39;);
+      if(opened){
+        BUI.each(children,function(item) {
+          if(item !== target &amp;&amp; item.get(&#39;open&#39;)){
+            item.set(&#39;open&#39;,false);
+          }
+        });
+      }
+    });
+
+    _self.on(&#39;afterVisibleChange&#39;,function (ev) {
+      var visible = ev.newVal,
+        parent = _self.get(&#39;parentMenu&#39;);
+      _self._clearOpen();
+    });
+  },
+ 
+  //点击自动隐藏时
+  getTopAutoHideMenu : function() {
+    var _self = this,
+      parentMenu = _self.get(&#39;parentMenu&#39;),
+      topHideMenu;
+    if(parentMenu &amp;&amp; parentMenu.get(&#39;autoHide&#39;)){
+      return parentMenu.getTopAutoHideMenu();
+    }
+    if(_self.get(&#39;autoHide&#39;)){
+      return _self;
+    }
+    return null;
+  },
+  //清除菜单项的激活状态
+  _clearOpen : function () {
+    var _self = this,
+      children = _self.get(&#39;children&#39;);
+    BUI.each(children,function (item) {
+      if(item.set){
+        item.set(&#39;open&#39;,false);
+      }
+    });
+  },
+<span id='BUI-Menu-Menu-method-findItemById'>  /**
+</span>   * 根据ID查找菜单项
+   * @param  {String} id 编号
+   * @return {BUI.Menu.MenuItem} 菜单项
+   */
+  findItemById : function(id){ 
+
+    return this.findItemByField(&#39;id&#39;,id);
+  },
+  _uiSetSelectedItem : function(item){
+    if(item){
+      _self.setSelected(item);
+    }
+  }
+},{
+  ATTRS:
+  {
+
+    elTagName:{
+      view : true,
+      value : &#39;ul&#39;
+    },
+	  idField:{
+      value:&#39;id&#39;
+    },
+    
+<span id='BUI-Menu-Menu-property-isDecorateChild'>    /**
+</span>     * @protected
+     * 是否根据DOM生成子控件
+     * @type {Boolean}
+     */
+    isDecorateChild : {
+      value : true
+    },
+<span id='BUI-Menu-Menu-property-defaultChildClass'>    /**
+</span>     * 子类的默认类名，即类的 xclass
+     * @type {String}
+     * @default &#39;menu-item&#39;
+     */
+    defaultChildClass : {
+      value : &#39;menu-item&#39;
+    },
+<span id='BUI-Menu-Menu-property-selectedItem'>    /**
+</span>     * 选中的菜单项
+     * @type {Object}
+     */
+    selectedItem : {
+
+    },
+<span id='BUI-Menu-Menu-property-parentMenu'>    /**
+</span>     * 上一级菜单
+     * @type {BUI.Menu.Menu}
+     * @readOnly
+     */
+    parentMenu : {
+
+    }
+  }
+  
+},{
+  xclass : &#39;menu&#39;,
+  priority : 0
+});
+
+module.exports = Menu;
+</pre>
+</body>
+</html>

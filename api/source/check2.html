@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Group'>/**
+</span> * @fileOverview 选择分组，包含，checkbox,radio
+ * @ignore
+ */
+
+var Group = require(&#39;./base&#39;);
+
+function getFieldName (self) {
+  var firstField = self.getFieldAt(0);
+  if(firstField){
+    return firstField.get(&#39;name&#39;);
+  }
+  return &#39;&#39;;
+}
+<span id='BUI-Form-Group-Check'>/**
+</span> * @class BUI.Form.Group.Check
+ * 单选，复选分组，只能包含同name的checkbox,radio
+ * @extends BUI.Form.Group
+ */
+var Check = Group.extend({
+  bindUI : function(){
+    var _self = this;
+    _self.on(&#39;change&#39;,function(ev){
+      var name = getFieldName(_self),
+        range = _self.get(&#39;range&#39;),
+        record = _self.getRecord(),
+        value = record[name],
+        max = range[1];
+      if(value &amp;&amp; value.length &gt;= max){
+        _self._setFieldsEnable(name,false);
+      }else{
+        _self._setFieldsEnable(name,true);
+      }
+    });
+  },
+  _setFieldsEnable : function(name,enable){
+
+    var _self = this,
+      fields = _self.getFields(name);
+    BUI.each(fields,function(field){
+      if(enable){
+        field.enable();
+      }else{
+        if(!field.get(&#39;checked&#39;)){
+          field.disable();
+        }
+      }
+    });
+  },
+  _uiSetRange : function(v){
+    this.addRule(&#39;checkRange&#39;,v);
+  }
+
+},{
+  ATTRS : {
+<span id='BUI-Form-Group-Check-property-range'>    /**
+</span>     * 需要选中的字段,
+     * &lt;ol&gt;
+     *   &lt;li&gt;如果 range:1，range:2 最少勾选1个，2个。&lt;/li&gt;
+     *   &lt;li&gt;如果 range :0,可以全部不选中。&lt;/li&gt;
+     *   &lt;li&gt;如果 range:[1,2],则必须选中1-2个。&lt;/li&gt;
+     * &lt;/ol&gt;
+     * @type {Array|Number}
+     */
+    range : {
+      setter : function (v) {
+        if(BUI.isString(v) || BUI.isNumber(v)){
+          v = [parseInt(v,10)];
+        }
+        return v;
+      }
+    }
+  }
+},{
+  xclass : &#39;form-group-check&#39;
+});
+
+module.exports = Check;
+</pre>
+</body>
+</html>

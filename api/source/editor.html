@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='BUI'>/**
+</span> * @ignore
+ * @fileOverview 编辑器
+ * @author dxq613@gmail.com
+ */
+
+var BUI = require(&#39;bui-common&#39;),
+  Overlay = require(&#39;bui-overlay&#39;).Overlay
+  CLS_TIPS = &#39;x-editor-tips&#39;,
+  Mixin = require(&#39;./mixin&#39;);
+
+<span id='BUI-Editor-Editor'>/**
+</span> * @class BUI.Editor.Editor
+ * @extends BUI.Overlay.Overlay
+ * @mixins BUI.Editor.Mixin
+ * 编辑器
+ * &lt;p&gt;
+ * &lt;img src=&quot;../assets/img/class-editor.jpg&quot;/&gt;
+ * &lt;/p&gt;
+ * &lt;pre&gt;&lt;code&gt;
+ * var editor = new Editor.Editor({
+ *   trigger : &#39;.edit-text&#39;,
+ *   field : {
+ *     rules : {
+ *       required : true
+ *     }
+ *   }
+ * });
+ * &lt;/code&gt;&lt;/pre&gt;
+ */
+var editor = Overlay.extend([Mixin],{
+  bindUI : function(){
+    var _self = this,
+      innerControl = _self.getInnerControl();
+    _self.on(&#39;validchange&#39;,function(ev){
+      if(!_self.isValid() &amp;&amp; _self.get(&#39;visible&#39;)){
+        _self._showError(_self.getErrors());
+      }else{
+        _self._hideError();
+      }
+    });
+    _self.on(&#39;hide&#39;,function(){
+      _self._hideError();
+    });
+
+    _self.on(&#39;show&#39;,function(){
+      if(!_self.isValid()){
+        _self._showError(_self.getErrors());
+      }
+    });
+  },
+  _initOverlay : function(){
+    var _self = this,
+      tooltip = _self.get(&#39;tooltip&#39;),
+      overlay = new Overlay(tooltip);
+    overlay.render();
+    _self.set(&#39;overlay&#39;,overlay);
+    return overlay;
+  },
+  //获取显示错误列表
+  _getErrorList : function(){
+    var _self = this,
+      overlay = _self.get(&#39;overlay&#39;);
+    return overlay &amp;&amp; overlay.get(&#39;children&#39;)[0];
+  },
+  _showError : function(errors){
+    var _self = this,
+      overlay = _self.get(&#39;overlay&#39;) || _self._initOverlay(),
+      list = _self._getErrorList(),
+      align = _self.get(&#39;errorAlign&#39;),
+      items = BUI.Array.map(errors,function(text){
+        return {error : text};
+      });
+    list.set(&#39;items&#39;,items);
+    align.node = _self.get(&#39;el&#39;);
+    overlay.set(&#39;align&#39;,align);
+    overlay.show();
+  },
+  //隐藏错误
+  _hideError : function(){
+    var _self = this,
+      overlay = _self.get(&#39;overlay&#39;);
+    overlay &amp;&amp; overlay.hide();
+  },
+
+<span id='BUI-Editor-Editor-method-clearErrors'>  /**
+</span>   * 清除错误
+   */
+  clearErrors : function(){
+    var _self = this,
+      innerControl = _self.getInnerControl();
+    innerControl.clearErrors();
+    _self._hideError();
+  },
+<span id='BUI-Editor-Editor-method-getSourceValue'>  /**
+</span>   * @protected
+   * @override
+   * 获取编辑的源数据
+   * @return {String} 返回需要编辑的文本
+   */
+  getSourceValue : function(){
+    var _self = this,
+      trigger = _self.get(&#39;curTrigger&#39;),
+      parser = _self.get(&#39;parser&#39;),
+      text = trigger.text();
+    if(parser){
+      text = parser.call(this,text,trigger);
+    }
+    return text;
+  },
+<span id='BUI-Editor-Editor-method-updateSource'>  /**
+</span>   * @protected
+   * 更新文本
+   * @param  {String} text 编辑器的值
+   */
+  updateSource : function(text){
+    var _self = this,
+      trigger = _self.get(&#39;curTrigger&#39;);
+    if(trigger &amp;&amp; trigger.length){
+      text = _self._formatText(text);
+      trigger.text(text);
+    }
+  },
+  //格式化文本
+  _formatText : function(text){
+    var _self = this,
+      formatter = _self.get(&#39;formatter&#39;);
+    if(formatter){
+      text = formatter.call(_self,text);
+    }
+    return text;
+  },
+  _uiSetWidth : function(v){
+    var _self = this;
+    if(v != null){
+      var innerControl = _self.getInnerControl();
+      if(innerControl.set){
+        innerControl.set(&#39;width&#39;,v);
+      }
+    }
+  }
+},{
+  ATTRS : {
+<span id='BUI-Editor-Editor-property-innerValueField'>    /**
+</span>     * 内部控件的代表Value的字段
+     * @protected
+     * @override
+     * @type {String}
+     */
+    innerValueField : {
+      value : &#39;value&#39;
+    },
+<span id='BUI-Editor-Editor-property-emptyValue'>    /**
+</span>     * 空值的数据，清空编辑器时使用
+     * @protected
+     * @type {*}
+     */
+    emptyValue : {
+      value : &#39;&#39;
+    },
+<span id='BUI-Editor-Editor-property-autoHide'>    /**
+</span>     * 是否自动隐藏
+     * @override
+     * @type {Boolean}
+     */
+    autoHide : {
+      value : true
+    },
+<span id='BUI-Editor-Editor-property-controlCfgField'>    /**
+</span>     * 内部控件配置项的字段
+     * @protected
+     * @type {String}
+     */
+    controlCfgField : {
+      value : &#39;field&#39;
+    },
+<span id='BUI-Editor-Editor-property-defaultChildCfg'>    /**
+</span>     * 默认的字段域配置项
+     * @type {Object}
+     */
+    defaultChildCfg : {
+      value : {
+        tpl : &#39;&#39;,
+        forceFit : true,
+        errorTpl : &#39;&#39;//
+      }
+    },
+<span id='BUI-Editor-Editor-cfg-tooltip'>    /**
+</span>     * 错误提示信息的配置信息
+     * @cfg {Object} tooltip
+     */
+    tooltip : {
+      valueFn : function(){
+        return  {
+          children : [{
+            xclass : &#39;simple-list&#39;,
+            itemTpl : &#39;&lt;li&gt;&lt;span class=&quot;x-icon x-icon-mini x-icon-error&quot; title=&quot;{error}&quot;&gt;!&lt;/span&gt;&amp;nbsp;&lt;span&gt;{error}&lt;/span&gt;&lt;/li&gt;&#39;
+          }],
+          elCls : CLS_TIPS
+        };
+      }
+    },
+    defaultChildClass : {
+      value : &#39;form-field&#39;
+    },
+<span id='BUI-Editor-Editor-property-align'>    /**
+</span>     * 编辑器跟所编辑内容的对齐方式
+     * @type {Object}
+     */
+    align : {
+      value : {
+        points: [&#39;tl&#39;,&#39;tl&#39;]
+      }
+    },
+<span id='BUI-Editor-Editor-cfg-parser'>    /**
+</span>     * 将编辑的文本转换成编辑器需要的格式,&lt;br&gt;
+     * 函数原型：
+     * function(text,trigger){}
+     *
+     * - text 编辑的文本
+     * - trigger 编辑的DOM，有时候trigger.text()不等同于编辑的内容，可以在此处修改
+     * 
+     * @cfg {Function} parser
+     */
+    parser : {
+
+    },
+<span id='BUI-Editor-Editor-cfg-formatter'>    /**
+</span>     * 返回数据的格式化函数
+     * @cfg {Object} formatter
+     */
+    formatter : {
+
+    },
+<span id='BUI-Editor-Editor-property-errorAlign'>    /**
+</span>     * 错误信息的对齐方式
+     * @type {Object}
+     */
+    errorAlign : {
+      value : {
+        points: [&#39;bl&#39;,&#39;tl&#39;],
+        offset : [0,10]
+      }
+    },
+<span id='BUI-Editor-Editor-property-overlay'>    /**
+</span>     * 显示错误的弹出层
+     * @type {BUI.Overlay.Overlay}
+     */
+    overlay : {
+
+    },
+<span id='BUI-Editor-Editor-property-field'>    /**
+</span>     * 编辑器中默认使用文本字段域来编辑数据
+     * @type {Array}
+     */
+    field : {
+      value : {}
+    }
+  }
+},{
+  xclass : &#39;editor&#39;
+});
+
+module.exports = editor;
+</pre>
+</body>
+</html>

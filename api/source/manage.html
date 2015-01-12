@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview  Base UI控件的管理类
+ * @author yiminghe@gmail.com
+ * copied by dxq613@gmail.com
+ * @ignore
+ */
+
+
+
+//控件类的管理器
+
+
+var $ = require(&#39;jquery&#39;);
+
+var uis = {
+  // 不带前缀 prefixCls
+  /*
+         &quot;menu&quot; :{
+         priority:0,
+         constructor:Menu
+         }
+         */
+};
+
+function getConstructorByXClass(cls) {
+  var cs = cls.split(/\s+/),
+    p = -1,
+    t,
+    ui = null;
+  for (var i = 0; i &lt; cs.length; i++) {
+    var uic = uis[cs[i]];
+    if (uic &amp;&amp; (t = uic.priority) &gt; p) {
+      p = t;
+      ui = uic.constructor;
+    }
+  }
+  return ui;
+}
+
+function getXClassByConstructor(constructor) {
+  for (var u in uis) {
+    var ui = uis[u];
+    if (ui.constructor == constructor) {
+      return u;
+    }
+  }
+  return 0;
+}
+
+function setConstructorByXClass(cls, uic) {
+  if (BUI.isFunction(uic)) {
+    uis[cls] = {
+      constructor: uic,
+      priority: 0
+    };
+  } else {
+    uic.priority = uic.priority || 0;
+    uis[cls] = uic;
+  }
+}
+
+
+function getCssClassWithPrefix(cls) {
+  var cs = $.trim(cls).split(/\s+/);
+  for (var i = 0; i &lt; cs.length; i++) {
+    if (cs[i]) {
+      cs[i] = this.get(&#39;prefixCls&#39;) + cs[i];
+    }
+  }
+  return cs.join(&#39; &#39;);
+}
+
+
+
+var componentInstances = {};
+
+<span id='BUI-Component-Manager'>/**
+</span> * Manage component metadata.
+ * @class BUI.Component.Manager
+ * @singleton
+ */
+var Manager = {
+
+  __instances: componentInstances,
+<span id='BUI-Component-Manager-method-addComponent'>  /**
+</span>   * 每实例化一个控件，就注册到管理器上
+   * @param {String} id  控件 id
+   * @param {BUI.Component.Controller} component 控件对象
+   */
+  addComponent: function(id, component) {
+    componentInstances[id] = component;
+  },
+<span id='BUI-Component-Manager-method-removeComponent'>  /**
+</span>   * 移除注册的控件
+   * @param  {String} id 控件 id
+   */
+  removeComponent: function(id) {
+    delete componentInstances[id];
+  },
+<span id='BUI-Component-Manager-method-eachComponent'>  /**
+</span>   * 遍历所有的控件
+   * @param  {Function} fn 遍历函数
+   */
+  eachComponent: function(fn) {
+    BUI.each(componentInstances, fn);
+  },
+<span id='BUI-Component-Manager-method-getComponent'>  /**
+</span>   * 根据Id获取控件
+   * @param  {String} id 编号
+   * @return {BUI.Component.UIBase}   继承 UIBase的类对象
+   */
+  getComponent: function(id) {
+    return componentInstances[id];
+  },
+
+  getCssClassWithPrefix: getCssClassWithPrefix,
+<span id='BUI-Component-Manager-method-getXClassByConstructor'>  /**
+</span>   * 通过构造函数获取xclass.
+   * @param {Function} constructor 控件的构造函数.
+   * @type {Function}
+   * @return {String}
+   * @method
+   */
+  getXClassByConstructor: getXClassByConstructor,
+<span id='BUI-Component-Manager-method-getConstructorByXClass'>  /**
+</span>   * 通过xclass获取控件的构造函数
+   * @param {String} classNames Class names separated by space.
+   * @type {Function}
+   * @return {Function}
+   * @method
+   */
+  getConstructorByXClass: getConstructorByXClass,
+<span id='BUI-Component-Manager-method-setConstructorByXClass'>  /**
+</span>   * 将 xclass 同构造函数相关联.
+   * @type {Function}
+   * @param {String} className 控件的xclass名称.
+   * @param {Function} componentConstructor 构造函数
+   * @method
+   */
+  setConstructorByXClass: setConstructorByXClass
+};
+
+module.exports = Manager;
+</pre>
+</body>
+</html>

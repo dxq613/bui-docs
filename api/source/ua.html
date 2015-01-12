@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview UA,jQuery的 $.browser 对象非常难使用
+ * @ignore
+ * @author dxq613@gmail.com
+ */
+
+var $ = require(&#39;jquery&#39;);
+
+function numberify(s) {
+  var c = 0;
+  // convert &#39;1.2.3.4&#39; to 1.234
+  return parseFloat(s.replace(/\./g, function() {
+    return (c++ === 0) ? &#39;.&#39; : &#39;&#39;;
+  }));
+};
+
+function uaMatch(s) {
+  s = s.toLowerCase();
+  var r = /(chrome)[ \/]([\w.]+)/.exec(s) || /(webkit)[ \/]([\w.]+)/.exec(s) || /(opera)(?:.*version|)[ \/]([\w.]+)/.exec(s) || /(msie) ([\w.]+)/.exec(s) || s.indexOf(&quot;compatible&quot;) &lt; 0 &amp;&amp; /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(s) || [],
+    a = {
+      browser: r[1] || &quot;&quot;,
+      version: r[2] || &quot;0&quot;
+    },
+    b = {};
+  a.browser &amp;&amp; (b[a.browser] = !0, b.version = a.version),
+  b.chrome ? b.webkit = !0 : b.webkit &amp;&amp; (b.safari = !0);
+  return b;
+}
+
+var UA = $.UA || (function() {
+  var browser = $.browser || uaMatch(navigator.userAgent),
+    versionNumber = numberify(browser.version),
+<span id='BUI-UA'>    /**
+</span>     * 浏览器版本检测
+     * @class BUI.UA
+     * @singleton
+     */
+    ua = {
+<span id='BUI-UA-property-ie'>      /**
+</span>       * ie 版本
+       * @type {Number}
+       */
+      ie: browser.msie &amp;&amp; versionNumber,
+
+<span id='BUI-UA-property-webkit'>      /**
+</span>       * webkit 版本
+       * @type {Number}
+       */
+      webkit: browser.webkit &amp;&amp; versionNumber,
+<span id='BUI-UA-property-opera'>      /**
+</span>       * opera 版本
+       * @type {Number}
+       */
+      opera: browser.opera &amp;&amp; versionNumber,
+<span id='BUI-UA-property-mozilla'>      /**
+</span>       * mozilla 火狐版本
+       * @type {Number}
+       */
+      mozilla: browser.mozilla &amp;&amp; versionNumber
+    };
+  return ua;
+})();
+
+module.exports = UA;
+</pre>
+</body>
+</html>

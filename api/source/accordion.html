@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 可折叠的布局，只能展开一个选项内容
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;),
+	CLS_ITEM = &#39;x-layout-item-accordion&#39;,
+	BUI = require(&#39;bui-common&#39;),
+	Abstract = require(&#39;./abstract&#39;),
+	Item = require(&#39;./item/tab&#39;),
+	Collapsable = require(&#39;./collapsable&#39;);
+
+<span id='BUI-Layout-Accordion'>/**
+</span> * @class BUI.Layout.Accordion
+ * 可折叠的布局
+ * @extends BUI.Layout.Abstract
+ * @mixins BUI.Layout.Collapsable
+ * &lt;pre&gt;&lt;code&gt;
+ * 	var layout = new Accordion(),
+			control = new BUI.Component.Controller({
+			width:600,
+			height:500,
+			render : &#39;#J_Layout&#39;,
+			elCls : &#39;layout-test&#39;,
+			children : [{
+				layout : {
+					title : &#39;标签一&#39;
+				},
+				xclass : &#39;controller&#39;,
+				content : &quot;一&quot;
+			},{
+				xclass : &#39;controller&#39;,
+				layout : {
+					title : &#39;标签二&#39;
+				},
+				content : &#39;二&#39;
+			},{
+				xclass : &#39;controller&#39;,
+				layout : {
+					title : &#39;标签三&#39;
+				},
+				content : &quot;三&quot;
+			},{
+				xclass : &#39;controller&#39;,
+				layout : {
+					title : &#39;标签四&#39;
+				},
+				content : &quot;四&quot;
+			}],
+			plugins : [layout]
+		});
+
+		control.render();
+ * &lt;/code&gt;&lt;/pre&gt;
+ */
+var Accordion = function(config){
+	Accordion.superclass.constructor.call(this,config);
+};
+
+Accordion.ATTRS = {
+
+<span id='BUI-Layout-Accordion-property-itemConstructor'>	/**
+</span>	 * 子项对应的构造函数
+	 * @type {Function}
+	 */
+	itemConstructor : {
+		value : Item
+	},
+<span id='BUI-Layout-Accordion-property-wraperCls'>	/**
+</span>	 * 放置内容的样式
+	 * @type {String}
+	 */
+	wraperCls : {
+		value : &#39;x-accordion-body&#39;
+	},
+<span id='BUI-Layout-Accordion-property-titleCls'>	/**
+</span>	 * 放置title内容的class样式
+	 * @type {String}
+	 */
+	titleCls : {
+		value : &#39;x-accordion-title&#39;
+	},
+<span id='BUI-Layout-Accordion-property-triggerCls'>	/**
+</span>	 * 触发展开折叠的样式
+	 * @type {String}
+	 */
+	triggerCls : {
+		value : &#39;x-accordion-title&#39;
+	},
+<span id='BUI-Layout-Accordion-property-layoutEvents'>	/**
+</span>	 * 控件的的那些事件会引起重新布局
+	 * @type {Array}
+	 */
+	layoutEvents : {
+		value : [&#39;afterAddChild&#39;,&#39;afterRemoveChild&#39;]
+	},
+<span id='BUI-Layout-Accordion-property-duration'>	/**
+</span>	 * 动画的持续时间
+	 * @type {Number}
+	 */
+	duration : {
+		value : 400
+	},
+<span id='BUI-Layout-Accordion-property-accordion'>	/**
+</span>	 * 是否只能展开一个
+	 * @type {String}
+	 */
+	accordion : {
+		value : true
+	},
+	itemTpl : {
+		value : &#39;&lt;div class=&quot;&#39; + CLS_ITEM + &#39;&quot;&gt;&lt;div class=&quot;x-accordion-title&quot;&gt;{title}&lt;s class=&quot;x-expand-button&quot;&gt;&lt;/s&gt;&lt;/div&gt;&lt;div class=&quot;x-accordion-body&quot;&gt;&lt;/div&gt;&lt;/div&gt;&#39;
+	}
+
+};
+
+BUI.extend(Accordion,Abstract);
+
+//使用可收缩的扩展
+BUI.mixin(Accordion,[Collapsable]);
+
+BUI.augment(Accordion,{
+<span id='BUI-Layout-Accordion-method-appendEvent'>	/**
+</span>	 * @protected
+	 * 附加事件
+	 * @param  {Object} control 使用layout的控件
+	 */
+	appendEvent : function(control){
+		this.bindCollapseEvent(); //绑定收缩事件
+	},
+<span id='BUI-Layout-Accordion-method-getActivedItem'>	/**
+</span>	 * 获取展开的选项
+	 * @return {BUI.Layout.Item} 选项
+	 */
+	getActivedItem : function(){
+		return this.getExpandedItem();
+	},
+<span id='global-method-afterInitItems'>	/**
+</span>	 * @protected
+	 * @ignore
+	 */
+	afterInitItems : function(){
+		this._resetActiveItem();
+	},
+	//重置展开项的高度
+	_resetActiveItem : function(){
+		var _self = this,
+			activeItem = _self.getActivedItem() || _self.getItems()[0];
+		activeItem.expand(_self.getCollapsedRange(),0);
+	},
+<span id='BUI-Layout-Accordion-method-resetLayout'>	/**
+</span>	 * @protected
+	 * 覆写重新布局方法
+	 */
+	resetLayout : function(){
+		var _self = this;
+		Accordion.superclass.resetLayout.call(_self);
+		_self._resetActiveItem();
+	},
+<span id='BUI-Layout-Accordion-method-getCollapsedRange'>	/**
+</span>	 * 获取展开选项内容区域的高度，容器高度减去 
+	 * @return {Number} 容器高度	
+	 */
+	getCollapsedRange : function(){
+		var _self = this,
+			container = _self.get(&#39;container&#39;),
+			outerHeight = container.height(),
+			titleEls = container.find(&#39;.&#39; + _self.get(&#39;titleCls&#39;)),
+			bodyHeight = outerHeight;
+		BUI.each(titleEls,function(element){
+			bodyHeight -= $(element).outerHeight();
+		});
+		return bodyHeight;
+	}
+});
+
+module.exports = Accordion;
+</pre>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview  可勾选字段
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;),
+  Field = require(&#39;./base&#39;);
+
+<span id='BUI-Form-Field-Check'>/**
+</span> * 可选中菜单域
+ * @class BUI.Form.Field.Check
+ * @extends BUI.Form.Field
+ */
+var checkField = Field.extend({
+<span id='BUI-Form-Field-Check-method-onValid'>  /**
+</span>   * 验证成功后执行的操作
+   * @protected
+   */
+  onValid : function(){
+    var _self = this,
+      checked = _self._getControlChecked();
+    _self.setInternal(&#39;checked&#39;,checked);
+    _self.fire(&#39;change&#39;);
+    if(checked){
+      _self.fire(&#39;checked&#39;);
+    }else{
+      _self.fire(&#39;unchecked&#39;);
+    }
+  },
+  //设置是否勾选
+  _setControlChecked : function(checked){
+    var _self = this,
+      innerControl = _self.getInnerControl();
+    innerControl.attr(&#39;checked&#39;,!!checked);
+  },
+  //获取是否勾选
+  _getControlChecked : function(){
+    var _self = this,
+      innerControl = _self.getInnerControl();
+    return !!innerControl.attr(&#39;checked&#39;);
+  },
+  //覆盖 设置值的方法
+  _uiSetValue : function(v){
+    this.setControlValue(v);
+  },
+  //覆盖不设置宽度
+  _uiSetWidth : function(v){
+
+  },
+  //设置是否勾选
+  _uiSetChecked : function(v){
+    var _self = this;
+    _self._setControlChecked(v);
+    if(_self.get(&#39;rendered&#39;)){
+      _self.onValid();
+    }
+  }
+},{
+  ATTRS : {
+<span id='BUI-Form-Field-Check-property-validEvent'>    /**
+</span>     * 触发验证事件，进而引起change事件
+     * @override
+     * @type {String}
+     */
+    validEvent : {
+      value : &#39;click&#39;
+    },
+<span id='BUI-Form-Field-Check-cfg-checked'>    /**
+</span>     * 是否选中
+     * @cfg {String} checked
+     */
+<span id='BUI-Form-Field-Check-property-checked'>    /**
+</span>     * 是否选中
+     * @type {String}
+     */
+    checked : {
+      value : false
+    },
+    events : {
+      value : {
+<span id='BUI-Form-Field-Check-event-checked'>        /**
+</span>         * @event
+         * 选中事件
+         */
+        &#39;checked&#39; : false,
+<span id='BUI-Form-Field-Check-event-unchecked'>        /**
+</span>         * @event
+         * 取消选中事件
+         */
+        &#39;unchecked&#39; : false
+      }
+    }
+  },
+  PARSER : {
+    checked : function(el){
+      return !!el.attr(&#39;checked&#39;);
+    }
+  }
+},{
+  xclass : &#39;form-check-field&#39;
+});
+
+module.exports = checkField;
+</pre>
+</body>
+</html>

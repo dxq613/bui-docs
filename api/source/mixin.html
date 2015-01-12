@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview picker的扩展
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;);
+
+<span id='BUI-Picker-Mixin'>/**
+</span> * @class BUI.Picker.Mixin
+ */
+var Mixin = function () {
+};
+
+Mixin.ATTRS = {
+<span id='BUI-Picker-Mixin-property-innerControl'>  /**
+</span>   * 用于选择的控件，默认为第一个子元素,此控件实现 @see {BUI.Component.UIBase.Selection} 接口
+   * @protected
+   * @type {Object|BUI.Component.Controller}
+   */
+  innerControl : {
+    getter:function(){
+      return this.get(&#39;children&#39;)[0];
+    }
+  },
+<span id='BUI-Picker-Mixin-cfg-triggerEvent'>  /**
+</span>   * 显示选择器的事件
+   * @cfg {String} [triggerEvent=&#39;click&#39;]
+   */
+<span id='BUI-Picker-Mixin-property-triggerEvent'>  /**
+</span>   * 显示选择器的事件
+   * @type {String}
+   * @default &#39;click&#39;
+   */
+  triggerEvent:{
+    value:&#39;click&#39;
+  },
+<span id='BUI-Picker-Mixin-cfg-autoSetValue'>  /**
+</span>   * 选择器选中的项，是否随着触发器改变
+   * @cfg {Boolean} [autoSetValue=true]
+   */
+<span id='BUI-Picker-Mixin-property-autoSetValue'>  /**
+</span>   * 选择器选中的项，是否随着触发器改变
+   * @type {Boolean}
+   */
+  autoSetValue : {
+    value : true
+  },
+<span id='BUI-Picker-Mixin-cfg-changeEvent'>  /**
+</span>   * 选择发生改变的事件
+   * @cfg {String} [changeEvent=&#39;selectedchange&#39;]
+   */
+<span id='BUI-Picker-Mixin-property-changeEvent'>  /**
+</span>   * 选择发生改变的事件
+   * @type {String}
+   */
+  changeEvent : {
+    value:&#39;selectedchange&#39;
+  },
+<span id='BUI-Picker-Mixin-property-autoHide'>  /**
+</span>   * 自动隐藏
+   * @type {Boolean}
+   * @override
+   */
+  autoHide:{
+    value : true
+  },
+<span id='BUI-Picker-Mixin-property-hideEvent'>  /**
+</span>   * 隐藏选择器的事件
+   * @protected
+   * @type {String}
+   */
+  hideEvent:{
+    value:&#39;itemclick&#39;
+  },
+<span id='BUI-Picker-Mixin-cfg-textField'>  /**
+</span>   * 返回的文本放在的DOM，一般是input
+   * @cfg {String|HTMLElement|jQuery} textField
+   */
+<span id='BUI-Picker-Mixin-property-textField'>  /**
+</span>   * 返回的文本放在的DOM，一般是input
+   * @type {String|HTMLElement|jQuery}
+   */
+  textField : {
+
+  },
+  align : {
+    value : {
+       points: [&#39;bl&#39;,&#39;tl&#39;], // [&#39;tr&#39;, &#39;tl&#39;] 表示 overlay 的 tl 与参考节点的 tr 对齐
+       offset: [0, 0]      // 有效值为 [n, m]
+    }
+  },
+<span id='BUI-Picker-Mixin-cfg-valueField'>  /**
+</span>   * 返回的值放置DOM ,一般是input
+   * @cfg {String|HTMLElement|jQuery} valueField
+   */
+<span id='BUI-Picker-Mixin-property-valueField'>  /**
+</span>   * 返回的值放置DOM ,一般是input
+   * @type {String|HTMLElement|jQuery}
+   */
+  valueField:{
+
+  }
+<span id='BUI-Picker-Mixin-event-selectedchange'>  /**
+</span>   * @event selectedchange
+   * 选中值改变事件
+   * @param {Object} e 事件对象
+   * @param {String} text 选中的文本
+   * @param {string} value 选中的值
+   * @param {jQuery} curTrigger 当前触发picker的元素
+   */
+}
+
+Mixin.prototype = {
+
+  __bindUI : function(){
+    var _self = this,
+      //innerControl = _self.get(&#39;innerControl&#39;),
+      hideEvent = _self.get(&#39;hideEvent&#39;),
+      trigger = $(_self.get(&#39;trigger&#39;));
+
+    _self.on(&#39;show&#39;,function(ev){
+    //trigger.on(_self.get(&#39;triggerEvent&#39;),function(e){
+      if(!_self.get(&#39;isInit&#39;)){
+        _self._initControl();
+      }
+      if(_self.get(&#39;autoSetValue&#39;)){
+        var valueField = _self.get(&#39;valueField&#39;) || _self.get(&#39;textField&#39;) || _self.get(&#39;curTrigger&#39;),
+          val = $(valueField).val();
+        _self.setSelectedValue(val);
+      }
+    });
+
+    //_self.initControlEvent();
+  },
+  _initControl : function(){
+    var _self = this;
+    if(_self.get(&#39;isInit&#39;)){ //已经初始化过
+      return ;
+    }
+    if(!_self.get(&#39;innerControl&#39;)){
+      var control = _self.createControl();
+      _self.get(&#39;children&#39;).push(control);
+    }
+    _self.initControlEvent();
+    _self.set(&#39;isInit&#39;,true);
+  },
+<span id='BUI-Picker-Mixin-method-initControl'>  /**
+</span>   * 初始化内部控件，绑定事件
+   */
+  initControl : function(){
+    this._initControl();
+  },  
+<span id='BUI-Picker-Mixin-method-createControl'>  /**
+</span>   * @protected
+   * 初始化内部控件
+   */
+  createControl : function(){
+    
+  },
+  //初始化内部控件的事件
+  initControlEvent : function(){
+    var _self = this,
+      innerControl = _self.get(&#39;innerControl&#39;),
+      trigger = $(_self.get(&#39;trigger&#39;)),
+      hideEvent = _self.get(&#39;hideEvent&#39;);
+
+    innerControl.on(_self.get(&#39;changeEvent&#39;),function(e){
+      var curTrigger = _self.get(&#39;curTrigger&#39;),
+        textField = _self.get(&#39;textField&#39;) || curTrigger || trigger,
+        valueField = _self.get(&#39;valueField&#39;),
+        selValue = _self.getSelectedValue(),
+        isChange = false;
+
+      if(textField){
+        var selText = _self.getSelectedText(),
+          preText = $(textField).val();
+        if(selText != preText){
+          $(textField).val(selText);
+          isChange = true;
+          $(textField).trigger(&#39;change&#39;);
+        }
+      }
+      
+      if(valueField &amp;&amp; _self.get(&#39;autoSetValue&#39;)){
+        var preValue = $(valueField).val();  
+        if(valueField != preValue){
+          $(valueField).val(selValue);
+          isChange = true;
+          $(valueField).trigger(&#39;change&#39;);
+        }
+      }
+      if(isChange){
+        _self.onChange(selText,selValue,e);
+      }
+    });
+    
+    if(hideEvent){
+      innerControl.on(_self.get(&#39;hideEvent&#39;),function(){
+        var curTrigger = _self.get(&#39;curTrigger&#39;);
+        try{ //隐藏时，在ie6,7下会报错
+          if(curTrigger){
+            curTrigger.focus();
+          }
+        }catch(e){
+          BUI.log(e);
+        }
+        _self.hide();
+      });
+    }
+  },
+<span id='BUI-Picker-Mixin-method-setSelectedValue'>  /**
+</span>   * 设置选中的值
+   * @template
+   * @protected
+   * @param {String} val 设置值
+   */
+  setSelectedValue : function(val){
+    
+  },
+<span id='BUI-Picker-Mixin-method-getSelectedValue'>  /**
+</span>   * 获取选中的值，多选状态下，值以&#39;,&#39;分割
+   * @template
+   * @protected
+   * @return {String} 选中的值
+   */
+  getSelectedValue : function(){
+    
+  },
+<span id='BUI-Picker-Mixin-method-getSelectedText'>  /**
+</span>   * 获取选中项的文本，多选状态下，文本以&#39;,&#39;分割
+   * @template
+   * @protected
+   * @return {String} 选中的文本
+   */
+  getSelectedText : function(){
+
+  },
+<span id='BUI-Picker-Mixin-method-focus'>  /**
+</span>   * 选择器获取焦点时，默认选中内部控件
+   */
+  focus : function(){
+    this.get(&#39;innerControl&#39;).focus();
+  },
+<span id='BUI-Picker-Mixin-method-onChange'>  /**
+</span>   * @protected
+   * 发生改变
+   */
+  onChange : function(selText,selValue,ev){
+    var _self = this,
+      curTrigger = _self.get(&#39;curTrigger&#39;);
+    //curTrigger &amp;&amp; curTrigger.trigger(&#39;change&#39;); //触发改变事件
+    _self.fire(&#39;selectedchange&#39;,{value : selValue,text : selText,curTrigger : curTrigger});
+  },
+<span id='BUI-Picker-Mixin-method-handleNavEsc'>  /**
+</span>   * 处理 esc 键
+   * @protected
+   * @param  {jQuery.Event} ev 事件对象
+   */
+  handleNavEsc : function (ev) {
+    this.hide();
+  },
+  _uiSetValueField : function(v){
+    var _self = this;
+    if(v != null &amp;&amp; v !== &#39;&#39; &amp;&amp; _self.get(&#39;autoSetValue&#39;)){ //if(v)问题太多
+      _self.setSelectedValue($(v).val());
+    }
+  },
+  _getTextField : function(){
+    var _self = this;
+    return _self.get(&#39;textField&#39;) || _self.get(&#39;curTrigger&#39;);
+  }
+}
+
+module.exports = Mixin;
+</pre>
+</body>
+</html>

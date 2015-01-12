@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 表格跟表单联用
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;),
+  BUI = require(&#39;bui-common&#39;),
+  TYPE_ADD = &#39;add&#39;,
+  TYPE_EDIT = &#39;edit&#39;;
+
+<span id='BUI-Grid-Plugins-DialogEditing'>/**
+</span> * 表格的编辑插件
+ * @class BUI.Grid.Plugins.DialogEditing
+ */
+function Dialog(config){
+   Dialog.superclass.constructor.call(this, config);
+}
+
+Dialog.ATTRS = {
+<span id='BUI-Grid-Plugins-DialogEditing-cfg-autoSave'>  /**
+</span>   * 是否自动保存数据到数据源，通过store的save方法实现
+   * @cfg {Object} [autoSave=false]
+   */
+  autoSave : {
+    value : false
+  },
+<span id='BUI-Grid-Plugins-DialogEditing-property-record'>  /**
+</span>   * 编辑的记录
+   * @type {Object}
+   * @readOnly
+   */
+  record : {
+
+  },
+<span id='BUI-Grid-Plugins-DialogEditing-property-curIndex'>  /**
+</span>   * @private
+   * 编辑记录的index
+   * @type {Object}
+   */
+  curIndex : {
+
+  },
+<span id='BUI-Grid-Plugins-DialogEditing-cfg-contentId'>  /**
+</span>   * Dialog的内容，内部包含表单(form)
+   * @cfg {String} contentId
+   */
+<span id='BUI-Grid-Plugins-DialogEditing-property-contentId'>  /**
+</span>   * Dialog的内容，内部包含表单(form)
+   * @type {String}
+   */
+  contentId:{
+
+  },
+<span id='BUI-Grid-Plugins-DialogEditing-property-editor'>  /**
+</span>   * 编辑器
+   * @type {BUI.Editor.DialogEditor}
+   * @readOnly
+   */
+  editor : {
+
+  },
+<span id='BUI-Grid-Plugins-DialogEditing-property-form'>  /**
+</span>   * Dialog中的表单
+   * @type {BUI.Form.Form}
+   * @readOnly
+   */
+  form : {
+
+  },
+  events : {
+    value : {
+<span id='BUI-Grid-Plugins-DialogEditing-event-recordchange'>      /**
+</span>       * @event
+       * 编辑的记录发生更改
+       * @param {Object} e 事件对象
+       * @param {Object} e.record 记录
+       * @param {Object} e.editType 编辑的类型 add 或者 edit
+       */
+      recordchange : false
+
+<span id='BUI-Grid-Plugins-DialogEditing-event-accept'>       /**
+</span>       * @event accept 
+       * 确认编辑
+       * @param {Object} ev 事件对象
+       * @param {Object} ev.record 编辑的数据
+       * @param {BUI.Form.Form} form 表单
+       * @param {BUI.Editor.Editor} ev.editor 编辑器
+       */
+      
+<span id='BUI-Grid-Plugins-DialogEditing-event-cancel'>      /**
+</span>       * @event cancel 
+       * 取消编辑
+       * @param {Object} ev 事件对象
+       * @param {Object} ev.record 编辑的数据
+       * @param {BUI.Form.Form} form 表单
+       * @param {BUI.Editor.Editor} ev.editor 编辑器
+       */
+      
+<span id='BUI-Grid-Plugins-DialogEditing-event-editorshow'>      /**
+</span>       * @event editorshow 
+       * editor 显示
+       * @param {Object} ev 事件对象
+       * @param {Object} ev.record 编辑的数据
+       * @param {BUI.Editor.Editor} ev.editor 编辑器
+       */
+      
+<span id='BUI-Grid-Plugins-DialogEditing-event-editorready'>      /**
+</span>       * @event editorready
+       * editor 创建完成，因为editor延迟创建，所以创建完成grid，等待editor创建成功
+       */
+    }
+  },
+  editType : {
+
+  }
+};
+
+BUI.extend(Dialog,BUI.Base);
+
+BUI.augment(Dialog,{
+<span id='BUI-Grid-Plugins-DialogEditing-method-initializer'>  /**
+</span>   * 初始化
+   * @protected
+   */
+  initializer : function (grid) {
+    var _self = this;
+    _self.set(&#39;grid&#39;,grid);
+    //延迟加载 editor模块
+    require.async(&#39;bui-editor&#39;,function(Editor){
+      _self._initEditor(Editor);
+      _self.fire(&#39;editorready&#39;);
+    });
+  },
+  bindUI : function(grid){
+    var _self = this,
+      triggerCls = _self.get(&#39;triggerCls&#39;);
+    if(triggerCls){
+      grid.on(&#39;cellclick&#39;,function(ev){
+        var sender = $(ev.domTarget),
+          editor = _self.get(&#39;editor&#39;);
+        if(sender.hasClass(triggerCls) &amp;&amp; editor){
+
+          _self.edit(ev.record);
+          if(grid.get(&#39;multipleSelect&#39;)){
+            return false;
+          }
+        }
+      });
+    }
+  },
+  //初始化编辑器
+  _initEditor : function(Editor){
+    var _self = this,
+      contentId = _self.get(&#39;contentId&#39;),
+      formNode = $(&#39;#&#39; + contentId).find(&#39;form&#39;),
+      editor = _self.get(&#39;editor&#39;),
+      cfg = BUI.merge(editor,{
+          contentId : contentId,
+          form : {
+            srcNode : formNode
+          }
+      });
+
+    editor = new Editor.DialogEditor(cfg);
+    _self._bindEditor(editor);
+    _self.set(&#39;editor&#39;,editor);
+    _self.set(&#39;form&#39;,editor.get(&#39;form&#39;));
+  },
+  //绑定编辑器事件
+  _bindEditor : function(editor){
+    var _self = this;
+    editor.on(&#39;accept&#39;,function(){
+      var form = editor.get(&#39;form&#39;),
+        record = form.serializeToObject();
+      _self.saveRecord(record);
+      _self.fire(&#39;accept&#39;,{editor : editor,record : _self.get(&#39;record&#39;),form : form});
+    });
+
+    editor.on(&#39;cancel&#39;,function(){
+      _self.fire(&#39;cancel&#39;,{editor : editor,record : _self.get(&#39;record&#39;),form : editor.get(&#39;form&#39;)});
+    });
+  },
+<span id='BUI-Grid-Plugins-DialogEditing-method-edit'>  /**
+</span>   * 编辑记录
+   * @param  {Object} record 记录
+   */
+  edit : function(record){
+    var _self = this;
+    _self.set(&#39;editType&#39;,TYPE_EDIT);
+    _self.showEditor(record);
+  },
+<span id='BUI-Grid-Plugins-DialogEditing-method-add'>  /**
+</span>   * 添加记录
+   * @param  {Object} record 记录
+   * @param {Number} [index] 添加到的位置，默认添加在最后
+   */
+  add : function(record,index){
+    var _self = this;
+    _self.set(&#39;editType&#39;,TYPE_ADD);
+    _self.set(&#39;curIndex&#39;,index);
+    _self.showEditor(record);
+  },
+<span id='BUI-Grid-Plugins-DialogEditing-method-saveRecord'>  /**
+</span>   * @private
+   * 保存记录
+   */
+  saveRecord : function(record){
+    var _self = this,
+      grid = _self.get(&#39;grid&#39;),
+      editType = _self.get(&#39;editType&#39;),
+      curIndex = _self.get(&#39;curIndex&#39;),
+      store = grid.get(&#39;store&#39;),
+      curRecord = _self.get(&#39;record&#39;);
+
+    BUI.mix(curRecord,record);
+
+    if(editType == TYPE_ADD){
+      if(curIndex != null){
+        store.addAt(curRecord,curIndex);
+      }else{
+        store.add(curRecord);
+      }
+    }else{
+      store.update(curRecord);
+    }
+    if(_self.get(&#39;autoSave&#39;)){
+      store.save(curRecord);
+    }
+  },
+<span id='BUI-Grid-Plugins-DialogEditing-method-showEditor'>  /**
+</span>   * @private
+   * 显示编辑器
+   */
+  showEditor : function(record){
+    var _self = this,
+      editor = _self.get(&#39;editor&#39;);
+      
+    _self.set(&#39;record&#39;,record);
+    editor.show();
+    editor.setValue(record,true); //设置值，并且隐藏错误
+    
+    _self.fire(&#39;recordchange&#39;,{record : record,editType : _self.get(&#39;editType&#39;)});
+    _self.fire(&#39;editorshow&#39;,{eidtor : editor,editType : _self.get(&#39;editType&#39;)});
+  },
+<span id='BUI-Grid-Plugins-DialogEditing-method-cancel'>  /**
+</span>   * 取消编辑
+   */
+  cancel : function(){
+    var _self = this,
+      editor = _self.get(&#39;editor&#39;);
+    editor.cancel();
+  },
+  destructor : function(){
+    var _self = this,
+      editor = _self.get(&#39;editor&#39;);
+    editor &amp;&amp; editor.destroy();
+    _self.off();
+    _self.clearAttrVals();
+  }
+
+});
+
+module.exports = Dialog;
+</pre>
+</body>
+</html>

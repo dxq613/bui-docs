@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 表单中的列表，每个列表后有个隐藏域用来存储数据
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;),
+  BUI = require(&#39;bui-common&#39;),
+  List = require(&#39;bui-list&#39;),
+  Field = require(&#39;./base&#39;);
+
+function parseItems(items){
+  var rst = items;
+  if($.isPlainObject(items)){
+    rst = [];
+    BUI.each(items,function(v,k){
+      rst.push({text : v,value : k});
+    });
+  }
+  return rst;
+}
+
+<span id='BUI-Form-Field-List'>/**
+</span> * @class BUI.Form.Field.List
+ * 表单中的列表
+ * @extends BUI.Form.Field
+ */
+var List = Field.extend({
+
+  initializer : function(){
+    var _self = this;
+    //if(!_self.get(&#39;srcNode&#39;)){
+      _self._initList();
+    //}
+  },
+  _getList : function(){
+    var _self = this,
+      children = _self.get(&#39;children&#39;);
+    return children[0];
+  },
+  bindUI : function(){
+    var _self = this,
+      list = _self._getList();
+    if(list){
+      list.on(&#39;selectedchange&#39;,function(){
+        var value = _self._getListValue(list);
+        _self.set(&#39;value&#39;,value);
+      });
+    }
+  },
+  //获取列表值
+  _getListValue : function(list){
+    var _self = this;
+    list = list || _self._getList();
+    return list.getSelectionValues().join(&#39;,&#39;);
+  },
+<span id='BUI-Form-Field-List-method-setControlValue'>  /**
+</span>   * 设置字段的值
+   * @protected
+   * @param {*} value 字段值
+   */
+  setControlValue : function(value){
+    var _self = this,
+      innerControl = _self.getInnerControl(),
+      list = _self._getList();
+    innerControl.val(value);
+    if(_self._getListValue(list) !== value &amp;&amp; list.getCount()){
+      if(list.get(&#39;multipleSelect&#39;)){
+        list.clearSelection();
+      }
+      list.setSelectionByField(value.split(&#39;,&#39;));
+    }
+  },
+  //同步数据
+  syncUI : function(){
+     this.set(&#39;list&#39;,this._getList());
+  },
+  //初始化列表
+  _initList : function(){
+    var _self = this,
+      defaultListCfg = _self.get(&#39;defaultListCfg&#39;),
+      children = _self.get(&#39;children&#39;),
+      list = _self.get(&#39;list&#39;) || {};
+    if(children[0]){
+      return;
+    }
+    if($.isPlainObject(list)){
+      BUI.mix(list,defaultListCfg);
+    }
+    children.push(list);
+  },
+<span id='BUI-Form-Field-List-method-setItems'>  /**
+</span>   * 设置选项
+   * @param {Array} items 选项记录
+   */
+  setItems : function(items){
+    var _self = this,
+      value = _self.get(&#39;value&#39;),
+      list = _self._getList();
+    list.set(&#39;items&#39;,parseItems(items));
+    list.setSelectionByField(value.split(&#39;,&#39;));
+  },
+  //设置选项集合
+  _uiSetItems : function(v){
+    if(v){
+      this.setItems(v);
+    }
+  }
+},{
+  ATTRS : {
+<span id='BUI-Form-Field-List-property-controlTpl'>    /**
+</span>     * 内部表单元素的容器
+     * @type {String}
+     */
+    controlTpl : {
+      value : &#39;&lt;input type=&quot;hidden&quot;/&gt;&#39;
+    },
+<span id='BUI-Form-Field-List-property-defaultListCfg'>    /**
+</span>     * @protected
+     * 默认的列表配置
+     * @type {Object}
+     */
+    defaultListCfg : {
+      value : {
+        xclass : &#39;simple-list&#39;
+      }
+    },
+<span id='BUI-Form-Field-List-property-items'>    /**
+</span>     * 选项
+     * @type {Array}
+     */
+    items : {
+      setter : function(v){
+        if($.isPlainObject(v)){
+          var rst = [];
+          BUI.each(v,function(v,k){
+            rst.push({value : k,text :v});
+          });
+          v = rst;
+        }
+        return v;
+      }
+    },
+<span id='BUI-Form-Field-List-property-list'>    /**
+</span>     * 列表
+     * @type {BUI.List.SimpleList}
+     */
+    list : {
+
+    }
+  },
+  PARSER : {
+    list : function(el){
+      var listEl = el.find(&#39;.bui-simple-list&#39;);
+      if(listEl.length){
+        return {
+          srcNode : listEl
+        };
+      }
+    }
+  }
+},{
+  xclass : &#39;form-field-list&#39;
+});
+
+module.exports = List;
+</pre>
+</body>
+</html>

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 表格行编辑
+ * @ignore
+ */
+
+ var $ = require(&#39;jquery&#39;),
+  BUI = require(&#39;bui-common&#39;),
+  Editing = require(&#39;./editing&#39;),
+  CLS_ROW = BUI.prefix + &#39;grid-row&#39;;
+
+<span id='BUI-Grid-Plugins-RowEditing'>/**
+</span> * @class BUI.Grid.Plugins.RowEditing
+ * @extends BUI.Grid.Plugins.Editing
+ * 单元格编辑插件
+ *
+ *  ** 注意 **
+ *
+ *  - 编辑器的定义在columns中，editor属性
+ *  - editor里面的定义对应form-field的定义，xtype代表 form-field + xtype
+ *  - validator 函数的函数原型 function(value,newRecord,originRecord){} //编辑的当前值，正在编辑的记录，原始记录
+ */
+var RowEditing = function(config){
+  RowEditing.superclass.constructor.call(this, config);
+};
+
+RowEditing.ATTRS = {
+<span id='BUI-Grid-Plugins-RowEditing-cfg-autoSave'>   /**
+</span>   * 是否自动保存数据到数据源，通过store的save方法实现
+   * @cfg {Object} [autoSave=false]
+   */
+  autoSave : {
+    value : false
+  },
+<span id='BUI-Grid-Plugins-RowEditing-property-align'>   /**
+</span>   * @protected
+   * 编辑器的对齐设置
+   * @type {Object}
+   */
+  align : {
+    value : {
+      points: [&#39;tl&#39;,&#39;tl&#39;],
+      offset : [-2,0]
+    }
+  },
+<span id='BUI-Grid-Plugins-RowEditing-cfg-triggerCls'>  /**
+</span>   * 触发编辑样式，为空时默认点击整行都会触发编辑
+   * @cfg {String} [triggerCls = &#39;bui-grid-row&#39;]
+   */
+  triggerCls : {
+    value : CLS_ROW
+  },
+<span id='BUI-Grid-Plugins-RowEditing-property-editor'>  /**
+</span>   * 编辑器的默认配置信息
+   * @type {Object}
+   */
+  editor : {
+
+  }
+};
+
+BUI.extend(RowEditing,Editing);
+
+BUI.augment(RowEditing,{
+
+<span id='BUI-Grid-Plugins-RowEditing-method-getEditorCfgs'>  /**
+</span>   * @protected
+   * 获取编辑器的配置项
+   * @param  {Array} fields 字段配置
+   */ 
+  getEditorCfgs : function(fields){
+    var _self = this,
+      editor = _self.get(&#39;editor&#39;),
+      rst = [],
+      cfg = BUI.mix(true,{
+        changeSourceEvent : null,
+        autoUpdate : false,
+        form : {
+          children : fields,
+          buttonBar : {
+            elCls : &#39;centered toolbar&#39;
+          }
+        }
+      },editor);
+      
+    rst.push(cfg);
+    return rst;
+  },
+<span id='BUI-Grid-Plugins-RowEditing-method-wrapValidator'>  /**
+</span>   * 封装验证方法
+   * @protected
+   */
+  wrapValidator : function(validator){
+    var _self = this;
+    return function(value){
+      var editor = _self.get(&#39;curEditor&#39;),
+        origin = _self.get(&#39;record&#39;),
+        record = editor ? editor.getValue() : origin;
+      if(record){
+        return validator(value,record,origin);
+      }
+    };
+  },
+<span id='BUI-Grid-Plugins-RowEditing-method-focusEditor'>  /**
+</span>   * @protected
+   * 编辑器字段定位
+   */
+  focusEditor : function(editor,field){
+    var form = editor.get(&#39;form&#39;),
+      control = form.getField(field);
+    if(control){
+      control.focus();
+    }
+  },
+<span id='BUI-Grid-Plugins-RowEditing-method-getFieldConfig'>  /**
+</span>   * @protected
+   * 获取列定义中的字段定义信息
+   * @param  {BUI.Grid.Column} column 列定义
+   * @return {Object}  字段定义
+   */
+  getFieldConfig : function(column){
+    var editor = column.get(&#39;editor&#39;);
+    if(editor){
+      if(editor.xtype === &#39;checkbox&#39;){
+        editor.innerValueField = &#39;checked&#39;;
+      }
+      return editor;
+    }
+    var cfg = {xtype : &#39;plain&#39;};
+    if(column.get(&#39;dataIndex&#39;) &amp;&amp; column.get(&#39;renderer&#39;)){
+      cfg.renderer = column.get(&#39;renderer&#39;);
+      //cfg.id = column.get(&#39;id&#39;);
+    }
+    return cfg;
+  },
+<span id='BUI-Grid-Plugins-RowEditing-method-updateRecord'>  /**
+</span>   * 更新数据
+   * @protected
+   * @param  {Object} record 编辑的数据
+   * @param  {*} value  编辑值
+   */
+  updateRecord : function(store,record,editor){
+    var _self = this,
+        value = editor.getValue();
+      BUI.each(value,function(v,k){
+        if(BUI.isDate(v)){
+          value[k] = v.getTime();
+        }
+      });
+      BUI.mix(record,value);
+      
+      store.update(record);
+      if(_self.get(&#39;autoSave&#39;)){
+        store.save(record);
+      }
+  },
+<span id='BUI-Grid-Plugins-RowEditing-method-getEditor'>   /**
+</span>   * 获取编辑此行的编辑器
+   * @protected
+   * @param  {String} field 点击单元格的字段
+   * @return {BUI.Editor.Editor}  编辑器
+   */
+  getEditor : function(field){
+    var _self = this,
+      editors = _self.get(&#39;editors&#39;);
+    return editors[0];
+  },
+<span id='BUI-Grid-Plugins-RowEditing-method-onColumnVisibleChange'>  /**
+</span>   * @override
+   * 列发生改变
+   */
+  onColumnVisibleChange : function(column){
+    var _self = this,
+      id = column.get(&#39;id&#39;),
+      editor = _self.getEditor(),
+      field = editor.getChild(id,true);
+    if(field){
+      field.set(&#39;visible&#39;,column.get(&#39;visible&#39;));
+    }
+  },
+<span id='BUI-Grid-Plugins-RowEditing-method-beforeShowEditor'>  /**
+</span>   * 显示编辑器前
+   * @protected
+   * @template
+   * @param  {BUI.Editor.Editor} editor 
+   * @param  {Object} options
+   */
+  beforeShowEditor : function(editor,options){
+    var _self = this,
+      grid = _self.get(&#39;grid&#39;),
+      columns = grid.get(&#39;columns&#39;),
+      form = editor.get(&#39;form&#39;),
+      row = $(options.row);
+    editor.set(&#39;width&#39;,row.width());
+    BUI.each(columns,function(column){
+      var fieldName = column.get(&#39;dataIndex&#39;),
+        field = form.getField(fieldName)
+      if(!column.get(&#39;visible&#39;)){
+        field &amp;&amp; field.set(&#39;visible&#39;,false);
+      }else{
+        var 
+          width = column.get(&#39;el&#39;).outerWidth() - field.getAppendWidth();
+        field.set(&#39;width&#39;,width);
+      }
+    });
+  },
+<span id='BUI-Grid-Plugins-RowEditing-method-getEditValue'>  /**
+</span>   * @protected
+   * 获取要编辑的值
+   * @param  {Object} options 点击单元格的事件对象
+   * @return {*}   编辑的值
+   */
+  getEditValue : function(options){
+    return options.record;
+  },
+<span id='BUI-Grid-Plugins-RowEditing-method-getEditorConstructor'>  /**
+</span>   * 获取编辑器的构造函数
+   * @param  {Object} Editor 命名空间
+   * @return {Function}       构造函数
+   */
+  getEditorConstructor : function(Editor){
+    return Editor.RecordEditor;
+  },
+<span id='BUI-Grid-Plugins-RowEditing-method-getAlignNode'>   /**
+</span>   * @protected
+   * 获取对齐的节点
+   * @override
+   * @param  {Object} options 点击单元格的事件对象
+   * @return {jQuery} 
+   */
+  getAlignNode : function(options){
+    return $(options.row);
+  },
+<span id='BUI-Grid-Plugins-RowEditing-method-getFields'>  /**
+</span>   * 获取编辑的字段
+   * @protected
+   * @return {Array}  字段集合
+   */
+  getFields : function(){
+    var _self = this,
+      editors = _self.get(&#39;editors&#39;);
+    return editors[0].get(&#39;form&#39;).get(&#39;children&#39;);
+  }
+});
+module.exports = RowEditing;
+</pre>
+</body>
+</html>

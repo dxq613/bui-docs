@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 使用键盘导航
+ * @ignore
+ */
+
+
+  var $ = require(&#39;jquery&#39;),
+    KeyCode = require(&#39;../../keycode&#39;),
+    wrapBehavior = BUI.wrapBehavior,
+    getWrapBehavior = BUI.getWrapBehavior;
+<span id='BUI-Component-UIBase-KeyNav'>  /**
+</span>   * 键盘导航
+   * @class BUI.Component.UIBase.KeyNav
+   */
+  var keyNav = function() {
+
+  };
+
+  keyNav.ATTRS = {
+
+<span id='BUI-Component-UIBase-KeyNav-cfg-allowKeyNav'>    /**
+</span>     * 是否允许键盘导航
+     * @cfg {Boolean} [allowKeyNav = true]
+     */
+    allowKeyNav: {
+      value: true
+    },
+<span id='BUI-Component-UIBase-KeyNav-cfg-navEvent'>    /**
+</span>     * 导航使用的事件
+     * @cfg {String} [navEvent = &#39;keydown&#39;]
+     */
+    navEvent: {
+      value: &#39;keydown&#39;
+    },
+<span id='BUI-Component-UIBase-KeyNav-cfg-ignoreInputFields'>    /**
+</span>     * 当获取事件的DOM是 input,textarea,select等时，不处理键盘导航
+     * @cfg {Object} [ignoreInputFields=&#39;true&#39;]
+     */
+    ignoreInputFields: {
+      value: true
+    }
+
+  };
+
+  keyNav.prototype = {
+
+    __bindUI: function() {
+
+    },
+    _uiSetAllowKeyNav: function(v) {
+      var _self = this,
+        eventName = _self.get(&#39;navEvent&#39;),
+        el = _self.get(&#39;el&#39;);
+      if (v) {
+        el.on(eventName, wrapBehavior(_self, &#39;_handleKeyDown&#39;));
+      } else {
+        el.off(eventName, getWrapBehavior(_self, &#39;_handleKeyDown&#39;));
+      }
+    },
+<span id='BUI-Component-UIBase-KeyNav-method-_handleKeyDown'>    /**
+</span>     * 处理键盘导航
+     * @private
+     */
+    _handleKeyDown: function(ev) {
+      var _self = this,
+        ignoreInputFields = _self.get(&#39;ignoreInputFields&#39;),
+        code = ev.which;
+      if (ignoreInputFields &amp;&amp; $(ev.target).is(&#39;input,select,textarea&#39;)) {
+        return;
+      }
+
+      switch (code) {
+        case KeyCode.UP:
+          //ev.preventDefault();
+          _self.handleNavUp(ev);
+          break;
+        case KeyCode.DOWN:
+          //ev.preventDefault();
+          _self.handleNavDown(ev);
+          break;
+        case KeyCode.RIGHT:
+         // ev.preventDefault();
+          _self.handleNavRight(ev);
+          break;
+        case KeyCode.LEFT:
+          //ev.preventDefault();
+          _self.handleNavLeft(ev);
+          break;
+        case KeyCode.ENTER:
+          _self.handleNavEnter(ev);
+          break;
+        case KeyCode.ESC:
+          _self.handleNavEsc(ev);
+          break;
+        case KeyCode.TAB:
+          _self.handleNavTab(ev);
+          break;
+        default:
+          break;
+      }
+    },
+<span id='BUI-Component-UIBase-KeyNav-method-handleNavUp'>    /**
+</span>     * 处理向上导航
+     * @protected
+     * @param  {jQuery.Event} ev 事件对象
+     */
+    handleNavUp: function(ev) {
+      // body...
+    },
+<span id='BUI-Component-UIBase-KeyNav-method-handleNavDown'>    /**
+</span>     * 处理向下导航
+     * @protected
+     * @param  {jQuery.Event} ev 事件对象
+     */
+    handleNavDown: function(ev) {
+      // body...
+    },
+<span id='BUI-Component-UIBase-KeyNav-method-handleNavLeft'>    /**
+</span>     * 处理向左导航
+     * @protected
+     * @param  {jQuery.Event} ev 事件对象
+     */
+    handleNavLeft: function(ev) {
+      // body...
+    },
+<span id='BUI-Component-UIBase-KeyNav-method-handleNavRight'>    /**
+</span>     * 处理向右导航
+     * @protected
+     * @param  {jQuery.Event} ev 事件对象
+     */
+    handleNavRight: function(ev) {
+      // body...
+    },
+<span id='BUI-Component-UIBase-KeyNav-method-handleNavEnter'>    /**
+</span>     * 处理确认键
+     * @protected
+     * @param  {jQuery.Event} ev 事件对象
+     */
+    handleNavEnter: function(ev) {
+      // body...
+    },
+<span id='BUI-Component-UIBase-KeyNav-method-handleNavEsc'>    /**
+</span>     * 处理 esc 键
+     * @protected
+     * @param  {jQuery.Event} ev 事件对象
+     */
+    handleNavEsc: function(ev) {
+      // body...
+    },
+<span id='BUI-Component-UIBase-KeyNav-method-handleNavTab'>    /**
+</span>     * 处理Tab键
+     * @param  {jQuery.Event} ev 事件对象
+     */
+    handleNavTab: function(ev) {
+
+    }
+
+  };
+
+module.exports = keyNav;
+</pre>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 选择器
+ * @ignore
+ */
+
+  
+var $ = require(&#39;jquery&#39;),
+  Overlay = require(&#39;bui-overlay&#39;).Overlay,
+  Mixin = require(&#39;./mixin&#39;);
+
+<span id='BUI-Picker-Picker'>/**
+</span> * 选择器控件的基类，弹出一个层来选择数据，不要使用此类创建控件，仅用于继承实现控件
+ * xclass : &#39;picker&#39;
+ * &lt;pre&gt;&lt;code&gt;
+ * BUI.use([&#39;bui/picker&#39;,&#39;bui/list&#39;],function(Picker,List){
+ *
+ * var items = [
+ *       {text:&#39;选项1&#39;,value:&#39;a&#39;},
+ *       {text:&#39;选项2&#39;,value:&#39;b&#39;},
+ *      {text:&#39;选项3&#39;,value:&#39;c&#39;}
+ *     ],
+ *   list = new List.SimpleList({
+ *     elCls:&#39;bui-select-list&#39;,
+ *     items : items
+ *   }),
+ *   picker = new Picker.ListPicker({
+ *     trigger : &#39;#show&#39;,  
+ *     valueField : &#39;#hide&#39;, //如果需要列表返回的value，放在隐藏域，那么指定隐藏域
+ *     width:100,  //指定宽度
+ *     children : [list] //配置picker内的列表
+ *   });
+ * picker.render();
+ * });
+ * &lt;/code&gt;&lt;/pre&gt;
+ * @abstract
+ * @class BUI.Picker.Picker
+ * @mixins BUI.Picker.Mixin
+ * @extends BUI.Overlay.Overlay
+ */
+var picker = Overlay.extend([Mixin], {
+  
+},{
+  ATTRS : {
+
+  }
+},{
+  xclass:&#39;picker&#39;
+});
+
+module.exports = picker;
+</pre>
+</body>
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 点击或移出控件外部，控件隐藏
+ * @author dxq613@gmail.com
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;),
+  wrapBehavior = BUI.wrapBehavior,
+  getWrapBehavior = BUI.getWrapBehavior;
+
+function isExcept(self, elem) {
+  var hideExceptNode = self.get(&#39;hideExceptNode&#39;);
+  if (hideExceptNode &amp;&amp; hideExceptNode.length) {
+    return $.contains(hideExceptNode[0], elem);
+  }
+  return false;
+}
+<span id='BUI-Component-UIBase-AutoHide'>/**
+</span> * 点击隐藏控件的扩展
+ * @class BUI.Component.UIBase.AutoHide
+ */
+function autoHide() {
+
+}
+
+autoHide.ATTRS = {
+
+<span id='BUI-Component-UIBase-AutoHide-cfg-autoHideType'>  /**
+</span>   * 控件自动隐藏的事件，这里支持2种：
+   *  - &#39;click&#39;
+   *  - &#39;leave&#39;
+   *  &lt;pre&gt;&lt;code&gt;
+   *    var overlay = new Overlay({ //点击#t1时显示，点击#t1之外的元素隐藏
+   *      trigger : &#39;#t1&#39;,
+   *      autoHide : true,
+   *      content : &#39;悬浮内容&#39;
+   *    });
+   *    overlay.render();
+   *
+   *    var overlay = new Overlay({ //移动到#t1时显示，移动出#t1,overlay之外控件隐藏
+   *      trigger : &#39;#t1&#39;,
+   *      autoHide : true,
+   *      triggerEvent :&#39;mouseover&#39;,
+   *      autoHideType : &#39;leave&#39;,
+   *      content : &#39;悬浮内容&#39;
+   *    });
+   *    overlay.render();
+   *
+   *  &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {String} [autoHideType = &#39;click&#39;]
+   */
+<span id='BUI-Component-UIBase-AutoHide-property-autoHideType'>  /**
+</span>   * 控件自动隐藏的事件，这里支持2种：
+   * &#39;click&#39;,和&#39;leave&#39;,默认为&#39;click&#39;
+   * @type {String}
+   */
+  autoHideType: {
+    value: &#39;click&#39;
+  },
+<span id='BUI-Component-UIBase-AutoHide-cfg-autoHide'>  /**
+</span>   * 是否自动隐藏
+   * &lt;pre&gt;&lt;code&gt;
+   *
+   *  var overlay = new Overlay({ //点击#t1时显示，点击#t1,overlay之外的元素隐藏
+   *    trigger : &#39;#t1&#39;,
+   *    autoHide : true,
+   *    content : &#39;悬浮内容&#39;
+   *  });
+   *  overlay.render();
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {Object} autoHide
+   */
+<span id='global-property-autoHide'>  /**
+</span>   * 是否自动隐藏
+   * @type {Object}
+   * @ignore
+   */
+  autoHide: {
+    value: false
+  },
+<span id='BUI-Component-UIBase-AutoHide-cfg-hideExceptNode'>  /**
+</span>   * 点击或者移动到此节点时不触发自动隐藏
+   * &lt;pre&gt;&lt;code&gt;
+   *
+   *  var overlay = new Overlay({ //点击#t1时显示，点击#t1,#t2,overlay之外的元素隐藏
+   *    trigger : &#39;#t1&#39;,
+   *    autoHide : true,
+   *    hideExceptNode : &#39;#t2&#39;,
+   *    content : &#39;悬浮内容&#39;
+   *  });
+   *  overlay.render();
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {Object} hideExceptNode
+   */
+  hideExceptNode: {
+
+  },
+  events: {
+    value: {
+<span id='BUI-Component-UIBase-AutoHide-event-autohide'>      /**
+</span>       * @event autohide
+       * 点击控件外部时触发，只有在控件设置自动隐藏(autoHide = true)有效
+       * 可以阻止控件隐藏，通过在事件监听函数中 return false
+       * &lt;pre&gt;&lt;code&gt;
+       *  overlay.on(&#39;autohide&#39;,function(){
+       *    var curTrigger = overlay.curTrigger; //当前触发的项
+       *    if(condtion){
+       *      return false; //阻止隐藏
+       *    }
+       *  });
+       * &lt;/code&gt;&lt;/pre&gt;
+       */
+      autohide: false
+    }
+  }
+};
+
+autoHide.prototype = {
+
+  __bindUI: function() {
+    var _self = this;
+
+    _self.on(&#39;afterVisibleChange&#39;, function(ev) {
+      var visible = ev.newVal;
+      if (_self.get(&#39;autoHide&#39;)) {
+        if (visible) {
+          _self._bindHideEvent();
+        } else {
+          _self._clearHideEvent();
+        }
+      }
+    });
+  },
+<span id='BUI-Component-UIBase-AutoHide-method-handleMoveOuter'>  /**
+</span>   * 处理鼠标移出事件，不影响{BUI.Component.Controller#handleMouseLeave}事件
+   * @param  {jQuery.Event} ev 事件对象
+   */
+  handleMoveOuter: function(ev) {
+    var _self = this,
+      target = ev.toElement || ev.relatedTarget;
+    if (!_self.containsElement(target) &amp;&amp; !isExcept(_self, target)) {
+      if (_self.fire(&#39;autohide&#39;) !== false) {
+        _self.hide();
+      }
+    }
+  },
+<span id='BUI-Component-UIBase-AutoHide-method-handleDocumentClick'>  /**
+</span>   * 点击页面时的处理函数
+   * @param {jQuery.Event} ev 事件对象
+   * @protected
+   */
+  handleDocumentClick: function(ev) {
+    var _self = this,
+      target = ev.target;
+    if (!_self.containsElement(target) &amp;&amp; !isExcept(_self, target)) {
+      if (_self.fire(&#39;autohide&#39;) !== false) {
+        _self.hide();
+      }
+    }
+  },
+  _bindHideEvent: function() {
+    var _self = this,
+      trigger = _self.get(&#39;curTrigger&#39;),
+      autoHideType = _self.get(&#39;autoHideType&#39;);
+    if (autoHideType === &#39;click&#39;) {
+      $(document).on(&#39;mousedown&#39;, wrapBehavior(_self, &#39;handleDocumentClick&#39;));
+    } else {
+      _self.get(&#39;el&#39;).on(&#39;mouseleave&#39;, wrapBehavior(_self, &#39;handleMoveOuter&#39;));
+      if (trigger) {
+        $(trigger).on(&#39;mouseleave&#39;, wrapBehavior(_self, &#39;handleMoveOuter&#39;))
+      }
+    }
+
+  },
+  //清除绑定的隐藏事件
+  _clearHideEvent: function() {
+    var _self = this,
+      trigger = _self.get(&#39;curTrigger&#39;),
+      autoHideType = _self.get(&#39;autoHideType&#39;);
+    if (autoHideType === &#39;click&#39;) {
+      $(document).off(&#39;mousedown&#39;, getWrapBehavior(_self, &#39;handleDocumentClick&#39;));
+    } else {
+      _self.get(&#39;el&#39;).off(&#39;mouseleave&#39;, getWrapBehavior(_self, &#39;handleMoveOuter&#39;));
+      if (trigger) {
+        $(trigger).off(&#39;mouseleave&#39;, getWrapBehavior(_self, &#39;handleMoveOuter&#39;))
+      }
+    }
+  }
+};
+
+module.exports = autoHide;
+</pre>
+</body>
+</html>

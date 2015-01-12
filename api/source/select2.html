@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Group'>/**
+</span> * @fileOverview 选择框分组
+ * @ignore
+ */
+
+var Group = require(&#39;./base&#39;),
+  Data = require(&#39;bui-data&#39;),
+  Bindable = BUI.Component.UIBase.Bindable;
+
+function getItems(nodes){
+  var items = [];
+  BUI.each(nodes,function(node){
+    items.push({
+      text : node.text,
+      value : node.id
+    });
+  });
+  return items;
+}
+
+<span id='BUI-Form-Group-Select'>/**
+</span> * @class BUI.Form.Group.Select
+ * 级联选择框分组
+ * @extends BUI.Form.Group
+ * @mixins BUI.Component.UIBase.Bindable
+ */
+var Select = Group.extend([Bindable],{
+  initializer : function(){
+    var _self = this,
+      url = _self.get(&#39;url&#39;),
+      store = _self.get(&#39;store&#39;) || _self._getStore();
+    if(!store.isStore){
+      store.autoLoad = true;
+      if(url){
+        store.url = url;
+      }
+      store = new Data.TreeStore(store);
+    }
+    _self.set(&#39;store&#39;,store);
+  },
+  bindUI : function  () {
+    var _self = this;
+    _self.on(&#39;change&#39;,function (ev) {
+      var target = ev.target;
+      if(target != _self){
+        var field = target,
+          value = field.get(&#39;value&#39;),
+          level = _self._getFieldIndex(field) + 1;
+        _self._valueChange(value,level);
+      }
+    });
+  },
+  onLoad : function(e){
+    var _self = this,
+      node = e ? e.node : _self.get(&#39;store&#39;).get(&#39;root&#39;);
+    _self._setFieldItems(node.level,node.children); 
+  },
+  //获取store的配置项
+  _getStore : function(){
+    var _self = this,
+      type = _self.get(&#39;type&#39;);
+    if(type &amp;&amp; TypeMap[type]){
+      return TypeMap[type];
+    }
+    return {};
+  },
+  _valueChange : function(value,level){
+    var _self = this,
+      store = _self.get(&#39;store&#39;);
+    if(value){
+      var node = store.findNode(value);
+      if(!node){
+        return;
+      }
+      if(store.isLoaded(node)){
+        _self._setFieldItems(level,node.children);
+      }else{
+        store.loadNode(node);
+      }
+    }else{
+      _self._setFieldItems(level,[]);
+    }
+  },
+  _setFieldItems : function(level,nodes){
+    var _self = this,
+      field = _self.getFieldAt(level),
+      items = getItems(nodes);
+    if(field){
+      field.setItems(items);
+      _self._valueChange(field.get(&#39;value&#39;),level + 1);
+    }
+  },
+  //获取字段的索引位置
+  _getFieldIndex : function (field) {
+    var _self = this,
+      fields = _self.getFields();
+    return  BUI.Array.indexOf(field,fields);
+  }
+},{
+  ATTRS : {
+<span id='BUI-Form-Group-Select-property-type'>    /**
+</span>     * 级联选择框的类型,目前仅内置了 &#39;city&#39;一个类型，用于选择省、市、县,
+     * 可以自定义添加类型
+     *         Select.addType(&#39;city&#39;,{
+     *           proxy : {
+     *             url : &#39;http://lp.taobao.com/go/rgn/citydistrictdata.php&#39;,
+     *             dataType : &#39;jsonp&#39;
+     *           },
+     *           map : {
+     *             isleaf : &#39;leaf&#39;,
+     *             value : &#39;text&#39;
+     *           }
+     *         });
+     * @type {String}
+     */
+    type : {
+
+    },
+    store : {
+
+    }
+  }
+},{
+  xclass : &#39;form-group-select&#39;
+});
+
+var TypeMap = {};
+
+<span id='BUI-Form-Group-Select-static-method-addType'>/**
+</span> * 添加一个类型的级联选择框，目前仅内置了 &#39;city&#39;一个类型，用于选择省、市、县
+ * @static
+ * @param {String} name 类型名称
+ * @param {Object} cfg  配置项，详细信息请参看： @see{BUI.Data.TreeStore}
+ */
+Select.addType = function(name,cfg){
+  TypeMap[name] = cfg;
+};
+
+Select.addType(&#39;city&#39;,{
+  proxy : {
+    url : &#39;http://lp.taobao.com/go/rgn/citydistrictdata.php&#39;,
+    dataType : &#39;jsonp&#39;
+  },
+  map : {
+    isleaf : &#39;leaf&#39;,
+    value : &#39;text&#39;
+  }
+});
+
+module.exports = Select;
+</pre>
+</body>
+</html>

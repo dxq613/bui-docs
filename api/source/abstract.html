@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 布局控件的基类
+ * @ignore
+ */
+
+
+var $ = require(&#39;jquery&#39;),
+	BUI = require(&#39;bui-common&#39;),
+	Item = require(&#39;./item/base&#39;);
+
+<span id='BUI-Layout-Abstract'>/**
+</span> * @class BUI.Layout.Abstract
+ * 控件布局插件的抽象类，此插件不要直接使用
+ * @extends BUI.Base
+ */
+var Abstract = function(config){
+	Abstract.superclass.constructor.call(this,config);
+};
+
+BUI.extend(Abstract,BUI.Base);
+
+Abstract.ATTRS = {
+
+<span id='BUI-Layout-Abstract-property-itemConstructor'>	/**
+</span>	 * 子项对应的构造函数
+	 * @protected
+	 * @type {Function}
+	 */
+	itemConstructor : {
+		value : Item
+	},
+<span id='BUI-Layout-Abstract-property-control'>	/**
+</span>	 * 使用此插件的控件,只读属性
+	 * &lt;pre&gt;
+	 * &lt;code&gt;
+	 *  var control =	layout.get(&#39;control&#39;);
+	 * &lt;/code&gt;
+	 * &lt;/pre&gt;
+	 * @readOnly
+	 * @type {BUI.Component.Controller}
+	 */
+	control : {
+
+	},
+<span id='BUI-Layout-Abstract-property-layoutEvents'>	/**
+</span>	 * 控件的的哪些事件会引起重新布局，一般场景下控件的宽高改变都会引起重新布局
+	 * @type {Array}
+	 */
+	layoutEvents : {
+		value : [&#39;afterWidthChange&#39;,&#39;afterHeightChange&#39;]
+	},
+<span id='BUI-Layout-Abstract-property-items'>	/**
+</span>	 * 内部选项，获取布局插件的布局项
+	 * &lt;pre&gt;
+	 * &lt;code&gt;
+	 *  var items =	layout.get(&#39;items&#39;);
+	 * &lt;/code&gt;
+	 * &lt;/pre&gt;
+	 * @type {String}
+	 */
+	items : {
+
+	},
+<span id='BUI-Layout-Abstract-cfg-elCls'>	/**
+</span>	 * 布局容器上添加的样式,布局插件在放置子项的节点上设置的样式
+	 * @cfg {String} elCls
+	 */
+	elCls : {
+
+	},
+<span id='BUI-Layout-Abstract-cfg-defaultCfg'>	/**
+</span>	 * 布局子项的默认得配置项
+	 * &lt;pre&gt;
+	 * &lt;code&gt;
+	 *  var layout = new BUI.Layout.Anchor({
+	 *  	defaultCfg : {
+	 *  		fit : &#39;width&#39;
+	 *  	}
+	 *  });
+	 *
+	 *  new Controller({
+	 *    ...
+	 * 		plugins : [layout]
+	 *  });
+	 * &lt;/code&gt;
+	 * &lt;/pre&gt;
+	 * @cfg {Object} defaultCfg
+	 */
+	defaultCfg : {
+		value : {}
+	},
+<span id='BUI-Layout-Abstract-cfg-wraperCls'>	/**
+</span>	 * 放置控件的容器css,当设置itemTpl时指定布局项放置的位置
+	 * &lt;pre&gt;
+	 * &lt;code&gt;
+	 *  var layout = new BUI.Layout.Anchor({
+	 *  	defaultCfg : {
+	 *  		fit : &#39;width&#39;
+	 *  	},
+	 *  	itempl : &#39;&amp;lt;div class=&quot;a&quot;&gt;&amp;lt;div class=&quot;b&quot;&gt;&amp;lt;/div&gt;&amp;lt;/div&gt;&#39;,
+	 *  	wraperCls : &#39;b&#39;
+	 *  });
+	 *
+	 *  new Controller({
+	 *    ...
+	 * 		plugins : [layout]
+	 *  });
+	 * &lt;/code&gt;
+	 * &lt;/pre&gt;
+	 * @cfg {string} wraperCls
+	 */
+	wraperCls : {
+
+	},
+<span id='BUI-Layout-Abstract-property-container'>	/**
+</span>	 * 放置布局的容器
+	 * @readOnly
+	 * @type {jQuery}
+	 */
+	container : {
+
+	},
+<span id='BUI-Layout-Abstract-property-tpl'>	/**
+</span>	 * 布局的模板,将所有的子控件放置其中,默认为空
+	 * &lt;pre&gt;
+	 * &lt;code&gt;
+	 *  var layout = new BUI.Layout.Anchor({
+	 *  	defaultCfg : {
+	 *  		fit : &#39;width&#39;
+	 *  	},
+	 *  	tpl : &#39;&amp;lt;div class=&quot;custom-a&quot;&gt;&amp;lt;/div&gt;&#39;
+	 *  });
+	 *
+	 *  new Controller({
+	 *    ...
+	 * 		plugins : [layout]
+	 *  });
+	 * &lt;/code&gt;
+	 * &lt;/pre&gt;
+	 * @type {String}
+	 */
+	tpl : {
+
+	},
+<span id='BUI-Layout-Abstract-cfg-itemTpl'>	/**
+</span>	 * 每一个布局子项的模板，会将使用此插件的子控件放入其中
+	 * &lt;pre&gt;
+	 * &lt;code&gt;
+	 *  var layout = new BUI.Layout.Anchor({
+	 *  	defaultCfg : {
+	 *  		fit : &#39;width&#39;
+	 *  	},
+	 *  	itemTpl : &#39;&amp;lt;div class=&quot;a&quot;&gt;&amp;lt;div class=&quot;b&quot;&gt;&amp;lt;/div&gt;&amp;lt;/div&gt;&#39;,
+	 *  	wraperCls : &#39;b&#39;
+	 *  });
+	 *
+	 *  new Controller({
+	 *    ...
+	 * 		plugins : [layout]
+	 *  });
+	 * &lt;/code&gt;
+	 * &lt;/pre&gt;
+	 * @cfg {String} itemTpl
+	 */
+	itemTpl : {
+		value : &#39;&lt;div&gt;&lt;/div&gt;&#39;
+	}
+}
+
+BUI.augment(Abstract,{
+
+	initializer : function(control){
+		var _self = this;
+		_self.set(&#39;control&#39;,control);
+	},
+	renderUI : function(){
+		this._initWraper();
+		this.initItems();
+	},
+	//绑定宽度，高度发生改变的情形
+	bindUI : function(){
+		var _self = this,
+			control = _self.get(&#39;control&#39;),
+			layoutEvents = _self.get(&#39;layoutEvents&#39;).join(&#39; &#39;);
+
+		control.on(&#39;afterAddChild&#39;,function(ev){
+			var child = ev.child;
+			_self.addItem(child);
+			
+		});
+
+		control.on(&#39;afterRemoveChild&#39;,function(ev){
+			_self.removeItem(ev.child);
+		});
+		
+		control.on(layoutEvents,function(){
+			_self.resetLayout();
+		});
+
+		
+		_self.appendEvent(control);
+	},
+<span id='BUI-Layout-Abstract-method-appendEvent'>	/**
+</span>	 * @protected
+	 * 附加事件
+	 * @param  {Object} control 使用layout的控件
+	 */
+	appendEvent : function(control){
+
+	},
+	//初始化容器
+  _initWraper : function(){
+  	var _self = this,
+  		control = _self.get(&#39;control&#39;),
+  		controlEl = control.get(&#39;view&#39;).get(&#39;contentEl&#39;),
+  		node,
+  		elCls = _self.get(&#39;elCls&#39;),
+  		tpl = _self.get(&#39;tpl&#39;);
+  	if(tpl){
+  		node = $(tpl).appendTo(controlEl);
+  	}else{
+  		node = controlEl;
+  	}
+  	if(elCls){
+  		node.addClass(elCls);
+  	}
+  	_self.set(&#39;container&#39;,node);
+  	_self.afterWraper();
+	},
+<span id='BUI-Layout-Abstract-method-afterWraper'>	/**
+</span>	 * @protected
+	 * 容器初始化完毕开始渲染布局子项
+	 */
+	afterWraper : function(){
+
+	},
+<span id='BUI-Layout-Abstract-method-getItemByElement'>	/**
+</span>	 * 通过DOM查找子项
+	 * &lt;pre&gt;
+	 * &lt;code&gt;
+	 *  var node = $(&#39;#id&#39;);//一般可以通过点击事件等获取
+	 *  var item = layout.getItemByElement(node);
+	 * &lt;/code&gt;
+	 * &lt;/pre&gt;
+	 * @param  {jQuery} element DOM元素
+	 * @return {BUI.Layout.Item} 布局选项
+	 */
+	getItemByElement : function(element){
+		return this.getItemBy(function(item){
+			return $.contains(item.get(&#39;el&#39;)[0],element[0]);
+		});
+	},
+<span id='BUI-Layout-Abstract-method-getItemContainer'>	/**
+</span>	 * @protected
+	 * 获取布局选项的容器
+	 */
+	getItemContainer : function(itemAttrs){
+		return this.get(&#39;container&#39;);
+	},
+<span id='BUI-Layout-Abstract-method-initItems'>	/**
+</span>	 * @private
+	 * 初始化子项
+	 */
+	initItems : function(){
+		var _self = this,
+			control = _self.get(&#39;control&#39;),
+			items = [],
+			controlChildren = control.get(&#39;children&#39;);
+
+		_self.set(&#39;items&#39;,items);
+
+		for (var i = 0; i &lt; controlChildren.length; i++) {
+			_self.addItem(controlChildren[i]);
+		};
+		_self.afterInitItems();
+		
+	},
+<span id='BUI-Layout-Abstract-method-afterInitItems'>	/**
+</span>	 * 布局选项初始化完毕
+	 * @protected
+	 */
+	afterInitItems : function(){
+
+	},
+<span id='BUI-Layout-Abstract-method-getNextItem'>	/**
+</span>	 * 获取下一项选项,如果当前项是最后一条记录，则返回第一条记录
+	 * &lt;pre&gt;
+	 * &lt;code&gt;
+	 *  var preItem = ...;//通过各种方式获得
+	 *  var next = layout.getNextItem(preItem); //下一个
+	 * &lt;/code&gt;
+	 * &lt;/pre&gt;
+	 * @param  {BUI.Layout.Item} item 选项
+	 * @return {BUI.Layout.Item}  下一个选项
+	 */
+	getNextItem : function(item){
+		var _self = this,
+			index = _self.getItemIndex(item),
+			count = _self.getCount(),
+			next = (index + 1) % count;
+		return _self.getItemAt(next);
+	},
+<span id='BUI-Layout-Abstract-method-getItemCfg'>	/**
+</span>	 * @protected
+	 * 返回子项的配置信息
+	 * @param {Object}  controlChild 包装的控件
+	 * @return {Object} 配置信息
+	 */
+	getItemCfg : function(controlChild){
+		var _self = this,
+			defaultCfg = _self.get(&#39;defaultCfg&#39;),
+			cfg = BUI.mix({},defaultCfg,{
+				control : controlChild,
+				tpl : _self.get(&#39;itemTpl&#39;),
+				layout : _self,
+				wraperCls : _self.get(&#39;wraperCls&#39;)
+			},controlChild.get(&#39;layout&#39;));
+			
+			cfg.container = _self.getItemContainer(cfg)
+		return cfg;
+	},
+<span id='BUI-Layout-Abstract-method-initItem'>	/**
+</span>	 * @protected 
+	 * 初始化子项
+	 */
+	initItem : function(controlChild){
+		var _self = this,
+			c = _self.get(&#39;itemConstructor&#39;),
+			cfg = _self.getItemCfg(controlChild);
+
+		return new c(cfg);
+	},
+<span id='BUI-Layout-Abstract-method-addItem'>	/**
+</span>	 * 添加布局项
+	 * @protected
+	 * @param {Object} controlChild 控件
+	 */
+	addItem : function(control){
+		var _self = this,
+			items = _self.getItems(),
+			item = _self.initItem(control);
+		items.push(item);
+		return item;
+	},
+<span id='BUI-Layout-Abstract-method-removeItem'>	/**
+</span>	 * 移除布局项
+	 * @protected
+	 * @param  {Object} controlChild 使用布局的控件的子控件
+	 */
+	removeItem : function(control){
+		var _self = this,
+		  items = _self.getItems(),
+			item = _self.getItem(control);
+		if(item){
+			item.destroy();
+			BUI.Array.remove(items,item);
+		}
+	},
+<span id='BUI-Layout-Abstract-method-getItemBy'>	/**
+</span>	 * 通过匹配函数获取布局选项
+	 * &lt;pre&gt;
+	 * &lt;code&gt;
+	 *  var item = layout.getItemBy(function(item){
+	 *    return item.get(&#39;control&#39;).get(&#39;id&#39;) == &#39;tree&#39;;//查找内部控件的id=&#39;grid&#39;的布局项
+	 *  });
+	 * &lt;/code&gt;
+	 * &lt;/pre&gt;
+	 * @param  {Function} fn 匹配函数
+	 * @return {BUI.Layout.Item} 布局选项
+	 */
+	getItemBy : function(fn){
+		var _self = this,
+			items = _self.getItems(),
+			rst = null;
+
+		BUI.each(items,function(item){
+			if(fn(item)){
+				rst = item;
+				return false;
+			}
+		});
+		return rst;
+	},
+<span id='BUI-Layout-Abstract-method-getItemsBy'>	/**
+</span>	 * 通过匹配函数获取布局选项集合
+	 * &lt;pre&gt;
+	 * &lt;code&gt;
+	 *  var items = layout.getItemsBy(function(item){
+	 *    return item.get(&#39;region&#39;) == &#39;north&#39;;//查找
+	 *  });
+	 * &lt;/code&gt;
+	 * &lt;/pre&gt;
+	 * @param  {Function} fn 匹配函数
+	 * @return {Array} 布局选项集合
+	 */
+	getItemsBy : function(fn){
+		var _self = this,
+			items = _self.getItems(),
+			rst = [];
+
+		BUI.each(items,function(item){
+			if(fn(item)){
+				rst.push(item);
+			}
+		});
+		return rst;
+	},
+<span id='BUI-Layout-Abstract-method-getItem'>	/**
+</span>	 * 获取布局选项
+	 * &lt;pre&gt;
+	 * &lt;code&gt;
+	 *  var grid = BUI.getControl(&#39;grid&#39;);//根据id获取grid
+	 *  var next = layout.getItem(grid); //下一个
+	 * &lt;/code&gt;
+	 * &lt;/pre&gt;
+	 * @param {Object} controlChild 子控件
+	 * @return {BUI.Layout.Item} 布局选项
+	 */
+	getItem : function(control){
+		return this.getItemBy(function(item){
+			return item.get(&#39;control&#39;) == control;
+		});
+	},
+<span id='BUI-Layout-Abstract-method-getCount'>	/**
+</span>	 * 返回子项的数目
+	 * &lt;pre&gt;
+	 * &lt;code&gt;
+	 *  var count = layout.getCount();
+	 * &lt;/code&gt;
+	 * &lt;/pre&gt;
+	 * @return {Number} 数目
+	 */
+	getCount : function(){
+		return this.getItems().length;
+	},
+<span id='BUI-Layout-Abstract-method-getItemAt'>	/**
+</span>	 * 根据索引返回选项,索引从0开始
+	 * &lt;pre&gt;
+	 * &lt;code&gt;
+	 *  var item = layout.getItemAt(2);
+	 * &lt;/code&gt;
+	 * &lt;/pre&gt;
+	 * @return {BUI.Layout.Item}} 返回选项
+	 */
+	getItemAt : function(index){
+		return this.getItems()[index];
+	},
+<span id='BUI-Layout-Abstract-method-getItemIndex'>	/**
+</span>	 * 获取索引
+	 * &lt;pre&gt;
+	 * &lt;code&gt;
+	 *  var index = layout.getItemIndex(item);
+	 * &lt;/code&gt;
+	 * &lt;/pre&gt;
+	 * @param  {BUI.Layout.Item} item 选项
+	 * @return {Number} 索引
+	 */
+	getItemIndex : function(item){
+		var items = this.getItems();
+		return BUI.Array.indexOf(item,items);
+	},
+<span id='BUI-Layout-Abstract-method-getItems'>	/**
+</span>	 * 获取内部子项，不等同于children，因为可能有
+	 * @return {Array} 返回布局的子项
+	 */
+	getItems : function(){
+		return this.get(&#39;items&#39;);
+	},
+<span id='BUI-Layout-Abstract-method-resetLayout'>	/**
+</span>	 * @protected
+	 * 重置布局，子类覆盖此类
+	 */
+	resetLayout : function(){
+		var _self = this,
+		 	items = _self.getItems();
+
+		BUI.each(items,function(item){
+			item.syncItem();
+		});
+	},
+<span id='BUI-Layout-Abstract-method-clearLayout'>	/**
+</span>	 * 清除所有的布局
+	 * @protected
+	 */
+	clearLayout : function(){
+		var _self = this,
+			items = _self.getItems();
+		BUI.each(items,function(item){
+			item.destroy();
+		});
+	},
+<span id='BUI-Layout-Abstract-method-reset'>	/**
+</span>	 * 重新布局
+	 * &lt;pre&gt;
+	 * &lt;code&gt;
+	 *  layout.reset();
+	 * &lt;/code&gt;
+	 * &lt;/pre&gt;
+	 */
+	reset: function(){
+		this.resetLayout();
+	},
+<span id='BUI-Layout-Abstract-method-destroy'>	/**
+</span>	 * 析构函数
+	 */
+	destroy : function(){
+		var _self = this;
+		_self.clearLayout();
+		_self.off();
+		_self.clearAttrVals();
+	}
+});
+
+module.exports = Abstract;
+</pre>
+</body>
+</html>

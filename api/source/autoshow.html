@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview click，focus,hover等引起控件显示，并且定位
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;);
+
+<span id='BUI-Component-UIBase-AutoShow'>/**
+</span> * 处理自动显示控件的扩展，一般用于显示menu,picker,tip等
+ * @class BUI.Component.UIBase.AutoShow
+ */
+function autoShow() {
+
+}
+
+autoShow.ATTRS = {
+
+<span id='BUI-Component-UIBase-AutoShow-cfg-trigger'>  /**
+</span>   * 触发显示控件的DOM选择器
+   * &lt;pre&gt;&lt;code&gt;
+   *  var overlay = new Overlay({ //点击#t1时显示，点击#t1,overlay之外的元素隐藏
+   *    trigger : &#39;#t1&#39;,
+   *    autoHide : true,
+   *    content : &#39;悬浮内容&#39;
+   *  });
+   *  overlay.render();
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {HTMLElement|String|jQuery} trigger
+   */
+<span id='BUI-Component-UIBase-AutoShow-property-trigger'>  /**
+</span>   * 触发显示控件的DOM选择器
+   * @type {HTMLElement|String|jQuery}
+   */
+  trigger: {
+
+  },
+  delegateTigger: {
+    getter: function() {
+      this.get(&#39;delegateTrigger&#39;); //兼容之前的版本
+    },
+    setter: function(v) {
+      this.set(&#39;delegateTrigger&#39;, v);
+    }
+
+  },
+<span id='BUI-Component-UIBase-AutoShow-cfg-delegateTrigger'>  /**
+</span>   * 是否使用代理的方式触发显示控件,如果tigger不是字符串，此属性无效
+   * &lt;pre&gt;&lt;code&gt;
+   *  var overlay = new Overlay({ //点击.t1(无论创建控件时.t1是否存在)时显示，点击.t1,overlay之外的元素隐藏
+   *    trigger : &#39;.t1&#39;,
+   *    autoHide : true,
+   *    delegateTrigger : true, //使用委托的方式触发显示控件
+   *    content : &#39;悬浮内容&#39;
+   *  });
+   *  overlay.render();
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {Boolean} [delegateTrigger = false]
+   */
+<span id='global-property-delegateTrigger'>  /**
+</span>   * 是否使用代理的方式触发显示控件,如果tigger不是字符串，此属性无效
+   * @type {Boolean}
+   * @ignore
+   */
+  delegateTrigger: {
+    value: false
+  },
+<span id='global-cfg-autoAlign'>  /**
+</span>   * 选择器是否始终跟随触发器对齐
+   * @cfg {Boolean} autoAlign
+   * @ignore
+   */
+<span id='BUI-Component-UIBase-AutoShow-property-autoAlign'>  /**
+</span>   * 选择器是否始终跟随触发器对齐
+   * @type {Boolean}
+   * @protected
+   */
+  autoAlign: {
+    value: true
+  },
+<span id='BUI-Component-UIBase-AutoShow-property-autoFocused'>  /**
+</span>   * 显示时是否默认获取焦点
+   * @type {Boolean}
+   */
+  autoFocused: {
+    value: true
+  },
+<span id='BUI-Component-UIBase-AutoShow-property-triggerActiveCls'>  /**
+</span>   * 如果设置了这个样式，那么触发显示（overlay）时trigger会添加此样式
+   * @type {Object}
+   */
+  triggerActiveCls: {
+
+  },
+<span id='BUI-Component-UIBase-AutoShow-property-curTrigger'>  /**
+</span>   * 控件显示时由此trigger触发，当配置项 trigger 选择器代表多个DOM 对象时，
+   * 控件可由多个DOM对象触发显示。
+   * &lt;pre&gt;&lt;code&gt;
+   *  overlay.on(&#39;show&#39;,function(){
+   *    var curTrigger = overlay.get(&#39;curTrigger&#39;);
+   *    //TO DO
+   *  });
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @type {jQuery}
+   * @readOnly
+   */
+  curTrigger: {
+
+  },
+<span id='global-cfg-triggerCallback'>  /**
+</span>   * 触发显示时的回调函数
+   * @cfg {Function} triggerCallback
+   * @ignore
+   */
+<span id='global-property-triggerCallback'>  /**
+</span>   * 触发显示时的回调函数
+   * @type {Function}
+   * @ignore
+   */
+  triggerCallback: {
+
+  },
+<span id='BUI-Component-UIBase-AutoShow-cfg-triggerEvent'>  /**
+</span>   * 显示菜单的事件
+   *  &lt;pre&gt;&lt;code&gt;
+   *    var overlay = new Overlay({ //移动到#t1时显示，移动出#t1,overlay之外控件隐藏
+   *      trigger : &#39;#t1&#39;,
+   *      autoHide : true,
+   *      triggerEvent :&#39;mouseover&#39;,
+   *      autoHideType : &#39;leave&#39;,
+   *      content : &#39;悬浮内容&#39;
+   *    });
+   *    overlay.render();
+   *
+   *  &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {String} [triggerEvent=&#39;click&#39;]
+   * @default &#39;click&#39;
+   */
+<span id='global-property-triggerEvent'>  /**
+</span>   * 显示菜单的事件
+   * @type {String}
+   * @default &#39;click&#39;
+   * @ignore
+   */
+  triggerEvent: {
+    value: &#39;click&#39;
+  },
+<span id='global-cfg-triggerHideEvent'>  /**
+</span>   * 因为触发元素发生改变而导致控件隐藏
+   * @cfg {String} triggerHideEvent
+   * @ignore
+   */
+<span id='global-property-triggerHideEvent'>  /**
+</span>   * 因为触发元素发生改变而导致控件隐藏
+   * @type {String}
+   * @ignore
+   */
+  triggerHideEvent: {
+
+  },
+  events: {
+    value: {
+<span id='BUI-Component-UIBase-AutoShow-event-triggerchange'>      /**
+</span>       * 当触发器（触发选择器出现）发生改变时，经常用于一个选择器对应多个触发器的情况
+       * &lt;pre&gt;&lt;code&gt;
+       *  overlay.on(&#39;triggerchange&#39;,function(ev){
+       *    var curTrigger = ev.curTrigger;
+       *    overlay.set(&#39;content&#39;,curTrigger.html());
+       *  });
+       * &lt;/code&gt;&lt;/pre&gt;
+       * @event
+       * @param {Object} e 事件对象
+       * @param {jQuery} e.prevTrigger 之前触发器，可能为null
+       * @param {jQuery} e.curTrigger 当前的触发器
+       */
+      &#39;triggerchange&#39;: false
+    }
+  }
+};
+
+autoShow.prototype = {
+
+  __createDom: function() {
+    this._setTrigger();
+  },
+  __bindUI: function() {
+    var _self = this,
+      triggerActiveCls = _self.get(&#39;triggerActiveCls&#39;);
+    if (triggerActiveCls) {
+      _self.on(&#39;hide&#39;, function() {
+        var curTrigger = _self.get(&#39;curTrigger&#39;);
+        if (curTrigger) {
+          curTrigger.removeClass(triggerActiveCls);
+        }
+      });
+    }
+
+  },
+  _setTrigger: function() {
+    var _self = this,
+      triggerEvent = _self.get(&#39;triggerEvent&#39;),
+      triggerHideEvent = _self.get(&#39;triggerHideEvent&#39;),
+      triggerCallback = _self.get(&#39;triggerCallback&#39;),
+      triggerActiveCls = _self.get(&#39;triggerActiveCls&#39;) || &#39;&#39;,
+      trigger = _self.get(&#39;trigger&#39;),
+      isDelegate = _self.get(&#39;delegateTrigger&#39;),
+      triggerEl = $(trigger);
+
+    //触发显示
+    function tiggerShow(ev) {
+      if (_self.get(&#39;disabled&#39;)) { //如果禁用则中断
+        return;
+      }
+      var prevTrigger = _self.get(&#39;curTrigger&#39;),
+        curTrigger = isDelegate ? $(ev.currentTarget) : $(this),
+        align = _self.get(&#39;align&#39;);
+      if (!prevTrigger || prevTrigger[0] != curTrigger[0]) {
+        if (prevTrigger) {
+          prevTrigger.removeClass(triggerActiveCls);
+        }
+        _self.set(&#39;curTrigger&#39;, curTrigger);
+        _self.fire(&#39;triggerchange&#39;, {
+          prevTrigger: prevTrigger,
+          curTrigger: curTrigger
+        });
+      }
+      curTrigger.addClass(triggerActiveCls);
+      if (_self.get(&#39;autoAlign&#39;)) {
+        align.node = curTrigger;
+
+      }
+      _self.set(&#39;align&#39;, align);
+      _self.show();
+
+
+      triggerCallback &amp;&amp; triggerCallback(ev);
+    }
+
+    //触发隐藏
+    function tiggerHide(ev) {
+      var toElement = ev.toElement || ev.relatedTarget;
+      if (!toElement || !_self.containsElement(toElement)) { //mouseleave时，如果移动到当前控件上，取消消失
+        _self.hide();
+      }
+    }
+
+    if (triggerEvent) {
+      if (isDelegate &amp;&amp; BUI.isString(trigger)) {
+        $(document).delegate(trigger, triggerEvent, tiggerShow);
+      } else {
+        triggerEl.on(triggerEvent, tiggerShow);
+      }
+
+    }
+
+    if (triggerHideEvent) {
+      if (isDelegate &amp;&amp; BUI.isString(trigger)) {
+        $(document).delegate(trigger, triggerHideEvent, tiggerHide);
+      } else {
+        triggerEl.on(triggerHideEvent, tiggerHide);
+      }
+    }
+  },
+  __renderUI: function() {
+    var _self = this,
+      align = _self.get(&#39;align&#39;);
+    //如果控件显示时不是由trigger触发，则同父元素对齐
+    if (align &amp;&amp; !align.node) {
+      align.node = _self.get(&#39;render&#39;) || _self.get(&#39;trigger&#39;);
+    }
+  }
+};
+
+module.exports = autoShow;
+</pre>
+</body>
+</html>

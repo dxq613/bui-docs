@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='BUI'>/**
+</span> * @fileOverview 模拟选择框在表单中
+ * @ignore
+ */
+
+
+var BUI = require(&#39;bui-common&#39;),
+  JSON = BUI.JSON,
+  Field = require(&#39;./base&#39;),
+  Rules = require(&#39;../rules&#39;);
+
+<span id='BUI-Form-Field-Upload'>/**
+</span> * 表单上传域
+ * @class BUI.Form.Field.Upload
+ * @extends BUI.Form.Field
+ */
+var uploaderField = Field.extend({
+  //生成upload
+  renderUI : function(){
+    var _self = this,
+      innerControl = _self.getInnerControl();
+    if(_self.get(&#39;srcNode&#39;) &amp;&amp; innerControl.get(0).type === &#39;file&#39;){ //如果使用现有DOM生成，不使用上传组件
+      return;
+    }
+    _self._initControlValue();
+    _self._initUpload();
+  },
+  _initUpload: function(){
+    var _self = this,
+      children = _self.get(&#39;children&#39;),
+      uploader = _self.get(&#39;uploader&#39;) || {};
+
+    require.async(&#39;bui/uploader&#39;, function(Uploader){
+      uploader.render = _self.getControlContainer();
+      uploader.autoRender = true;
+      uploader = new Uploader.Uploader(uploader);
+      _self.set(&#39;uploader&#39;, uploader);
+      _self.set(&#39;isCreate&#39;,true);
+      _self.get(&#39;children&#39;).push(uploader);
+
+      
+      _self._initQueue(uploader.get(&#39;queue&#39;));
+      
+      uploader.on(&#39;success&#39;, function(ev){
+        var result = _self._getUploaderResult();
+        _self.setControlValue(result);
+      });
+      uploader.get(&#39;queue&#39;).on(&#39;itemremoved&#39;, function(){
+        var result = _self._getUploaderResult();
+        _self.setControlValue(result);
+      })
+    });
+  },
+  _getUploaderResult: function(){
+    var _self = this,
+      uploader = _self.get(&#39;uploader&#39;),
+      queue = uploader.get(&#39;queue&#39;),
+      items = queue.getItems(),
+      result = [];
+
+    BUI.each(items, function(item){
+      item.result &amp;&amp; result.push(item.result);
+    });
+    return result;
+  },
+  setControlValue: function(items){
+    var _self = this,
+      innerControl = _self.getInnerControl();
+    // _self.fire(&#39;change&#39;);
+    innerControl.val(JSON.stringify(items));
+  },
+  _initControlValue: function(){
+    var _self = this,
+      textValue = _self.getControlValue(),
+      value;
+    if(textValue){
+      value = BUI.JSON.parse(textValue);
+      _self.set(&#39;value&#39;, value);
+    }
+  },
+  _initQueue: function(queue){
+    var _self = this,
+      value = _self.get(&#39;value&#39;),
+      result = [];
+    //初始化对列默认成功
+    BUI.each(value, function(item){
+      var newItem = BUI.cloneObject(item);
+      newItem.success = true;
+      newItem.result = item;
+      result.push(newItem);
+    });
+    queue &amp;&amp; queue.setItems(result);
+  }//,
+  // valid: function(){
+  //   var _self = this,
+  //     uploader = _self.get(&#39;uploader&#39;);
+  //   uploaderField.superclass.valid.call(_self);
+  //   uploader.valid();
+  // }
+},{
+  ATTRS : {
+<span id='BUI-Form-Field-Upload-property-controlTpl'>    /**
+</span>     * 内部表单元素的容器
+     * @type {String}
+     */
+    controlTpl : {
+      value : &#39;&lt;input type=&quot;hidden&quot;/&gt;&#39;
+    },
+    uploader: {
+      setter: function(v){
+        var disabled = this.get(&#39;disabled&#39;);
+        v &amp;&amp; v.isController &amp;&amp; v.set(&#39;disabled&#39;, disabled);
+        return v;
+      }
+    },
+
+    disabled: {
+      setter: function(v){
+        var _self = this,
+          uploader = _self.get(&#39;uploader&#39;);
+        uploader &amp;&amp; uploader.isController &amp;&amp; uploader.set(&#39;disabled&#39;, v);
+      }
+    },
+    value:{
+      shared : false,
+      value: []
+    },
+    defaultRules: function(){
+      uploader: true
+    }
+  }
+},{
+  xclass : &#39;form-field-uploader&#39;
+});
+
+
+Rules.add({
+  name : &#39;uploader&#39;,  //规则名称
+  msg : &#39;上传文件选择有误！&#39;,//默认显示的错误信息
+  validator : function(value, baseValue, formatMsg, field){ //验证函数，验证值、基准值、格式化后的错误信息
+    var uploader = field.get(&#39;uploader&#39;);
+    if(uploader &amp;&amp; !uploader.isValid()){
+      return formatMsg;
+    }
+  }
+}); 
+module.exports = uploaderField;
+</pre>
+</body>
+</html>

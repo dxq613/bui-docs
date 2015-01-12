@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 表单日历域
+ * @author dxq613@gmail.com
+ * @ignore
+ */
+
+
+var $ = require(&#39;jquery&#39;),
+  BUI = require(&#39;bui-common&#39;),
+  Field = require(&#39;./base&#39;),
+  DateUtil = BUI.Date;/*,
+  DatePicker = require(&#39;bui-calendar&#39;).DatePicker*/
+
+<span id='BUI-Form-Field-Date'>/**
+</span> * 表单文本域
+ * @class BUI.Form.Field.Date
+ * @extends BUI.Form.Field
+ */
+var dateField = Field.extend({
+  //生成日期控件
+  renderUI : function(){
+    
+    var _self = this,
+      datePicker = _self.get(&#39;datePicker&#39;);
+    if($.isPlainObject(datePicker)){
+      _self.initDatePicker(datePicker);
+    }
+    if((datePicker.get &amp;&amp; datePicker.get(&#39;showTime&#39;))|| datePicker.showTime){
+      _self.getInnerControl().addClass(&#39;calendar-time&#39;);
+    }
+
+  },
+  //初始化日历控件
+  initDatePicker : function(datePicker){
+    var _self = this;
+
+    require.async(&#39;bui-calendar&#39;, function(Calendar){
+      datePicker.trigger = _self.getInnerControl();
+      datePicker.autoRender = true;
+      datePicker = new Calendar.DatePicker(datePicker);
+      _self.set(&#39;datePicker&#39;,datePicker);
+      _self.set(&#39;isCreatePicker&#39;,true);
+      _self.get(&#39;children&#39;).push(datePicker);
+    });
+  },
+<span id='BUI-Form-Field-Date-method-setControlValue'>  /**
+</span>   * 设置字段的值
+   * @protected
+   * @param {Date} value 字段值
+   */
+  setControlValue : function(value){
+    var _self = this,
+      innerControl = _self.getInnerControl();
+    if(BUI.isDate(value)){
+      value = DateUtil.format(value,_self._getFormatMask());
+    }
+    innerControl.val(value);
+  },
+  //获取格式化函数
+  _getFormatMask : function(){
+    var _self = this,
+      datePicker = _self.get(&#39;datePicker&#39;);
+
+    if(datePicker.showTime || (datePicker.get &amp;&amp; datePicker.get(&#39;showTime&#39;))){
+      return &#39;yyyy-mm-dd HH:MM:ss&#39;;
+    }
+    return &#39;yyyy-mm-dd&#39;;
+  },
+<span id='BUI-Form-Field-Date-method-parseValue'>   /**
+</span>   * 将字符串等格式转换成日期
+   * @protected
+   * @override
+   * @param  {String} value 原始数据
+   * @return {Date}  该字段指定的类型
+   */
+  parseValue : function(value){
+    if(BUI.isNumber(value)){
+      return new Date(value);
+    }
+    return DateUtil.parse(value);
+  },
+<span id='BUI-Form-Field-Date-method-isCurrentValue'>  /**
+</span>   * @override
+   * @protected
+   * 是否当前值
+   */
+  isCurrentValue : function (value) {
+    return DateUtil.isEquals(value,this.get(&#39;value&#39;));
+  },
+  //设置最大值
+  _uiSetMax : function(v){
+    this.addRule(&#39;max&#39;,v);
+    var _self = this,
+      datePicker = _self.get(&#39;datePicker&#39;);
+    if(datePicker){
+      if(datePicker.set){
+        datePicker.set(&#39;maxDate&#39;,v);
+      }else{
+        datePicker.maxDate = v;
+      }
+      
+    }
+  },
+  //设置最小值
+  _uiSetMin : function(v){
+    this.addRule(&#39;min&#39;,v);
+    var _self = this,
+      datePicker = _self.get(&#39;datePicker&#39;);
+    if(datePicker){
+      if(datePicker.set){
+        datePicker.set(&#39;minDate&#39;,v);
+      }else{
+        datePicker.minDate = v;
+      }
+    }
+  }
+},{
+  ATTRS : {
+<span id='BUI-Form-Field-Date-property-controlTpl'>    /**
+</span>     * 内部表单元素的容器
+     * @type {String}
+     */
+    controlTpl : {
+      value : &#39;&lt;input type=&quot;text&quot; class=&quot;calendar&quot;/&gt;&#39;
+    },
+    defaultRules : {
+      value : {
+        date : true
+      }
+    },
+<span id='BUI-Form-Field-Date-property-max'>    /**
+</span>     * 最大值
+     * @type {Date|String}
+     */
+    max : {
+
+    },
+<span id='BUI-Form-Field-Date-property-min'>    /**
+</span>     * 最小值
+     * @type {Date|String}
+     */
+    min : {
+
+    },
+    value : {
+      setter : function(v){
+        if(BUI.isNumber(v)){//将数字转换成日期类型
+          return new Date(v);
+        }
+        return v;
+      }
+    },
+<span id='BUI-Form-Field-Date-property-datePicker'>    /**
+</span>     * 时间选择控件
+     * @type {Object|BUI.Calendar.DatePicker}
+     */
+    datePicker : {
+      shared : false,
+      value : {
+        
+      }
+    },
+<span id='BUI-Form-Field-Date-property-isCreatePicker'>    /**
+</span>     * 时间选择器是否是由此控件创建
+     * @type {Boolean}
+     * @readOnly
+     */
+    isCreatePicker : {
+      value : true
+    }
+  },
+  PARSER : {
+    datePicker : function(el){
+      var _self = this,
+        cfg = _self.get(&#39;datePicker&#39;) || {};
+      if(el.hasClass(&#39;calendar-time&#39;)){
+        BUI.mix(cfg,{
+          showTime : true
+        }) ;
+      }
+      return cfg;
+    }
+  }
+},{
+  xclass : &#39;form-field-date&#39;
+});
+
+module.exports = dateField;
+</pre>
+</body>
+</html>

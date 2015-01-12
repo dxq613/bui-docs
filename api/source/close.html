@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview close 关闭或隐藏控件
+ * @author yiminghe@gmail.com
+ * copied and modified by dxq613@gmail.com
+ * @ignore
+ */
+
+
+var $ = require(&#39;jquery&#39;);
+
+
+var CLS_PREFIX = BUI.prefix + &#39;ext-&#39;;
+
+function getCloseRenderBtn(self) {
+  return $(self.get(&#39;closeTpl&#39;));
+}
+
+<span id='BUI-Component-UIBase-CloseView'>/**
+</span> * 关闭按钮的视图类
+ * @class BUI.Component.UIBase.CloseView
+ * @private
+ */
+function CloseView() {}
+
+CloseView.ATTRS = {
+  closeTpl: {
+    value: &#39;&lt;a &#39; +
+      &#39;tabindex=&quot;0&quot; &#39; +
+      &quot;href=&#39;javascript:void(\&quot;关闭\&quot;)&#39; &quot; +
+      &#39;role=&quot;button&quot; &#39; +
+      &#39;class=&quot;&#39; + CLS_PREFIX + &#39;close&#39; + &#39;&quot;&gt;&#39; +
+      &#39;&lt;span class=&quot;&#39; +
+      CLS_PREFIX + &#39;close-x&#39; +
+      &#39;&quot;&gt;关闭&lt;&#39; + &#39;/span&gt;&#39; +
+      &#39;&lt;&#39; + &#39;/a&gt;&#39;
+  },
+  closeable: {
+    value: true
+  },
+  closeBtn: {}
+};
+
+CloseView.prototype = {
+  _uiSetCloseable: function(v) {
+    var self = this,
+      btn = self.get(&#39;closeBtn&#39;);
+    if (v) {
+      if (!btn) {
+        self.setInternal(&#39;closeBtn&#39;, btn = getCloseRenderBtn(self));
+      }
+      btn.appendTo(self.get(&#39;el&#39;), undefined);
+    } else {
+      if (btn) {
+        btn.remove();
+      }
+    }
+  }
+};
+
+<span id='BUI-Component-UIBase-Close'>/**
+</span> * @class BUI.Component.UIBase.Close
+ * Close extension class.
+ * Represent a close button.
+ */
+function Close() {}
+
+var HIDE = &#39;hide&#39;;
+Close.ATTRS = {
+<span id='BUI-Component-UIBase-Close-cfg-closeTpl'>  /**
+</span>   * 关闭按钮的默认模版
+   * &lt;pre&gt;&lt;code&gt;
+   *   var overlay = new Overlay({
+   *     closeTpl : &#39;&lt;a href=&quot;#&quot; title=&quot;close&quot;&gt;x&lt;/a&gt;&#39;,
+   *     closeable : true,
+   *     trigger : &#39;#t1&#39;
+   *   });
+   *   overlay.render();
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {String} closeTpl
+   */
+<span id='BUI-Component-UIBase-Close-property-closeTpl'>  /**
+</span>   * 关闭按钮的默认模版
+   * @type {String}
+   * @protected
+   */
+  closeTpl: {
+    view: true
+  },
+<span id='BUI-Component-UIBase-Close-cfg-closeable'>  /**
+</span>   * 是否出现关闭按钮
+   * @cfg {Boolean} [closeable = false]
+   */
+<span id='BUI-Component-UIBase-Close-property-closeable'>  /**
+</span>   * 是否出现关闭按钮
+   * @type {Boolean}
+   */
+  closeable: {
+    view: 1
+  },
+
+<span id='BUI-Component-UIBase-Close-property-closeBtn'>  /**
+</span>   * 关闭按钮.
+   * @protected
+   * @type {jQuery}
+   */
+  closeBtn: {
+    view: 1
+  },
+<span id='BUI-Component-UIBase-Close-cfg-closeAction'>  /**
+</span>   * 关闭时隐藏还是移除DOM结构&lt;br/&gt;
+   *
+   *  - &quot;hide&quot; : default 隐藏.
+   *  - &quot;destroy&quot;：当点击关闭按钮时移除（destroy)控件
+   *  - &#39;remove&#39; : 当存在父控件时使用remove，同时从父元素中删除
+   * @cfg {String} [closeAction = &#39;hide&#39;]
+   */
+<span id='BUI-Component-UIBase-Close-property-closeAction'>  /**
+</span>   * 关闭时隐藏还是移除DOM结构
+   * default &quot;hide&quot;.可以设置 &quot;destroy&quot; ，当点击关闭按钮时移除（destroy)控件
+   * @type {String}
+   * @protected
+   */
+  closeAction: {
+    value: HIDE
+  }
+
+<span id='BUI-Component-UIBase-Close-event-closing'>  /**
+</span>   * @event closing
+   * 正在关闭，可以通过return false 阻止关闭事件
+   * @param {Object} e 关闭事件
+   * @param {String} e.action 关闭执行的行为，hide,destroy,remove
+   */
+
+<span id='BUI-Component-UIBase-Close-event-beforeclosed'>  /**
+</span>   * @event beforeclosed
+   * 关闭前，发生在closing后，closed前，用于处理关闭前的一些工作
+   * @param {Object} e 关闭事件
+   * @param {String} e.action 关闭执行的行为，hide,destroy,remove
+   */
+
+<span id='BUI-Component-UIBase-Close-event-closed'>  /**
+</span>   * @event closed
+   * 已经关闭
+   * @param {Object} e 关闭事件
+   * @param {String} e.action 关闭执行的行为，hide,destroy,remove
+   */
+
+<span id='BUI-Component-UIBase-Close-event-closeclick'>  /**
+</span>   * @event closeclick
+   * 触发点击关闭按钮的事件,return false 阻止关闭
+   * @param {Object} e 关闭事件
+   * @param {String} e.domTarget 点击的关闭按钮节点
+   */
+};
+
+var actions = {
+  hide: HIDE,
+  destroy: &#39;destroy&#39;,
+  remove: &#39;remove&#39;
+};
+
+Close.prototype = {
+  _uiSetCloseable: function(v) {
+    var self = this;
+    if (v &amp;&amp; !self.__bindCloseEvent) {
+      self.__bindCloseEvent = 1;
+      self.get(&#39;closeBtn&#39;).on(&#39;click&#39;, function(ev) {
+        if (self.fire(&#39;closeclick&#39;, {
+          domTarget: ev.target
+        }) !== false) {
+          self.close();
+        }
+        ev.preventDefault();
+      });
+    }
+  },
+  __destructor: function() {
+    var btn = this.get(&#39;closeBtn&#39;);
+    btn &amp;&amp; btn.detach();
+  },
+<span id='BUI-Component-UIBase-Close-method-close'>  /**
+</span>   * 关闭弹出框，如果closeAction = &#39;hide&#39;那么就是隐藏，如果 closeAction = &#39;destroy&#39;那么就是释放,&#39;remove&#39;从父控件中删除，并释放
+   */
+  close: function() {
+    var self = this,
+      action = actions[self.get(&#39;closeAction&#39;) || HIDE];
+    if (self.fire(&#39;closing&#39;, {
+      action: action
+    }) !== false) {
+      self.fire(&#39;beforeclosed&#39;, {
+        action: action
+      });
+      if (action == &#39;remove&#39;) { //移除时同时destroy
+        self[action](true);
+      } else {
+        self[action]();
+      }
+      self.fire(&#39;closed&#39;, {
+        action: action
+      });
+    }
+  }
+};
+
+Close.View = CloseView;
+
+module.exports = Close;
+</pre>
+</body>
+</html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var BUI = require(&#39;bui-common&#39;),
+	Shape = require(&#39;./shape&#39;),
+	Base = require(&#39;./base&#39;),
+	Util = require(&#39;./util&#39;);
+
+<span id='BUI-Graphic-Container'>/**
+</span> * @class BUI.Graphic.Container
+ * 图形容器
+ * @extends BUI.Graphic.Base
+ * @abstract
+ */
+var Container = function(cfg){
+
+	Container.superclass.constructor.call(this,cfg);
+};
+
+BUI.extend(Container,Base);
+
+Container.ATTRS = {
+<span id='BUI-Graphic-Container-property-children'>	/**
+</span>	 * 子节点
+	 * @type {Array}
+	 */
+	children : []
+}
+
+BUI.augment(Container,{
+
+	isContainer : true,
+	beforeRenderUI : function(){
+		this.set(&#39;children&#39;,[]);
+	},
+<span id='global-method-getGroupClass'>	/**
+</span>	 * @protected
+	 * @ignore
+	 */
+	getGroupClass : function(){
+
+	},
+<span id='global-method-getShapeClass'>	/**
+</span>	 * @protected
+	 * @ignore
+	 */
+	getShapeClass : function(type){
+		var cName = BUI.ucfirst(type);
+		if(Shape[cName]){
+			return Shape[cName];
+		}
+		return Shape;
+	},
+<span id='BUI-Graphic-Container-method-addShape'>	/**
+</span>	 * 添加图形
+	 * @param {String | Object} type 类型或者配置项
+	 * @param {String} attrs 属性
+	 * @return {BUI.Graphic.Shape} 图形
+	 */
+	addShape : function(type,attrs){
+		var _self = this,
+			C,
+			cfg,
+			shape;
+		if(BUI.isObject(type)){
+			cfg = type;
+			type = cfg.type;
+		}else{
+			cfg = {
+				type : type,
+				attrs : attrs,
+				canvas : _self.get(&#39;canvas&#39;)
+			};
+		}
+		cfg.parent = _self;
+		C = _self.getShapeClass(type);
+		shape = new C(cfg);
+		shape.set(&#39;canvas&#39;,_self.get(&#39;canvas&#39;));
+		_self.addChild(shape);
+		return shape;
+	},
+<span id='BUI-Graphic-Container-method-addGroup'>	/**
+</span>	 * 添加分组
+	 * @param {Function} C 构造函数,可以为空，默认为BUI.Graphic.Group
+	 * @return {BUI.Graphic.Group} 分组
+	 */
+	addGroup : function(C,cfg){
+		if(BUI.isObject(C)){
+			cfg = C;
+			C = null;
+		}
+		var _self = this,
+			cfg = BUI.mix({
+				parent : _self,
+				canvas : _self.get(&#39;canvas&#39;)
+			},cfg),
+			group;
+
+		C = C || _self.getGroupClass();
+		group = new C(cfg);
+		_self.addChild(group);
+		return group;
+	},
+<span id='BUI-Graphic-Container-method-removeChild'>	/**
+</span>	 * 移除子图形
+	 * @protected
+	 * @param  {*} item 子图形或者分组
+	 * @param  {Boolean} [destroy=true] 是否同时从控件移除
+	 */
+	removeChild : function(item,destroy){
+		if(destroy == undefined){
+  		destroy = true;
+  	}
+		var _self = this,
+			el = _self.get(&#39;el&#39;),
+			children = _self.get(&#39;children&#39;);
+		BUI.Array.remove(children,item);
+		if(el.__set &amp;&amp; el.__set.exclude){
+			el.__set.exclude(item.get(&#39;el&#39;));
+		}
+		if(destroy){
+			item.destroy();
+		}
+		return item;
+	},
+<span id='BUI-Graphic-Container-method-addChild'>	/**
+</span>	 * @protected
+	 * 添加图形或者分组
+	 * @param {BUI.Graphic.Base} item 图形或者分组
+	 */
+	addChild : function(item){
+		var _self = this,
+			children = _self.get(&#39;children&#39;);
+		children.push(item);
+		item.parent = item;
+	},
+<span id='BUI-Graphic-Container-method-getChildAt'>	/**
+</span>	 * 获取子控件根据索引
+	 * @param  {Number} index 索引值
+	 * @return {BUI.Graphic.Base} 图形或者分组
+	 */
+	getChildAt : function(index){
+		return this.get(&#39;children&#39;)[index];
+	},
+<span id='BUI-Graphic-Container-method-getCount'>	/**
+</span>	 * 获取子控件数目
+	 * @return {Number} 数目
+	 */
+	getCount : function(){
+		return this.get(&#39;children&#39;).length;
+	},
+<span id='BUI-Graphic-Container-method-getLast'>	/**
+</span>	 * 获取最后一个控件
+	 * @return {BUI.Graphic.Base} 图形或者分组
+	 */
+	getLast : function(){
+		return this.getChildAt(this.getCount() - 1);
+	},
+<span id='BUI-Graphic-Container-method-getFirst'>	/**
+</span>	 * 获取第一个控件
+	 * @return {BUI.Graphic.Base} 图形或者分组
+	 */
+	getFirst : function(){
+		return this.getChildAt(0);
+	},
+<span id='BUI-Graphic-Container-method-find'>	/**
+</span>	 * 根据id查找分组或者图形
+	 * @param  {String} id id
+	 * @return {BUI.Graphic.Base} 分组或者图形
+	 */
+	find : function(id){
+		var _self = this;
+		return _self.findBy(function(item){
+			return item.get(&#39;id&#39;) == id;
+		});
+	},
+<span id='BUI-Graphic-Container-method-sort'>	/**
+</span>	 * 排序，将子元素按照zIndex进行排序
+	 */
+	sort : function(){
+		var _self = this,
+			node = _self.get(&#39;node&#39;),
+			children = $(node).children();
+		if(Util.svg){
+			children.sort(function(obj1,obj2){
+				var zIndex1 = obj1.getAttribute(&#39;zIndex&#39;) || 0,
+					zIndex2 = obj2.getAttribute(&#39;zIndex&#39;) || 0;
+				return (+zIndex1) - (+zIndex2);
+			});
+
+			BUI.each(children,function(item){
+				$(item).appendTo(node);
+			});
+		}else{
+			BUI.each(children,function(item){
+				var zIndex = item.getAttribute(&#39;zIndex&#39;);
+
+				zIndex &amp;&amp; $(item).css(&#39;zIndex&#39;,zIndex);
+			});
+		}
+		
+	},
+<span id='BUI-Graphic-Container-method-findBy'>	/**
+</span>	 * 根据查找函数查找分组或者图形
+	 * @param  {Function} fn 匹配函数
+	 * @return {BUI.Graphic.Base} 分组或者图形
+	 */
+	findBy : function(fn){
+		var _self = this,
+			children = _self.get(&#39;children&#39;),
+			rst = null;
+		BUI.each(children,function(item){
+			if(fn(item)){
+				rst = item;
+				
+			}else if(item.findBy){
+				rst = item.findBy(fn);
+			}
+			if(rst){
+				return false;
+			}
+		});
+		return rst;
+	},
+<span id='BUI-Graphic-Container-method-findByNode'>	/**
+</span>	 * 根据dom查找
+	 * @param  {HTMLElement} node 节点
+	 * @return {BUI.Graphic.Base} 返回分组或者图形
+	 */
+	findByNode : function(node){
+		return this.findBy(function(item){
+			return item.get(&#39;node&#39;) == node;
+		});
+	},
+<span id='BUI-Graphic-Container-method-clear'>	/**
+</span>	 * 清除容器内的图形或者分组
+	 */
+	clear : function(){
+		var _self = this,
+			children = _self.get(&#39;children&#39;),
+			el = _self.get(&#39;el&#39;);
+		BUI.each(children,function(item){
+			item.destroy();
+		});
+		children &amp;&amp; BUI.Array.empty(children);
+		if(el.__set &amp;&amp; el.__set.clear){
+			el.__set.clear();
+		}
+		el.clear &amp;&amp; el.clear();
+	},
+<span id='BUI-Graphic-Container-method-destroy'>	/**
+</span>	 * 析构函数
+	 */
+	destroy : function(){
+  	var _self = this,
+  		children = _self.get(&#39;children&#39;),
+  		el = _self.get(&#39;el&#39;),
+  		node = _self.get(&#39;node&#39;);
+  	if(_self.get(&#39;destroyed&#39;)){
+  		return;
+  	}
+  	_self.clear();
+
+  	Container.superclass.destroy.call(this);
+
+  }
+
+});
+
+module.exports = Container;
+</pre>
+</body>
+</html>

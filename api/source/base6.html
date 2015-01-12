@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 布局插件的子项，用于封装控件，控制控件的位置
+ * @ignore
+ */
+
+
+var $ = require(&#39;jquery&#39;),
+	BUI = require(&#39;bui-common&#39;);
+
+function parseValue(attrs,value){
+	if(!BUI.isString(value)){ //只转换字符串
+		return value;
+	}
+	if(value.indexOf(&#39;{&#39;) != -1){ //如果有可替换的值，进行计算
+		value = BUI.substitute(value,attrs);
+		value = BUI.JSON.looseParse(value); //转成对应的值
+	}
+	return value;
+}
+
+<span id='BUI-Layout-Item'>/**
+</span> * @class BUI.Layout.Item
+ * 布局插件的子项，用于操作位置、宽度等
+ * @extends BUI.Base
+ */
+var Item = function(config){
+	Item.superclass.constructor.call(this,config);
+	this.init();
+};
+
+Item.ATTRS = {
+
+<span id='BUI-Layout-Item-cfg-fit'>	/**
+</span>	 * 自适应内部控件,自适应的类型,注意设置了适应类型后，不应该再设置控件的对应的宽度或者高度
+	 * 
+	 *   - none : 内部控件不自适应（默认）
+	 *   - width : 内部控件自适应宽度，当layout重新布局时宽度自适应
+	 *   - height : 内部控件自适应高度，当layout重新布局时高度自适应
+	 *   - both : 内部控件自适应宽高，当layout重新布局时宽度、高度自适应
+	 * 	&lt;pre&gt;
+	 * &lt;code&gt;
+	 *
+	 *  new Controller({
+	 *    ...
+	 *    children : [
+	 *    	{
+	 *    		xclass : &#39;grid&#39;,
+	 *    		layout : {
+	 *    			fit : &#39;width&#39;
+	 *    		}
+	 *    		//width : &#39;100px&#39;,不要再设置宽度
+	 *    	}
+	 *    ],
+	 * 		plugins : [BUI.Layout.Anchor]
+	 *  });
+	 * &lt;/code&gt;
+	 * &lt;/pre&gt;
+	 * 
+	 * @cfg {String} fit
+	 */
+	fit : {
+		value : &#39;none&#39;
+	},
+<span id='BUI-Layout-Item-property-layout'>	/**
+</span>	 * 所属的layout
+	 * @readOnly
+	 * @type {BUI.Layout.Abstract}
+	 */
+	layout : {
+
+	},
+<span id='BUI-Layout-Item-property-control'>	/**
+</span>	 * 封装的控件
+	 * &lt;pre&gt;
+	 * &lt;code&gt;
+	 *  var control =	item.get(&#39;control&#39;);
+	 * &lt;/code&gt;
+	 * &lt;/pre&gt;
+	 * @type {Object}
+	 */
+	control : {
+
+	},
+<span id='BUI-Layout-Item-cfg-wraperCls'>	/**
+</span>	 * 封装控件的容器的样式，默认为空,也可以设置在layout上传递进来
+	 * &lt;pre&gt;
+	 * &lt;code&gt;
+	 *  var layout = new BUI.Layout.Anchor({
+	 *  	defaultCfg : {
+	 *  		fit : &#39;width&#39;,
+	 *  		wraperCls : &#39;b&#39;
+	 *  	},
+	 *  	itemTpl : &#39;&amp;lt;div class=&quot;a&quot;&gt;&amp;lt;div class=&quot;b&quot;&gt;&amp;lt;/div&gt;&amp;lt;/div&gt;&#39;
+	 *  });
+	 *
+	 *  new Controller({
+	 *    ...
+	 * 		plugins : [layout]
+	 *  });
+	 * &lt;/code&gt;
+	 * &lt;/pre&gt;
+	 * @cfg {string} wraperCls
+	 */
+	wraperCls : {
+
+	},
+<span id='BUI-Layout-Item-property-container'>	/**
+</span>	 * 容器
+	 * @readOnly
+	 * @type {jQuery}
+	 */
+	container : {
+
+	},
+<span id='BUI-Layout-Item-property-srcNode'>	/**
+</span>	 * 如果srcNode指定，那么不会使用container属性，也不会生成DOM
+	 * @type {jQuery}
+	 */
+	srcNode : {
+
+	},
+<span id='BUI-Layout-Item-property-cssProperties'>	/**
+</span>	 * @protected
+	 * 同步的css属性
+	 * @type {Array}
+	 */
+	cssProperties : {
+		value : [&#39;width&#39;,&#39;height&#39;]
+	},
+<span id='BUI-Layout-Item-property-attrProperties'>	/**
+</span>	 * @protected
+	 * 同步的attributes
+	 * @type {Array}
+	 */
+	attrProperties : {
+
+	},
+<span id='BUI-Layout-Item-property-statusProperties'>	/**
+</span>	 * @protected
+	 * 状态相关的字段
+	 * @type {Array}
+	 */
+	statusProperties : {
+
+	},
+<span id='BUI-Layout-Item-property-tplProperties'>	/**
+</span>	 * @protected
+	 * 附加模板
+	 * @type {Object}
+	 */
+	tplProperties : {
+
+	},
+<span id='BUI-Layout-Item-property-el'>	/**
+</span>	 * 当前项的DOM
+	 * &lt;pre&gt;
+	 * &lt;code&gt;
+	 *  var el =	item.get(&#39;el&#39;);
+	 * &lt;/code&gt;
+	 * &lt;/pre&gt;
+	 * @type {jQuery}
+	 */
+	el : {
+
+	},
+<span id='BUI-Layout-Item-property-elCls'>	/**
+</span>	 * 应用的样式
+	 * @type {Object}
+	 */
+	elCls : {
+
+	},
+<span id='BUI-Layout-Item-cfg-tpl'>	/**
+</span>	 * 模板，也可以直接在layout上设置itemTpl
+	 * &lt;pre&gt;
+	 * &lt;code&gt;
+	 *  var layout = new BUI.Layout.Anchor({
+	 *  	defaultCfg : {
+	 *  		fit : &#39;width&#39;
+	 *  	},
+	 *  	itemTpl : &#39;&amp;lt;div class=&quot;a&quot;&gt;&amp;lt;div class=&quot;b&quot;&gt;&amp;lt;/div&gt;&amp;lt;/div&gt;&#39;,
+	 *  	wraperCls : &#39;b&#39;
+	 *  });
+	 *
+	 *  new Controller({
+	 *    ...
+	 * 		plugins : [layout]
+	 *  });
+	 * &lt;/code&gt;
+	 * &lt;/pre&gt;
+	 * @cfg {String} tpl
+	 */
+	tpl : {
+
+	}
+};
+
+BUI.extend(Item,BUI.Base);
+
+BUI.augment(Item,{
+
+<span id='BUI-Layout-Item-method-init'>	/**
+</span>	 * 初始化
+	 */
+	init : function(){
+		var _self = this,
+			el = _self._wrapControl();
+		_self.set(&#39;el&#39;,el);
+		_self.syncItem();
+	},
+<span id='BUI-Layout-Item-method-getElement'>	/**
+</span>	 * 获取选项的DOM节点
+	 * &lt;pre&gt;
+	 * &lt;code&gt;
+	 *  var el =	item.getElement();
+	 * &lt;/code&gt;
+	 * &lt;/pre&gt;
+	 * @return {jQuery} 操作节点
+	 */
+	getElement : function(){
+		return this.get(&#39;el&#39;);
+	},
+	//封装控件
+	_wrapControl : function(){
+
+		var _self = this,
+			control = _self.get(&#39;control&#39;),
+			controlEl = control.get(&#39;el&#39;),
+			elCls = _self.get(&#39;elCls&#39;),
+			container = _self._getContainer(controlEl),
+			tpl = BUI.substitute(_self.get(&#39;tpl&#39;),_self.getLayoutAttrs()) ,
+			node = $(tpl).appendTo(container),
+			bodyEl;
+		if(elCls){
+			node.addClass(elCls);
+		}
+		bodyEl = _self.getControlContainer(node);
+		controlEl.appendTo(bodyEl);
+		_self.set(&#39;bodyEl&#39;,bodyEl);
+
+		return node;
+	},
+<span id='BUI-Layout-Item-method-getControlContainer'>	/**
+</span>	 * 获取内部控件的容器
+	 * @return {jQuery} 容器
+	 */
+	getControlContainer : function(el){
+		var _self = this,
+			wraperCls = _self.get(&#39;wraperCls&#39;);
+		if(wraperCls){
+			return el.find(&#39;.&#39; + wraperCls);
+		}
+		return el;
+	},
+<span id='BUI-Layout-Item-method-syncItem'>	/**
+</span>	 * 同步属性到子项,同步css和attr，一般先设置宽高等信息后,再调用此方法
+	 * @protected
+	 */
+	syncItem : function(attrs){
+		attrs = attrs || this.getLayoutAttrs();
+		var _self = this,
+			el = _self.get(&#39;el&#39;),
+			css = _self._getSyncCss(attrs),
+			attr = _self._getSyncAttr(attrs);
+		
+		el.css(css);
+		el.attr(attr);
+		_self.syncStatus(el,attrs); //同步状态
+		_self.syncElements(el,attrs); //同步DOM元素
+		_self.syncFit(); //同步内部控件的宽高
+	},
+<span id='BUI-Layout-Item-method-syncElements'>	/**
+</span>	 * 根据属性附加一些元素
+	 * @protected
+	 */
+	syncElements : function(el,attrs){
+		var _self = this,
+			tplProperties = _self.get(&#39;tplProperties&#39;);
+
+		if(tplProperties){
+			BUI.each(tplProperties,function(item){
+				_self.synTpl(el,item,attrs);
+			});
+		}
+	},
+<span id='BUI-Layout-Item-method-synTpl'>	/**
+</span>	 * @protected
+	 * 同步选项
+	 */
+	synTpl : function(el,item,attrs){
+		var _self = this,
+			name = item.name,
+			elName = &#39;_&#39;+name + &#39;El&#39;, //title 使用_titleEl作为临时变量存储对应的DOM 
+			tpl,
+			m, //使用的附加方法
+			tplEl = _self.get(elName);
+		if(attrs[name]){
+			if(!tplEl){
+				tpl = _self.get(item.value);
+				tpl = BUI.substitute(tpl,attrs);
+				m = item.prev ? &#39;prependTo&#39; : &#39;appendTo&#39;;
+				tplEl = $(tpl)[m](el);
+				_self.set(elName,tplEl);
+			}
+		}else if(tplEl){
+			tplEl.remove();
+		}
+	},
+<span id='BUI-Layout-Item-method-syncStatus'>	/**
+</span>	 * @protected
+	 * 同步状态
+	 */
+  syncStatus : function(el,attrs){
+  	el = el || this.get(&#39;el&#39;);
+  	attrs = attrs || this.getLayoutAttrs();
+  	var _self = this,
+  		statusProperties = _self.get(&#39;statusProperties&#39;);
+  	if(statusProperties){
+  		BUI.each(statusProperties,function(status){
+  			var value = _self.get(status);
+  			if(value != null){
+  				var m = value ? &#39;addClass&#39; : &#39;removeClass&#39;,
+  					cls = &#39;x-&#39; + status;
+  				el[m](cls);
+  			}
+  		});
+  	}
+	},
+<span id='BUI-Layout-Item-method-syncFit'>	/**
+</span>	 * 同步自适应
+	 * &lt;pre&gt;
+	 * &lt;code&gt;
+	 *  var item = layout.getItem(control);
+	 *
+	 *  item.set(&#39;width&#39;,width);
+	 *
+	 *  //也可以设置多个属性
+	 *  item.set({
+	 *  	height : 100,
+	 *  	width : 100
+	 *  });
+	 *  item.syncFit();
+	 * &lt;/code&gt;
+	 * &lt;/pre&gt;
+	 */
+	syncFit : function(){
+		var _self = this,
+			control = _self.get(&#39;control&#39;),
+			fit = _self.get(&#39;fit&#39;);
+		if(fit === &#39;none&#39;){
+			return;
+		}
+		if(fit === &#39;width&#39;){
+			_self._syncControlWidth(control);
+			return;
+		}
+		if(fit === &#39;height&#39;){
+			_self._syncControlHeight(control);
+			return;
+		}
+		if(fit === &#39;both&#39;){
+			_self._syncControlWidth(control);
+			_self._syncControlHeight(control);
+		}
+	},
+	//同步控件的宽度
+	_syncControlWidth : function(control){
+		var _self = this,
+			width = _self.get(&#39;width&#39;) || _self.get(&#39;el&#39;).width(),
+			appendWidth = control.getAppendWidth();
+		control.set(&#39;width&#39;,width - appendWidth);
+
+	},
+	//同步控件的高度
+	_syncControlHeight : function(control){
+		var _self = this,
+			height = _self.getFitHeight(),
+			appendHeight = control.getAppendHeight();
+		control.set(&#39;height&#39;,height - appendHeight);
+	},
+<span id='BUI-Layout-Item-method-getFitHeight'>	/**
+</span>	 * @protected
+	 * 获取内部控件自适应的高度
+	 * @return {Number} 自适应的高度
+	 */
+	getFitHeight : function(){
+		var _self = this,
+			el = _self.get(&#39;el&#39;),
+			bodyEl = _self.get(&#39;bodyEl&#39;),
+			siblings,
+			outerHeight = _self.get(&#39;height&#39;) || el.height(),
+			height = outerHeight;
+		if(bodyEl[0] == el[0]){ //如果控件的容器等于外层容器
+			return outerHeight;
+		}
+		siblings = bodyEl.siblings(); //获取外层容器减去兄弟元素的高度
+		BUI.each(siblings,function(elem){
+			var node = $(elem);
+			if(node.css(&#39;position&#39;) !== &#39;absolute&#39;){
+				height -= node.outerHeight();
+			}
+		});
+		return height;
+	},
+<span id='BUI-Layout-Item-method-getLayoutAttrs'>	/**
+</span>	 * @protected
+	 * 获取布局相关的属性
+	 * @return {Object} 获取布局相关的属性
+	 */
+	getLayoutAttrs : function(){
+		return this.getAttrVals();
+	},
+	//获取需要同步的css属性
+	_getSyncCss : function(attrs){
+		var _self = this,
+			properties = _self.get(&#39;cssProperties&#39;),
+			dynacAttrs = _self._getDynacAttrs(),
+			css = {};
+
+		BUI.each(properties,function(p){
+			css[p] = parseValue(dynacAttrs,attrs[p]);
+		});
+		return css;
+	},
+	//获取动态的值，进行计算
+	_getDynacAttrs : function(){
+		var _self = this,
+			container = _self.get(&#39;container&#39;);
+		return {
+			width : container.width(),
+			height : container.height()
+		};
+	},
+	//获取需要
+	_getSyncAttr : function(attrs){
+		var _self = this,
+			properties = _self.get(&#39;attrProperties&#39;),
+			attr = {};
+
+		BUI.each(properties,function(p){
+			attr[p] = attrs[p];
+		});
+		return attr;
+	},
+	//获取容器
+	_getContainer : function(controlEl){
+		var _self = this,
+			container = _self.get(&#39;container&#39;);
+		if(container){
+			return container;
+		}
+		return controlEl.parent();
+	},	
+<span id='BUI-Layout-Item-method-destroy'>	/**
+</span>	 * 释放
+	 */
+	destroy : function(){
+		var _self = this;
+		_self.get(&#39;el&#39;).remove();
+		_self.off();
+		_self.clearAttrVals();
+	}
+});
+
+module.exports = Item;
+</pre>
+</body>
+</html>

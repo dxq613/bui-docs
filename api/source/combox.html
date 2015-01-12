@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 组合框可用于选择输入文本
+ * @ignore
+ */
+
+
+var $ = require(&#39;jquery&#39;),
+  BUI = require(&#39;bui-common&#39;),
+  Select = require(&#39;./select&#39;),
+  Tag = require(&#39;./tag&#39;),
+  CLS_INPUT = BUI.prefix + &#39;combox-input&#39;;
+
+<span id='BUI-Select-Combox'>/**
+</span> * 组合框 用于提示输入
+ * xclass:&#39;combox&#39;
+ * &lt;pre&gt;&lt;code&gt;
+ * BUI.use(&#39;bui/select&#39;,function(Select){
+ * 
+ *  var select = new Select.Combox({
+ *    render:&#39;#c1&#39;,
+ *    name:&#39;combox&#39;,
+ *    items:[&#39;选项1&#39;,&#39;选项2&#39;,&#39;选项3&#39;,&#39;选项4&#39;]
+ *  });
+ *  select.render();
+ * });
+ * &lt;/code&gt;&lt;/pre&gt;
+ * @class BUI.Select.Combox
+ * @extends BUI.Select.Select
+ */
+var combox = Select.extend([Tag],{
+
+  renderUI : function(){
+    var _self = this,
+      picker = _self.get(&#39;picker&#39;);
+    picker.set(&#39;autoFocused&#39;,false);
+
+  },
+  _uiSetItems : function(v){
+    var _self = this;
+
+    for(var i = 0 ; i &lt; v.length ; i++){
+      var item = v[i];
+      if(BUI.isString(item)){
+        v[i] = {value:item,text:item};
+      }
+    }
+    combox.superclass._uiSetItems.call(_self,v);
+  },
+  bindUI: function(){
+    var _self = this,
+      picker = _self.get(&#39;picker&#39;),
+      list = picker.get(&#39;list&#39;),
+      textField = picker.get(&#39;textField&#39;);
+
+    //修复手动清空textField里面的值，再选时不填充的bug
+    $(textField).on(&#39;keyup&#39;, function(ev){
+      var item = list.getSelected();
+      if(item){
+        list.clearItemStatus(item);
+      }
+    });
+
+    picker.on(&#39;show&#39;,function(){
+      list.clearSelected();
+    });
+
+  },
+  //覆写此方法
+  _uiSetValueField : function(){
+
+  },
+<span id='BUI-Select-Combox-method-getTrigger'>  /**
+</span>   * @protected
+   * 获取触发点
+   */
+  getTrigger : function(){
+    return this._getTextEl();
+  }
+},{
+  ATTRS : 
+  {
+    /*focusable : {
+      value : false
+    },*/
+<span id='BUI-Select-Combox-property-tpl'>    /**
+</span>     * 控件的模版
+     * @type {String}
+     * @default  
+     * &#39;&amp;lt;input type=&quot;text&quot; class=&quot;&#39;+CLS_INPUT+&#39;&quot;/&amp;gt;&#39;
+     */
+    tpl:{
+      view:true,
+      value:&#39;&lt;input type=&quot;text&quot; class=&quot;&#39;+CLS_INPUT+&#39;&quot;/&gt;&#39;
+    },
+<span id='BUI-Select-Combox-property-inputCls'>    /**
+</span>     * 显示选择回的文本DOM节点的样式
+     * @type {String}
+     * @protected
+     * @default &#39;bui-combox-input&#39;
+     */
+    inputCls:{
+      value:CLS_INPUT
+    },
+    autoSetValue : {
+      value : false
+    }
+  }
+},{
+  xclass:&#39;combox&#39;
+});
+
+module.exports = combox;
+</pre>
+</body>
+</html>

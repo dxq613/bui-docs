@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+var Container = require(&#39;./container&#39;),
+  Item = require(&#39;./canvasitem&#39;),
+  Util = require(&#39;./util&#39;),
+  Shape = require(&#39;./shape&#39;);
+  require(&#39;./raphael/group&#39;);
+
+<span id='BUI-Graphic-Group'>/**
+</span> * @class BUI.Graphic.Group
+ * 图形分组
+ */
+var Group = function(cfg){
+  Group.superclass.constructor.call(this,cfg);
+};
+
+Group.ATTRS = {
+<span id='BUI-Graphic-Group-property-x'>  /**
+</span>   * 沿x轴的偏移量
+   * @type {Number}
+   */
+  x : {
+
+  },
+<span id='BUI-Graphic-Group-property-y'>  /**
+</span>   * 沿y轴的偏移量
+   * @type {Number}
+   */
+  y : {
+
+  }
+};
+
+BUI.extend(Group,Container);
+//获取画布内元素的一些共性方法
+BUI.mixin(Group,[Item]);
+
+BUI.augment(Group,{
+<span id='BUI-Graphic-Group-property-isGroup'>  /**
+</span>   * 是否Group
+   * @type {Boolean}
+   */
+  isGroup : true,
+
+  renderUI : function(){
+    var _self = this,
+      el = _self.get(&#39;el&#39;),
+      attrs = _self.get(&#39;attrs&#39;),
+      node;
+    if(!el){
+      el = _self.createElement(attrs);
+      _self.set(&#39;el&#39;,el);
+    }
+
+    node = el.node;
+    node.group = _self;
+    _self.set(&#39;node&#39;,node);
+    _self._initTranslate();
+  },
+  //初始化平移
+  _initTranslate: function(){
+    var _self = this,
+      x = _self.get(&#39;x&#39;),
+      y = _self.get(&#39;y&#39;);
+    if(x || y){
+      _self._translate((x || 0),(y || 0));
+    }else{
+      _self.set(&#39;x&#39;,x || 0);
+      _self.set(&#39;y&#39;,y || 0);
+    }
+  },
+<span id='BUI-Graphic-Group-method-translate'>  /**
+</span>   * 移动
+   * @param  {Number} dx 沿x轴平移的距离
+   * @param  {Number} dy 沿y轴平移的距离
+   */
+  translate : function(dx,dy){
+    var _self = this,
+      x = _self.get(&#39;x&#39;) || 0,
+      y = _self.get(&#39;y&#39;) || 0;
+    _self.set(&#39;x&#39;,x + dx);
+    _self.set(&#39;y&#39;,y + dy);
+    _self._translate(dx,dy);
+  },
+
+  getBBox : function(){
+    var _self = this,
+      children = _self.get(&#39;children&#39;),
+      w = 0,
+      h = 0,
+      rst = {};
+
+    BUI.each(children,function(item){
+      var bbox = item.getBBox(),
+        w1 = bbox.width + bbox.x,
+        h1 = bbox.height + bbox.y;
+      if(w &lt; w1){
+        w = w1;
+      }
+      if(h &lt; h1){
+        h = h1;
+      }
+    });
+
+    rst.x = _self.get(&#39;x&#39;);
+    rst.y = _self.get(&#39;y&#39;);
+    rst.width = w;
+    rst.height = h;
+
+    return rst;
+
+  },
+  _translate : function(dx,dy){
+    var _self = this,
+      el = _self.get(&#39;el&#39;);
+    el.translate(dx,dy);
+  },
+<span id='BUI-Graphic-Group-method-containsElement'>  /**
+</span>   * 是否包含指定的DOM
+   * @param  {HTMLElement} element dom元素
+   * @return {Boolean}   是否包含
+   */
+  containsElement : function(element){
+    var _self = this,
+      node = _self.get(&#39;node&#39;);
+    return node == element || $.contains(node,element);
+  },
+<span id='BUI-Graphic-Group-method-animate'>  /**
+</span>   * 执行动画,对于分组来说，animate仅支持平移动画
+   *
+   * &lt;code&gt;
+   *   group.animate({
+   *     x : 100,
+   *     y : 100
+   *   },400);
+   * &lt;/code&gt;
+   * 
+   * @param  {Object}   params   动画的参数
+   * @param  {Number}   ms       毫秒数
+   * @param  {String}   easing   路径函数
+   * @param  {Function} callback 回调函数
+   */
+  animate : function(params,ms,easing,callback){
+    var _self = this,
+      el = _self.get(&#39;el&#39;);
+    if(Util.svg){
+      el.animate({
+        transform : &#39;t &#39;+ params.x + &#39; &#39; + params.y
+      },ms,easing,callback);
+    }else{
+      el.animate(params,ms,easing,callback);
+    }
+    _self.set(&#39;x&#39;,params.x);
+    _self.set(&#39;y&#39;,params.y);
+    //_self._vmlAnimate(params,ms,callback);
+  },
+  
+<span id='BUI-Graphic-Group-method-move'>  /**
+</span>   * 移动的到位置
+   * @param  {Number} x 移动到x
+   * @param  {Number} y 移动到y
+   */
+  move : function(x,y){
+    var _self = this,
+      cx = _self.get(&#39;x&#39;) || 0, //当前的x
+      cy = _self.get(&#39;y&#39;) || 0; //当前的y
+    if(Util.svg){
+      _self._translate(x - cx,y -cy);
+    }else{
+      _self.get(&#39;el&#39;).move(x,y);
+    }
+    
+    _self.set(&#39;x&#39;,x);
+    _self.set(&#39;y&#39;,y);
+  },
+<span id='global-method-createElement'>  /**
+</span>   * @private
+   * @ignore
+   */
+  createElement : function(){
+    var _self = this,
+      el = _self.get(&#39;parent&#39;).get(&#39;el&#39;);
+    return el.group();
+  },
+<span id='global-method-getGroupClass'>  /**
+</span>   * @protected
+   * @ignore
+   */
+  getGroupClass : function(){
+    return Group;
+  }
+  
+
+});
+
+module.exports = Group;
+</pre>
+</body>
+</html>

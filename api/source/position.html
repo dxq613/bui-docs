@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 位置，控件绝对定位
+ * @author yiminghe@gmail.com
+ * copied by dxq613@gmail.com
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;);
+
+<span id='BUI-Component-UIBase-PositionView'>/**
+</span> * 对齐的视图类
+ * @class BUI.Component.UIBase.PositionView
+ * @private
+ */
+function PositionView() {
+
+}
+
+PositionView.ATTRS = {
+  x: {
+<span id='global-method-valueFn'>    /**
+</span>     * 水平方向绝对位置
+     * @private
+     * @ignore
+     */
+    valueFn: function() {
+      var self = this;
+      // 读到这里时，el 一定是已经加到 dom 树中了，否则报未知错误
+      // el 不在 dom 树中 offset 报错的
+      // 最早读就是在 syncUI 中，一点重复设置(读取自身 X 再调用 _uiSetX)无所谓了
+      return self.get(&#39;el&#39;) &amp;&amp; self.get(&#39;el&#39;).offset().left;
+    }
+  },
+  y: {
+<span id='global-method-valueFn'>    /**
+</span>     * 垂直方向绝对位置
+     * @private
+     * @ignore
+     */
+    valueFn: function() {
+      var self = this;
+      return self.get(&#39;el&#39;) &amp;&amp; self.get(&#39;el&#39;).offset().top;
+    }
+  },
+  zIndex: {},
+<span id='global-property-visibleMode'>  /**
+</span>   * @private
+   * see {@link BUI.Component.UIBase.Box#visibleMode}.
+   * @default &quot;visibility&quot;
+   * @ignore
+   */
+  visibleMode: {
+    value: &#39;visibility&#39;
+  }
+};
+
+
+PositionView.prototype = {
+
+  __createDom: function() {
+    this.get(&#39;el&#39;).addClass(BUI.prefix + &#39;ext-position&#39;);
+  },
+
+  _uiSetZIndex: function(x) {
+    this.get(&#39;el&#39;).css(&#39;z-index&#39;, x);
+  },
+  _uiSetX: function(x) {
+    if (x != null) {
+      this.get(&#39;el&#39;).offset({
+        left: x
+      });
+    }
+  },
+  _uiSetY: function(y) {
+    if (y != null) {
+      this.get(&#39;el&#39;).offset({
+        top: y
+      });
+    }
+  },
+  _uiSetLeft: function(left) {
+    if (left != null) {
+      this.get(&#39;el&#39;).css({
+        left: left
+      });
+    }
+  },
+  _uiSetTop: function(top) {
+    if (top != null) {
+      this.get(&#39;el&#39;).css({
+        top: top
+      });
+    }
+  }
+};
+
+<span id='BUI-Component-UIBase-Position'>/**
+</span> * @class BUI.Component.UIBase.Position
+ * Position extension class.
+ * Make component positionable
+ */
+function Position() {}
+
+Position.ATTRS = {
+<span id='BUI-Component-UIBase-Position-cfg-x'>  /**
+</span>   * 水平坐标
+   * @cfg {Number} x
+   */
+<span id='BUI-Component-UIBase-Position-property-x'>  /**
+</span>   * 水平坐标
+   * &lt;pre&gt;&lt;code&gt;
+   *     overlay.set(&#39;x&#39;,100);
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @type {Number}
+   */
+  x: {
+    view: 1
+  },
+<span id='BUI-Component-UIBase-Position-cfg-y'>  /**
+</span>   * 垂直坐标
+   * @cfg {Number} y
+   */
+<span id='BUI-Component-UIBase-Position-property-y'>  /**
+</span>   * 垂直坐标
+   * &lt;pre&gt;&lt;code&gt;
+   *     overlay.set(&#39;y&#39;,100);
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @type {Number}
+   */
+  y: {
+    view: 1
+  },
+<span id='BUI-Component-UIBase-Position-property-left'>  /**
+</span>   * 相对于父元素的水平位置
+   * @type {Number}
+   * @protected
+   */
+  left: {
+    view: 1
+  },
+<span id='BUI-Component-UIBase-Position-property-top'>  /**
+</span>   * 相对于父元素的垂直位置
+   * @type {Number}
+   * @protected
+   */
+  top: {
+    view: 1
+  },
+<span id='BUI-Component-UIBase-Position-cfg-xy'>  /**
+</span>   * 水平和垂直坐标
+   * &lt;pre&gt;&lt;code&gt;
+   * var overlay = new Overlay({
+   *   xy : [100,100],
+   *   trigger : &#39;#t1&#39;,
+   *   srcNode : &#39;#c1&#39;
+   * });
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {Number[]} xy
+   */
+<span id='BUI-Component-UIBase-Position-property-xy'>  /**
+</span>   * 水平和垂直坐标
+   * &lt;pre&gt;&lt;code&gt;
+   *     overlay.set(&#39;xy&#39;,[100,100]);
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @type {Number[]}
+   */
+  xy: {
+    // 相对 page 定位, 有效值为 [n, m], 为 null 时, 选 align 设置
+    setter: function(v) {
+      var self = this,
+        xy = $.makeArray(v);
+      /*
+               属性内分发特别注意：
+               xy -&gt; x,y
+               */
+      if (xy.length) {
+        xy[0] &amp;&amp; self.set(&#39;x&#39;, xy[0]);
+        xy[1] &amp;&amp; self.set(&#39;y&#39;, xy[1]);
+      }
+      return v;
+    },
+<span id='global-method-getter'>    /**
+</span>     * xy 纯中转作用
+     * @ignore
+     */
+    getter: function() {
+      return [this.get(&#39;x&#39;), this.get(&#39;y&#39;)];
+    }
+  },
+<span id='BUI-Component-UIBase-Position-cfg-zIndex'>  /**
+</span>   * z-index value.
+   * &lt;pre&gt;&lt;code&gt;
+   *   var overlay = new Overlay({
+   *       zIndex : &#39;1000&#39;
+   *   });
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {Number} zIndex
+   */
+<span id='BUI-Component-UIBase-Position-property-zIndex'>  /**
+</span>   * z-index value.
+   * &lt;pre&gt;&lt;code&gt;
+   *   overlay.set(&#39;zIndex&#39;,&#39;1200&#39;);
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @type {Number}
+   */
+  zIndex: {
+    view: 1
+  },
+<span id='global-property-visible'>  /**
+</span>   * Positionable element is by default visible false.
+   * For compatibility in overlay and PopupMenu.
+   * @default false
+   * @ignore
+   */
+  visible: {
+    view: true,
+    value: true
+  }
+};
+
+
+Position.prototype = {
+<span id='BUI-Component-UIBase-Position-method-move'>  /**
+</span>   * Move to absolute position.
+   * @param {Number|Number[]} x
+   * @param {Number} [y]
+   * @example
+   * &lt;pre&gt;&lt;code&gt;
+   * move(x, y);
+   * move(x);
+   * move([x,y])
+   * &lt;/code&gt;&lt;/pre&gt;
+   */
+  move: function(x, y) {
+    var self = this;
+    if (BUI.isArray(x)) {
+      y = x[1];
+      x = x[0];
+    }
+    self.set(&#39;xy&#39;, [x, y]);
+    return self;
+  },
+  //设置 x 坐标时，重置 left
+  _uiSetX: function(v) {
+    if (v != null) {
+      var _self = this,
+        el = _self.get(&#39;el&#39;);
+      _self.setInternal(&#39;left&#39;, el.position().left);
+      if (v != -999) {
+        this.set(&#39;cachePosition&#39;, null);
+      }
+
+    }
+
+  },
+  //设置 y 坐标时，重置 top
+  _uiSetY: function(v) {
+    if (v != null) {
+      var _self = this,
+        el = _self.get(&#39;el&#39;);
+      _self.setInternal(&#39;top&#39;, el.position().top);
+      if (v != -999) {
+        this.set(&#39;cachePosition&#39;, null);
+      }
+    }
+  },
+  //设置 left时，重置 x
+  _uiSetLeft: function(v) {
+    var _self = this,
+      el = _self.get(&#39;el&#39;);
+    if (v != null) {
+      _self.setInternal(&#39;x&#39;, el.offset().left);
+    }
+    /*else{ //如果lef 为null,同时设置过left和top，那么取对应的值
+              _self.setInternal(&#39;left&#39;,el.position().left);
+          }*/
+  },
+  //设置top 时，重置y
+  _uiSetTop: function(v) {
+    var _self = this,
+      el = _self.get(&#39;el&#39;);
+    if (v != null) {
+      _self.setInternal(&#39;y&#39;, el.offset().top);
+    }
+    /*else{ //如果lef 为null,同时设置过left和top，那么取对应的值
+              _self.setInternal(&#39;top&#39;,el.position().top);
+          }*/
+  }
+};
+
+Position.View = PositionView;
+
+module.exports = Position;
+</pre>
+</body>
+</html>

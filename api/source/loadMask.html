@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 加载数据时屏蔽层
+ * @ignore
+ */
+
+  
+var $ = require(&#39;jquery&#39;),
+  Mask = require(&#39;./mask&#39;);
+
+<span id='BUI-Mask-LoadMask'> /**
+</span> * 屏蔽指定元素，并显示加载信息
+ * &lt;pre&gt;&lt;code&gt;
+ * BUI.use(&#39;bui/mask&#39;,function(Mask){
+ *  var loadMask = new Mask.LoadMask({
+ *    el : &#39;#domId&#39;,
+ *    msg : &#39;loading ....&#39;
+ *  });
+ *
+ *  $(&#39;#btn&#39;).on(&#39;click&#39;,function(){
+ *    loadMask.show();
+ *  });
+ *
+ *  $(&#39;#btn1&#39;).on(&#39;click&#39;,function(){
+ *    loadMask.hide();
+ *  });
+ * });
+ * &lt;/code&gt;&lt;/pre&gt;
+ * @class BUI.Mask.LoadMask
+ * @extends BUI.Base
+ */
+function LoadMask(config) {
+  var _self = this;
+  LoadMask.superclass.constructor.call(_self, config);
+}
+
+BUI.extend(LoadMask, BUI.Base);
+
+LoadMask.ATTRS = {
+<span id='BUI-Mask-LoadMask-cfg-el'>  /**
+</span>   * 屏蔽的元素
+   * &lt;pre&gt;&lt;code&gt;
+   *  var loadMask = new Mask.LoadMask({
+   *    el : &#39;#domId&#39;
+   *  });
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {jQuery} el
+   */
+  el : {
+
+  },
+<span id='BUI-Mask-LoadMask-cfg-msg'>  /**
+</span>   * 加载时显示的加载信息
+   * &lt;pre&gt;&lt;code&gt;
+   *  var loadMask = new Mask.LoadMask({
+   *    el : &#39;#domId&#39;,
+   *    msg : &#39;正在加载，请稍后。。。&#39;
+   *  });
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {String} msg [msg = &#39;Loading...&#39;]
+   */
+  msg:{
+    value : &#39;Loading...&#39;
+  },
+<span id='BUI-Mask-LoadMask-cfg-msgCls'>  /**
+</span>   * 加载时显示的加载信息的样式
+   * &lt;pre&gt;&lt;code&gt;
+   *  var loadMask = new Mask.LoadMask({
+   *    el : &#39;#domId&#39;,
+   *    msgCls : &#39;custom-cls&#39;
+   *  });
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {String} [msgCls = &#39;x-mask-loading&#39;]
+   */
+  msgCls:{
+    value : &#39;x-mask-loading&#39;
+  },
+<span id='global-property-disabled'>  /**
+</span>   * 加载控件是否禁用
+   * @type {Boolean}
+   * @field
+   * @default false
+   * @ignore
+   */
+  disabled:{
+     value : false
+  }
+};
+
+//对象原型
+BUI.augment(LoadMask,
+{
+  
+<span id='BUI-Mask-LoadMask-method-disable'>  /**
+</span>   * 设置控件不可用
+   */
+  disable:function () {
+    this.set(&#39;disabled&#39;,true);
+  },
+<span id='BUI-Mask-LoadMask-method-onLoad'>  /**
+</span>   * @private 加载已经完毕，解除屏蔽
+   */
+  onLoad:function () {
+    Mask.unmaskElement(this.get(&#39;el&#39;));
+  },
+<span id='BUI-Mask-LoadMask-method-onBeforeLoad'>  /**
+</span>   * @private 开始加载，屏蔽当前元素
+   */
+  onBeforeLoad:function () {
+    var _self = this;
+    if (!_self.get(&#39;disabled&#39;)) {
+      Mask.maskElement(_self.get(&#39;el&#39;), _self.get(&#39;msg&#39;), this.get(&#39;msgCls&#39;));
+    }
+  },
+<span id='BUI-Mask-LoadMask-method-show'>  /**
+</span>   * 显示加载条，并遮盖元素
+   */
+  show:function () {
+    this.onBeforeLoad();
+  },
+
+<span id='BUI-Mask-LoadMask-method-hide'>  /**
+</span>   * 隐藏加载条，并解除遮盖元素
+   */
+  hide:function () {
+    this.onLoad();
+  },
+
+  /*
+   * 清理资源
+   */
+  destroy:function () {
+    this.hide();
+    this.clearAttrVals();
+    this.off();
+  }
+});
+
+module.exports = LoadMask;
+</pre>
+</body>
+</html>

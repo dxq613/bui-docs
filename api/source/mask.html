@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview mask 遮罩层
+ * @author yiminghe@gmail.com
+ * copied and modified by dxq613@gmail.com
+ * @ignore
+ */
+
+
+var $ = require(&#39;jquery&#39;),
+  UA = require(&#39;../../ua&#39;),
+
+<span id='global-property-'>  /**
+</span>   * 每组相同 prefixCls 的 position 共享一个遮罩
+   * @ignore
+   */
+  maskMap = {
+<span id='global-property-'>    /**
+</span>     * @ignore
+     * {
+     *  node:
+     *  num:
+     * }
+     */
+
+  },
+  ie6 = UA.ie == 6;
+
+function getMaskCls(self) {
+  return self.get(&#39;prefixCls&#39;) + &#39;ext-mask&#39;;
+}
+
+function docWidth() {
+  return ie6 ? BUI.docWidth() + &#39;px&#39; : &#39;100%&#39;;
+}
+
+function docHeight() {
+  return ie6 ? BUI.docHeight() + &#39;px&#39; : &#39;100%&#39;;
+}
+
+function initMask(maskCls) {
+  var mask = $(&#39;&lt;div &#39; +
+      &#39; style=&quot;width:&#39; + docWidth() + &#39;;&#39; +
+      &#39;left:0;&#39; +
+      &#39;top:0;&#39; +
+      &#39;height:&#39; + docHeight() + &#39;;&#39; +
+      &#39;position:&#39; + (ie6 ? &#39;absolute&#39; : &#39;fixed&#39;) + &#39;;&quot;&#39; +
+      &#39; class=&quot;&#39; +
+      maskCls +
+      &#39;&quot;&gt;&#39; +
+      (ie6 ? &#39;&lt;&#39; + &#39;iframe &#39; +
+        &#39;style=&quot;position:absolute;&#39; +
+        &#39;left:&#39; + &#39;0&#39; + &#39;;&#39; +
+        &#39;top:&#39; + &#39;0&#39; + &#39;;&#39; +
+        &#39;background:white;&#39; +
+        &#39;width: expression(this.parentNode.offsetWidth);&#39; +
+        &#39;height: expression(this.parentNode.offsetHeight);&#39; +
+        &#39;filter:alpha(opacity=0);&#39; +
+        &#39;z-index:-1;&quot;&gt;&lt;/iframe&gt;&#39; : &#39;&#39;) +
+      &#39;&lt;/div&gt;&#39;)
+    .prependTo(&#39;body&#39;);
+<span id='global-property-'>  /**
+</span>   * 点 mask 焦点不转移
+   * @ignore
+   */
+  // mask.unselectable();
+  mask.on(&#39;mousedown&#39;, function(e) {
+    e.preventDefault();
+  });
+  return mask;
+}
+
+<span id='BUI-Component-UIBase-MaskView'>/**
+</span> * 遮罩层的视图类
+ * @class BUI.Component.UIBase.MaskView
+ * @private
+ */
+function MaskView() {}
+
+MaskView.ATTRS = {
+  maskShared: {
+    value: true
+  }
+};
+
+MaskView.prototype = {
+
+  _maskExtShow: function() {
+    var self = this,
+      zIndex,
+      maskCls = getMaskCls(self),
+      maskDesc = maskMap[maskCls],
+      maskShared = self.get(&#39;maskShared&#39;),
+      mask = self.get(&#39;maskNode&#39;);
+    if (!mask) {
+      if (maskShared) {
+        if (maskDesc) {
+          mask = maskDesc.node;
+        } else {
+          mask = initMask(maskCls);
+          maskDesc = maskMap[maskCls] = {
+            num: 0,
+            node: mask
+          };
+        }
+      } else {
+        mask = initMask(maskCls);
+      }
+      self.setInternal(&#39;maskNode&#39;, mask);
+    }
+    if (zIndex = self.get(&#39;zIndex&#39;)) {
+      mask.css(&#39;z-index&#39;, zIndex - 1);
+    }
+    if (maskShared) {
+      maskDesc.num++;
+    }
+    if (!maskShared || maskDesc.num == 1) {
+      mask.show();
+    }
+    $(&#39;body&#39;).addClass(&#39;x-masked-relative&#39;);
+  },
+
+  _maskExtHide: function() {
+    var self = this,
+      maskCls = getMaskCls(self),
+      maskDesc = maskMap[maskCls],
+      maskShared = self.get(&#39;maskShared&#39;),
+      mask = self.get(&#39;maskNode&#39;);
+    if (maskShared &amp;&amp; maskDesc) {
+      maskDesc.num = Math.max(maskDesc.num - 1, 0);
+      if (maskDesc.num == 0) {
+        mask.hide();
+      }
+    } else if (mask) {
+      mask.hide();
+    }
+    $(&#39;body&#39;).removeClass(&#39;x-masked-relative&#39;);
+  },
+
+  __destructor: function() {
+    var self = this,
+      maskShared = self.get(&#39;maskShared&#39;),
+      mask = self.get(&#39;maskNode&#39;);
+    if (self.get(&#39;maskNode&#39;)) {
+      if (maskShared) {
+        if (self.get(&#39;visible&#39;)) {
+          self._maskExtHide();
+        }
+      } else {
+        mask.remove();
+      }
+    }
+  }
+
+};
+
+<span id='BUI-Component-UIBase-Mask'>/**
+</span> * @class BUI.Component.UIBase.Mask
+ * Mask extension class.
+ * Make component to be able to show with mask.
+ */
+function Mask() {}
+
+Mask.ATTRS = {
+<span id='BUI-Component-UIBase-Mask-cfg-mask'>  /**
+</span>   * 控件显示时，是否显示屏蔽层
+   * &lt;pre&gt;&lt;code&gt;
+   *   var overlay = new Overlay({ //显示overlay时，屏蔽body
+   *     mask : true,
+   *     maskNode : &#39;body&#39;,
+   *     trigger : &#39;#t1&#39;
+   *   });
+   *   overlay.render();
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {Boolean} [mask = false]
+   */
+<span id='BUI-Component-UIBase-Mask-property-mask'>  /**
+</span>   * 控件显示时，是否显示屏蔽层
+   * @type {Boolean}
+   * @protected
+   */
+  mask: {
+    value: false
+  },
+<span id='BUI-Component-UIBase-Mask-cfg-maskNode'>  /**
+</span>   * 屏蔽的内容
+   * &lt;pre&gt;&lt;code&gt;
+   *   var overlay = new Overlay({ //显示overlay时，屏蔽body
+   *     mask : true,
+   *     maskNode : &#39;body&#39;,
+   *     trigger : &#39;#t1&#39;
+   *   });
+   *   overlay.render();
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {jQuery} maskNode
+   */
+<span id='BUI-Component-UIBase-Mask-property-maskNode'>  /**
+</span>   * 屏蔽的内容
+   * @type {jQuery}
+   * @protected
+   */
+  maskNode: {
+    view: 1
+  },
+<span id='BUI-Component-UIBase-Mask-property-maskShared'>  /**
+</span>   * Whether to share mask with other overlays.
+   * @default true.
+   * @type {Boolean}
+   * @protected
+   */
+  maskShared: {
+    view: 1
+  }
+};
+
+Mask.prototype = {
+
+  __bindUI: function() {
+    var self = this,
+      view = self.get(&#39;view&#39;),
+      _maskExtShow = view._maskExtShow,
+      _maskExtHide = view._maskExtHide;
+    if (self.get(&#39;mask&#39;)) {
+      self.on(&#39;show&#39;, function() {
+        view._maskExtShow();
+      });
+      self.on(&#39;hide&#39;, function() {
+        view._maskExtHide();
+      });
+    }
+  }
+};
+
+Mask = Mask;
+Mask.View = MaskView;
+
+module.exports = Mask;
+</pre>
+</body>
+</html>

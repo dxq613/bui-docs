@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='BUI'>/**
+</span> * @fileOverview 可以收缩的选项
+ * @ignore
+ */
+
+var BUI = require(&#39;bui-common&#39;),
+	CLS_COLLAPSED = &#39;x-collapsed&#39;,
+	Base = require(&#39;./base&#39;);
+
+<span id='BUI-Layout-Item-Tab'>/**
+</span> * @class BUI.Layout.Item.Tab
+ * 可收缩的选项
+ * @extends BUI.Layout.Item
+ */
+var Tab = function(config){
+	Tab.superclass.constructor.call(this,config);
+};
+
+Tab.ATTRS = {
+<span id='BUI-Layout-Item-Tab-property-collapsed'>	/**
+</span>	 * 收缩状态
+	 * @type {Object}
+	 */
+	collapsed : {
+		value : true
+	},
+	statusProperties : {
+		value : [&#39;collapsed&#39;]
+	}
+};
+
+BUI.extend(Tab,Base);
+
+BUI.augment(Tab,{
+
+<span id='BUI-Layout-Item-Tab-method-expand'>	/**
+</span>	 * 展开
+	 */
+	expand : function(bodyHeight,duration){
+		var _self = this,
+			el = _self.get(&#39;el&#39;),
+			bodyEl = _self.get(&#39;bodyEl&#39;);
+		bodyEl.animate({height : bodyHeight},duration,function(){
+			
+			el.removeClass(CLS_COLLAPSED);
+			_self.syncFit();
+		});
+		_self.set(&#39;collapsed&#39;,false);
+	},
+<span id='BUI-Layout-Item-Tab-method-collapse'>	/**
+</span>	 * 折叠
+	 */
+	collapse : function(duration){
+		var _self = this,
+			el = _self.get(&#39;el&#39;),
+			bodyEl = _self.get(&#39;bodyEl&#39;);
+		bodyEl.animate({height : 0},duration,function(){
+			el.addClass(CLS_COLLAPSED);
+		});
+		_self.set(&#39;collapsed&#39;,true);
+
+	}
+});
+
+module.exports = Tab;
+</pre>
+</body>
+</html>

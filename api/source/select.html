@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 模拟选择框在表单中
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;),
+  BUI = require(&#39;bui-common&#39;),
+  Field = require(&#39;./base&#39;);
+
+function resetOptions (select,options,self) {
+  select.children().remove();
+  var emptyText = self.get(&#39;emptyText&#39;);
+  if(emptyText &amp;&amp; self.get(&#39;showBlank&#39;)){
+    appendItem(&#39;&#39;,emptyText,select);
+  }
+  BUI.each(options,function (option) {
+    appendItem(option.value,option.text,select);
+  });
+}
+
+function appendItem(value,text,select){
+  // var str = &#39;&lt;option value=&quot;&#39; + value +&#39;&quot;&gt;&#39;+text+&#39;&lt;/option&gt;&#39;
+  // $(str).appendTo(select);
+  
+  // 上面那种写法在ie6下会报一个奇怪的错误，使用new Option则不会有这个问题
+  var option = new Option(text, value),
+    options = select[0].options;
+  options[options.length] = option;
+}
+<span id='BUI-Form-Field-Select'>/**
+</span> * 表单选择域
+ * @class BUI.Form.Field.Select
+ * @extends BUI.Form.Field
+ */
+var selectField = Field.extend({
+  //生成select
+  renderUI : function(){
+    var _self = this,
+      innerControl = _self.getInnerControl(),
+      select = _self.get(&#39;select&#39;);
+    if(_self.get(&#39;srcNode&#39;) &amp;&amp; innerControl.is(&#39;select&#39;)){ //如果使用现有DOM生成，不使用自定义选择框控件
+      return;
+    }
+    //select = select || {};
+    if($.isPlainObject(select)){
+      _self._initSelect(select);
+    }
+  },
+  _initSelect : function(select){
+    var _self = this,
+      items = _self.get(&#39;items&#39;);
+    require.async(&#39;bui-select&#39;,function(Select){
+      select.render = _self.getControlContainer();
+      select.valueField = _self.getInnerControl();
+      select.autoRender = true;
+     
+      select = new Select.Select(select);
+      _self.set(&#39;select&#39;,select);
+      _self.set(&#39;isCreate&#39;,true);
+      _self.get(&#39;children&#39;).push(select);
+      select.on(&#39;change&#39;,function(ev){
+        var val = select.getSelectedValue();
+        _self.set(&#39;value&#39;,val);
+      });
+    })
+  },
+<span id='BUI-Form-Field-Select-method-setItems'>  /**
+</span>   * 重新设置选项集合
+   * @param {Array} items 选项集合
+   */
+  setItems : function (items) {
+    var _self = this,
+      select = _self.get(&#39;select&#39;);
+
+    if($.isPlainObject(items)){
+      var tmp = [];
+      BUI.each(items,function(v,n){
+        tmp.push({value : n,text : v});
+      });
+      items = tmp;
+    }
+
+    var control = _self.getInnerControl();
+    if(control.is(&#39;select&#39;)){
+      resetOptions(control,items,_self);
+      _self.setControlValue(_self.get(&#39;value&#39;));
+      if(!_self.getControlValue()){
+        _self.setInternal(&#39;value&#39;,&#39;&#39;);
+      }
+    }
+
+    if(select){
+      if(select.set){
+        select.set(&#39;items&#39;,items);
+      }else{
+        select.items = items;
+      }
+    }
+  },
+<span id='BUI-Form-Field-Select-method-setControlValue'>  /**
+</span>   * 设置字段的值
+   * @protected
+   * @param {*} value 字段值
+   */
+  setControlValue : function(value){
+    var _self = this,
+      select = _self.get(&#39;select&#39;),
+      innerControl = _self.getInnerControl();
+    innerControl.val(value);
+    if(select &amp;&amp; select.set &amp;&amp;  select.getSelectedValue() !== value){
+      select.setSelectedValue(value);
+    }
+  },
+<span id='BUI-Form-Field-Select-method-getSelectedText'>  /**
+</span>   * 获取选中的文本
+   * @return {String} 选中的文本
+   */
+  getSelectedText : function(){
+    var _self = this,
+      select = _self.get(&#39;select&#39;),
+      innerControl = _self.getInnerControl();
+    if(innerControl.is(&#39;select&#39;)){
+      var dom = innerControl[0],
+        item = dom.options[dom.selectedIndex];
+      return item ? item.text : &#39;&#39;;
+    }else{
+      return select.getSelectedText();
+    }
+  },
+<span id='BUI-Form-Field-Select-method-getTipTigger'>  /**
+</span>   * 获取tip显示对应的元素
+   * @protected
+   * @override
+   * @return {HTMLElement} 
+   */
+  getTipTigger : function(){
+    var _self = this,
+      select = _self.get(&#39;select&#39;);
+    if(select &amp;&amp; select.rendered){
+      return select.get(&#39;el&#39;).find(&#39;input&#39;);
+    }
+    return _self.get(&#39;el&#39;);
+  },
+  //设置选项
+  _uiSetItems : function(v){
+    if(v){
+      this.setItems(v);
+    }
+  },
+<span id='BUI-Form-Field-Select-method-setInnerWidth'>  /**
+</span>   * @protected
+   * 设置内部元素宽度
+   */
+  setInnerWidth : function(width){
+    var _self = this,
+      innerControl = _self.getInnerControl(),
+      select = _self.get(&#39;select&#39;),
+      appendWidth = innerControl.outerWidth() - innerControl.width();
+    innerControl.width(width - appendWidth);
+    if(select &amp;&amp; select.set){
+      select.set(&#39;width&#39;,width);
+    }
+  }
+},{
+  ATTRS : {
+<span id='BUI-Form-Field-Select-property-items'>    /**
+</span>     * 选项
+     * @type {Array}
+     */
+    items : {
+
+    },
+<span id='BUI-Form-Field-Select-property-controlTpl'>    /**
+</span>     * 内部表单元素的容器
+     * @type {String}
+     */
+    controlTpl : {
+      value : &#39;&lt;input type=&quot;hidden&quot;/&gt;&#39;
+    },
+<span id='BUI-Form-Field-Select-property-showBlank'>    /**
+</span>     * 是否显示为空的文本
+     * @type {Boolean}
+     */
+    showBlank : {
+      value : true
+    },
+<span id='BUI-Form-Field-Select-property-emptyText'>    /**
+</span>     * 选择为空时的文本
+     * @type {String}
+     */
+    emptyText : {
+      value : &#39;请选择&#39;
+    },
+<span id='BUI-Form-Field-Select-cfg-select'>    /**
+</span>     * 内部的Select控件的配置项
+     * @cfg {Object} select
+     */
+<span id='BUI-Form-Field-Select-property-select'>    /**
+</span>     * 内部的Select控件
+     * @type {BUI.Select.Select}
+     */
+    select : {
+      shared : false,
+      value : {}
+    }
+  },
+  PARSER : {
+    emptyText : function(el){
+      if(!this.get(&#39;showBlank&#39;)){
+        return &#39;&#39;;
+      }
+      var options = el.find(&#39;option&#39;),
+        rst = this.get(&#39;emptyText&#39;);
+      if(options.length){
+        rst = $(options[0]).text();
+      }
+      return rst;
+    }
+  }
+},{
+  xclass : &#39;form-field-select&#39;
+});
+
+module.exports = selectField;
+</pre>
+</body>
+</html>

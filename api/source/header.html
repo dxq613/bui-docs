@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 日期控件来选择年月的部分
+ * @ignore
+ */
+
+  
+var $ = require(&#39;jquery&#39;),BUI = require(&#39;bui-common&#39;),
+  PREFIX = BUI.prefix,
+  Component = BUI.Component,
+  CLS_TEXT_YEAR = &#39;year-text&#39;,
+  CLS_TEXT_MONTH = &#39;month-text&#39;,
+  CLS_ARROW = &#39;x-datepicker-arrow&#39;,
+  CLS_PREV = &#39;x-datepicker-prev&#39;,
+  CLS_NEXT = &#39;x-datepicker-next&#39;;
+    
+<span id='BUI-Calendar-Header'>/**
+</span> * 日历控件显示选择年月
+ * xclass:&#39;calendar-header&#39;
+ * @class BUI.Calendar.Header
+ * @private
+ * @extends BUI.Component.Controller
+ */
+var header = Component.Controller.extend({
+
+  bindUI : function(){
+    var _self = this,
+      el = _self.get(&#39;el&#39;);
+	
+    el.delegate(&#39;.&#39; + CLS_ARROW,&#39;click&#39;,function(e){
+      e.preventDefault();
+      var sender = $(e.currentTarget);
+      if(sender.hasClass(CLS_NEXT)){
+        _self.nextMonth();
+      }else if(sender.hasClass(CLS_PREV)){
+        _self.prevMonth();
+      }
+    });
+
+    el.delegate(&#39;.x-datepicker-month&#39;,&#39;click&#39;,function(){
+      _self.fire(&#39;headerclick&#39;);
+    });
+  
+  },
+<span id='global-method-setMonth'>  /**
+</span>   * 设置年月
+   * @ignore
+   * @param {Number} year  年
+   * @param {Number} month 月
+   */
+  setMonth : function(year,month){
+    var _self = this,
+      curYear = _self.get(&#39;year&#39;),
+      curMonth = _self.get(&#39;month&#39;);
+    if(year !== curYear || month !== curMonth){
+      _self.set(&#39;year&#39;,year);
+      _self.set(&#39;month&#39;,month);
+      _self.fire(&#39;monthchange&#39;,{year:year,month:month});
+    }
+  },
+<span id='global-method-nextMonth'>  /**
+</span>   * 下一月
+   * @ignore
+   */
+  nextMonth : function(){
+    var _self = this,
+      date = new Date(_self.get(&#39;year&#39;),_self.get(&#39;month&#39;) + 1);
+
+    _self.setMonth(date.getFullYear(),date.getMonth());
+  },
+<span id='global-method-prevMonth'>  /**
+</span>   * 上一月
+   * @ignore
+   */
+  prevMonth : function(){
+    var _self = this,
+      date = new Date(_self.get(&#39;year&#39;),_self.get(&#39;month&#39;) - 1);
+
+     _self.setMonth(date.getFullYear(),date.getMonth());
+  },
+  _uiSetYear : function(v){
+    var _self = this;
+    _self.get(&#39;el&#39;).find(&#39;.&#39; + CLS_TEXT_YEAR).text(v);
+  },
+  _uiSetMonth : function(v){
+      var _self = this;
+    _self.get(&#39;el&#39;).find(&#39;.&#39; + CLS_TEXT_MONTH).text(v+1);
+  }
+
+},{
+  ATTRS : {
+<span id='BUI-Calendar-Header-property-year'>    /**
+</span>     * 年
+     * @type {Number}
+     */
+    year:{
+      sync:false
+    },
+<span id='BUI-Calendar-Header-property-month'>    /**
+</span>     * 月
+     * @type {Number}
+     */
+    month:{
+      sync:false,
+      setter:function(v){
+        this.set(&#39;monthText&#39;,v+1);
+      }
+    },
+<span id='BUI-Calendar-Header-property-monthText'>    /**
+</span>     * @private
+     * @type {Object}
+     */
+    monthText : {
+      
+    },
+    tpl:{
+      view:true,
+      value:&#39;&lt;div class=&quot;&#39;+CLS_ARROW+&#39; &#39; + CLS_PREV + &#39;&quot;&gt;&lt;span class=&quot;icon icon-white icon-caret  icon-caret-left&quot;&gt;&lt;/span&gt;&lt;/div&gt;&#39;+
+        &#39;&lt;div class=&quot;x-datepicker-month&quot;&gt;&#39;+
+          &#39;&lt;div class=&quot;month-text-container&quot;&gt;&#39;+
+            &#39;&lt;span&gt;&lt;span class=&quot;year-text&quot;&gt;{year}&lt;/span&gt;年 &lt;span class=&quot;month-text&quot;&gt;{monthText}&lt;/span&gt;月&lt;/span&gt;&#39;+
+            &#39;&lt;span class=&quot;&#39; + PREFIX + &#39;caret &#39; + PREFIX + &#39;caret-down&quot;&gt;&lt;/span&gt;&#39;+
+          &#39;&lt;/div&gt;&#39;+
+        &#39;&lt;/div&gt;&#39; +
+        &#39;&lt;div class=&quot;&#39;+CLS_ARROW+&#39; &#39; + CLS_NEXT + &#39;&quot;&gt;&lt;span class=&quot;icon icon-white icon-caret  icon-caret-right&quot;&gt;&lt;/span&gt;&lt;/div&gt;&#39;
+    },
+    elCls:{
+      view:true,
+      value:&#39;x-datepicker-header&#39;
+    },
+	  events:{
+  		value:{
+<span id='BUI-Calendar-Header-event-monthchange'>        /**
+</span>         * 月发生改变，年发生改变也意味着月发生改变
+         * @event
+         * @param {Object} e 事件对象
+         * @param {Number} e.year 年
+         * @param {Number} e.month 月
+         */
+  			&#39;monthchange&#39; : true
+  		}
+	  }
+  }
+},{
+  xclass:&#39;calendar-header&#39;
+});
+
+module.exports = header;
+</pre>
+</body>
+</html>

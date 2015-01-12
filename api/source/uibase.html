@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='UIBase'>/**
+</span> * @fileOverview uibase的入口文件
+ * @ignore
+ */
+var UIBase = require(&#39;./base&#39;);
+
+BUI.mix(UIBase, {
+  Align: require(&#39;./align&#39;),
+  AutoShow: require(&#39;./autoshow&#39;),
+  AutoHide: require(&#39;./autohide&#39;),
+  Close: require(&#39;./close&#39;),
+  Collapsable: require(&#39;./collapsable&#39;),
+  Drag: require(&#39;./drag&#39;),
+  KeyNav: require(&#39;./keynav&#39;),
+  List: require(&#39;./list&#39;),
+  ListItem: require(&#39;./listitem&#39;),
+  Mask: require(&#39;./mask&#39;),
+  Position: require(&#39;./position&#39;),
+  Selection: require(&#39;./selection&#39;),
+  StdMod: require(&#39;./stdmod&#39;),
+  Decorate: require(&#39;./decorate&#39;),
+  Tpl: require(&#39;./tpl&#39;),
+  ChildCfg: require(&#39;./childcfg&#39;),
+  Bindable: require(&#39;./bindable&#39;),
+  Depends: require(&#39;./depends&#39;)
+});
+
+BUI.mix(UIBase, {
+  CloseView: UIBase.Close.View,
+  CollapsableView: UIBase.Collapsable.View,
+  ChildList: UIBase.List.ChildList,
+  /*DomList : UIBase.List.DomList,
+  DomListView : UIBase.List.DomList.View,*/
+  ListItemView: UIBase.ListItem.View,
+  MaskView: UIBase.Mask.View,
+  PositionView: UIBase.Position.View,
+  StdModView: UIBase.StdMod.View,
+  TplView: UIBase.Tpl.View
+});
+
+module.exports = UIBase;
+</pre>
+</body>
+</html>

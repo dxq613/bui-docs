@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 仅仅用于显示文本，不能编辑的字段
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;),
+  Field = require(&#39;./base&#39;);
+
+
+var PlainFieldView = Field.View.extend({
+
+  _uiSetValue : function(v){
+    var _self = this,
+      textEl = _self.get(&#39;textEl&#39;),
+      container = _self.getControlContainer(),
+      renderer = _self.get(&#39;renderer&#39;), 
+      text = renderer ? renderer(v) : v,
+      width = _self.get(&#39;width&#39;),
+      appendWidth = 0,
+      textTpl;
+    if(textEl){
+      
+      textEl.remove();
+    }
+    text = text || &#39;&amp;nbsp;&#39;;
+    textTpl = BUI.substitute(_self.get(&#39;textTpl&#39;),{text : text});
+    textEl = $(textTpl).appendTo(container);
+    appendWidth = textEl.outerWidth() - textEl.width();
+    textEl.width(width - appendWidth);
+    _self.set(&#39;textEl&#39;,textEl);
+  }
+
+},{
+  ATTRS : {
+    textEl : {},
+    value : {}
+  }
+},{
+  xclass : &#39;form-field-plain-view&#39;
+});
+
+<span id='BUI-Form-Field-Plain'>/**
+</span> * 表单文本域，不能编辑
+ * @class BUI.Form.Field.Plain
+ * @extends BUI.Form.Field
+ */
+var PlainField = Field.extend({
+
+},{
+  ATTRS : {
+<span id='BUI-Form-Field-Plain-property-controlTpl'>    /**
+</span>     * 内部表单元素的容器
+     * @type {String}
+     */
+    controlTpl : {
+      value : &#39;&lt;input type=&quot;hidden&quot;/&gt;&#39;
+    },
+<span id='BUI-Form-Field-Plain-property-textTpl'>    /**
+</span>     * 显示文本的模板
+     * @type {String}
+     */
+    textTpl : {
+      view : true,
+      value : &#39;&lt;span class=&quot;x-form-text&quot;&gt;{text}&lt;/span&gt;&#39;
+    },
+<span id='BUI-Form-Field-Plain-property-renderer'>    /**
+</span>     * 将字段的值格式化输出
+     * @type {Function}
+     */
+    renderer : {
+      view : true,
+      value : function(value){
+        return value;
+      }
+    },
+    tpl : {
+      value : &#39;&#39;
+    },
+    xview : {
+      value : PlainFieldView
+    }
+  }
+},{
+  xclass : &#39;form-field-plain&#39;
+});
+
+module.exports = PlainField;
+</pre>
+</body>
+</html>

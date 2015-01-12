@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-use strict'>/**
+</span> * @fileOverview 可勾选的列表，模拟多个checkbox
+ * @ignore
+ */
+
+&#39;use strict&#39;;
+var BUI = require(&#39;bui-common&#39;),
+  ListField = require(&#39;./list&#39;);
+
+<span id='BUI-Form-Field-CheckList'>/**
+</span> * @class BUI.Form.Field.CheckList
+ * 可勾选的列表，模拟多个checkbox
+ * @extends BUI.Form.Field.List
+ */
+var CheckList = ListField.extend({
+
+},{
+  ATTRS : {
+<span id='BUI-Form-Field-CheckList-property-defaultListCfg'>    /**
+</span>     * @protected
+     * 默认的列表配置
+     * @type {Object}
+     */
+    defaultListCfg : {
+      value : {
+        itemTpl : &#39;&lt;li&gt;&lt;span class=&quot;x-checkbox&quot;&gt;&lt;/span&gt;{text}&lt;/li&gt;&#39;,
+        multipleSelect : true,
+        allowTextSelection : false
+      }
+    }
+  }
+},{
+  xclass : &#39;form-field-checklist&#39;
+});
+
+module.exports = CheckList;
+</pre>
+</body>
+</html>

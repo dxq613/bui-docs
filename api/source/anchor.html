@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='BUI'>/**
+</span> * @fileOverview 锚定布局，根据容器的边缘自动计算宽高
+ * @ignore
+ */
+
+var BUI = require(&#39;bui-common&#39;),
+	Abstract = require(&#39;./abstract&#39;),
+	Item = require(&#39;./item/anchor&#39;);
+
+<span id='BUI-Layout-Anchor'>/**
+</span> * @class BUI.Layout.Anchor
+ * 锚定布局控件
+ * @extends BUI.Layout.Abstract
+ * &lt;pre&gt;&lt;code&gt;
+ * var layout = new Anchor(),
+		control = new BUI.Component.Controller({
+			width:800,
+			height:500,
+			render : &#39;#J_Layout&#39;,
+			elCls : &#39;layout-test&#39;,
+			children : [{
+				layout : {
+					anchor : [&#39;100%&#39;,50]
+				},
+				xclass : &#39;controller&#39;,
+				content : &quot;一 [&#39;100%&#39;,50]&quot;
+			},{
+				xclass : &#39;controller&#39;,
+				layout : {
+					anchor : [-100,50]
+				},
+				content : &#39;二 [-100,50]&#39;
+			},{
+				xclass : &#39;controller&#39;,
+				layout : {
+					anchor : [&#39;60%&#39;,&#39;20%&#39;]
+				},
+				content : &quot;三 [&#39;60%&#39;,&#39;20%&#39;]&quot;
+			},{
+				xclass : &#39;controller&#39;,
+				layout : {
+					anchor : [&#39;50%&#39;,-300]
+				},
+				content : &quot;四 [&#39;50%&#39;,-300]&quot;
+			}],
+			plugins : [layout]
+		});
+
+	control.render();
+ * &lt;/code&gt;&lt;/pre&gt;
+ */
+var Anchor = function(config){
+	Anchor.superclass.constructor.call(this,config)
+};
+
+Anchor.ATTRS = {
+	itemConstructor : {
+		value : Item
+	},
+	itemTpl : {
+		value : &#39;&lt;div class=&quot;x-layout-item&quot;&gt;&lt;/div&gt;&#39;
+	}
+};
+
+BUI.extend(Anchor,Abstract);
+
+module.exports = Anchor;
+</pre>
+</body>
+</html>

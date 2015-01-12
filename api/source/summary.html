@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 表格数据汇总
+ * @author dxq613@gmail.com
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;),
+  BUI = require(&#39;bui-common&#39;),
+  PREFIX = BUI.prefix,
+  CLS_GRID_ROW = PREFIX + &#39;grid-row&#39;,
+  CLS_GRID_BODY = PREFIX + &#39;grid-body&#39;,
+  CLS_SUMMARY_ROW = PREFIX + &#39;grid-summary-row&#39;,
+  CLS_GRID_CELL_INNER = PREFIX + &#39;grid-cell-inner&#39;,
+  CLS_COLUMN_PREFIX = &#39;grid-td-&#39;,
+  CLS_GRID_CELL_TEXT = PREFIX + &#39;grid-cell-text&#39;,
+  CLS_GRID_CELL = PREFIX + &#39;grid-cell&#39;;
+
+<span id='global-method-getEmptyCellTemplate'>/**
+</span>* @private
+* @ignore
+*/
+function getEmptyCellTemplate(colspan){
+  if(colspan &gt; 0) {
+    return &#39;&lt;td class=&quot;&#39; + CLS_GRID_CELL + &#39;&quot; colspan=&quot;&#39; + colspan + &#39;&quot;&gt;&amp;nbsp;&lt;/td&gt;&#39;;
+  } 
+  return &#39;&#39;;
+}
+
+<span id='global-method-getCellTemplate'>/**
+</span> * @private
+ * @ignore
+ */
+function getCellTemplate(text,id){
+  return &#39;&lt;td class=&quot;&#39; + CLS_GRID_CELL + &#39; &#39;+ CLS_COLUMN_PREFIX + id + &#39;&quot;&gt;&#39; +
+    getInnerTemplate(text) +
+  &#39;&lt;/td&gt;&#39;;
+}
+
+<span id='global-method-getInnerTemplate'>/**
+</span> * @private
+ * @ignore
+ */
+function getInnerTemplate(text){
+  return &#39;&lt;div class=&quot;&#39; + CLS_GRID_CELL_INNER + &#39;&quot; &gt;&#39; + 
+    &#39;&lt;span class=&quot;&#39;+CLS_GRID_CELL_TEXT+&#39; &quot;&gt;&#39; + text + &#39;&lt;/span&gt;&#39; + 
+    &#39;&lt;/div&gt;&#39; ;
+}
+
+<span id='global-method-getLastEmptyCell'>/**
+</span> * @private
+ * @ignore
+ */
+function getLastEmptyCell(){
+  return &#39;&lt;td class=&quot;&#39; + CLS_GRID_CELL + &#39; &#39; + CLS_GRID_CELL + &#39;-empty&quot;&gt;&amp;nbsp;&lt;/td&gt;&#39;;
+}
+
+
+<span id='BUI-Grid-Plugins-Summary'>/**
+</span> * 表格菜单插件 
+ * &lt;pre&gt;&lt;code&gt;
+ * var store = new Store({
+ *      url : &#39;data/summary.json&#39;,
+ *      pageSize : 10,
+ *      autoLoad:true
+ *    }),
+ *    grid = new Grid.Grid({
+ *      render:&#39;#grid&#39;,
+ *      columns : columns,
+ *      store: store,
+ *      bbar : {pagingBar : true},
+ *      plugins : [Grid.Plugins.Summary] // 插件形式引入单选表格
+ *    });
+ *
+ *  grid.render();
+ * &lt;/code&gt;&lt;/pre&gt;
+ * @class BUI.Grid.Plugins.Summary
+ */
+var summary = function (config) {
+  summary.superclass.constructor.call(this,config);
+};
+
+summary.ATTRS = 
+{
+
+  footerTpl : {
+    value : &#39;&lt;tfoot&gt;&lt;/tfoot&gt;&#39;
+  },
+  footerEl : {
+
+  },
+<span id='BUI-Grid-Plugins-Summary-property-summaryTitle'>  /**
+</span>   * 总汇总行的标题
+   * @type {String}
+   * @default &#39;总汇总&#39;
+   */
+  summaryTitle : {
+    value : &#39;查询合计&#39;
+  },
+<span id='BUI-Grid-Plugins-Summary-property-pageSummaryTitle'>  /**
+</span>   * 本页汇总的标题
+   * @type {String}
+   */
+  pageSummaryTitle : {
+    value : &#39;本页合计&#39;
+  },
+<span id='BUI-Grid-Plugins-Summary-property-field'>  /**
+</span>   * 在列对象中配置的字段
+   * @type {String}
+   * @default &#39;summary&#39;
+   */
+  field : {
+    value : &#39;summary&#39;
+  },
+<span id='BUI-Grid-Plugins-Summary-property-pageSummaryField'>  /**
+</span>   * 本页汇总值的记录
+   * @type {String}
+   */
+  pageSummaryField: {
+    value : &#39;pageSummary&#39;
+  },
+<span id='BUI-Grid-Plugins-Summary-property-summaryField'>  /**
+</span>   * 总汇总值的记录
+   * @type {String}
+   */
+  summaryField : {
+    value : &#39;summary&#39;
+  },
+<span id='BUI-Grid-Plugins-Summary-property-pageSummary'>  /**
+</span>   * @private
+   * 本页汇总值
+   * @type {Object}
+   */
+  pageSummary : {
+
+  },
+<span id='BUI-Grid-Plugins-Summary-property-summary'>  /**
+</span>   * @private
+   * 总汇总
+   * @type {Object}
+   */
+  summary : {
+
+  }
+};
+
+BUI.extend(summary,BUI.Base);
+
+BUI.augment(summary,{
+  //初始化
+  initializer : function (grid) {
+    var _self = this;
+    _self.set(&#39;grid&#39;,grid);
+  },
+  //添加DOM结构
+  renderUI : function(grid){
+    var _self = this,
+      bodyEl = grid.get(&#39;el&#39;).find(&#39;.&#39; + CLS_GRID_BODY),
+      bodyTable = bodyEl.find(&#39;table&#39;),
+      footerEl = $(_self.get(&#39;footerTpl&#39;)).appendTo(bodyTable);
+    _self.set(&#39;footerEl&#39;,footerEl);
+  },
+  //绑定事件
+  bindUI : function(grid){
+    //绑定获取数据
+    var _self = this,
+      store = grid.get(&#39;store&#39;);
+    if(store){
+      store.on(&#39;beforeprocessload&#39;,function(ev){
+        _self._processSummary(ev.data);
+      });
+      store.on(&#39;add&#39;,function(){
+        _self.resetPageSummary();
+      });
+      store.on(&#39;remove&#39;,function(){
+        _self.resetPageSummary();
+      });
+      store.on(&#39;update&#39;,function(){
+        _self.resetPageSummary();
+      });
+    }
+    grid.on(&#39;aftershow&#39;,function(){
+      _self.resetSummary();
+    });
+
+    grid.get(&#39;header&#39;).on(&#39;afterVisibleChange&#39;,function(){
+      _self.resetSummary();
+    });
+  },
+  //处理汇总数据
+  _processSummary : function(data){
+    var _self = this,
+      footerEl = _self.get(&#39;footerEl&#39;);
+
+    footerEl.empty();
+    if(!data){
+      return;
+    }
+
+    var pageSummary = data[_self.get(&#39;pageSummaryField&#39;)],
+      summary = data[_self.get(&#39;summaryField&#39;)];
+
+    _self.set(&#39;pageSummary&#39;,pageSummary);
+    _self.set(&#39;summary&#39;,summary);
+  },
+<span id='BUI-Grid-Plugins-Summary-method-resetPageSummary'>  /**
+</span>   * 重新设置本页汇总
+   */
+  resetPageSummary : function(){
+    var _self = this,
+      grid = _self.get(&#39;grid&#39;),
+      columns = grid.get(&#39;columns&#39;),
+      pageSummary = _self._calculatePageSummary(),
+      pageEl = _self.get(&#39;pageEl&#39;);
+    _self.set(&#39;pageSummary&#39;,pageSummary);
+    if(pageEl){
+      BUI.each(columns,function(column){
+        if(column.get(&#39;summary&#39;) &amp;&amp; column.get(&#39;visible&#39;)){
+          var id = column.get(&#39;id&#39;),
+            cellEl = pageEl.find(&#39;.&#39; + CLS_COLUMN_PREFIX + id),
+            text = _self._getSummaryCellText(column,pageSummary);
+          cellEl.find(&#39;.&#39; + CLS_GRID_CELL_TEXT).text(text);
+        }
+      });
+      _self._updateFirstRow(pageEl,_self.get(&#39;pageSummaryTitle&#39;));
+    }
+  },
+  //重置汇总数据
+  resetSummary : function(pageSummary,summary){
+    var _self = this,
+      footerEl = _self.get(&#39;footerEl&#39;),
+      pageEl = null;
+
+    footerEl.empty();
+
+    pageSummary = pageSummary || _self.get(&#39;pageSummary&#39;);
+    if(!pageSummary){
+      pageSummary = _self._calculatePageSummary();
+      _self.set(&#39;pageSummary&#39;,pageSummary);
+    }
+    summary = summary || _self.get(&#39;summary&#39;);
+    pageEl = _self._creatSummaryRow(pageSummary,_self.get(&#39;pageSummaryTitle&#39;));
+    _self.set(&#39;pageEl&#39;,pageEl);
+    _self._creatSummaryRow(summary,_self.get(&#39;summaryTitle&#39;));
+  },
+  //创建汇总
+  _creatSummaryRow : function(summary,title){
+    if(!summary){
+      return null;
+    }
+    var _self = this,
+      footerEl = _self.get(&#39;footerEl&#39;),
+      tpl = _self._getSummaryTpl(summary),
+      rowEl = $(tpl).appendTo(footerEl);
+    
+    _self._updateFirstRow(rowEl,title);
+    return rowEl;
+  },
+  _updateFirstRow : function(rowEl,title){
+    var firstCell = rowEl.find(&#39;td&#39;).first(),
+        textEl = firstCell.find(&#39;.&#39; + CLS_GRID_CELL_INNER);
+    if(textEl.length){
+      var textPrefix = title + &#39;: &#39;;
+        text = textEl.text();
+      if(text.indexOf(textPrefix) === -1){
+        text = textPrefix + text;
+      }
+      firstCell.html(getInnerTemplate(text));
+    }else{
+      firstCell.html(getInnerTemplate(title + &#39;:&#39;));
+    }
+  },
+  //获取汇总模板
+  _getSummaryTpl : function(summary){
+    var _self = this,
+      grid = _self.get(&#39;grid&#39;),
+      columns = grid.get(&#39;columns&#39;),
+      cellTempArray = [],
+      prePosition = -1, //上次汇总列的位置
+      currentPosition = -1,//当前位置
+      rowTemplate = null;
+
+    $.each(columns, function (colindex,column) {
+      if(column.get(&#39;visible&#39;)){
+        currentPosition += 1;
+        if(column.get(&#39;summary&#39;)){
+          cellTempArray.push(getEmptyCellTemplate(currentPosition-prePosition - 1));
+
+          var text = _self._getSummaryCellText(column,summary),
+            temp = getCellTemplate(text,column.get(&#39;id&#39;));
+          cellTempArray.push(temp);
+          prePosition = currentPosition;
+        }
+      }
+    });
+    if(prePosition !== currentPosition){
+      cellTempArray.push(getEmptyCellTemplate(currentPosition-prePosition));
+    }
+
+    rowTemplate = [&#39;&lt;tr class=&quot;&#39;, CLS_SUMMARY_ROW,&#39; &#39;, CLS_GRID_ROW, &#39;&quot;&gt;&#39;, cellTempArray.join(&#39;&#39;),getLastEmptyCell(), &#39;&lt;/tr&gt;&#39;].join(&#39;&#39;);
+    return rowTemplate;
+  },
+  //获取汇总单元格内容
+  _getSummaryCellText : function(column,summary){
+    var _self = this,
+      val = summary[column.get(&#39;dataIndex&#39;)],
+      value = val == null ? &#39;&#39; : val,
+      renderer = column.get(&#39;renderer&#39;),
+      text = renderer ? renderer(value,summary) : value;
+    return text;
+  },
+  _calculatePageSummary : function(){
+    var _self = this,
+      grid = _self.get(&#39;grid&#39;),
+      store = grid.get(&#39;store&#39;),
+      columns = grid.get(&#39;columns&#39;),
+      rst = {};
+
+    BUI.each(columns,function(column){
+      if(column.get(&#39;summary&#39;)){
+        var dataIndex = column.get(&#39;dataIndex&#39;);
+        rst[dataIndex] = store.sum(dataIndex);
+      }
+    });
+    
+    return rst;
+  }
+});
+
+module.exports = summary;
+</pre>
+</body>
+</html>

@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 表格编辑插件
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;),
+  CLS_CELL_INNER = BUI.prefix + &#39;grid-cell-inner&#39;,
+  CLS_CELL_ERROR = BUI.prefix + &#39;grid-cell-error&#39;;
+<span id='BUI-Grid-Plugins-Editing'>/**
+</span> * 表格的编辑插件
+ * @class BUI.Grid.Plugins.Editing
+ */
+function Editing(config){
+  Editing.superclass.constructor.call(this, config);
+}
+
+BUI.extend(Editing,BUI.Base);
+
+Editing.ATTRS = {
+<span id='BUI-Grid-Plugins-Editing-property-align'>  /**
+</span>   * @protected
+   * 编辑器的对齐设置
+   * @type {Object}
+   */
+  align : {
+    value : {
+      points: [&#39;cl&#39;,&#39;cl&#39;]
+    }
+  },
+<span id='BUI-Grid-Plugins-Editing-property-showError'>  /**
+</span>   * 是否直接在表格上显示错误信息
+   * @type {Boolean}
+   */
+  showError : {
+    value : true
+  },
+  errorTpl : {
+    value : &#39;&lt;span class=&quot;x-icon &#39; + CLS_CELL_ERROR + &#39; x-icon-mini x-icon-error&quot; title=&quot;{error}&quot;&gt;!&lt;/span&gt;&#39;
+  },
+<span id='BUI-Grid-Plugins-Editing-property-isInitEditors'>  /**
+</span>   * 是否初始化过编辑器
+   * @protected
+   * @type {Boolean}
+   */
+  isInitEditors : {
+    value : false
+  },
+<span id='BUI-Grid-Plugins-Editing-property-record'>  /**
+</span>   * 正在编辑的记录
+   * @type {Object}
+   */
+  record : {
+
+  },
+<span id='BUI-Grid-Plugins-Editing-property-curEditor'>  /**
+</span>   * 当前编辑的编辑器
+   * @type {Object}
+   */
+  curEditor : {
+
+  },
+<span id='BUI-Grid-Plugins-Editing-property-hasValid'>  /**
+</span>   * 是否发生过验证
+   * @type {Boolean}
+   */
+  hasValid : {
+
+  },
+<span id='BUI-Grid-Plugins-Editing-property-editors'>  /**
+</span>   * 编辑器
+   * @protected
+   * @type {Object}
+   */
+  editors : {
+    shared:false,
+    value : []
+  },
+<span id='BUI-Grid-Plugins-Editing-property-triggerCls'>  /**
+</span>   * 触发编辑样式，为空时默认点击整行都会触发编辑
+   * @type {String}
+   */
+  triggerCls : {
+
+  },
+<span id='BUI-Grid-Plugins-Editing-property-triggerSelected'>  /**
+</span>   * 进行编辑时是否触发选中
+   * @type {Boolean}
+   */
+  triggerSelected : {
+    value : true
+  }
+<span id='BUI-Grid-Plugins-Editing-event-accept'>  /**
+</span>   * @event accept 
+   * 确认编辑
+   * @param {Object} ev 事件对象
+   * @param {Object} ev.record 编辑的数据
+   * @param {BUI.Editor.Editor} ev.editor 编辑器
+   */
+  
+<span id='BUI-Grid-Plugins-Editing-event-cancel'>  /**
+</span>   * @event cancel 
+   * 取消编辑
+   * @param {Object} ev 事件对象
+   * @param {Object} ev.record 编辑的数据
+   * @param {BUI.Editor.Editor} ev.editor 编辑器
+   */
+  
+<span id='BUI-Grid-Plugins-Editing-event-editorshow'>  /**
+</span>   * @event editorshow 
+   * editor 显示
+   * @param {Object} ev 事件对象
+   * @param {Object} ev.record 编辑的数据
+   * @param {BUI.Editor.Editor} ev.editor 编辑器
+   */
+  
+<span id='BUI-Grid-Plugins-Editing-event-editorready'>  /**
+</span>   * @event editorready
+   * editor 创建完成，因为editor延迟创建，所以创建完成grid，等待editor创建成功
+   */
+  
+<span id='BUI-Grid-Plugins-Editing-event-beforeeditorshow'>  /**
+</span>   * @event beforeeditorshow
+   * editor显示前，可以更改editor的一些属性
+   * @param {Object} ev 事件对象
+   * @param {Object} ev.record 编辑的数据
+   * @param {BUI.Editor.Editor} ev.editor 编辑器
+   */
+
+};
+
+BUI.augment(Editing,{
+<span id='BUI-Grid-Plugins-Editing-method-initializer'>  /**
+</span>   * 初始化
+   * @protected
+   */
+  initializer : function (grid) {
+    var _self = this;
+    _self.set(&#39;grid&#39;,grid);
+    _self.initEditing(grid);
+    
+  },
+  renderUI : function(){
+    var _self = this,
+      grid = _self.get(&#39;grid&#39;);
+    //延迟加载 editor模块
+    require.async(&#39;bui-editor&#39;,function(Editor){
+      _self.initEditors(Editor);
+      _self._initGridEvent(grid);
+      _self.set(&#39;isInitEditors&#39;,true);
+      _self.fire(&#39;editorready&#39;);
+    });
+  },
+<span id='BUI-Grid-Plugins-Editing-method-initEditing'>  /**
+</span>   * 初始化插件
+   * @protected
+   */
+  initEditing : function(grid){
+
+  },
+  _getCurEditor : function(){
+    return this.get(&#39;curEditor&#39;);
+  },
+  _initGridEvent : function(grid){
+    var _self = this,
+      header = grid.get(&#39;header&#39;);
+
+    grid.on(&#39;cellclick&#39;,function(ev){
+
+      var editor = null,
+        domTarget = ev.domTarget,
+        triggerCls = _self.get(&#39;triggerCls&#39;),
+        curEditor = _self._getCurEditor();
+      if(curEditor &amp;&amp; curEditor.get(&#39;acceptEvent&#39;)){
+        curEditor.accept();
+        curEditor.hide();
+      }else{
+        curEditor &amp;&amp; curEditor.cancel();
+      }
+
+      //if(ev.field){
+        editor = _self.getEditor(ev.field);
+      //}
+      if(editor &amp;&amp; $(domTarget).closest(&#39;.&#39; + triggerCls).length){
+        _self.showEditor(editor,ev);
+        //if(curEditor &amp;&amp; curEditor.get(&#39;acceptEvent&#39;)){
+        if(!_self.get(&#39;triggerSelected&#39;)){
+          return false; //此时不触发选中事件
+        }
+          
+        //}
+      }
+    });
+
+    grid.on(&#39;rowcreated&#39;,function(ev){
+      validRow(ev.record,ev.row);
+    });
+
+    grid.on(&#39;rowremoved&#39;,function(ev){
+      if(_self.get(&#39;record&#39;) == ev.record){
+        _self.cancel();
+      }
+    });
+
+    grid.on(&#39;rowupdated&#39;,function(ev){
+      validRow(ev.record,ev.row);
+    });
+
+    grid.on(&#39;scroll&#39;,function(ev){
+      var editor = _self._getCurEditor();
+      if(editor){
+
+        var align = editor.get(&#39;align&#39;),
+          node = align.node,
+          pos = node.position();
+        if(pos.top &lt; 0 || pos.top &gt; ev.bodyHeight){
+          editor.hide();
+        }else{
+          editor.set(&#39;align&#39;,align);
+          editor.show();
+        }
+        
+      }
+    });
+
+    header.on(&#39;afterVisibleChange&#39;,function(ev){
+      if(ev.target &amp;&amp; ev.target != header){
+        var column = ev.target;
+        _self.onColumnVisibleChange(column);
+      }
+    });
+
+    function validRow(record,row){
+      if(_self.get(&#39;hasValid&#39;)){
+        _self.validRecord(record,_self.getFields(),$(row));
+      }
+    }
+
+  },
+<span id='BUI-Grid-Plugins-Editing-method-initEditors'>  /**
+</span>   * 初始化所有
+   * @protected
+   */
+  initEditors : function(Editor){
+    var _self = this,
+      grid = _self.get(&#39;grid&#39;),
+      fields = [],
+      columns = grid.get(&#39;columns&#39;);
+    BUI.each(columns,function(column){
+      var field = _self.getFieldConfig(column);
+      if(field){
+        field.name = column.get(&#39;dataIndex&#39;);
+        field.colId = column.get(&#39;id&#39;);
+        if(field.validator){
+          field.validator = _self.wrapValidator(field.validator);
+        }
+        fields.push(field);
+      }
+    });
+    var cfgs = _self.getEditorCfgs(fields);
+    BUI.each(cfgs,function(cfg){
+      _self.initEidtor(cfg,Editor);
+    });
+  },
+<span id='BUI-Grid-Plugins-Editing-method-getFieldConfig'>  /**
+</span>   * @protected
+   * 获取列定义中的字段定义信息
+   * @param  {BUI.Grid.Column} column 列定义
+   * @return {Object}  字段定义
+   */
+  getFieldConfig : function(column){
+    return column.get(&#39;editor&#39;);
+  },
+<span id='BUI-Grid-Plugins-Editing-method-wrapValidator'>  /**
+</span>   * 封装验证方法
+   * @protected
+   */
+  wrapValidator : function(validator){
+    var _self = this;
+    return function(value){
+      var record = _self.get(&#39;record&#39;);
+      return validator(value,record);
+    };
+  },
+<span id='BUI-Grid-Plugins-Editing-method-onColumnVisibleChange'>  /**
+</span>   * @protected
+   * 列显示隐藏时
+   */
+  onColumnVisibleChange : function(column){
+
+  },
+<span id='BUI-Grid-Plugins-Editing-method-getEditorCfgs'>  /**
+</span>   * @protected
+   * 获取编辑器的配置
+   * @template
+   * @param  {Array} fields 字段配置
+   * @return {Array} 编辑器的配置项
+   */
+  getEditorCfgs : function(fields){
+
+  },
+<span id='BUI-Grid-Plugins-Editing-method-getEditorConstructor'>  /**
+</span>   * 获取编辑器的构造函数
+   * @param  {Object} Editor 命名空间
+   * @return {Function}       构造函数
+   */
+  getEditorConstructor : function(Editor){
+    return Editor.Editor;
+  },
+<span id='BUI-Grid-Plugins-Editing-method-initEidtor'>  /**
+</span>   * 初始化编辑器
+   * @private
+   */
+  initEidtor : function(cfg,Editor){
+    var _self = this,
+      con = _self.getEditorConstructor(Editor),
+      editor = new con(cfg);
+    editor.render();
+    _self.get(&#39;editors&#39;).push(editor);
+    _self.bindEidtor(editor);
+    return editor;
+  },
+<span id='BUI-Grid-Plugins-Editing-method-bindEidtor'>  /**
+</span>   * @protected
+   * 绑定编辑器事件
+   * @param  {BUI.Editor.Editor} editor 编辑器
+   */
+  bindEidtor : function(editor){
+    var _self = this,
+      grid = _self.get(&#39;grid&#39;),
+      store = grid.get(&#39;store&#39;);
+    editor.on(&#39;accept&#39;,function(){
+      var record = _self.get(&#39;record&#39;);
+      _self.updateRecord(store,record,editor);
+      _self.fire(&#39;accept&#39;,{editor : editor,record : record});
+      _self.set(&#39;curEditor&#39;,null);
+
+    });
+
+    editor.on(&#39;cancel&#39;,function(){
+      _self.fire(&#39;cancel&#39;,{editor : editor,record : _self.get(&#39;record&#39;)});
+      _self.set(&#39;curEditor&#39;,null);
+    });
+  },
+<span id='BUI-Grid-Plugins-Editing-method-getEditor'>  /**
+</span>   * 获取编辑器
+   * @protected
+   * @param  {String} field 字段值
+   * @return {BUI.Editor.Editor}  编辑器
+   */
+  getEditor : function(options){
+
+  },
+<span id='BUI-Grid-Plugins-Editing-method-getAlignNode'>  /**
+</span>   * @protected
+   * 获取对齐的节点
+   * @template
+   * @param  {Object} options 点击单元格的事件对象
+   * @return {jQuery} 
+   */
+  getAlignNode : function(options){
+
+  },
+<span id='BUI-Grid-Plugins-Editing-method-getEditValue'>  /**
+</span>   * @protected
+   * 获取编辑的值
+   * @param  {Object} options 点击单元格的事件对象
+   * @return {*}   编辑的值
+   */
+  getEditValue : function(options){
+
+  },
+<span id='BUI-Grid-Plugins-Editing-method-showEditor'>  /**
+</span>   * 显示编辑器
+   * @protected
+   * @param  {BUI.Editor.Editor} editor 
+   */
+  showEditor : function(editor,options){
+    var _self = this,
+      value = _self.getEditValue(options),
+      alignNode = _self.getAlignNode(options);
+
+    _self.beforeShowEditor(editor,options);
+    _self.set(&#39;record&#39;,options.record);
+    _self.fire(&#39;beforeeditorshow&#39;,{editor : editor,record : options.record});
+
+    editor.setValue(value);
+    if(alignNode){
+      var align = _self.get(&#39;align&#39;);
+      align.node = alignNode;
+      editor.set(&#39;align&#39;,align);
+    }
+
+    editor.show();
+    _self.focusEditor(editor,options.field);
+    _self.set(&#39;curEditor&#39;,editor);
+    _self.fire(&#39;editorshow&#39;,{editor : editor,record : options.record});
+  },
+<span id='BUI-Grid-Plugins-Editing-method-focusEditor'>  /**
+</span>   * @protected
+   * 编辑器字段定位
+   */
+  focusEditor : function(editor,field){
+    editor.focus();
+  },
+<span id='BUI-Grid-Plugins-Editing-method-beforeShowEditor'>  /**
+</span>   * 显示编辑器前
+   * @protected
+   * @template
+   * @param  {BUI.Editor.Editor} editor 
+   * @param  {Object} options
+   */
+  beforeShowEditor : function(editor,options){
+
+  },
+  //创建编辑的配置项
+  _createEditOptions : function(record,field){
+    var _self = this,
+      grid = _self.get(&#39;grid&#39;),
+      rowEl = grid.findRow(record),
+      column = grid.findColumnByField(field),
+      cellEl = grid.findCell(column.get(&#39;id&#39;),rowEl);
+    return {
+      record : record,
+      field : field,
+      cell : cellEl[0],
+      row : rowEl[0]
+    };
+  },
+<span id='BUI-Grid-Plugins-Editing-method-valid'>  /**
+</span>   * 验证表格是否通过验证
+   */
+  valid : function(){
+    var _self = this,
+      grid = _self.get(&#39;grid&#39;),
+      store = grid.get(&#39;store&#39;);
+
+    if(store){
+      var records = store.getResult();
+      BUI.each(records,function(record){
+        _self.validRecord(record,_self.getFields());
+      });
+    }
+    _self.set(&#39;hasValid&#39;,true);
+  },
+  isValid : function(){
+    var _self = this,
+      grid = _self.get(&#39;grid&#39;);
+    if(!_self.get(&#39;hasValid&#39;)){
+      _self.valid();
+    }
+    return !grid.get(&#39;el&#39;).find(&#39;.&#39; + CLS_CELL_ERROR).length;
+  },
+<span id='BUI-Grid-Plugins-Editing-method-clearErrors'>  /**
+</span>   * 清理错误
+   */
+  clearErrors : function(){
+    var _self = this,
+      grid = _self.get(&#39;grid&#39;);
+    grid.get(&#39;el&#39;).find(&#39;.&#39; + CLS_CELL_ERROR).remove();
+  },
+<span id='BUI-Grid-Plugins-Editing-method-getFields'>  /**
+</span>   * 获取编辑的字段
+   * @protected
+   * @param  {Array} editors 编辑器
+   * @return {Array}  字段集合
+   */
+  getFields : function(editors){
+    
+  },
+<span id='BUI-Grid-Plugins-Editing-method-validRecord'>  /**
+</span>   * 校验记录
+   * @protected
+   * @param  {Object} record 校验的记录
+   * @param  {Array} fields 字段的集合
+   */
+  validRecord : function(record,fields,row){
+    var _self = this,
+      errors = [];
+    _self.setInternal(&#39;record&#39;,record);
+    fields = fields || _self.getFields();
+    BUI.each(fields,function(field){
+      var name = field.get(&#39;name&#39;),
+        value = record[name] || &#39;&#39;,
+        error = field.getValidError(value);
+      if(error){
+        errors.push({name : name,error : error,id : field.get(&#39;colId&#39;)});
+      }
+    });
+    _self.showRecordError(record,errors,row);
+  },
+  showRecordError : function(record,errors,row){
+    var _self = this,
+      grid = _self.get(&#39;grid&#39;);
+    row = row || grid.findRow(record);
+    if(row){
+      _self._clearRowError(row);
+      BUI.each(errors,function(item){
+        var cell = grid.findCell(item.id,row);
+        _self._showCellError(cell,item.error);
+      });
+    }
+  },
+<span id='BUI-Grid-Plugins-Editing-method-updateRecord'>  /**
+</span>   * 更新数据
+   * @protected
+   * @param  {Object} record 编辑的数据
+   * @param  {*} value  编辑值
+   */
+  updateRecord : function(store,record,editor){
+   
+  },
+  _clearRowError : function(row){
+    row.find(&#39;.&#39; + CLS_CELL_ERROR).remove();
+  },
+  _showCellError : function(cell,error){
+    var _self = this,
+      errorTpl = BUI.substitute(_self.get(&#39;errorTpl&#39;),{error : error}),
+      innerEl = cell.find(&#39;.&#39; + CLS_CELL_INNER);
+    $(errorTpl).appendTo(innerEl);
+  },
+<span id='BUI-Grid-Plugins-Editing-method-edit'>  /**
+</span>   * 编辑记录
+   * @param  {Object} record 需要编辑的记录
+   * @param  {String} field 编辑的字段
+   */
+  edit : function(record,field){
+    var _self = this,
+      options = _self._createEditOptions(record,field),
+      editor = _self.getEditor(field);
+    _self.showEditor(editor,options);
+  },
+<span id='BUI-Grid-Plugins-Editing-method-cancel'>  /**
+</span>   * 取消编辑
+   */
+  cancel : function(){
+    var _self = this,
+      editors = _self.get(&#39;editors&#39;);
+    BUI.each(editors,function(editor){
+      if(editor.get(&#39;visible&#39;)){
+        editor.cancel();
+      }
+    });
+    _self.set(&#39;curEditor&#39;,null);
+    _self.set(&#39;record&#39;,null);
+  },  
+<span id='BUI-Grid-Plugins-Editing-method-destructor'>  /**
+</span>   * 析构函数
+   * @protected
+   */
+  destructor:function () {
+    var _self = this,
+      editors = _self.get(&#39;editors&#39;);
+    
+    BUI.each(editors,function(editor){
+      editor.destroy &amp;&amp; editor.destroy();
+    });
+    _self.off();
+    _self.clearAttrVals();
+  }
+
+});
+
+module.exports = Editing;
+</pre>
+</body>
+</html>

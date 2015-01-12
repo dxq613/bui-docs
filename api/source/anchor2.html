@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='BUI'>/**
+</span> * @fileOverview 锚定容器的布局项
+ * @ignore
+ */
+
+
+var BUI = require(&#39;bui-common&#39;),
+	Base = require(&#39;./base&#39;);
+
+//转换anchor的值
+function parseValue(value,type){
+	if(BUI.isNumber(value)){
+		if(value &gt; 0){ //大于0的正数，返回
+			return value;
+		}else{
+			return &#39;{&#39; + type + &#39;}&#39; + value;
+		}
+	}
+	if(BUI.isString(value) &amp;&amp; value.indexOf(&#39;-&#39;) == 0){
+		return &#39;{&#39; + type + &#39;}&#39; + value;
+	}
+	return value;
+}
+<span id='BUI-Layout-Item-Anchor'>/**
+</span> * @class BUI.Layout.Item.Anchor
+ * 锚定布局项
+ */
+var Anchor = function(config){
+	Anchor.superclass.constructor.call(this,config);
+};
+
+Anchor.ATTRS = {
+<span id='BUI-Layout-Item-Anchor-property-anchor'>	/**
+</span>	 * 锚定容器的方式，有以下几种方式：
+	 *
+	 *  - 默认方式： [&#39;100%&#39;] 宽度100%,高度auto
+	 *  - 指定宽高： [&#39;100%&#39;,&#39;50%&#39;] 宽100%, 高 100%
+	 *  - 指定数值:  [100,100] 宽高都是100
+	 *  - 指定负数:  [-100,-50] 容器宽度减去100,宽度高度减去 50
+	 * @type {Array}
+	 */
+	anchor : {
+		value : [&#39;100%&#39;]
+	}
+};
+
+BUI.extend(Anchor,Base);
+
+BUI.augment(Anchor,{
+
+<span id='global-method-getLayoutAttrs'>	/**
+</span>	 * @protected
+	 * @override
+	 * @ignore
+	 * 覆盖返回的布局相关的属性
+	 */
+	getLayoutAttrs : function(){
+		var _self = this,
+			anchor = _self.get(&#39;anchor&#39;),
+			attrs = BUI.mix({},_self.getAttrVals()),
+			width = anchor[0],
+			height = anchor[1];
+
+		attrs.width = parseValue(width,&#39;width&#39;);
+		attrs.height = parseValue(height,&#39;height&#39;);
+
+		return attrs;
+	}
+});
+
+module.exports = Anchor;
+</pre>
+</body>
+</html>

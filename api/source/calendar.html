@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='BUI'>/**
+</span> * @fileOverview 日期控件
+ * @author dxq613@gmail.com
+ * @ignore
+ */
+
+
+var BUI = require(&#39;bui-common&#39;),
+  PREFIX = BUI.prefix,
+  CLS_PICKER_TIME = &#39;x-datepicker-time&#39;,
+  CLS_PICKER_HOUR = &#39;x-datepicker-hour&#39;,
+  CLS_PICKER_MINUTE = &#39;x-datepicker-minute&#39;,
+  CLS_PICKER_SECOND = &#39;x-datepicker-second&#39;,
+  CLS_TIME_PICKER = &#39;x-timepicker&#39;,
+  Picker = require(&#39;bui-picker&#39;).ListPicker,
+  MonthPicker = require(&#39;./monthpicker&#39;),
+  Header = require(&#39;./header&#39;),
+  Panel = require(&#39;./panel&#39;),
+  Toolbar = require(&#39;bui-toolbar&#39;),
+  Component = BUI.Component,
+  DateUtil = BUI.Date;
+
+function today(){
+  var now = new Date();
+  return new Date(now.getFullYear(),now.getMonth(),now.getDate());
+}
+
+function fixedNumber(n){
+  if( n&lt; 10 ){
+    return &#39;0&#39;+n;
+  }
+  return n.toString();
+}
+function getNumberItems(end){
+  var items = [];
+  for (var i = 0; i &lt; end; i++) {
+    items.push({text:fixedNumber(i),value:fixedNumber(i)});
+  }
+  return items;
+}
+
+function getTimeUnit (self,cls){
+  var inputEl = self.get(&#39;el&#39;).find(&#39;.&#39; + cls);
+  return parseInt(inputEl.val(),10);
+
+}
+
+function setTimeUnit (self,cls,val){
+  var inputEl = self.get(&#39;el&#39;).find(&#39;.&#39; + cls);
+  if(BUI.isNumber(val)){
+    val = fixedNumber(val);
+  }
+  inputEl.val(val);
+}
+
+
+
+<span id='BUI-Calendar-Calendar'>/**
+</span> * 日期控件
+ * &lt;p&gt;
+ * &lt;img src=&quot;../assets/img/class-calendar.jpg&quot;/&gt;
+ * &lt;/p&gt;
+ * xclass:&#39;calendar&#39;
+ * &lt;pre&gt;&lt;code&gt;
+ *  BUI.use(&#39;bui/calendar&#39;,function(Calendar){
+ *    var calendar = new Calendar.Calendar({
+ *      render:&#39;#calendar&#39;
+ *    });
+ *    calendar.render();
+ *    calendar.on(&#39;selectedchange&#39;,function (ev) {
+ *      alert(ev.date);
+ *    });
+ * });
+ * &lt;/code&gt;&lt;/pre&gt;
+ * @class BUI.Calendar.Calendar
+ * @extends BUI.Component.Controller
+ */
+var calendar = Component.Controller.extend({
+
+  //设置内容
+  initializer: function(){
+    var _self = this,
+      children = _self.get(&#39;children&#39;),
+      header = new Header(),
+      panel = new Panel(),
+      footer = _self.get(&#39;footer&#39;) || _self._createFooter();/*,
+      monthPicker = _self.get(&#39;monthPicker&#39;) || _self._createMonthPicker();*/
+
+
+    //添加头
+    children.push(header);
+    //添加panel
+    children.push(panel);
+    children.push(footer);
+    //children.push(monthPicker);
+
+    _self.set(&#39;header&#39;,header);
+    _self.set(&#39;panel&#39;,panel);
+    _self.set(&#39;footer&#39;,footer);
+    //_self.set(&#39;monthPicker&#39;,monthPicker);
+  },
+  renderUI : function(){
+    var _self = this,
+    children = _self.get(&#39;children&#39;);
+    if(_self.get(&#39;showTime&#39;)){
+      var  timepicker = _self.get(&#39;timepicker&#39;) || _self._initTimePicker();
+      children.push(timepicker);
+      _self.set(&#39;timepicker&#39;,timepicker);
+    }
+  },
+  //绑定事件
+  bindUI : function(){
+    var _self = this,
+      header = _self.get(&#39;header&#39;),
+      panel = _self.get(&#39;panel&#39;);
+
+    panel.on(&#39;selectedchange&#39;,function(e){
+      var date = e.date;
+      if(!DateUtil.isDateEquals(date,_self.get(&#39;selectedDate&#39;))){
+        _self.set(&#39;selectedDate&#39;,date);
+      }
+    });
+    if(!_self.get(&#39;showTime&#39;)){
+      panel.on(&#39;click&#39;,function(){
+        _self.fire(&#39;accept&#39;);
+      });
+    }else{
+      _self._initTimePickerEvent();
+    }
+
+    header.on(&#39;monthchange&#39;,function(e){
+      _self._setYearMonth(e.year,e.month);
+    });
+
+    header.on(&#39;headerclick&#39;,function(){
+      var monthPicker = _self.get(&#39;monthpicker&#39;) || _self._createMonthPicker();
+      monthPicker.set(&#39;year&#39;,header.get(&#39;year&#39;));
+      monthPicker.set(&#39;month&#39;,header.get(&#39;month&#39;));
+      monthPicker.show();
+    });
+  },
+  _initTimePicker : function(){
+    var _self = this,
+      lockTime = _self.get(&#39;lockTime&#39;),
+      _timePickerEnum={hour:CLS_PICKER_HOUR,minute:CLS_PICKER_MINUTE,second:CLS_PICKER_SECOND};
+    if(lockTime){
+        for(var key in lockTime){
+            var noCls = _timePickerEnum[key.toLowerCase()];
+            _self.set(key,lockTime[key]);
+            if(!lockTime.editable){
+              _self.get(&#39;el&#39;).find(&quot;.&quot;+noCls).attr(&quot;disabled&quot;,&quot;&quot;);
+            }
+        }
+    }
+    var  picker = new Picker({
+        elCls : CLS_TIME_PICKER,
+        children:[{
+          itemTpl : &#39;&lt;li&gt;&lt;a href=&quot;#&quot;&gt;{text}&lt;/a&gt;&lt;/li&gt;&#39;
+        }],
+        autoAlign : false,
+        align : {
+          node : _self.get(&#39;el&#39;).find(&#39;.bui-calendar-footer&#39;),
+          points:[&#39;tl&#39;,&#39;bl&#39;],
+          offset:[-1,1]
+        },
+        trigger : _self.get(&#39;el&#39;).find(&#39;.&#39; +CLS_PICKER_TIME)
+      });
+    picker.render();
+    _self._initTimePickerEvent(picker);
+    return picker;
+  },
+  _initTimePickerEvent : function(picker){
+    var _self = this,
+      picker= _self.get(&#39;timepicker&#39;);
+
+    if(!picker){
+      return;
+    }
+
+    picker.get(&#39;el&#39;).delegate(&#39;a&#39;,&#39;click&#39;,function(ev){
+      ev.preventDefault();
+    });
+    picker.on(&#39;triggerchange&#39;,function(ev){
+      var curTrigger = ev.curTrigger;
+      if(curTrigger.hasClass(CLS_PICKER_HOUR)){
+        picker.get(&#39;list&#39;).set(&#39;items&#39;,getNumberItems(24));
+      }else{
+        picker.get(&#39;list&#39;).set(&#39;items&#39;,getNumberItems(60));
+      }
+    });
+
+    picker.on(&#39;selectedchange&#39;,function(ev){
+      var curTrigger = ev.curTrigger,
+        val = ev.value;
+      if(curTrigger.hasClass(CLS_PICKER_HOUR)){
+        _self.setInternal(&#39;hour&#39;,val);
+      }else if(curTrigger.hasClass(CLS_PICKER_MINUTE)){
+        _self.setInternal(&#39;minute&#39;,val);
+      }else{
+        _self.setInternal(&#39;second&#39;,val);
+      }
+    });
+  },
+  //更改年和月
+  _setYearMonth : function(year,month){
+    var _self = this,
+      selectedDate = _self.get(&#39;selectedDate&#39;),
+      date = selectedDate.getDate();
+    if(year !== selectedDate.getFullYear() || month !== selectedDate.getMonth()){
+      var newDate = new Date(year,month,date);
+      if(newDate.getMonth() != month){ //下一个月没有对应的日期,定位到下一个月最后一天
+        newDate = DateUtil.addDay(-1,new Date(year,month + 1));
+      }
+      _self.set(&#39;selectedDate&#39;,newDate);
+    }
+  },
+  //创建选择月的控件
+  _createMonthPicker: function(){
+    var _self = this,
+      monthpicker;
+    monthpicker = new MonthPicker({
+      render : _self.get(&#39;el&#39;),
+      effect : {
+        effect:&#39;slide&#39;,
+        duration:300
+      },
+      visibleMode:&#39;display&#39;,
+      success : function(){
+        var picker = this;
+        _self._setYearMonth(picker.get(&#39;year&#39;),picker.get(&#39;month&#39;));
+        picker.hide();
+      },
+      cancel : function(){
+        this.hide();
+      }
+    });
+    _self.set(&#39;monthpicker&#39;,monthpicker);
+    _self.get(&#39;children&#39;).push(monthpicker);
+    return monthpicker;
+  },
+  //创建底部按钮栏
+  _createFooter : function(){
+    var _self = this,
+      showTime = this.get(&#39;showTime&#39;),
+      items = [];
+
+    if(showTime){
+      items.push({
+        content : _self.get(&#39;timeTpl&#39;)
+      });
+      items.push({
+        xclass:&#39;bar-item-button&#39;,
+        text:&#39;确定&#39;,
+        btnCls: &#39;button button-small button-primary&#39;,
+        listeners:{
+          click:function(){
+            _self.fire(&#39;accept&#39;);
+          }
+        }
+      });
+    }else{
+      items.push({
+        xclass:&#39;bar-item-button&#39;,
+        text:&#39;今天&#39;,
+        btnCls: &#39;button button-small&#39;,
+	      id:&#39;todayBtn&#39;,
+        listeners:{
+          click:function(){
+            var day = today();
+            _self.set(&#39;selectedDate&#39;,day);
+            _self.fire(&#39;accept&#39;);
+          }
+        }
+      });
+      items.push({
+        xclass:&#39;bar-item-button&#39;,
+        text:&#39;清除&#39;,
+        btnCls: &#39;button button-small&#39;,
+        id:&#39;clsBtn&#39;,
+        listeners:{
+          click:function(){
+            _self.fire(&#39;clear&#39;);
+          }
+        }
+      });
+    }
+
+    return new Toolbar.Bar({
+        elCls : PREFIX + &#39;calendar-footer&#39;,
+        children:items
+      });
+  },
+//更新今天按钮的状态
+  _updateTodayBtnAble: function () {
+          var _self = this;
+          if (!_self.get(&#39;showTime&#39;)) {
+              var footer = _self.get(&quot;footer&quot;),
+                  panelView = _self.get(&quot;panel&quot;).get(&quot;view&quot;),
+                  now = today(),
+                  btn = footer.getItem(&quot;todayBtn&quot;);
+              panelView._isInRange(now) ? btn.enable() : btn.disable();
+          }
+  },
+  //设置所选日期
+  _uiSetSelectedDate : function(v){
+    var _self = this,
+      year = v.getFullYear(),
+      month = v.getMonth();
+
+    _self.get(&#39;header&#39;).setMonth(year,month);
+    _self.get(&#39;panel&#39;).set(&#39;selected&#39;,v);
+    _self.fire(&#39;datechange&#39;,{date:v});
+  },
+  _uiSetHour : function(v){
+    setTimeUnit(this,CLS_PICKER_HOUR,v);
+  },
+  _uiSetMinute : function(v){
+    setTimeUnit(this,CLS_PICKER_MINUTE,v);
+  },
+  _uiSetSecond : function(v){
+    setTimeUnit(this,CLS_PICKER_SECOND,v);
+  },
+  //设置最大值
+  _uiSetMaxDate : function(v){
+    var _self = this;
+    _self.get(&#39;panel&#39;).set(&#39;maxDate&#39;,v);
+  _self._updateTodayBtnAble();
+  },
+  //设置最小值
+  _uiSetMinDate : function(v){
+    var _self = this;
+    _self.get(&#39;panel&#39;).set(&#39;minDate&#39;,v);
+  _self._updateTodayBtnAble();
+  }
+
+},{
+  ATTRS :
+  {
+<span id='BUI-Calendar-Calendar-property-header'>    /**
+</span>     * 日历控件头部，选择年月
+     * @private
+     * @type {Object}
+     */
+    header:{
+
+    },
+
+<span id='BUI-Calendar-Calendar-property-panel'>    /**
+</span>     * 日历控件选择日
+     * @private
+     * @type {Object}
+     */
+    panel:{
+
+    },
+<span id='BUI-Calendar-Calendar-property-maxDate'>    /**
+</span>     * 最大日期
+     * &lt;pre&gt;&lt;code&gt;
+     *   calendar.set(&#39;maxDate&#39;,&#39;2013-07-29&#39;);
+     * &lt;/code&gt;&lt;/pre&gt;
+     * @type {Date}
+     */
+    maxDate : {
+
+    },
+<span id='BUI-Calendar-Calendar-property-minDate'>    /**
+</span>     * 最小日期
+     * &lt;pre&gt;&lt;code&gt;
+     *   calendar.set(&#39;minDate&#39;,&#39;2013-07-29&#39;);
+     * &lt;/code&gt;&lt;/pre&gt;
+     * @type {Date}
+     */
+    minDate : {
+
+    },
+<span id='BUI-Calendar-Calendar-property-monthPicker'>    /**
+</span>     * 选择月份控件
+     * @private
+     * @type {Object}
+     */
+    monthPicker : {
+
+    },
+<span id='BUI-Calendar-Calendar-property-timepicker'>    /**
+</span>     * 选择时间控件
+     * @private
+     * @type {Object}
+     */
+    timepicker:{
+
+    },
+    width:{
+      value:180
+    },
+    events:{
+      value:{
+<span id='BUI-Calendar-Calendar-event-click'>         /**
+</span>         * @event
+         * @name BUI.Calendar.Calendar#click
+         * @param {Object} e 点击事件
+         * @param {Date} e.date
+         */
+        &#39;click&#39; : false,
+<span id='BUI-Calendar-Calendar-event-accept'>        /**
+</span>         * 确认日期更改，如果不显示日期则当点击日期或者点击今天按钮时触发，如果显示日期，则当点击确认按钮时触发。
+         * @event
+         */
+        &#39;accept&#39; : false,
+<span id='BUI-Calendar-Calendar-event-datechange'>        /**
+</span>         * @event
+         * @name BUI.Calendar.Calendar#datechange
+         * @param {Object} e 选中的日期发生改变
+         * @param {Date} e.date
+         */
+        &#39;datechange&#39; : false,
+<span id='BUI-Calendar-Calendar-event-monthchange'>         /**
+</span>         * @event
+         * @name BUI.Calendar.Calendar#monthchange
+         * @param {Object} e 月份发生改变
+         * @param {Number} e.year
+         * @param {Number} e.month
+         */
+        &#39;monthchange&#39; : false
+      }
+    },
+<span id='BUI-Calendar-Calendar-cfg-showTime'>    /**
+</span>     * 是否选择时间,此选项决定是否可以选择时间
+     *
+     * @cfg {Boolean} showTime
+     */
+    showTime : {
+      value : false
+    },
+<span id='BUI-Calendar-Calendar-property-lockTime'>    /**
+</span>    * 锁定时间选择
+    *&lt;pre&gt;&lt;code&gt;
+    *  var calendar = new Calendar.Calendar({
+    *  render:&#39;#calendar&#39;,
+    *  lockTime : {hour:00,minute:30} //表示锁定时为00,分为30分,秒无锁用户可选择
+    * });
+    * &lt;/code&gt;&lt;/pre&gt;
+     *
+     * @type {Object}
+    */
+    lockTime :{
+    },
+    timeTpl : {
+      value : &#39;&lt;input type=&quot;text&quot; readonly class=&quot;&#39; + CLS_PICKER_TIME + &#39; &#39; + CLS_PICKER_HOUR + &#39;&quot; /&gt;:&lt;input type=&quot;text&quot; readonly class=&quot;&#39; + CLS_PICKER_TIME + &#39; &#39; + CLS_PICKER_MINUTE + &#39;&quot; /&gt;:&lt;input type=&quot;text&quot; readonly class=&quot;&#39; + CLS_PICKER_TIME + &#39; &#39; + CLS_PICKER_SECOND + &#39;&quot; /&gt;&#39;
+    },
+<span id='BUI-Calendar-Calendar-cfg-selectedDate'>    /**
+</span>     * 选择的日期,默认为当天
+     * &lt;pre&gt;&lt;code&gt;
+     *  var calendar = new Calendar.Calendar({
+     *  render:&#39;#calendar&#39;,
+     *   selectedDate : new Date(&#39;2013/07/01&#39;) //不能使用字符串
+     * });
+     * &lt;/code&gt;&lt;/pre&gt;
+     * @cfg {Date} selectedDate
+     */
+<span id='BUI-Calendar-Calendar-property-selectedDate'>    /**
+</span>     * 选择的日期
+     * &lt;pre&gt;&lt;code&gt;
+     *   calendar.set(&#39;selectedDate&#39;,new Date(&#39;2013-9-01&#39;));
+     * &lt;/code&gt;&lt;/pre&gt;
+     * @type {Date}
+     * @default today
+     */
+    selectedDate : {
+      value : today()
+    },
+<span id='BUI-Calendar-Calendar-property-hour'>    /**
+</span>     * 小时,默认为当前小时
+     * @type {Number}
+     */
+    hour : {
+      value : new Date().getHours()
+    },
+<span id='BUI-Calendar-Calendar-property-minute'>    /**
+</span>     * 分,默认为当前分
+     * @type {Number}
+     */
+    minute:{
+      value : new Date().getMinutes()
+    },
+<span id='BUI-Calendar-Calendar-property-second'>    /**
+</span>     * 秒,默认为当前秒
+     * @type {Number}
+     */
+    second : {
+      value : 0
+    }
+  }
+},{
+  xclass : &#39;calendar&#39;,
+  priority : 0
+});
+
+module.exports = calendar;
+</pre>
+</body>
+</html>

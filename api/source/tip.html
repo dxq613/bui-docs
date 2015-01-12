@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 简单易用的提示信息
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;),
+  BUI = require(&#39;bui-common&#39;),
+  Overlay = require(&#39;bui-overlay&#39;),
+  CLS_ALIGN_PREFIX = &#39;x-align-&#39;,
+  MAP_TYPES = {
+    left : [&#39;cl&#39;,&#39;cr&#39;], //居左
+    right : [&#39;cr&#39;,&#39;cl&#39;], //居右
+    top : [&#39;tc&#39;,&#39;bc&#39;], //居上
+    bottom : [&#39;bc&#39;,&#39;tc&#39;], //居下
+    &#39;top-left&#39; : [&#39;tl&#39;,&#39;bl&#39;],
+    &#39;top-right&#39; : [&#39;tr&#39;,&#39;br&#39;],
+    &#39;bottom-left&#39; : [&#39;bl&#39;,&#39;tl&#39;],
+    &#39;bottom-right&#39; : [&#39;br&#39;,&#39;tr&#39;]
+  };
+//获取距离
+function getOffset(type,offset){
+  if(type === &#39;left&#39;){
+    return [-1 * offset,-4];
+  }
+  if(type === &#39;right&#39;){
+    return [offset,-4];
+  }
+  if(type.indexOf(&#39;top&#39;)){
+    return [0,offset];
+  }
+
+  if(type.indexOf(&#39;bottom&#39;)){
+    return [0,-1 * offset];
+  }
+}
+
+var TipView = Overlay.OverlayView.extend({
+  renderUI : function(){
+
+  },
+  //获取显示文本的容器
+  _getTitleContainer : function(){
+    return  this.get(&#39;el&#39;);
+  },
+  //设置文本
+  _uiSetTitle : function(title){
+    var _self = this,
+      titleTpl = _self.get(&#39;titleTpl&#39;),
+      container = _self._getTitleContainer(),
+      titleEl = _self.get(&#39;titleEl&#39;),
+      tem;
+    if(titleEl){
+      titleEl.remove();
+    }
+    title = title || &#39;&#39;;
+    if(BUI.isString(title)){
+      title = {title : title};
+    }
+    tem = BUI.substitute(titleTpl,title);
+    titleEl = $(tem).appendTo(container);
+    _self.set(&#39;titleEl&#39;,titleEl);
+  },
+  //设置对齐样式
+  _uiSetAlignType : function(type,ev){
+    var _self = this;
+    if(ev &amp;&amp; ev.prevVal){
+      _self.get(&#39;el&#39;).removeClass(CLS_ALIGN_PREFIX + ev.prevVal);
+    }
+    if(type){
+      _self.get(&#39;el&#39;).addClass(CLS_ALIGN_PREFIX + type);
+    }
+  }
+},{
+  ATTRS : {
+    title : {},
+    titleEl : {},
+    alignType : {}
+  }
+},{
+  xclass : &#39;tooltip-view&#39;
+});
+
+<span id='BUI-Tooltip-Tip'>/**
+</span> * @class BUI.Tooltip.Tip
+ * @extends BUI.Overlay.Overlay
+ * 简易的提示信息
+ * 
+ * ** 你可以简单的使用单个tip **
+ * &lt;pre&gt;&lt;code&gt;
+ * BUI.use(&#39;bui/tooltip&#39;,function (Tooltip) {
+ *  //不使用模板的，左侧显示
+ *   var t1 = new Tooltip.Tip({
+ *     trigger : &#39;#t1&#39;,
+ *     alignType : &#39;left&#39;, //方向
+ *     showArrow : false, //不显示箭头
+ *     offset : 5, //距离左边的距离
+ *     title : &#39;无任何样式，&lt;br&gt;左边的提示信息&#39;
+ *   });
+ *   t1.render();
+ *  });
+ * &lt;/code&gt;&lt;/pre&gt;
+ *
+ * ** 也可以配置模板 **
+ * &lt;pre&gt;&lt;code&gt;
+ * BUI.use(&#39;bui/tooltip&#39;,function (Tooltip) {
+ *  //使用模板的，左侧显示
+ *   var t1 = new Tooltip.Tip({
+ *     trigger : &#39;#t1&#39;,
+ *     alignType : &#39;left&#39;, //方向
+ *     titleTpl : &#39;&amp;lt;span class=&quot;x-icon x-icon-small x-icon-success&quot;&amp;gt;&amp;lt;i class=&quot;icon icon-white icon-question&quot;&amp;gt;&amp;lt;/i&amp;gt;&amp;lt;/span&amp;gt;\
+ *     &amp;lt;div class=&quot;tips-content&quot;&amp;gt;{title}&amp;lt;/div&amp;gt;&#39;,
+ *     offset : 5, //距离左边的距离
+ *     title : &#39;无任何样式，&amp;lt;br&amp;gt;左边的提示信息&#39;
+ *   });
+ *   t1.render();
+ *  });
+ * &lt;/code&gt;&lt;/pre&gt;
+ */
+var Tip = Overlay.Overlay.extend({
+  //设置对齐方式
+  _uiSetAlignType : function(type){
+    var _self = this,
+      offset = _self.get(&#39;offset&#39;),
+      align = _self.get(&#39;align&#39;) || {},
+      points = MAP_TYPES[type];
+    if(points){
+      align.points = points;
+      if(offset){
+        align.offset = getOffset(type,offset);
+      }
+      _self.set(&#39;align&#39;,align);
+    }
+  }
+},{
+  ATTRS : {
+    //使用委托的方式显示提示信息
+    delegateTrigger : {
+      value : true
+    },
+<span id='BUI-Tooltip-Tip-property-alignType'>    /**
+</span>     * 对齐类型，包括： top,left,right,bottom四种常用方式，其他对齐方式，可以使用@see{BUI.Tooltip.Tip#property-align}属性
+     * 
+     * @type {String}
+     */
+    alignType : {
+      view : true
+    },
+<span id='BUI-Tooltip-Tip-cfg-title'>    /**
+</span>     * 显示的内容，文本或者键值对
+     * &lt;pre&gt;&lt;code&gt;
+     *     var tip =  new Tip({
+     *        title : {a : &#39;text a&#39;,b:&#39;text b&#39;}, //属性是对象
+     *        titleTpl : &#39;&lt;p&gt;this is {a},because {b}&lt;/p&gt;&#39; // &lt;p&gt;this is text a,because text b&lt;/p&gt;
+     *      });
+     * &lt;/code&gt;&lt;/pre&gt;
+     * @cfg {String|Object} title
+     */
+<span id='BUI-Tooltip-Tip-property-title'>    /**
+</span>     * 显示的内容
+     * &lt;pre&gt;&lt;code&gt;
+     *  //设置文本
+     *  tip.set(&#39;title&#39;,&#39;new title&#39;);
+     *
+     *  //设置对象
+     *  tip.set(&#39;title&#39;,{a : &#39;a&#39;,b : &#39;b&#39;})
+     * &lt;/code&gt;&lt;/pre&gt;
+     * @type {Object}
+     */
+    title : {
+      view : true
+    },
+<span id='BUI-Tooltip-Tip-cfg-showArrow'>    /**
+</span>     * 显示对齐箭头
+     * @override
+     * @default true
+     * @cfg {Boolean} [showArrow = true]
+     */
+    showArrow : {
+      value : true
+    },
+<span id='BUI-Tooltip-Tip-cfg-arrowContainer'>    /**
+</span>     * 箭头放置在的位置，是一个选择器，例如 .arrow-wraper
+     * &lt;pre&gt;&lt;code&gt;
+     *     new Tip({ //可以设置整个控件的模板
+     *       arrowContainer : &#39;.arrow-wraper&#39;,
+     *       tpl : &#39;&lt;div class=&quot;arrow-wraper&quot;&gt;&lt;/div&gt;&#39;
+     *     });
+     *     
+     *     new Tip({ //也可以设置title的模板
+     *       arrowContainer : &#39;.arrow-wraper&#39;,
+     *       titleTpl : &#39;&lt;div class=&quot;arrow-wraper&quot;&gt;{title}&lt;/div&gt;&#39;
+     *     });
+     * &lt;/code&gt;&lt;/pre&gt;   
+     * @cfg {String} arrowContainer
+     */
+    arrowContainer : {
+      view : true
+    },
+    //自动显示
+    autoHide : {
+      value : true
+    },
+    //覆盖自动隐藏类型
+    autoHideType : {
+      value : &#39;leave&#39;
+    },
+<span id='BUI-Tooltip-Tip-cfg-offset'>    /**
+</span>    * 显示的tip 距离触发器Dom的距离
+    * &lt;pre&gt;&lt;code&gt;
+    *  var tip =  new Tip({
+    *    title : {a : &#39;text a&#39;,b:&#39;text b&#39;}, //属性是对象
+    *    offset : 10, //距离
+    *    titleTpl : &#39;&lt;p&gt;this is {a},because {b}&lt;/p&gt;&#39; // &lt;p&gt;this is text a,because text b&lt;/p&gt;
+    *  });
+    * &lt;/code&gt;&lt;/pre&gt;
+    * @cfg {Number} offset
+    */
+    offset : {
+      value : 0
+    },
+<span id='BUI-Tooltip-Tip-property-triggerEvent'>    /**
+</span>     * 触发显示tip的事件名称，默认为mouseover
+     * @type {String}
+     * @protected
+     */
+    triggerEvent : {
+      value : &#39;mouseover&#39;
+    },
+<span id='BUI-Tooltip-Tip-property-titleTpl'>    /**
+</span>     * 显示文本的模板
+     * &lt;pre&gt;&lt;code&gt;
+     *  var tip =  new Tip({
+     *    title : {a : &#39;text a&#39;,b:&#39;text b&#39;}, //属性是对象
+     *    offset : 10, //距离
+     *    titleTpl : &#39;&lt;p&gt;this is {a},because {b}&lt;/p&gt;&#39; // &lt;p&gt;this is text a,because text b&lt;/p&gt;
+     *  });
+     * &lt;/code&gt;&lt;/pre&gt;
+     * @type {String}
+     */
+    titleTpl : {
+      view : true,
+      value : &#39;&lt;span&gt;{title}&lt;/span&gt;&#39;
+    },
+    xview : {
+      value : TipView
+    }
+  }
+},{
+  xclass : &#39;tooltip&#39;
+});
+
+Tip.View = TipView;
+
+module.exports = Tip;
+</pre>
+</body>
+</html>

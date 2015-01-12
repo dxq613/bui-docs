@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 键盘值
+ * @ignore
+ */
+
+<span id='BUI-KeyCode'>/**
+</span> * 键盘按键对应的数字值
+ * @class BUI.KeyCode
+ * @singleton
+ */
+var keyCode = {
+<span id='BUI-KeyCode-property-BACKSPACE'>  /** Key constant @type Number */
+</span>  BACKSPACE: 8,
+<span id='BUI-KeyCode-property-TAB'>  /** Key constant @type Number */
+</span>  TAB: 9,
+<span id='BUI-KeyCode-property-NUM_CENTER'>  /** Key constant @type Number */
+</span>  NUM_CENTER: 12,
+<span id='BUI-KeyCode-property-ENTER'>  /** Key constant @type Number */
+</span>  ENTER: 13,
+<span id='BUI-KeyCode-property-RETURN'>  /** Key constant @type Number */
+</span>  RETURN: 13,
+<span id='BUI-KeyCode-property-SHIFT'>  /** Key constant @type Number */
+</span>  SHIFT: 16,
+<span id='BUI-KeyCode-property-CTRL'>  /** Key constant @type Number */
+</span>  CTRL: 17,
+<span id='BUI-KeyCode-property-ALT'>  /** Key constant @type Number */
+</span>  ALT: 18,
+<span id='BUI-KeyCode-property-PAUSE'>  /** Key constant @type Number */
+</span>  PAUSE: 19,
+<span id='BUI-KeyCode-property-CAPS_LOCK'>  /** Key constant @type Number */
+</span>  CAPS_LOCK: 20,
+<span id='BUI-KeyCode-property-ESC'>  /** Key constant @type Number */
+</span>  ESC: 27,
+<span id='BUI-KeyCode-property-SPACE'>  /** Key constant @type Number */
+</span>  SPACE: 32,
+<span id='BUI-KeyCode-property-PAGE_UP'>  /** Key constant @type Number */
+</span>  PAGE_UP: 33,
+<span id='BUI-KeyCode-property-PAGE_DOWN'>  /** Key constant @type Number */
+</span>  PAGE_DOWN: 34,
+<span id='BUI-KeyCode-property-END'>  /** Key constant @type Number */
+</span>  END: 35,
+<span id='BUI-KeyCode-property-HOME'>  /** Key constant @type Number */
+</span>  HOME: 36,
+<span id='BUI-KeyCode-property-LEFT'>  /** Key constant @type Number */
+</span>  LEFT: 37,
+<span id='BUI-KeyCode-property-UP'>  /** Key constant @type Number */
+</span>  UP: 38,
+<span id='BUI-KeyCode-property-RIGHT'>  /** Key constant @type Number */
+</span>  RIGHT: 39,
+<span id='BUI-KeyCode-property-DOWN'>  /** Key constant @type Number */
+</span>  DOWN: 40,
+<span id='BUI-KeyCode-property-PRINT_SCREEN'>  /** Key constant @type Number */
+</span>  PRINT_SCREEN: 44,
+<span id='BUI-KeyCode-property-INSERT'>  /** Key constant @type Number */
+</span>  INSERT: 45,
+<span id='BUI-KeyCode-property-DELETE'>  /** Key constant @type Number */
+</span>  DELETE: 46,
+<span id='BUI-KeyCode-property-ZERO'>  /** Key constant @type Number */
+</span>  ZERO: 48,
+<span id='BUI-KeyCode-property-ONE'>  /** Key constant @type Number */
+</span>  ONE: 49,
+<span id='BUI-KeyCode-property-TWO'>  /** Key constant @type Number */
+</span>  TWO: 50,
+<span id='BUI-KeyCode-property-THREE'>  /** Key constant @type Number */
+</span>  THREE: 51,
+<span id='BUI-KeyCode-property-FOUR'>  /** Key constant @type Number */
+</span>  FOUR: 52,
+<span id='BUI-KeyCode-property-FIVE'>  /** Key constant @type Number */
+</span>  FIVE: 53,
+<span id='BUI-KeyCode-property-SIX'>  /** Key constant @type Number */
+</span>  SIX: 54,
+<span id='BUI-KeyCode-property-SEVEN'>  /** Key constant @type Number */
+</span>  SEVEN: 55,
+<span id='BUI-KeyCode-property-EIGHT'>  /** Key constant @type Number */
+</span>  EIGHT: 56,
+<span id='BUI-KeyCode-property-NINE'>  /** Key constant @type Number */
+</span>  NINE: 57,
+<span id='BUI-KeyCode-property-A'>  /** Key constant @type Number */
+</span>  A: 65,
+<span id='BUI-KeyCode-property-B'>  /** Key constant @type Number */
+</span>  B: 66,
+<span id='BUI-KeyCode-property-C'>  /** Key constant @type Number */
+</span>  C: 67,
+<span id='BUI-KeyCode-property-D'>  /** Key constant @type Number */
+</span>  D: 68,
+<span id='BUI-KeyCode-property-E'>  /** Key constant @type Number */
+</span>  E: 69,
+<span id='BUI-KeyCode-property-F'>  /** Key constant @type Number */
+</span>  F: 70,
+<span id='BUI-KeyCode-property-G'>  /** Key constant @type Number */
+</span>  G: 71,
+<span id='BUI-KeyCode-property-H'>  /** Key constant @type Number */
+</span>  H: 72,
+<span id='BUI-KeyCode-property-I'>  /** Key constant @type Number */
+</span>  I: 73,
+<span id='BUI-KeyCode-property-J'>  /** Key constant @type Number */
+</span>  J: 74,
+<span id='BUI-KeyCode-property-K'>  /** Key constant @type Number */
+</span>  K: 75,
+<span id='BUI-KeyCode-property-L'>  /** Key constant @type Number */
+</span>  L: 76,
+<span id='BUI-KeyCode-property-M'>  /** Key constant @type Number */
+</span>  M: 77,
+<span id='BUI-KeyCode-property-N'>  /** Key constant @type Number */
+</span>  N: 78,
+<span id='BUI-KeyCode-property-O'>  /** Key constant @type Number */
+</span>  O: 79,
+<span id='BUI-KeyCode-property-P'>  /** Key constant @type Number */
+</span>  P: 80,
+<span id='BUI-KeyCode-property-Q'>  /** Key constant @type Number */
+</span>  Q: 81,
+<span id='BUI-KeyCode-property-R'>  /** Key constant @type Number */
+</span>  R: 82,
+<span id='BUI-KeyCode-property-S'>  /** Key constant @type Number */
+</span>  S: 83,
+<span id='BUI-KeyCode-property-T'>  /** Key constant @type Number */
+</span>  T: 84,
+<span id='BUI-KeyCode-property-U'>  /** Key constant @type Number */
+</span>  U: 85,
+<span id='BUI-KeyCode-property-V'>  /** Key constant @type Number */
+</span>  V: 86,
+<span id='BUI-KeyCode-property-W'>  /** Key constant @type Number */
+</span>  W: 87,
+<span id='BUI-KeyCode-property-X'>  /** Key constant @type Number */
+</span>  X: 88,
+<span id='BUI-KeyCode-property-Y'>  /** Key constant @type Number */
+</span>  Y: 89,
+<span id='BUI-KeyCode-property-Z'>  /** Key constant @type Number */
+</span>  Z: 90,
+<span id='BUI-KeyCode-property-CONTEXT_MENU'>  /** Key constant @type Number */
+</span>  CONTEXT_MENU: 93,
+<span id='BUI-KeyCode-property-NUM_ZERO'>  /** Key constant @type Number */
+</span>  NUM_ZERO: 96,
+<span id='BUI-KeyCode-property-NUM_ONE'>  /** Key constant @type Number */
+</span>  NUM_ONE: 97,
+<span id='BUI-KeyCode-property-NUM_TWO'>  /** Key constant @type Number */
+</span>  NUM_TWO: 98,
+<span id='BUI-KeyCode-property-NUM_THREE'>  /** Key constant @type Number */
+</span>  NUM_THREE: 99,
+<span id='BUI-KeyCode-property-NUM_FOUR'>  /** Key constant @type Number */
+</span>  NUM_FOUR: 100,
+<span id='BUI-KeyCode-property-NUM_FIVE'>  /** Key constant @type Number */
+</span>  NUM_FIVE: 101,
+<span id='BUI-KeyCode-property-NUM_SIX'>  /** Key constant @type Number */
+</span>  NUM_SIX: 102,
+<span id='BUI-KeyCode-property-NUM_SEVEN'>  /** Key constant @type Number */
+</span>  NUM_SEVEN: 103,
+<span id='BUI-KeyCode-property-NUM_EIGHT'>  /** Key constant @type Number */
+</span>  NUM_EIGHT: 104,
+<span id='BUI-KeyCode-property-NUM_NINE'>  /** Key constant @type Number */
+</span>  NUM_NINE: 105,
+<span id='BUI-KeyCode-property-NUM_MULTIPLY'>  /** Key constant @type Number */
+</span>  NUM_MULTIPLY: 106,
+<span id='BUI-KeyCode-property-NUM_PLUS'>  /** Key constant @type Number */
+</span>  NUM_PLUS: 107,
+<span id='BUI-KeyCode-property-NUM_MINUS'>  /** Key constant @type Number */
+</span>  NUM_MINUS: 109,
+<span id='BUI-KeyCode-property-NUM_PERIOD'>  /** Key constant @type Number */
+</span>  NUM_PERIOD: 110,
+<span id='BUI-KeyCode-property-NUM_DIVISION'>  /** Key constant @type Number */
+</span>  NUM_DIVISION: 111,
+<span id='BUI-KeyCode-property-F1'>  /** Key constant @type Number */
+</span>  F1: 112,
+<span id='BUI-KeyCode-property-F2'>  /** Key constant @type Number */
+</span>  F2: 113,
+<span id='BUI-KeyCode-property-F3'>  /** Key constant @type Number */
+</span>  F3: 114,
+<span id='BUI-KeyCode-property-F4'>  /** Key constant @type Number */
+</span>  F4: 115,
+<span id='BUI-KeyCode-property-F5'>  /** Key constant @type Number */
+</span>  F5: 116,
+<span id='BUI-KeyCode-property-F6'>  /** Key constant @type Number */
+</span>  F6: 117,
+<span id='BUI-KeyCode-property-F7'>  /** Key constant @type Number */
+</span>  F7: 118,
+<span id='BUI-KeyCode-property-F8'>  /** Key constant @type Number */
+</span>  F8: 119,
+<span id='BUI-KeyCode-property-F9'>  /** Key constant @type Number */
+</span>  F9: 120,
+<span id='BUI-KeyCode-property-F10'>  /** Key constant @type Number */
+</span>  F10: 121,
+<span id='BUI-KeyCode-property-F11'>  /** Key constant @type Number */
+</span>  F11: 122,
+<span id='BUI-KeyCode-property-F12'>  /** Key constant @type Number */
+</span>  F12: 123
+};
+
+module.exports = keyCode;
+</pre>
+</body>
+</html>

@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 表格的头部
+ * @author dxq613@gmail.com, yiminghe@gmail.com
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;),
+  BUI = require(&#39;bui-common&#39;),
+  PREFIX = BUI.prefix,
+  Grid = BUI.namespace(&#39;Grid&#39;),
+  Column = require(&#39;./column&#39;),
+  View = BUI.Component.View,
+  Controller = BUI.Component.Controller,
+  CLS_SCROLL_WITH = 17,
+  UA = BUI.UA;
+
+<span id='BUI-Grid-HeaderView'>/**
+</span>* 表格控件中表头的视图类
+* @class BUI.Grid.HeaderView
+* @extends BUI.Component.View
+* @private
+*/
+var headerView = View.extend({
+
+<span id='global-method-getContentElement'>  /**
+</span>   * @see {Component.Render#getContentElement}
+   * @ignore
+   */
+  getContentElement:function () {
+    return this.get(&#39;el&#39;).find(&#39;tr&#39;);
+  },
+  scrollTo:function (obj) {
+    var _self = this,
+        el = _self.get(&#39;el&#39;);
+    if (obj.top !== undefined) {
+        el.scrollTop(obj.top);
+    }
+    if (obj.left !== undefined) {
+        el.scrollLeft(obj.left);
+    }
+  },
+  _uiSetTableCls : function(v){
+    var _self = this,
+      tableEl = _self.get(&#39;el&#39;).find(&#39;table&#39;);
+    tableEl.attr(&#39;class&#39;,v);
+  }
+}, {
+  ATTRS:{
+    emptyCellEl:{},
+    tableCls : {
+
+    }
+  }
+},{
+  xclass : &#39;header-view&#39;
+});
+<span id='BUI-Grid-Header'>/**
+</span> * Container which holds headers and is docked at the top or bottom of a Grid.
+ * The HeaderContainer drives resizing/moving/hiding of columns within the GridView.
+ * As headers are hidden, moved or resized,
+ * the header container is responsible for triggering changes within the view.
+ * If you are not in the writing plugins, don&#39;t direct manipulation this control.
+ * @class BUI.Grid.Header
+ * @protected
+ * xclass:&#39;grid-header&#39;
+ * @extends BUI.Component.Controller
+ */
+var header = Controller.extend(
+  {
+<span id='BUI-Grid-Header-method-addColumn'>    /**
+</span>     * add a columns to header
+     * @param {Object|BUI.Grid.Column} c The column object or column config.
+     * @index {Number} index The position of the column in a header,0 based.
+     */
+    addColumn:function (c, index) {
+      var _self = this,
+        insertIndex = index,
+        columns = _self.get(&#39;columns&#39;);
+      c = _self._createColumn(c);
+      if (index === undefined) {
+        index = columns.length;
+        insertIndex = _self.get(&#39;children&#39;).length - 1;
+      }
+      columns.splice(index, 0, c);
+      _self.addChild(c, insertIndex);
+      _self.fire(&#39;add&#39;, {column:c, index:index});
+      return c;
+    },
+<span id='BUI-Grid-Header-method-removeColumn'>    /**
+</span>     * remove a columns from header
+     * @param {BUI.Grid.Column|Number} c is The column object or The position of the column in a header,0 based.
+     */
+    removeColumn:function (c) {
+      var _self = this,
+          columns = _self.get(&#39;columns&#39;),
+          index;
+      c = BUI.isNumber(c) ? columns[c] : c;
+      index = BUI.Array.indexOf(c, columns);
+      columns.splice(index, 1);
+      _self.fire(&#39;remove&#39;, {column:c, index:index});
+      return _self.removeChild(c, true);
+    },
+<span id='BUI-Grid-Header-method-bindUI'>    /**
+</span>     * For overridden.
+     * @see Component.Controller#bindUI
+     */
+    bindUI:function () {
+      var _self = this;
+      _self._bindColumnsEvent();
+    },
+    /*
+     * For overridden.
+     * @protected
+     *
+     */
+    initializer:function () {
+      var _self = this,
+          children = _self.get(&#39;children&#39;),
+          columns = _self.get(&#39;columns&#39;),
+          emptyColumn;
+      $.each(columns, function (index,item) {
+          var columnControl = _self._createColumn(item);
+          children[index] = columnControl;
+          columns[index] = columnControl;
+      });
+      //if(!_self.get(&#39;forceFit&#39;)){
+        emptyColumn = _self._createEmptyColumn();
+        children.push(emptyColumn);
+        _self.set(&#39;emptyColumn&#39;,emptyColumn);
+      //}
+      
+    },
+<span id='BUI-Grid-Header-method-getColumns'>    /**
+</span>     * get the columns of this header,the result equals the &#39;children&#39; property .
+     * @return {Array} columns
+     * @example var columns = header.getColumns();
+     *    &lt;br&gt;or&lt;br&gt;
+     * var columns = header.get(&#39;children&#39;);
+     */
+    getColumns:function () {
+      return this.get(&#39;columns&#39;);
+    },
+<span id='BUI-Grid-Header-method-getColumnsWidth'>    /**
+</span>     * Obtain the sum of the width of all columns
+     * @return {Number}
+     */
+    getColumnsWidth:function () {
+      var _self = this,
+        columns = _self.getColumns(),
+        totalWidth = 0;
+
+      $.each(columns, function (index,column) {
+        if (column.get(&#39;visible&#39;)) {
+          totalWidth += column.get(&#39;el&#39;).outerWidth();//column.get(&#39;width&#39;)
+        }
+      });
+      return totalWidth;
+    },
+    getColumnOriginWidth : function(){
+      var _self = this,
+        columns = _self.getColumns(),
+        totalWidth = 0;
+
+      $.each(columns, function (index,column) {
+        if (column.get(&#39;visible&#39;)) {
+          var width = column.get(&#39;originWidth&#39;) || column.get(&#39;width&#39;);
+          totalWidth += width;
+        }
+      });
+      return totalWidth;
+    },
+<span id='BUI-Grid-Header-method-getColumnByIndex'>    /**
+</span>     * get {@link BUI.Grid.Column} instance by index,when column moved ,the index changed.
+     * @param {Number} index The index of columns
+     * @return {BUI.Grid.Column} the column in the header,if the index outof the range,the result is null
+     */
+    getColumnByIndex:function (index) {
+      var _self = this,
+        columns = _self.getColumns(),
+        result = columns[index];
+      return result;
+    },
+<span id='BUI-Grid-Header-method-getColumn'>    /**
+</span>     * 查找列
+     * @param  {Function} func 匹配函数，function(column){}
+     * @return {BUI.Grid.Column}  查找到的列
+     */
+    getColumn:function (func) {
+      var _self = this,
+        columns = _self.getColumns(),
+        result = null;
+      $.each(columns, function (index,column) {
+        if (func(column)) {
+            result = column;
+            return false;
+        }
+      });
+      return result;
+    },
+<span id='BUI-Grid-Header-method-getColumnById'>    /**
+</span>     * get {@link BUI.Grid.Column} instance by id,when column rendered ,this id can&#39;t to be changed
+     * @param {String|Number}id The id of columns
+     * @return {BUI.Grid.Column} the column in the header,if the index out of the range,the result is null
+     */
+    getColumnById:function (id) {
+      var _self = this;
+      return _self.getColumn(function(column){
+        return column.get(&#39;id&#39;) === id;
+      });
+    },
+<span id='BUI-Grid-Header-method-getColumnIndex'>    /**
+</span>     * get {@link BUI.Grid.Column} instance&#39;s index,when column moved ,the index changed.
+     * @param {BUI.Grid.Column} column The instance of column
+     * @return {Number} the index of column in the header,if the column not in the header,the index is -1
+     */
+    getColumnIndex:function (column) {
+      var _self = this,
+          columns = _self.getColumns();
+      return BUI.Array.indexOf(column, columns);
+    },
+<span id='BUI-Grid-Header-method-scrollTo'>    /**
+</span>     * move the header followed by body&#39;s or document&#39;s scrolling
+     * @param {Object} obj the scroll object which has two value:top(scrollTop),left(scrollLeft)
+     */
+    scrollTo:function (obj) {
+      this.get(&#39;view&#39;).scrollTo(obj);
+    },
+    //when column&#39;s event fire ,this header must handle them.
+    _bindColumnsEvent:function () {
+      var _self = this;
+
+      _self.on(&#39;afterWidthChange&#39;, function (e) {
+        var sender = e.target;
+        if (sender !== _self) {
+            _self.setTableWidth();
+        }
+      });
+      _self.on(&#39;afterVisibleChange&#39;, function (e) {
+        var sender = e.target;
+        if (sender !== _self) {
+            _self.setTableWidth();
+        }
+      });
+      _self.on(&#39;afterSortStateChange&#39;, function (e) {
+        var sender = e.target,
+          columns = _self.getColumns(),
+          val = e.newVal;
+        if (val) {
+          $.each(columns, function (index,column) {
+              if (column !== sender) {
+                  column.set(&#39;sortState&#39;, &#39;&#39;);
+              }
+          });
+        }
+      });
+
+      _self.on(&#39;add&#39;,function(){
+        _self.setTableWidth();
+      });
+      _self.on(&#39;remove&#39;,function(){
+        _self.setTableWidth();
+      });
+    },
+    //create the column control
+    _createColumn:function (cfg) {
+      if (cfg instanceof Column) {
+        return cfg;
+      }
+      if (!cfg.id) {
+        cfg.id = BUI.guid(&#39;col&#39;);
+      }
+      return new Column(cfg);
+    },
+    _createEmptyColumn:function () {
+      return new Column.Empty();
+    },
+    //when set grid&#39;s height, scroll bar emerged.
+    _isAllowScrollLeft:function () {
+      var _self = this,
+        parent = _self.get(&#39;parent&#39;);
+
+      return parent &amp;&amp; !!parent.get(&#39;height&#39;);
+    },
+<span id='BUI-Grid-Header-method-forceFitColumns'>    /**
+</span>     * force every column fit the table&#39;s width
+     */
+    forceFitColumns:function () {
+        
+      var _self = this,
+        columns = _self.getColumns(),
+        width = _self.get(&#39;width&#39;),
+        totalWidth = width,
+        totalColumnsWidth = _self.getColumnOriginWidth(),
+				realWidth = 0,
+				appendWidth = 0,
+				lastShowColumn = null,
+        allowScroll = _self._isAllowScrollLeft();
+
+<span id='BUI-Grid-Header-method-setColoumnWidthSilent'>			/**
+</span>			* @private
+			*/
+			function setColoumnWidthSilent(column,colWidth){
+				var columnEl = column.get(&#39;el&#39;);
+				column.set(&#39;width&#39;,colWidth , {
+					silent:1
+				});
+				columnEl.width(colWidth);
+			}
+      //if there is not a width config of grid ,The forceFit action can&#39;t work
+      if (width) {
+        if (allowScroll) {
+          width -= CLS_SCROLL_WITH;
+          totalWidth = width;
+        }
+
+        var adjustCount = 0;
+
+        $.each(columns, function (index,column) {
+          if (column.get(&#39;visible&#39;) &amp;&amp; column.get(&#39;resizable&#39;)) {
+            adjustCount++;
+          }
+          if (column.get(&#39;visible&#39;) &amp;&amp; !column.get(&#39;resizable&#39;)) {
+            var colWidth = column.get(&#39;el&#39;).outerWidth();
+            totalWidth -= colWidth;
+            totalColumnsWidth -= colWidth;
+          }
+        });
+
+        var colWidth = Math.floor(totalWidth / adjustCount),
+            ratio = totalWidth / totalColumnsWidth;
+        if(ratio ===1){
+          return;
+        }
+        $.each(columns, function (index,column) {
+          if (column.get(&#39;visible&#39;) &amp;&amp; column.get(&#39;resizable&#39;)) {
+
+            var borderWidth = _self._getColumnBorderWith(column,index),
+                originWidth = column.get(&#39;originWidth&#39;);
+            if(!originWidth){
+                column.set(&#39;originWidth&#39;,column.get(&#39;width&#39;));
+                originWidth = column.get(&#39;width&#39;);
+            }
+            colWidth = Math.floor((originWidth + borderWidth) * ratio);
+               /* parseInt(columnEl.css(&#39;border-left-width&#39;)) || 0 +
+                    parseInt(columnEl.css(&#39;border-right-width&#39;)) || 0;*/
+            // ！ note
+            //
+            // 会再调用 setTableWidth， 循环调用 || 
+            setColoumnWidthSilent(column,colWidth - borderWidth);
+						realWidth += colWidth;
+						lastShowColumn = column;
+          }
+        });
+
+				if(lastShowColumn){
+					appendWidth = totalWidth - realWidth;
+					setColoumnWidthSilent(lastShowColumn,lastShowColumn.get(&#39;width&#39;) + appendWidth);
+				}
+
+        _self.fire(&#39;forceFitWidth&#39;);
+      }
+
+    },
+    _getColumnBorderWith : function(column,index){
+      //chrome 下border-left-width取的值不小数，所以暂时使用固定边框
+      //第一个边框无宽度，ie 下仍然存在Bug，所以做ie 的兼容
+      var columnEl = column.get(&#39;el&#39;),
+        borderWidth = Math.round(parseFloat(columnEl.css(&#39;border-left-width&#39;)) || 0)  + 
+             Math.round(parseFloat(columnEl.css(&#39;border-right-width&#39;)) || 0);
+      
+      borderWidth = UA.ie &amp;&amp; UA.ie &lt; 8 ? (index === 0 ? 1 : borderWidth) : borderWidth;
+      return borderWidth;                   
+    },
+<span id='BUI-Grid-Header-method-setTableWidth'>    /**
+</span>     * set the header&#39;s inner table&#39;s width
+     */
+    setTableWidth:function () {
+      var _self = this,
+        width = _self.get(&#39;width&#39;),
+        totalWidth = 0,
+        emptyColumn = null;
+      if(width == &#39;auto&#39;){
+        //_self.get(&#39;el&#39;).find(&#39;table&#39;).width()
+        return;
+      }
+      if(_self.get(&#39;forceFit&#39;)) {
+        _self.forceFitColumns();
+      }else if(_self._isAllowScrollLeft()){
+        totalWidth = _self.getColumnsWidth();
+        emptyColumn = _self.get(&#39;emptyColumn&#39;);
+        if(width &lt; totalWidth){
+            emptyColumn.get(&#39;el&#39;).width(CLS_SCROLL_WITH);
+        }else{
+            emptyColumn.get(&#39;el&#39;).width(&#39;auto&#39;);
+        }
+      }
+    },
+    //when header&#39;s width changed, it also effects its columns.
+    _uiSetWidth:function () {
+      var _self = this;
+      _self.setTableWidth();
+    },
+    _uiSetForceFit:function (v) {
+      var _self = this;
+      if (v) {
+        _self.setTableWidth();
+      }
+    }
+
+  }, {
+    ATTRS:
+    {
+<span id='BUI-Grid-Header-property-columns'>      /**
+</span>       * 列集合
+       * @type {Array}
+       */
+      columns:{
+          value:[]
+      },
+<span id='BUI-Grid-Header-property-emptyColumn'>      /**
+</span>       * @private
+       */
+      emptyColumn:{
+
+      },
+<span id='BUI-Grid-Header-property-focusable'>      /**
+</span>       * 是否可以获取焦点
+       * @protected
+       */
+      focusable:{
+          value:false
+      },
+<span id='BUI-Grid-Header-property-forceFit'>      /**
+</span>       * true to force the columns to fit into the available width. Headers are first sized according to configuration, whether that be a specific width, or flex.
+       * Then they are all proportionally changed in width so that the entire content width is used.
+       * @type {Boolean}
+       * @default &#39;false&#39;
+       */
+      forceFit:{
+          sync:false,
+          view:true,
+          value:false
+      },
+<span id='BUI-Grid-Header-property-tpl'>      /**
+</span>       * 表头的模版
+       * @type {String}
+       */
+      tpl : {
+
+        view : true,
+        value : &#39;&lt;table cellspacing=&quot;0&quot; class=&quot;&#39; + PREFIX + &#39;grid-table&quot; cellpadding=&quot;0&quot;&gt;&#39; +
+        &#39;&lt;thead&gt;&lt;tr&gt;&lt;/tr&gt;&lt;/thead&gt;&#39; +
+        &#39;&lt;/table&gt;&#39;
+      },
+<span id='BUI-Grid-Header-property-tableCls'>      /**
+</span>       * 表格应用的样式.
+       */
+      tableCls:{
+          view:true
+      },
+<span id='BUI-Grid-Header-property-xview'>      /**
+</span>       * @private
+       */
+      xview:{
+          value:headerView
+      },
+<span id='BUI-Grid-Header-property-events'>      /**
+</span>       * the collection of header&#39;s events
+       * @type {Array}
+       * @protected
+       */
+      events:{
+        value:{
+<span id='BUI-Grid-Header-event-add'>        /**
+</span>         * @event
+         * 添加列时触发
+         * @param {jQuery.Event} e the event object
+         * @param {BUI.Grid.Column} e.column which column added
+         * @param {Number} index the add column&#39;s index in this header
+         *
+         */
+            &#39;add&#39; : false,
+<span id='BUI-Grid-Header-event-remove'>        /**
+</span>         * @event
+         * 移除列时触发
+         * @param {jQuery.Event} e the event object
+         * @param {BUI.Grid.Column} e.column which column removed
+         * @param {Number} index the removed column&#39;s index in this header
+         */
+            &#39;remove&#39; : false
+        }
+      } 
+    }
+  }, {
+    xclass:&#39;grid-header&#39;,
+    priority:1
+  });
+
+module.exports = header;
+</pre>
+</body>
+</html>

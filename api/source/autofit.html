@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 自动适应表格宽度的扩展
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;),
+  BUI = require(&#39;bui-common&#39;),
+  UA = BUI.UA;
+
+<span id='BUI-Grid-Plugins-AutoFit'>/**
+</span> * 表格自适应宽度
+ * @class BUI.Grid.Plugins.AutoFit
+ * @extends BUI.Base
+ */
+var AutoFit = function(cfg){
+  AutoFit.superclass.constructor.call(this,cfg);
+};
+
+BUI.extend(AutoFit,BUI.Base);
+
+AutoFit.ATTRS = {
+
+};
+
+BUI.augment(AutoFit,{
+  //绑定事件
+  bindUI : function(grid){
+    var _self = this,
+      handler;
+    $(window).on(&#39;resize&#39;,function(){
+
+      function autoFit(){
+        clearTimeout(handler); //防止resize短时间内反复调用
+        handler = setTimeout(function(){
+          _self._autoFit(grid);
+        },100);
+        _self.set(&#39;handler&#39;,handler);
+      }
+      autoFit();
+    });
+  },
+  //自适应宽度
+  _autoFit : function(grid){
+    var _self = this,
+      render = $(grid.get(&#39;render&#39;)),
+      docWidth = $(window).width(),//窗口宽度
+      width,
+      appendWidth = 0,
+      parent = grid.get(&#39;el&#39;).parent();
+    while(parent[0] &amp;&amp; parent[0] != $(&#39;body&#39;)[0]){
+      appendWidth += parent.outerWidth() - parent.width();
+      parent = parent.parent();
+    }
+
+    grid.set(&#39;width&#39;,docWidth - appendWidth);
+  }
+
+});
+
+module.exports = AutoFit;
+</pre>
+</body>
+</html>

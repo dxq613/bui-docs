@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='CheckField'>/**
+</span> * @fileOverview  复选框表单域
+ * @ignore
+ */
+
+var CheckField = require(&#39;./check&#39;);
+
+<span id='BUI-Form-Field-Checkbox'> /**
+</span> * 表单复选域
+ * @class BUI.Form.Field.Checkbox
+ * @extends BUI.Form.Field.Check
+ */
+var CheckBoxField = CheckField.extend({
+
+},{
+  ATTRS : {
+<span id='BUI-Form-Field-Checkbox-property-controlTpl'>    /**
+</span>     * 内部表单元素的容器
+     * @type {String}
+     */
+    controlTpl : {
+      view : true,
+      value : &#39;&lt;input type=&quot;checkbox&quot;/&gt;&#39;
+    },
+<span id='BUI-Form-Field-Checkbox-property-controlContainer'>     /**
+</span>     * 控件容器，如果为空直接添加在控件容器上
+     * @type {String|HTMLElement}
+     */
+    controlContainer : {
+      value : &#39;.checkbox&#39;
+    },
+    tpl : {
+      value : &#39;&lt;label&gt;&lt;span class=&quot;checkbox&quot;&gt;&lt;/span&gt;{label}&lt;/label&gt;&#39;
+    }
+  }
+},{
+  xclass : &#39;form-field-checkbox&#39;
+});
+
+module.exports = CheckBoxField;
+</pre>
+</body>
+</html>

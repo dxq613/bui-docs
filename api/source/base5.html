@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='BUI'>/**
+</span> * @fileOverview 表格插件的入口
+ * @author dxq613@gmail.com, yiminghe@gmail.com
+ * @ignore
+ */
+var BUI = require(&#39;bui-common&#39;),
+  Selection = require(&#39;./selection&#39;),
+
+  Plugins = {};
+
+  BUI.mix(Plugins,{
+    CheckSelection : Selection.CheckSelection,
+    RadioSelection : Selection.RadioSelection,
+    Cascade : require(&#39;./cascade&#39;),
+    CellEditing : require(&#39;./cellediting&#39;),
+    RowEditing : require(&#39;./rowediting&#39;),
+    DialogEditing : require(&#39;./dialog&#39;),
+    AutoFit : require(&#39;./autofit&#39;),
+    GridMenu : require(&#39;./gridmenu&#39;),
+    Summary : require(&#39;./summary&#39;),
+    RowNumber : require(&#39;./rownumber&#39;),
+    ColumnGroup : require(&#39;./columngroup&#39;),
+    RowGroup : require(&#39;./rowgroup&#39;),
+    ColumnResize : require(&#39;./columnresize&#39;),
+    ColumnChecked : require(&#39;./columnchecked&#39;)
+
+  });
+
+module.exports = Plugins;
+</pre>
+</body>
+</html>

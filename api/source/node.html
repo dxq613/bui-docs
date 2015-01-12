@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='BUI'>/**
+</span> * @fileOverview 树形数据结构的节点类，无法直接使用数据作为节点，所以进行一层封装
+ * 可以直接作为TreeNode控件的配置项
+ * @ignore
+ */
+
+  var BUI = require(&#39;bui-common&#39;);
+
+  function mapNode(cfg,map){
+    var rst = {};
+    if(map){
+      BUI.each(cfg,function(v,k){
+        var name = map[k] || k;
+        rst[name] = v;
+      });
+      rst.record = cfg;
+    }else{
+      rst = cfg;
+    }
+    return rst;
+  }
+<span id='BUI-Data-Node'>  /**
+</span>   * @class BUI.Data.Node
+   * 树形数据结构的节点类
+   */
+  function Node (cfg,map) {
+    var _self = this;
+    cfg = mapNode(cfg,map);
+    BUI.mix(this,cfg);
+  }
+
+  BUI.augment(Node,{
+<span id='BUI-Data-Node-property-root'>    /**
+</span>     * 是否根节点
+     * @type {Boolean}
+     */
+    root : false,
+<span id='BUI-Data-Node-property-leaf'>    /**
+</span>     * 是否叶子节点
+     * @type {Boolean}
+     */
+    leaf : null,
+<span id='BUI-Data-Node-property-text'>    /**
+</span>     * 显示节点时显示的文本
+     * @type {Object}
+     */
+    text : &#39;&#39;,
+<span id='BUI-Data-Node-property-id'>    /**
+</span>     * 代表节点的编号
+     * @type {String}
+     */
+    id : null,
+<span id='BUI-Data-Node-property-loaded'>    /**
+</span>     * 子节点是否已经加载过
+     * @type {Boolean}
+     */
+    loaded : false,
+<span id='BUI-Data-Node-property-path'>    /**
+</span>     * 从根节点到此节点的路径，id的集合如： [&#39;0&#39;,&#39;1&#39;,&#39;12&#39;],
+     * 便于快速定位节点
+     * @type {Array}
+     */
+    path : null,
+<span id='BUI-Data-Node-property-parent'>    /**
+</span>     * 父节点
+     * @type {BUI.Data.Node}
+     */
+    parent : null,
+<span id='BUI-Data-Node-property-level'>    /**
+</span>     * 树节点的等级
+     * @type {Number}
+     */
+    level : 0,
+<span id='BUI-Data-Node-property-record'>    /**
+</span>     * 节点是否由一条记录封装而成
+     * @type {Object}
+     */
+    record : null,
+<span id='BUI-Data-Node-property-children'>    /**
+</span>     * 子节点集合
+     * @type {BUI.Data.Node[]}
+     */
+    children : null,
+<span id='BUI-Data-Node-property-isNode'>    /**
+</span>     * 是否是Node对象
+     * @type {Object}
+     */
+    isNode : true
+  });
+
+  module.exports = Node;
+</pre>
+</body>
+</html>

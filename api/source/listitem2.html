@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 列表项
+ * @author dxq613@gmail.com
+ * @ignore
+ */
+
+
+var $ = require(&#39;jquery&#39;),
+  BUI = require(&#39;bui-common&#39;),
+  Component = BUI.Component,
+  UIBase = Component.UIBase;
+  
+<span id='BUI-List-ItemView'>/**
+</span> * @private
+ * @class BUI.List.ItemView
+ * @extends BUI.Component.View
+ * @mixins BUI.Component.UIBase.ListItemView
+ * 列表项的视图层对象
+ */
+var itemView = Component.View.extend([UIBase.ListItemView],{
+});
+
+<span id='BUI-List-ListItem'>/**
+</span> * 列表项
+ * @private
+ * @class BUI.List.ListItem
+ * @extends BUI.Component.Controller
+ * @mixins BUI.Component.UIBase.ListItem
+ */
+var item = Component.Controller.extend([UIBase.ListItem],{
+  
+},{
+  ATTRS : 
+  {
+    elTagName:{
+      view:true,
+      value:&#39;li&#39;
+    },
+    xview:{
+      value:itemView
+    },
+    tpl:{
+      view:true,
+      value:&#39;&lt;span&gt;{text}&lt;/span&gt;&#39;
+    }
+  }
+},{
+  xclass:&#39;list-item&#39;
+});
+
+item.View = itemView;
+
+module.exports = item;
+</pre>
+</body>
+</html>

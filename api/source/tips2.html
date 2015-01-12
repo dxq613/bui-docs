@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 批量显示提示信息
+ * @ignore
+ */
+
+
+//是否json对象构成的字符串
+function isObjectString(str){
+  return /^{.*}$/.test(str);
+}
+
+var BUI = require(&#39;bui-common&#39;),
+  Tip = require(&#39;./tip&#39;),
+<span id='BUI-Tooltip-Tips'>  /**
+</span>   * @class BUI.Tooltip.Tips
+   * 批量显示提示信息
+   *  &lt;pre&gt;&lt;code&gt;
+   * BUI.use(&#39;bui/tooltip&#39;,function(){
+   *   var tips = new Tooltip.Tips({
+   *     tip : {
+   *       trigger : &#39;#t1 a&#39;, //出现此样式的元素显示tip
+   *       alignType : &#39;top&#39;, //默认方向
+   *       elCls : &#39;tips tips-no-icon tip1&#39;,
+   *       titleTpl : &#39;&amp;lt;span class=&quot;x-icon x-icon-small x-icon-success&quot;&amp;gt;&amp;lt;i class=&quot;icon icon-white icon-question&quot;&amp;gt;&amp;lt;/i&amp;gt;&amp;lt;/span&amp;gt;\
+ *           &amp;lt;div class=&quot;tips-content&quot;&amp;gt;{title}&amp;lt;/div&amp;gt;&#39;,
+   *       offset : 10 //距离左边的距离
+   *     }
+   *   });
+   *   tips.render();
+   * })
+   * 
+   * &lt;/code&gt;&lt;/pre&gt;
+   */
+  Tips = function(config){
+    Tips.superclass.constructor.call(this,config);
+  };
+
+Tips.ATTRS = {
+
+<span id='BUI-Tooltip-Tips-cfg-tip'>  /**
+</span>   * 使用的提示控件或者配置信息 @see {BUI.Tooltip.Tip}
+   * &lt;pre&gt;&lt;code&gt;
+   *    //不使用模板的，左侧显示
+   * var tips = new Tooltip.Tips({
+   *   tip : {
+   *     trigger : &#39;#t1 a&#39;, //出现此样式的元素显示tip
+   *     alignType : &#39;top&#39;, //默认方向
+   *     elCls : &#39;tips tips-no-icon tip1&#39;,
+   *     offset : 10 //距离左边的距离
+   *   }
+   * });
+   * tips.render();
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {BUI.Tooltip.Tip|Object} tip
+   */
+<span id='BUI-Tooltip-Tips-property-tip'>  /**
+</span>   * 使用的提示控件 @see {BUI.Tooltip.Tip}
+   * &lt;pre&gt;&lt;code&gt;
+   *    var tip = tips.get(&#39;tip&#39;);
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @type {BUI.Tooltip.Tip}
+   * @readOnly
+   */
+  tip : {
+
+  },
+<span id='BUI-Tooltip-Tips-cfg-defaultAlignType'>  /**
+</span>   * 默认的对齐方式,如果不指定tip的对齐方式，那么使用此属性
+   * &lt;pre&gt;&lt;code&gt;
+   * //不使用模板的，左侧显示
+   * var tips = new Tooltip.Tips({
+   *   tip : {
+   *     trigger : &#39;#t1 a&#39;, //出现此样式的元素显示tip
+   *     defaultAlignType : &#39;top&#39;, //默认方向
+   *     elCls : &#39;tips tips-no-icon tip1&#39;,
+   *     offset : 10 //距离左边的距离
+   *   }
+   * });
+   * tips.render();
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {Object} defaultAlignType
+   */
+  defaultAlignType : {
+
+  }
+};
+
+BUI.extend(Tips,BUI.Base);
+
+BUI.augment(Tips,{
+  //初始化
+  _init : function(){
+    this._initDom();
+    this._initEvent();
+  },
+  //初始化DOM
+  _initDom : function(){
+    var _self = this,
+      tip = _self.get(&#39;tip&#39;),
+      defaultAlignType;
+    if(tip &amp;&amp; !tip.isController){
+      defaultAlignType = tip.alignType; //设置默认的对齐方式
+      tip = new Tip(tip);
+      tip.render();
+      _self.set(&#39;tip&#39;,tip);
+      if(defaultAlignType){
+        _self.set(&#39;defaultAlignType&#39;,defaultAlignType);
+      }
+    }
+  },
+  //初始化事件
+  _initEvent : function(){
+    var _self = this,
+      tip = _self.get(&#39;tip&#39;);
+    tip.on(&#39;triggerchange&#39;,function(ev){
+      var curTrigger = ev.curTrigger;
+      _self._replaceTitle(curTrigger);
+      _self._setTitle(curTrigger,tip);
+    });
+  },
+  //替换掉title
+  _replaceTitle : function(triggerEl){
+    var title = triggerEl.attr(&#39;title&#39;);
+    if(title){
+      triggerEl.attr(&#39;data-title&#39;,title);
+      triggerEl[0].removeAttribute(&#39;title&#39;);
+    }
+  },
+  //设置title
+  _setTitle : function(triggerEl,tip){
+    var _self = this,
+      title = triggerEl.attr(&#39;data-title&#39;),
+      alignType = triggerEl.attr(&#39;data-align&#39;) || _self.get(&#39;defaultAlignType&#39;);
+
+    if(isObjectString(title)){
+      title = BUI.JSON.looseParse(title);
+    }
+    tip.set(&#39;title&#39;,title);
+    if(alignType){
+      tip.set(&#39;alignType&#39;,alignType);
+    }
+  },
+<span id='BUI-Tooltip-Tips-method-render'>  /**
+</span>   * 渲染提示信息
+   * @chainable
+   */
+  render : function(){
+    this._init();
+    return this;
+  }
+});
+
+module.exports = Tips;
+</pre>
+</body>
+</html>

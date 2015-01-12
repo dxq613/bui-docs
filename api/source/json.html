@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 由于jQuery只有 parseJSON ，没有stringify所以使用过程不方便
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;),
+  UA = require(&#39;./ua&#39;),
+  win = window,
+  JSON = win.JSON;
+
+// ie 8.0.7600.16315@win7 json 有问题
+if (!JSON || UA[&#39;ie&#39;] &lt; 9) {
+  JSON = win.JSON = {};
+}
+
+function f(n) {
+  // Format integers to have at least two digits.
+  return n &lt; 10 ? &#39;0&#39; + n : n;
+}
+
+if (typeof Date.prototype.toJSON !== &#39;function&#39;) {
+
+  Date.prototype.toJSON = function(key) {
+
+    return isFinite(this.valueOf()) ?
+      this.getUTCFullYear() + &#39;-&#39; +
+      f(this.getUTCMonth() + 1) + &#39;-&#39; +
+      f(this.getUTCDate()) + &#39;T&#39; +
+      f(this.getUTCHours()) + &#39;:&#39; +
+      f(this.getUTCMinutes()) + &#39;:&#39; +
+      f(this.getUTCSeconds()) + &#39;Z&#39; : null;
+  };
+
+  String.prototype.toJSON =
+    Number.prototype.toJSON =
+    Boolean.prototype.toJSON = function(key) {
+      return this.valueOf();
+  };
+}
+
+
+var cx = /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
+  escapable = /[\\\&quot;\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
+  gap,
+  indent,
+  meta = { // table of character substitutions
+    &#39;\b&#39;: &#39;\\b&#39;,
+    &#39;\t&#39;: &#39;\\t&#39;,
+    &#39;\n&#39;: &#39;\\n&#39;,
+    &#39;\f&#39;: &#39;\\f&#39;,
+    &#39;\r&#39;: &#39;\\r&#39;,
+    &#39;&quot;&#39;: &#39;\\&quot;&#39;,
+    &#39;\\&#39;: &#39;\\\\&#39;
+  },
+  rep;
+
+function quote(string) {
+
+  // If the string contains no control characters, no quote characters, and no
+  // backslash characters, then we can safely slap some quotes around it.
+  // Otherwise we must also replace the offending characters with safe escape
+  // sequences.
+
+  escapable[&#39;lastIndex&#39;] = 0;
+  return escapable.test(string) ?
+    &#39;&quot;&#39; + string.replace(escapable, function(a) {
+      var c = meta[a];
+      return typeof c === &#39;string&#39; ? c :
+        &#39;\\u&#39; + (&#39;0000&#39; + a.charCodeAt(0).toString(16)).slice(-4);
+    }) + &#39;&quot;&#39; :
+    &#39;&quot;&#39; + string + &#39;&quot;&#39;;
+}
+
+function str(key, holder) {
+
+  // Produce a string from holder[key].
+
+  var i, // The loop counter.
+    k, // The member key.
+    v, // The member value.
+    length,
+    mind = gap,
+    partial,
+    value = holder[key];
+
+  // If the value has a toJSON method, call it to obtain a replacement value.
+
+  if (value &amp;&amp; typeof value === &#39;object&#39; &amp;&amp;
+    typeof value.toJSON === &#39;function&#39;) {
+    value = value.toJSON(key);
+  }
+
+  // If we were called with a replacer function, then call the replacer to
+  // obtain a replacement value.
+
+  if (typeof rep === &#39;function&#39;) {
+    value = rep.call(holder, key, value);
+  }
+
+  // What happens next depends on the value&#39;s type.
+
+  switch (typeof value) {
+    case &#39;string&#39;:
+      return quote(value);
+
+    case &#39;number&#39;:
+
+      // JSON numbers must be finite. Encode non-finite numbers as null.
+
+      return isFinite(value) ? String(value) : &#39;null&#39;;
+
+    case &#39;boolean&#39;:
+    case &#39;null&#39;:
+
+      // If the value is a boolean or null, convert it to a string. Note:
+      // typeof null does not produce &#39;null&#39;. The case is included here in
+      // the remote chance that this gets fixed someday.
+
+      return String(value);
+
+      // If the type is &#39;object&#39;, we might be dealing with an object or an array or
+      // null.
+
+    case &#39;object&#39;:
+
+      // Due to a specification blunder in ECMAScript, typeof null is &#39;object&#39;,
+      // so watch out for that case.
+
+      if (!value) {
+        return &#39;null&#39;;
+      }
+
+      // Make an array to hold the partial results of stringifying this object value.
+
+      gap += indent;
+      partial = [];
+
+      // Is the value an array?
+
+      if (Object.prototype.toString.apply(value) === &#39;[object Array]&#39;) {
+
+        // The value is an array. Stringify every element. Use null as a placeholder
+        // for non-JSON values.
+
+        length = value.length;
+        for (i = 0; i &lt; length; i += 1) {
+          partial[i] = str(i, value) || &#39;null&#39;;
+        }
+
+        // Join all of the elements together, separated with commas, and wrap them in
+        // brackets.
+
+        v = partial.length === 0 ? &#39;[]&#39; :
+          gap ? &#39;[\n&#39; + gap +
+          partial.join(&#39;,\n&#39; + gap) + &#39;\n&#39; +
+          mind + &#39;]&#39; :
+          &#39;[&#39; + partial.join(&#39;,&#39;) + &#39;]&#39;;
+        gap = mind;
+        return v;
+      }
+
+      // If the replacer is an array, use it to select the members to be stringified.
+
+      if (rep &amp;&amp; typeof rep === &#39;object&#39;) {
+        length = rep.length;
+        for (i = 0; i &lt; length; i += 1) {
+          k = rep[i];
+          if (typeof k === &#39;string&#39;) {
+            v = str(k, value);
+            if (v) {
+              partial.push(quote(k) + (gap ? &#39;: &#39; : &#39;:&#39;) + v);
+            }
+          }
+        }
+      } else {
+
+        // Otherwise, iterate through all of the keys in the object.
+
+        for (k in value) {
+          if (Object.hasOwnProperty.call(value, k)) {
+            v = str(k, value);
+            if (v) {
+              partial.push(quote(k) + (gap ? &#39;: &#39; : &#39;:&#39;) + v);
+            }
+          }
+        }
+      }
+
+      // Join all of the member texts together, separated with commas,
+      // and wrap them in braces.
+
+      v = partial.length === 0 ? &#39;{}&#39; :
+        gap ? &#39;{\n&#39; + gap + partial.join(&#39;,\n&#39; + gap) + &#39;\n&#39; +
+        mind + &#39;}&#39; : &#39;{&#39; + partial.join(&#39;,&#39;) + &#39;}&#39;;
+      gap = mind;
+      return v;
+  }
+}
+
+if (typeof JSON.stringify !== &#39;function&#39;) {
+  JSON.stringify = function(value, replacer, space) {
+
+    // The stringify method takes a value and an optional replacer, and an optional
+    // space parameter, and returns a JSON text. The replacer can be a function
+    // that can replace values, or an array of strings that will select the keys.
+    // A default replacer method can be provided. Use of the space parameter can
+    // produce text that is more easily readable.
+
+    var i;
+    gap = &#39;&#39;;
+    indent = &#39;&#39;;
+
+    // If the space parameter is a number, make an indent string containing that
+    // many spaces.
+
+    if (typeof space === &#39;number&#39;) {
+      for (i = 0; i &lt; space; i += 1) {
+        indent += &#39; &#39;;
+      }
+
+      // If the space parameter is a string, it will be used as the indent string.
+
+    } else if (typeof space === &#39;string&#39;) {
+      indent = space;
+    }
+
+    // If there is a replacer, it must be a function or an array.
+    // Otherwise, throw an error.
+
+    rep = replacer;
+    if (replacer &amp;&amp; typeof replacer !== &#39;function&#39; &amp;&amp;
+      (typeof replacer !== &#39;object&#39; ||
+        typeof replacer.length !== &#39;number&#39;)) {
+      throw new Error(&#39;JSON.stringify&#39;);
+    }
+
+    // Make a fake root object containing our value under the key of &#39;&#39;.
+    // Return the result of stringifying the value.
+
+    return str(&#39;&#39;, {
+      &#39;&#39;: value
+    });
+  };
+}
+
+function looseParse(data) {
+  try {
+    return new Function(&#39;return &#39; + data + &#39;;&#39;)();
+  } catch (e) {
+    throw &#39;Json parse error!&#39;;
+  }
+}
+<span id='BUI-JSON'>/**
+</span> * JSON 格式化
+ * @class BUI.JSON
+ * @singleton
+ */
+var JSON = {
+<span id='BUI-JSON-method-parse'>  /**
+</span>   * 转成json 等同于$.parseJSON
+   * @method
+   * @param {String} jsonstring 合法的json 字符串
+   */
+  parse: $.parseJSON,
+<span id='BUI-JSON-method-looseParse'>  /**
+</span>   * 业务中有些字符串组成的json数据不是严格的json数据，如使用单引号，或者属性名不是字符串
+   * 如 ： {a:&#39;abc&#39;}
+   * @method
+   * @param {String} jsonstring
+   */
+  looseParse: looseParse,
+<span id='BUI-JSON-method-stringify'>  /**
+</span>   * 将Json转成字符串
+   * @method
+   * @param {Object} json json 对象
+   */
+  stringify: JSON.stringify
+}
+
+module.exports = JSON;
+</pre>
+</body>
+</html>

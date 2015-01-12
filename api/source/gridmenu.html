@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview Grid 菜单
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;),
+  BUI = require(&#39;bui-common&#39;),
+  Menu = require(&#39;bui-menu&#39;),
+  PREFIX = BUI.prefix,
+  ID_SORT_ASC = &#39;sort-asc&#39;,
+  ID_SORT_DESC = &#39;sort-desc&#39;,
+  ID_COLUMNS_SET = &#39;column-setting&#39;,
+  CLS_COLUMN_CHECKED = &#39;icon-check&#39;;
+
+<span id='BUI-Grid-Plugins-GridMenu'>/**
+</span> * @class BUI.Grid.Plugins.GridMenu
+ * @extends BUI.Base
+ * 表格菜单插件
+ */
+var gridMenu = function (config) {
+  gridMenu.superclass.constructor.call(this,config);
+};
+
+BUI.extend(gridMenu,BUI.Base);
+
+gridMenu.ATTRS = 
+{
+<span id='BUI-Grid-Plugins-GridMenu-property-menu'>  /**
+</span>   * 弹出菜单
+   * @type {BUI.Menu.ContextMenu}
+   */
+  menu : {
+
+  },
+<span id='BUI-Grid-Plugins-GridMenu-property-activedColumn'>  /**
+</span>   * @private
+   */
+  activedColumn : {
+
+  },
+  triggerCls : {
+    value : PREFIX + &#39;grid-hd-menu-trigger&#39;
+  },
+<span id='BUI-Grid-Plugins-GridMenu-property-items'>  /**
+</span>   * 菜单的配置项
+   * @type {Array}
+   */
+  items : {
+    value : [
+      {
+        id:ID_SORT_ASC,
+        text:&#39;升序&#39;,
+        iconCls:&#39;icon-arrow-up&#39;
+      },
+      {
+        id:ID_SORT_DESC,
+        text:&#39;降序&#39;,
+        iconCls : &#39;icon-arrow-down&#39;
+      },
+      {
+        xclass:&#39;menu-item-sparator&#39;
+      },
+      {
+        id : ID_COLUMNS_SET,
+        text:&#39;设置列&#39;,
+        iconCls:&#39;icon-list-alt&#39;
+      }
+    ]
+  }
+};
+
+BUI.augment(gridMenu,{
+<span id='BUI-Grid-Plugins-GridMenu-method-initializer'>  /**
+</span>   * 初始化
+   * @protected
+   */
+  initializer : function (grid) {
+    var _self = this;
+    _self.set(&#39;grid&#39;,grid);
+
+  },
+<span id='BUI-Grid-Plugins-GridMenu-method-renderUI'>  /**
+</span>   * 渲染DOM
+   */
+  renderUI : function(grid){
+    var _self = this, 
+      columns = grid.get(&#39;columns&#39;);
+    BUI.each(columns,function(column){
+      _self._addShowMenu(column);
+    });
+  },
+<span id='BUI-Grid-Plugins-GridMenu-method-bindUI'>  /**
+</span>   * 绑定表格
+   * @protected
+   */
+  bindUI : function (grid){
+    var _self = this;
+
+    grid.on(&#39;columnadd&#39;,function(ev){
+      _self._addShowMenu(ev.column);
+    });
+    grid.on(&#39;columnclick&#39;,function (ev) {
+      var sender = $(ev.domTarget),
+        column = ev.column,
+        menu;
+
+      _self.set(&#39;activedColumn&#39;,column);
+      
+      if(sender.hasClass(_self.get(&#39;triggerCls&#39;))){
+        menu = _self.get(&#39;menu&#39;) || _self._initMenu();
+        menu.set(&#39;align&#39;,{
+          node: sender, // 参考元素, falsy 或 window 为可视区域, &#39;trigger&#39; 为触发元素, 其他为指定元素
+          points: [&#39;bl&#39;,&#39;tl&#39;], // [&#39;tr&#39;, &#39;tl&#39;] 表示 overlay 的 tl 与参考节点的 tr 对齐
+          offset: [0, 0] 
+        });
+        menu.show();
+        _self._afterShow(column,menu);
+      }
+    });
+  },
+  _addShowMenu : function(column){
+    if(!column.get(&#39;fixed&#39;)){
+      column.set(&#39;showMenu&#39;,true);
+    }
+  },
+  //菜单显示后
+  _afterShow : function (column,menu) {
+    var _self = this,
+      grid = _self.get(&#39;grid&#39;);
+
+    menu = menu || _self.get(&#39;menu&#39;);
+    _self._resetSortMenuItems(column,menu);
+    _self._resetColumnsVisible(menu);
+  },
+  //设置菜单项是否选中
+  _resetColumnsVisible : function (menu) {
+    var _self = this,
+      settingItem = menu.findItemById(ID_COLUMNS_SET),
+      subMenu = settingItem.get(&#39;subMenu&#39;) || _self._initColumnsMenu(settingItem),
+      columns = _self.get(&#39;grid&#39;).get(&#39;columns&#39;);
+    subMenu.removeChildren(true);
+    $.each(columns,function (index,column) {
+      if(!column.get(&#39;fixed&#39;)){
+        var config = {
+            xclass : &#39;context-menu-item&#39;,
+            text : column.get(&#39;title&#39;),
+            column : column,
+            iconCls : &#39;icon&#39;
+          },
+          menuItem = subMenu.addChild(config);
+        if(column.get(&#39;visible&#39;)){
+          menuItem.set(&#39;selected&#39;,true);
+        }
+      }
+    });
+  },
+  //设置排序菜单项是否可用
+  _resetSortMenuItems : function(column,menu) {
+    var ascItem = menu.findItemById(ID_SORT_ASC),
+      descItem = menu.findItemById(ID_SORT_DESC);
+    if(column.get(&#39;sortable&#39;)){
+      ascItem.set(&#39;disabled&#39;,false);
+      descItem.set(&#39;disabled&#39;,false);
+    }else{
+      ascItem.set(&#39;disabled&#39;,true);
+      descItem.set(&#39;disabled&#39;,true);
+    }
+  },
+  //初始化菜单
+  _initMenu : function () {
+    var _self = this,
+      menu = _self.get(&#39;menu&#39;),
+      menuItems;
+
+    if(!menu){
+      menuItems = _self.get(&#39;items&#39;);
+      $.each(menuItems,function (index,item) {
+        if(!item.xclass){
+          item.xclass = &#39;context-menu-item&#39;
+        }
+      });
+      menu = new Menu.ContextMenu({
+        children : menuItems,
+        elCls : &#39;grid-menu&#39;
+      });
+      _self._initMenuEvent(menu);
+      _self.set(&#39;menu&#39;,menu)
+    }
+    return menu;
+  },
+  _initMenuEvent : function  (menu) {
+    var _self = this;
+
+    menu.on(&#39;itemclick&#39;,function(ev) {
+      var item = ev.item,
+        id = item.get(&#39;id&#39;),
+        activedColumn = _self.get(&#39;activedColumn&#39;);
+      if(id === ID_SORT_ASC){
+        activedColumn.set(&#39;sortState&#39;,&#39;ASC&#39;);
+      }else if(id === ID_SORT_DESC){
+        activedColumn.set(&#39;sortState&#39;,&#39;DESC&#39;);
+      }
+    });
+
+    menu.on(&#39;afterVisibleChange&#39;,function (ev) {
+      var visible = ev.newVal,
+        activedColumn = _self.get(&#39;activedColumn&#39;);
+      if(visible &amp;&amp; activedColumn){
+        activedColumn.set(&#39;open&#39;,true);
+      }else{
+        activedColumn.set(&#39;open&#39;,false);
+      }
+    });
+  },
+  _initColumnsMenu : function (settingItem) {
+    var subMenu = new Menu.ContextMenu({
+        multipleSelect : true,
+        elCls : &#39;grid-column-menu&#39;
+      });  
+    settingItem.set(&#39;subMenu&#39;,subMenu);
+    subMenu.on(&#39;itemclick&#39;,function (ev) {
+      var item = ev.item,
+        column = item.get(&#39;column&#39;),
+        selected = item.get(&#39;selected&#39;);
+      if(selected){
+        column.set(&#39;visible&#39;,true);
+      }else{
+        column.set(&#39;visible&#39;,false);
+      }
+    });
+    return subMenu;
+  },
+  destructor:function () {
+    var _self = this,
+      menu = _self.get(&#39;menu&#39;);
+    if(menu){
+      menu.destroy();
+    }
+    _self.off();
+    _self.clearAttrVals();
+  }
+
+});
+
+module.exports = gridMenu;
+</pre>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 列表排序
+ * @ignore
+ */
+
+
+var $ = require(&#39;jquery&#39;),
+  BUI = require(&#39;bui-common&#39;),
+  DataSortable = require(&#39;bui-data&#39;).Sortable;
+
+<span id='BUI-List-Sortable'>/**
+</span> * @class BUI.List.Sortable
+ * 列表排序的扩展
+ * @extends BUI.Data.Sortable
+ */
+var Sortable = function(){
+
+};
+
+
+
+Sortable.ATTRS = BUI.merge(true,DataSortable.ATTRS, {
+
+});
+
+BUI.augment(Sortable,DataSortable,{
+  
+<span id='global-method-compare'>  /**
+</span>   * @protected
+   * @override
+   * @ignore
+   * 覆写比较方法
+   */
+  compare : function(obj1,obj2,field,direction){
+    var _self = this,
+      dir;
+    field = field || _self.get(&#39;sortField&#39;);
+    direction = direction || _self.get(&#39;sortDirection&#39;);
+    //如果未指定排序字段，或方向，则按照默认顺序
+    if(!field || !direction){
+      return 1;
+    }
+    dir = direction === &#39;ASC&#39; ? 1 : -1;
+    if(!$.isPlainObject(obj1)){
+      obj1 = _self.getItemByElement(obj1);
+    }
+    if(!$.isPlainObject(obj2)){
+      obj2 = _self.getItemByElement(obj2);
+    }
+
+    return _self.get(&#39;compareFunction&#39;)(obj1[field],obj2[field]) * dir;
+  },
+<span id='BUI-List-Sortable-method-getSortData'>  /**
+</span>   * 获取排序的集合
+   * @protected
+   * @return {Array} 排序集合
+   */
+  getSortData : function(){
+    return $.makeArray(this.get(&#39;view&#39;).getAllElements());
+  },
+<span id='BUI-List-Sortable-method-sort'>  /**
+</span>   * 列表排序
+   * @param  {string} field  字段名
+   * @param  {string} direction 排序方向 ASC,DESC
+   */
+  sort : function(field,direction){
+    var _self = this,
+      sortedElements = _self.sortData(field,direction),
+      itemContainer = _self.get(&#39;view&#39;).getItemContainer();
+    if(!_self.get(&#39;store&#39;)){
+      _self.sortData(field,direction,_self.get(&#39;items&#39;));
+    }
+    BUI.each(sortedElements,function(el){
+      $(el).appendTo(itemContainer);
+    });
+  }
+
+});
+
+module.exports = Sortable;
+</pre>
+</body>
+</html>

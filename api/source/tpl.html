@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 控件模板
+ * @author dxq613@gmail.com
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;);
+
+<span id='BUI-Component-UIBase-TplView'>/**
+</span> * @private
+ * 控件模板扩展类的渲染类(view)
+ * @class BUI.Component.UIBase.TplView
+ */
+function tplView() {
+
+}
+
+tplView.ATTRS = {
+<span id='BUI-Component-UIBase-TplView-property-tpl'>  /**
+</span>   * 模板
+   * @protected
+   * @type {String}
+   */
+  tpl: {
+
+  },
+  tplEl: {
+
+  }
+};
+
+tplView.prototype = {
+  __renderUI: function() {
+    var _self = this,
+      contentContainer = _self.get(&#39;childContainer&#39;),
+      contentEl;
+
+    if (contentContainer) {
+      contentEl = _self.get(&#39;el&#39;).find(contentContainer);
+      if (contentEl.length) {
+        _self.set(&#39;contentEl&#39;, contentEl);
+      }
+    }
+  },
+<span id='BUI-Component-UIBase-TplView-method-getTpl'>  /**
+</span>   * 获取生成控件的模板
+   * @protected
+   * @param  {Object} attrs 属性值
+   * @return {String} 模板
+   */
+  getTpl: function(attrs) {
+    var _self = this,
+      tpl = _self.get(&#39;tpl&#39;),
+      tplRender = _self.get(&#39;tplRender&#39;);
+    attrs = attrs || _self.getAttrVals();
+
+    if (tplRender) {
+      return tplRender(attrs);
+    }
+    if (tpl) {
+      return BUI.substitute(tpl, attrs);
+    }
+    return &#39;&#39;;
+  },
+<span id='BUI-Component-UIBase-TplView-method-setTplContent'>  /**
+</span>   * 如果控件设置了模板，则根据模板和属性值生成DOM
+   * 如果设置了content属性，此模板不应用
+   * @protected
+   * @param  {Object} attrs 属性值，默认为初始化时传入的值
+   */
+  setTplContent: function(attrs) {
+    var _self = this,
+      el = _self.get(&#39;el&#39;),
+      content = _self.get(&#39;content&#39;),
+      tplEl = _self.get(&#39;tplEl&#39;),
+      tpl = _self.getTpl(attrs);
+
+    //tplEl.remove();
+    if (!content &amp;&amp; tpl) { //替换掉原先的内容
+      el.empty();
+      el.html(tpl);
+      /*if(tplEl){
+          var node = $(tpl).insertBefore(tplEl);
+          tplEl.remove();
+          tplEl = node;
+        }else{
+          tplEl = $(tpl).appendTo(el);
+        }
+        _self.set(&#39;tplEl&#39;,tplEl)
+        */
+    }
+  }
+}
+
+<span id='BUI-Component-UIBase-Tpl'>/**
+</span> * 控件的模板扩展
+ * @class BUI.Component.UIBase.Tpl
+ */
+function tpl() {
+
+}
+
+tpl.ATTRS = {
+<span id='BUI-Component-UIBase-Tpl-cfg-tpl'>  /**
+</span>   * 控件的模版，用于初始化
+   * &lt;pre&gt;&lt;code&gt;
+   * var list = new List.List({
+   *   tpl : &#39;&amp;lt;div class=&quot;toolbar&quot;&amp;gt;&amp;lt;/div&amp;gt;&amp;lt;ul&amp;gt;&amp;lt;/ul&amp;gt;&#39;,
+   *   childContainer : &#39;ul&#39;
+   * });
+   * //用于统一子控件模板
+   * var list = new List.List({
+   *   defaultChildCfg : {
+   *     tpl : &#39;&amp;lt;span&amp;gt;{text}&amp;lt;/span&amp;gt;&#39;
+   *   }
+   * });
+   * list.render();
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {String} tpl
+   */
+<span id='BUI-Component-UIBase-Tpl-property-tpl'>  /**
+</span>   * 控件的模板
+   * &lt;pre&gt;&lt;code&gt;
+   *   list.set(&#39;tpl&#39;,&#39;&amp;lt;div class=&quot;toolbar&quot;&amp;gt;&amp;lt;/div&amp;gt;&amp;lt;ul&amp;gt;&amp;lt;/ul&amp;gt;&amp;lt;div class=&quot;bottom&quot;&amp;gt;&amp;lt;/div&amp;gt;&#39;)
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @type {String}
+   */
+  tpl: {
+    view: true,
+    sync: false
+  },
+<span id='BUI-Component-UIBase-Tpl-cfg-tplRender'>  /**
+</span>   * &lt;p&gt;控件的渲染函数，应对一些简单模板解决不了的问题，例如有if,else逻辑，有循环逻辑,
+   * 函数原型是function(data){},其中data是控件的属性值&lt;/p&gt;
+   * &lt;p&gt;控件模板的加强模式，此属性会覆盖@see {BUI.Component.UIBase.Tpl#property-tpl}属性&lt;/p&gt;
+   * //用于统一子控件模板
+   * var list = new List.List({
+   *   defaultChildCfg : {
+   *     tplRender : funciton(item){
+   *       if(item.type == &#39;1&#39;){
+   *         return &#39;type1 html&#39;;
+   *       }else{
+   *         return &#39;type2 html&#39;;
+   *       }
+   *     }
+   *   }
+   * });
+   * list.render();
+   * @cfg {Function} tplRender
+   */
+  tplRender: {
+    view: true,
+    value: null
+  },
+<span id='BUI-Component-UIBase-Tpl-cfg-childContainer'>  /**
+</span>   * 这是一个选择器，使用了模板后，子控件可能会添加到模板对应的位置,
+   *  - 默认为null,此时子控件会将控件最外层 el 作为容器
+   * &lt;pre&gt;&lt;code&gt;
+   * var list = new List.List({
+   *   tpl : &#39;&amp;lt;div class=&quot;toolbar&quot;&amp;gt;&amp;lt;/div&amp;gt;&amp;lt;ul&amp;gt;&amp;lt;/ul&amp;gt;&#39;,
+   *   childContainer : &#39;ul&#39;
+   * });
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {String} childContainer
+   */
+  childContainer: {
+    view: true
+  }
+};
+
+tpl.prototype = {
+
+  __renderUI: function() {
+    //使用srcNode时，不使用模板
+    if (!this.get(&#39;srcNode&#39;)) {
+      this.setTplContent();
+    }
+  },
+<span id='BUI-Component-UIBase-Tpl-method-updateContent'>  /**
+</span>   * 控件信息发生改变时，控件内容跟模板相关时需要调用这个函数，
+   * 重新通过模板和控件信息构造内容
+   */
+  updateContent: function() {
+    this.setTplContent();
+  },
+<span id='BUI-Component-UIBase-Tpl-method-setTplContent'>  /**
+</span>   * 根据控件的属性和模板生成控件内容
+   * @protected
+   */
+  setTplContent: function() {
+    var _self = this,
+      attrs = _self.getAttrVals();
+    _self.get(&#39;view&#39;).setTplContent(attrs);
+  },
+  //模板发生改变
+  _uiSetTpl: function() {
+    this.setTplContent();
+  }
+};
+
+tpl.View = tplView;
+
+module.exports = tpl;
+</pre>
+</body>
+</html>

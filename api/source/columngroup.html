@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+var $ = require(&#39;jquery&#39;),
+  BUI = require(&#39;bui-common&#39;),
+  PREFIX = BUI.prefix,
+  CLS_HD_TITLE = PREFIX + &#39;grid-hd-title&#39;,
+  CLS_GROUP = PREFIX + &#39;grid-column-group&#39;,
+  CLS_GROUP_HEADER = PREFIX + &#39;grid-group-header&#39;,
+  CLS_DOUBLE = PREFIX + &#39;grid-db-hd&#39;;
+
+<span id='BUI-Grid-Plugins-ColumnGroup'>/**
+</span> * 表头列分组功能
+ * @class BUI.Grid.Plugins.ColumnGroup
+ * @extends BUI.Base
+ */
+var Group = function (cfg) {
+  Group.superclass.constructor.call(this,cfg);
+};
+
+Group.ATTRS = {
+
+<span id='BUI-Grid-Plugins-ColumnGroup-property-groups'>  /**
+</span>   * 分组
+   * @type {Array}
+   */
+  groups : {
+    value : []
+  },
+<span id='BUI-Grid-Plugins-ColumnGroup-property-columnTpl'>  /**
+</span>   * 列模板
+   * @type {String}
+   */
+  columnTpl : {
+    value : &#39;&lt;th class=&quot;bui-grid-hd center&quot; colspan=&quot;{colspan}&quot;&gt;&lt;div class=&quot;&#39; + PREFIX + &#39;grid-hd-inner&quot;&gt;&#39; +
+                      &#39;&lt;span class=&quot;&#39; + CLS_HD_TITLE + &#39;&quot;&gt;{title}&lt;/span&gt;&#39; +
+            &#39;&lt;/div&gt;&lt;/th&gt;&#39;
+  }
+};
+
+BUI.extend(Group,BUI.Base);
+
+BUI.augment(Group,{
+
+  renderUI : function (grid) {
+    var _self = this,
+      groups = _self.get(&#39;groups&#39;),
+      header = grid.get(&#39;header&#39;),
+      headerEl = header.get(&#39;el&#39;),
+      columns = header.get(&#39;children&#39;),
+      wraperEl = $(&#39;&lt;tr class=&quot;&#39;+CLS_GROUP+&#39;&quot;&gt;&lt;/tr&gt;&#39;).prependTo(headerEl.find(&#39;thead&#39;));
+
+    headerEl.addClass(CLS_GROUP_HEADER);
+
+    //遍历分组，标志分组
+    BUI.each(groups,function (group) {
+      var tpl = _self._getGroupTpl(group),
+        gEl = $(tpl).appendTo(wraperEl);
+      
+      group.el = gEl;
+      for(var i = group.from; i &lt;= group.to; i++){
+        var column = columns[i];
+        if(column){
+          column.set(&#39;group&#39;,group);
+        }
+      }
+    });
+
+    var afterEl;
+    //修改未分组的rowspan和调整位置
+    for(var i = columns.length - 1; i &gt;=0 ; i--){
+      var column = columns[i],
+        group = column.get(&#39;group&#39;);
+      if(group){
+        afterEl = group.el;
+
+      }else{
+        var cEl = column.get(&#39;el&#39;);//$(_self.get(&#39;emptyTpl&#39;));
+        cEl.addClass(CLS_DOUBLE);
+        cEl.attr(&#39;rowspan&#39;,2);
+        if(afterEl){
+          cEl.insertBefore(afterEl);
+        }else{
+          cEl.appendTo(wraperEl);
+        }
+        afterEl = cEl;
+      }
+    }
+    if(groups[0].from !== 0){ //处理第一个单元格边框问题
+      var firstCol = columns[groups[0].from];
+      if(firstCol){
+        firstCol.get(&#39;el&#39;).css(&#39;border-left-width&#39;,1);
+      }
+    }
+
+     //移除空白列
+
+  },
+  _getGroupTpl : function (group) {
+    var _self = this,
+      columnTpl = _self.get(&#39;columnTpl&#39;),
+      colspan = group.to - group.from + 1;
+    return BUI.substitute(columnTpl,{colspan : colspan,title : group.title});
+  }
+});
+
+module.exports = Group;
+</pre>
+</body>
+</html>

@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview 树形扩展，基于list扩展，可以组合出tree list,tree grid ,tree menu
+ * @ignore
+ */
+
+//将id 转换成node
+function makeSureNode(self,node){
+  if(BUI.isString(node)){
+    node = self.findNode(node);
+  }
+  return node;
+}
+//动画执行
+function animateFn(fn,timeout,count){
+  setTimeout(function(){
+    fn();
+  }, timeout/count);
+}
+
+var $ = require(&#39;jquery&#39;),
+  BUI = require(&#39;bui-common&#39;),
+  Data = require(&#39;bui-data&#39;),
+  EXPAND = &#39;expanded&#39;,
+  LOADING = &#39;loading&#39;,
+  CHECKED = &#39;checked&#39;,
+  PARTIAL_CHECKED = &#39;partial-checked&#39;,
+  MAP_TYPES = {
+    NONE : &#39;none&#39;,
+    ALL : &#39;all&#39;,
+    CUSTOM : &#39;custom&#39;,
+    ONLY_LEAF : &#39;onlyLeaf&#39;
+  },
+  CLS_ICON = &#39;x-tree-icon&#39;,
+  CLS_ELBOW = &#39;x-tree-elbow&#39;,
+  CLS_SHOW_LINE = &#39;x-tree-show-line&#39;,
+  CLS_ICON_PREFIX = CLS_ELBOW + &#39;-&#39;,
+  CLS_ICON_WRAPER = CLS_ICON + &#39;-wraper&#39;,
+  CLS_LINE = CLS_ICON_PREFIX + &#39;line&#39;,
+  CLS_END = CLS_ICON_PREFIX + &#39;end&#39;,
+  CLS_EMPTY = CLS_ICON_PREFIX + &#39;empty&#39;,
+  CLS_EXPANDER = CLS_ICON_PREFIX + &#39;expander&#39;,
+  CLS_CHECKBOX = CLS_ICON + &#39;-checkbox&#39;,
+  CLS_RADIO = CLS_ICON + &#39;-radio&#39;, 
+  CLS_EXPANDER_END = CLS_EXPANDER + &#39;-end&#39;,
+  Mixin = function(){
+
+  };
+
+<span id='BUI-Tree-Mixin'>/**
+</span> * @class BUI.Tree.Mixin
+ * 树控件的扩展，可以应用于List,Grid等控件
+ */
+Mixin.ATTRS = {
+
+
+<span id='BUI-Tree-Mixin-cfg-store'>  /**
+</span>   * 树的数据缓冲类对象,用于操作数据的加载、增删改
+   * &lt;pre&gt;&lt;code&gt;
+   * //数据缓冲类
+   * var store = new Data.TreeStore({
+   *     root : {
+   *       id : &#39;0&#39;,
+   *      text : &#39;0&#39;
+   *     },
+   *     url : &#39;data/nodes.php&#39;
+   *   });
+   *   
+   * var tree = new Tree.TreeList({
+   *   render : &#39;#t1&#39;,
+   *   showLine : true,
+   *   height:300,
+   *   store : store,
+   *   showRoot : true
+   * });
+   * tree.render();
+   * 
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {BUI.Data.TreeStore} store
+   */
+<span id='BUI-Tree-Mixin-property-store'>  /**
+</span>   * 树的数据缓冲类对象,默认都会生成对应的缓冲对象
+   * &lt;pre&gt;&lt;code&gt;
+   * var store = tree.get(&#39;store&#39;);
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @type {BUI.Data.TreeStore}
+   */
+  store : {
+    getter : function(v){
+      if(!v){
+        var _self = this,
+          store = new Data.TreeStore({
+          root : _self.get(&#39;root&#39;),
+          data : _self.get(&#39;nodes&#39;)
+        });
+        _self.setInternal(&#39;store&#39;,store);
+        return store;
+      }
+      return v;
+    }
+  },
+<span id='BUI-Tree-Mixin-cfg-root'>  /**
+</span>   * 树的根节点
+   * &lt;pre&gt;&lt;code&gt;
+   *   //如果数据存在根节点，则配置根节点，以便于显示
+   *   var tree = new TreeList({
+   *     root : {id: &#39;0&#39;,text : &#39;0&#39;,children:[{},{}]},
+   *     showRoot : true
+   *   });
+   *   //如果配置store，则不需要配置此属性
+   *   var store = new Data.TreeStore({
+   *     root : {id: &#39;0&#39;,text : &#39;0&#39;,children:[{},{}]}
+   *   });
+   *   
+   *   var tree = new TreeList({
+   *     store : store,
+   *     showRoot : true
+   *   });
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {Object} root
+   */
+  root : {
+
+  },
+<span id='BUI-Tree-Mixin-cfg-nodes'>  /**
+</span>   * 子节点集合
+   * &lt;pre&gt;&lt;code&gt;
+   *   //如果不显示根节点，并且数据源中不存在根节点，可以仅配置此属性
+   *   var tree = new TreeList({
+   *     nodes:[{},{}]
+   *   });
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {Array} nodes
+   */
+  nodes : {
+    sync : false
+  },
+<span id='BUI-Tree-Mixin-property-iconContainer'>  /**
+</span>   * 放置节点Icon的容器,为空时，放置在节点的最前面
+   * @protected
+   * @type {String}
+   */
+  iconContainer : {
+
+  },
+<span id='BUI-Tree-Mixin-property-iconWraperTpl'>  /**
+</span>   * 放置icon外层的模板，空白icon、叶子节点的icon、非叶子节点的Icon
+   * @protected
+   * @type {String}
+   */
+  iconWraperTpl : {
+    value : &#39;&lt;span class=&quot;&#39; + CLS_ICON_WRAPER + &#39;&quot;&gt;{icons}&lt;/span&gt;&#39;
+  },
+<span id='BUI-Tree-Mixin-cfg-showLine'>  /**
+</span>   * 是否显示连接线
+   * &lt;pre&gt;&lt;code&gt;
+   *  var tree = new TreeList({
+   *    nodes : [],
+   *    showLine : true
+   *  });
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {Boolean} showLine
+   */
+<span id='BUI-Tree-Mixin-property-showLine'>  /**
+</span>   * 是否显示连接线
+   * @type {Boolean} showLine
+   */
+  showLine : {
+    value : false
+  },
+<span id='BUI-Tree-Mixin-property-showIcons'>  /**
+</span>   * 是否显示图标，包括节点展开折叠的图标，标示层级关系的空白图标
+   * @type {Boolean}
+   */
+  showIcons : {
+    value : true
+  },
+<span id='BUI-Tree-Mixin-property-iconTpl'>  /**
+</span>   * 图标所使用的模板
+   * @protected
+   * @type {Object}
+   */
+  iconTpl : {
+    value : &#39;&lt;span class=&quot;x-tree-icon {cls}&quot;&gt;&lt;/span&gt;&#39;
+  },
+<span id='BUI-Tree-Mixin-cfg-leafCls'>  /**
+</span>   * 叶子节点应用的样式
+   * &lt;pre&gt;&lt;code&gt;
+   *  var tree = new TreeList({
+   *    nodes : [{},{}],
+   *    leafCls : &#39;file&#39;,
+   *    dirCls : &#39;folder&#39; 
+   *  });
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {String} [leafCls = &#39;x-tree-elbow-leaf&#39;]
+   */
+  leafCls : {
+    value : CLS_ICON_PREFIX + &#39;leaf&#39;
+  },
+
+<span id='BUI-Tree-Mixin-cfg-dirCls'>  /**
+</span>   * 非叶子节点应用的样式
+   * @cfg {String} [dirCls = &#39;x-tree-elbow-dir&#39;]
+   */
+  dirCls : {
+    value : CLS_ICON_PREFIX + &#39;dir&#39;
+  },
+<span id='BUI-Tree-Mixin-cfg-checkType'>  /**
+</span>   * 勾选类型，目前提供一下几种勾选方式:
+   * &lt;ol&gt;
+   *  &lt;li&gt;all : 全部节点可以勾选&lt;/li&gt;
+   *  &lt;li&gt;onlyLeaf : 只有子节点可以勾选&lt;/li&gt;
+   *  &lt;li&gt;custom : 自定义勾选，只有节点数据上有checked字段才允许勾选&lt;/li&gt;
+   *  &lt;li&gt;none : 全部节点不可勾选&lt;/li&gt;
+   * &lt;/ol&gt;
+   * @cfg {Object} [checkType = &#39;custom&#39;]
+   */
+  checkType : {
+    value : &#39;custom&#39;
+  },
+<span id='BUI-Tree-Mixin-property-cascadeCheckd'>  /**
+</span>   * 是否级联选择
+   * @type {Boolean}
+   */
+  cascadeCheckd : {
+    value : true
+  },
+<span id='BUI-Tree-Mixin-property-accordion'>  /**
+</span>   * 是否只允许一个节点展开
+   * @type {Boolean}
+   */
+  accordion : {
+    value : false
+  },
+<span id='BUI-Tree-Mixin-property-multipleCheck'>  /**
+</span>   * 是否可以勾选多个节点
+   * @type {Boolean}
+   */
+  multipleCheck : {
+    value : true
+  },
+<span id='BUI-Tree-Mixin-property-checkedField'>  /**
+</span>   * @private
+   * 勾选字段
+   * @type {String}
+   */
+  checkedField : {
+    valueFn : function(){
+      return this.getStatusField(&#39;checked&#39;);
+    }
+  },
+<span id='BUI-Tree-Mixin-property-checkableField'>  /**
+</span>   * 是否可以勾选的字段名称
+   * @type {String}
+   */
+  checkableField : {
+    value : &#39;checkable&#39;
+  },
+<span id='BUI-Tree-Mixin-cfg-itemStatusFields'>  /**
+</span>   * 选项对象中属性会直接影响相应的状态,默认：
+   * &lt;pre&gt;&lt;code&gt;
+   * //默认值
+   * {
+   *   expanded : &#39;expanded&#39;,
+   *   disabled : &#39;disabled&#39;,
+   *   checked : &#39;checked&#39;
+   * }
+   * //对象
+   * var node = {id : &#39;1&#39;,text : &#39;1&#39;,checked : true,expanded : true};
+   * 
+   * //如果你的数据源中的字段名跟这些状态名不一致，你可以自己修改
+   * var tree = new TreeList({
+   *   nodes : [],
+   *   itemStatusFields : {
+   *     disabled : &#39;hasDisabled&#39;, 
+   *     custom : &#39;custom&#39;  //添加自定义属性，此时节点生成后会自动添加对应的样式 bui + xclass + &#39;custom&#39;
+   *   }
+   * });
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @override
+   * @cfg {Object} itemStatusFields
+   */
+  itemStatusFields  : {
+    value : {
+      expanded : &#39;expanded&#39;,
+      disabled : &#39;disabled&#39;,
+      checked : &#39;checked&#39;
+    }  
+  },
+<span id='BUI-Tree-Mixin-cfg-dirSelectable'>  /**
+</span>   * 文件夹是否可选，用于选择节点时，避免选中非叶子节点
+   * @cfg {Boolean} [dirSelectable = true]
+   */
+  dirSelectable : {
+    value : true
+  },
+<span id='BUI-Tree-Mixin-property-showRoot'>  /**
+</span>   * 是否显示根节点
+   * &lt;pre&gt;&lt;code&gt;
+   *
+   *  var tree = new TreeList({
+   *    root : {id : &#39;0&#39;,text : &#39;0&#39;,childrent : []},
+   *    showRoot : true
+   *  });
+   *   
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @type {Boolean}
+   */
+  showRoot : {
+    value : false
+  },
+<span id='BUI-Tree-Mixin-property-events'>  events : {
+</span>    value : {
+<span id='BUI-Tree-Mixin-event-expanded'>      /**
+</span>       * @event
+       * 展开节点
+       * @param {Object} e 事件对象
+       * @param {Object} e.Node 节点
+       * @param {HTMLElement} e.element 节点的DOM
+       */
+      expanded : false,
+<span id='BUI-Tree-Mixin-event-collapsed'>      /**
+</span>       * @event
+       * 折叠节点
+       * @param {Object} e 事件对象
+       * @param {Object} e.Node 节点
+       * @param {HTMLElement} e.element 节点的DOM
+       */
+      collapsed : false,
+<span id='BUI-Tree-Mixin-event-checkedchange'>      /**
+</span>       * @event
+       * 勾选改变事件
+       * @param {Object} e 事件对象
+       * @param {Object} e.Node 节点
+       * @param {Boolean} e.checked 选中状态
+       * @param {HTMLElement} e.element 节点的DOM
+       */
+      checkedchange : false
+    }
+  },
+<span id='BUI-Tree-Mixin-property-expandEvent'>  /**
+</span>   * 节点展开的事件
+   * @type {String}
+   */
+  expandEvent : {
+    value : &#39;itemdblclick&#39;
+  },
+<span id='BUI-Tree-Mixin-property-expandAnimate'>  /**
+</span>   * 展开收缩时是否使用动画
+   * @type {Boolean}
+   */
+  expandAnimate : {
+    value : false 
+  },
+<span id='BUI-Tree-Mixin-property-collapseEvent'>  /**
+</span>   * 节点收缩的事件
+   * @type {String}
+   */
+  collapseEvent : {
+    value : &#39;itemdblclick&#39;
+  },
+<span id='BUI-Tree-Mixin-property-startLevel'>  /**
+</span>   * 开始的层级，如果显示根节点，从0开始，不显示根节点从1开始
+   * @private
+   * @readOnly
+   * @type {Number}
+   */
+  startLevel : {
+    value : 1
+  }
+};
+
+BUI.augment(Mixin,{
+<span id='BUI-Tree-Mixin-method-collapseAll'>  /**
+</span>   * 折叠所有
+   * &lt;pre&gt;&lt;code&gt;
+   *  tree.collapseAll();
+   * &lt;/code&gt;&lt;/pre&gt;
+   */
+  collapseAll: function(){
+    var _self = this,
+      elements = _self.get(&#39;view&#39;).getAllElements();
+
+    BUI.each(elements,function(element){
+      var item = _self.getItemByElement(element);
+      if(item){
+        _self._collapseNode(item,element,true);
+      }
+    });
+  },
+<span id='BUI-Tree-Mixin-method-collapseNode'>  /**
+</span>   * 折叠节点
+   * &lt;pre&gt;&lt;code&gt;
+   *  //获取节点后，折叠
+   *  var node = tree.findNode(&#39;id&#39;);
+   *  tree.collapseNode(node);
+   *  //直接通过id 折叠
+   *  tree.collapseNode(&#39;id&#39;);
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @param {String|Object|BUI.Data.Node} node 节点
+   */
+  collapseNode : function(node){
+    var _self = this,
+      element;
+    if(BUI.isString(node)){
+      node = _self.findNode(node);
+    }
+    if(!node){
+      return;
+    }
+    element = _self.findElement(node);
+    
+    _self._collapseNode(node,element);
+  },   
+  /*
+   * 展开所有
+   * &lt;pre&gt;&lt;code&gt;
+   *  tree.expandAll();
+   * &lt;/code&gt;&lt;/pre&gt;
+   */
+  expandAll : function(){
+    var _self = this,
+      elements = _self.get(&#39;view&#39;).getAllElements();
+
+    BUI.each(elements,function(element){
+      var item = _self.getItemByElement(element);
+      _self._expandNode(item,element,true);
+    });
+  },
+<span id='BUI-Tree-Mixin-method-expandNode'>  /**
+</span>   * 展开节点
+   * &lt;pre&gt;&lt;code&gt;
+   *  //获取节点后展开
+   *  var node = tree.findNode(&#39;id&#39;);
+   *  tree.expandNode(node);
+   *  //使用store时，获取节点，然后展开
+   *  var node = store.findNode(&#39;id&#39;);
+   *  tree.expandNode(node);
+   *  //直接使用id 展开
+   *  tree.expandNode(&#39;id&#39;);
+   * &lt;/code&gt;&lt;/pre&gt;
+   * ** Notes **
+   * 由于树控件其实是一个列表，所以未展开节点的子节点其实不在列表中，所以这些节点通过tree.getItem(&#39;id&#39;),此时查找不到对应的节点
+   * @param  {String|Object|BUI.Data.Node} node 节点或者 节点id
+   */
+  expandNode : function(node,deep){
+    var _self = this,
+      element;
+    if(BUI.isString(node)){
+      node = _self.findNode(node);
+    }
+
+    if(!node){
+      return;
+    }
+
+    if(node.parent &amp;&amp; !_self.isExpanded(node.parent)){
+      _self.expandNode(node.parent);
+    }
+
+    element = _self.findElement(node);
+    _self._expandNode(node,element,deep);
+  },
+<span id='BUI-Tree-Mixin-method-expandPath'>  /**
+</span>   * 沿着path(id的连接串) 展开
+   * &lt;pre&gt;
+   *  &lt;code&gt;
+   *    var path = &quot;0,1,12,121&quot;; //沿着根节点0，树节点 1,12直到121的路径展开
+   *    tree.expandPath(path); //如果中间有节点不存在，终止展开
+   *  &lt;/code&gt;
+   * &lt;/pre&gt;
+   * @param  {String} path 节点的path，从根节点，到当前节点的id组合
+   */
+  expandPath : function(path,async,startIndex){
+    if(!path){
+      return;
+    }
+    startIndex = startIndex || 0;
+    var _self = this,
+      store = _self.get(&#39;store&#39;),
+      preNode,
+      node,
+      i,
+      id,
+      arr = path.split(&#39;,&#39;);
+
+    preNode = _self.findNode(arr[startIndex]);
+    for(i = startIndex + 1; i &lt; arr.length ; i++){
+      id = arr[i];
+      node = _self.findNode(id,preNode);
+      if(preNode &amp;&amp; node){ //父元素，子元素同时存在
+        _self.expandNode(preNode);
+        preNode = node;
+      }else if(preNode &amp;&amp; async){
+        store.load({id : preNode.id},function(){ //加载完成后
+          node = _self.findNode(id,preNode);
+          if(node){
+            _self.expandPath(path,async,i);
+          }
+        });
+        break;
+      } 
+    }
+  },
+<span id='BUI-Tree-Mixin-method-findNode'>  /**
+</span>   * 查找节点
+   * &lt;pre&gt;&lt;code&gt;
+   *  var node = tree.findNode(&#39;1&#39;);//从根节点开始查找节点
+   *  
+   *  var subNode = tree.findNode(&#39;123&#39;,node); //从指定节点开始查找
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @param  {String} id 节点Id
+   * @param  {BUI.Data.Node} [parent] 父节点
+   * @return {BUI.Data.Node} 节点
+   */
+  findNode : function(id,parent){
+    return this.get(&#39;store&#39;).findNode(id,parent);
+  },  
+<span id='BUI-Tree-Mixin-method-getCheckedLeaf'>  /**
+</span>   * 获取所有勾选的子节点
+   * &lt;pre&gt;&lt;code&gt;
+   *  //获取所有选中的叶子节点
+   *  var nodes = tree.getCheckedLeaf();
+   *  
+   *  //获取指定节点选中的叶子节点
+   *  var node = tree.findNode(&#39;1&#39;),
+   *    nodes = tree.getCheckedLeaf(node);
+   *  
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @param {BUI.Data.Node} [parent] 父节点
+   * @return {Array} 节点列表
+   */
+  getCheckedLeaf : function(parent){
+    var _self = this,
+      store = _self.get(&#39;store&#39;);
+
+    return store.findNodesBy(function(node){
+      return node.leaf &amp;&amp; _self.isChecked(node);
+    },parent);
+  },
+<span id='BUI-Tree-Mixin-method-getCheckedNodes'>  /**
+</span>   * 获取勾选中的节点列表
+   * &lt;pre&gt;&lt;code&gt;
+   *  //获取所有选中节点
+   *  var nodes = tree.getCheckedNodes();
+   *  
+   *  //获取指定节点选中的节点
+   *  var node = tree.findNode(&#39;1&#39;),
+   *    nodes = tree.getCheckedNodes(node);
+   *  
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @param {BUI.Data.Node} [parent] 父节点
+   * @return {Array} 节点列表
+   */
+  getCheckedNodes : function(parent){
+    var _self = this,
+      store = _self.get(&#39;store&#39;);
+
+    return store.findNodesBy(function(node){
+      return _self.isChecked(node);
+    },parent);
+  },
+  //节点是否可以被选中
+  isItemSelectable : function(item){
+    var _self = this,
+      dirSelectable = _self.get(&#39;dirSelectable&#39;),
+      node = item;
+    if(node &amp;&amp; !dirSelectable &amp;&amp; !node.leaf){ //如果阻止非叶子节点选中
+      return false;
+    }
+    return true;
+  },
+<span id='BUI-Tree-Mixin-method-isExpanded'>  /**
+</span>   * 节点是否展开,如果节点是叶子节点，则始终是false
+   * &lt;pre&gt;&lt;code&gt;
+   *  tree.isExpanded(node);
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @return {Boolean} 是否展开
+   */
+  isExpanded : function(node){
+    if(!node || node.leaf){
+      return false;
+    }
+    var _self = this,
+      element;
+    if(_self._isRoot(node) &amp;&amp; !_self.get(&#39;showRoot&#39;)){ //根节点，切不显示根节点时，认为根节点时展开的
+      return true;
+    }
+    if(BUI.isString(node)){
+      item = _self.getItem(node);
+    }
+    element = _self.findElement(node);
+    return this._isExpanded(node,element);
+  },
+<span id='BUI-Tree-Mixin-method-isChecked'>  /**
+</span>   * 节点是否勾选
+   * &lt;pre&gt;&lt;code&gt;
+   *  tree.isChecked(node);
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @return {Boolean} 节点是否勾选
+   */
+  isChecked : function(node){
+    if(!node){
+      return false;
+    }
+    return  !!node[this.get(&#39;checkedField&#39;)];//this.getStatusValue(node,&#39;checked&#39;);
+  },
+<span id='BUI-Tree-Mixin-method-toggleExpand'>  /**
+</span>   * 切换显示隐藏
+   * &lt;pre&gt;&lt;code&gt;
+   *  var node = tree.getItem(&#39;id&#39;);
+   *  tree.collapseNode(node); //节点收缩
+   *  tree.toggleExpand(node); //节点展开
+   *  tree.toggleExpand(node); //节点收缩
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @param  {String|Object|BUI.Data.Node} node 节点
+   */
+  toggleExpand : function(node){
+    var _self = this,
+      element;
+    if(BUI.isString(node)){
+      item = _self.getItem(node);
+    }
+    element = _self.findElement(node);
+    _self._toggleExpand(node,element);
+  },
+<span id='BUI-Tree-Mixin-method-setNodeChecked'>  /**
+</span>   * 设置节点勾选状态
+   * &lt;pre&gt;&lt;code&gt;
+   *  var node = tree.findNode(&#39;1&#39;);
+   *  tree.setNodeChecked(node,true); //勾选
+   *  tree.setNodeChecked(node,false); //取消勾选
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @param {String|Object|BUI.Data.Node} node 节点或者节点id
+   * @param {Boolean} checked 是否勾选
+   */
+  setNodeChecked : function(node,checked,deep){
+    deep = deep == null ? true : deep;
+
+    if(!node){
+      return;
+    }
+    var _self = this,
+      parent,
+      multipleCheck = _self.get(&#39;multipleCheck&#39;),
+      cascadeCheckd = _self.get(&#39;cascadeCheckd&#39;),
+      element;
+    node = makeSureNode(this,node); //将id转换成节点
+    if(!node){
+      return;
+    }
+    parent = node.parent;
+    if(!_self.isCheckable(node)){ //不可选返回
+      return;
+    }
+
+    //如果节点当前的选中状态不等于 checked
+    if(_self.isChecked(node) !== checked || _self.hasStatus(node,&#39;checked&#39;) !== checked){
+
+      element =  _self.findElement(node);
+      //如果级联选择
+      if(cascadeCheckd){ 
+
+        if(element){
+          _self.setItemStatus(node,CHECKED,checked,element); //设置选中状态
+          if(multipleCheck){ //多选状态下设置半选状态
+            _self._resetPatialChecked(node,checked,checked,element); //设置部分勾选状态
+          }else{
+            if(checked &amp;&amp; parent &amp;&amp; _self.isChecked(parent) != checked){
+              _self.setNodeChecked(parent,checked,false);
+            }
+          }
+        }else if(!_self.isItemDisabled(node)){
+          _self.setStatusValue(node,CHECKED,checked);
+        }
+
+        if(parent){ //设置父元素选中
+          if(_self.isChecked(parent) != checked){
+            _self._resetParentChecked(parent);
+          }else if(multipleCheck){
+            _self._resetPatialChecked(parent,null,null,null,true);
+          }
+        }
+        
+      }else if(!_self.isItemDisabled(node)){
+        if(element){
+          _self.setItemStatus(node,CHECKED,checked,element)
+        }else{
+          _self.setStatusValue(node,CHECKED,checked);
+        } 
+      }
+
+      //如果是单选则，清除兄弟元素的选中
+      if(checked &amp;&amp; !multipleCheck &amp;&amp; (_self.isChecked(parent) || parent == _self.get(&#39;root&#39;) || !cascadeCheckd)){
+        var nodes = parent.children;
+        BUI.each(nodes,function(slibNode){
+          if(slibNode !== node &amp;&amp; _self.isChecked(slibNode)){
+            _self.setNodeChecked(slibNode,false);
+          } 
+        });
+      }
+        
+      _self.fire(&#39;checkedchange&#39;,{node : node,element: element,checked : checked});
+      
+    }
+    if(!node.leaf &amp;&amp; deep &amp;&amp; cascadeCheckd){ //树节点，勾选所有子节点
+      BUI.each(node.children,function(subNode,index){
+        if(multipleCheck || !checked || (!multipleCheck &amp;&amp; index == 0)){ //多选或者单选时第一个
+          _self.setNodeChecked(subNode,checked,deep);
+        }
+      });
+    }
+  },
+
+<span id='BUI-Tree-Mixin-method-setChecked'>  /**
+</span>   * 设置节点勾选状态
+   * @param {String|Object|BUI.Data.Node} node 节点或者节点id
+   */
+  setChecked : function(node){
+    this.setNodeChecked(node,true);
+  },
+<span id='BUI-Tree-Mixin-method-clearAllChecked'>  /**
+</span>   * 清除所有的勾选
+   */
+  clearAllChecked : function(){
+    var _self = this,
+      nodes = _self.getCheckedNodes();
+    BUI.each(nodes,function(node){
+      _self.setNodeChecked(node,false);
+    });
+  },
+  //初始化根节点
+  _initRoot : function(){
+    var _self = this,
+      store = _self.get(&#39;store&#39;),
+      root,
+      showRoot = _self.get(&#39;showRoot&#39;),
+      nodes;
+    if(store){
+      root = store.get(&#39;root&#39;);
+      _self.setInternal(&#39;root&#39;,root);
+      if(showRoot){
+        nodes = [root];
+      }else{
+        nodes = root.children;
+      }
+      
+      BUI.each(nodes,function(subNode){
+        _self._initChecked(subNode,true);
+      });
+      _self.clearItems();
+      _self.addItems(nodes);
+      //_self.set(&#39;nodes&#39;,nodes);
+    }
+
+  },
+  //初始化节点的勾选
+  _initChecked : function(node,deep){
+    var _self = this,
+      checkType = _self.get(&#39;checkType&#39;),
+      checkedField = _self.get(&#39;checkedField&#39;),
+      multipleCheck = _self.get(&#39;multipleCheck&#39;),
+      checkableField = _self.get(&#39;checkableField&#39;),
+      cascadeCheckd = _self.get(&#39;cascadeCheckd&#39;),
+      parent; 
+    if(checkType === MAP_TYPES.NONE){ //不允许选中
+      node[checkableField] = false;
+      node[checkedField] = false;
+      return;
+    }
+
+    if(checkType === MAP_TYPES.ONLY_LEAF){ //仅叶子节点可选
+      if(node.leaf){
+        node[checkableField] = true;
+      }else{
+        node[checkableField] = false;
+        node[checkedField] = false;
+        if(deep){
+          BUI.each(node.children,function(subNode){
+            _self._initChecked(subNode,deep);
+          });
+        }
+      }
+      return;
+    }
+
+    if(checkType === MAP_TYPES.CUSTOM){ //自定义选中时，根据节点上是否有checked判断
+      if(node[checkableField] == null){
+        node[checkableField] = node[checkedField] != null;
+      }
+      
+    }
+
+    if(checkType === MAP_TYPES.ALL){ //所有允许选中
+      node[checkableField] = true;
+    }
+
+    if(!node || !_self.isCheckable(node)){ //如果不可选，则不处理勾选
+      return;
+    }
+
+    parent = node.parent;
+    if(!_self.isChecked(node) &amp;&amp; cascadeCheckd){ //节点未被选择，根据父、子节点处理勾选
+
+      if(parent &amp;&amp; _self.isChecked(parent)){ //如果父节点选中，当前节点必须勾选
+        if(multipleCheck || !_self._hasChildChecked(parent)){ //多选或者兄弟节点没有被选中
+          _self.setStatusValue(node,&#39;checked&#39;,true);
+        }
+      }
+      //节点为非叶子节点，同时叶子节点不为空时根据叶子节点控制
+      if((node.children &amp;&amp; node.children.length &amp;&amp; _self._isAllChildrenChecked(node)) ||(!multipleCheck &amp;&amp; _self._hasChildChecked(node))){
+        _self.setStatusValue(node,&#39;checked&#39;,true);
+      }
+    }
+    if(deep){
+      BUI.each(node.children,function(subNode){
+        _self._initChecked(subNode,deep);
+      });
+    }
+    
+  },
+  //设置部分选中效果
+  _resetPatialChecked : function(node,checked,hasChecked,element,upper){
+    if(!node || node.leaf){
+      return true;
+    }
+    var _self = this,
+      hasChecked;
+    checked = checked == null ? _self.isChecked(node) : checked;
+    if(checked){
+      _self.setItemStatus(node,PARTIAL_CHECKED,false,element);
+      return;
+    }
+    hasChecked = hasChecked == null ? _self._hasChildChecked(node) : hasChecked;
+
+    _self.setItemStatus(node,PARTIAL_CHECKED,hasChecked,element);
+    if(upper &amp;&amp; node.parent){
+      _self._resetPatialChecked(node.parent,false,hasChecked ? hasChecked : null,null,upper)
+    }
+    
+  },
+  //子节点变化，重置父节点勾选
+  _resetParentChecked : function(parentNode){
+    if(!this.isCheckable(parentNode)){
+      return;
+    }
+    var _self = this,
+      multipleCheck = _self.get(&#39;multipleCheck&#39;),
+      allChecked = multipleCheck ? _self._isAllChildrenChecked(parentNode) : _self._hasChildChecked(parentNode);
+    _self.setStatusValue(parentNode,&#39;checked&#39;,allChecked);
+    _self.setNodeChecked(parentNode,allChecked,false);
+
+    multipleCheck &amp;&amp; _self._resetPatialChecked(parentNode,allChecked,null,null,true);
+  },
+  //绑定事件
+  __bindUI : function(){
+    var _self = this,
+      el = _self.get(&#39;el&#39;),
+      multipleCheck = _self.get(&#39;multipleCheck&#39;);
+
+    //点击选项
+    _self.on(&#39;itemclick&#39;,function(ev){
+      var sender = $(ev.domTarget),
+        element = ev.element,
+        node = ev.item;
+      if(sender.hasClass(CLS_EXPANDER)){
+        _self._toggleExpand(node,element); //点击展开收缩节点，不触发选中事件
+        return false;
+      }else if(sender.hasClass(CLS_CHECKBOX)){
+        var checked = _self.isChecked(node);
+        _self.setNodeChecked(node,!checked);
+      }else if(sender.hasClass(CLS_RADIO)){
+        _self.setNodeChecked(node,true);
+      }
+      
+    });
+
+    _self.on(&#39;itemrendered&#39;,function(ev){
+      var node = ev.item,
+        element = ev.domTarget;
+      _self._resetIcons(node,element);
+      if(_self.isCheckable(node) &amp;&amp; multipleCheck &amp;&amp; _self.get(&#39;cascadeCheckd&#39;)){
+        _self._resetPatialChecked(node,null,null,element);
+      }
+      if(_self._isExpanded(node,element)){
+        _self._showChildren(node);
+      }
+      
+    });
+    _self._initExpandEvent();
+  },
+  //初始化展开收缩事件
+  _initExpandEvent : function(){
+    var _self = this,
+      el = _self.get(&#39;el&#39;),
+      expandEvent = _self.get(&#39;expandEvent&#39;),
+      collapseEvent = _self.get(&#39;collapseEvent&#39;);
+
+    function createCallback(methodName){
+      return function(ev){
+        var sender = $(ev.domTarget),
+          element = ev.element,
+          node = ev.item;
+        if(!sender.hasClass(CLS_EXPANDER)){
+          _self[methodName](node,element);
+        }
+      }
+    }
+    if(expandEvent == collapseEvent){
+      _self.on(expandEvent,createCallback(&#39;_toggleExpand&#39;));
+    }else{
+      if(expandEvent){
+        _self.on(expandEvent,createCallback(&#39;_expandNode&#39;));
+      }
+      if(collapseEvent){
+        _self.on(collapseEvent,createCallback(&#39;_collapseNode&#39;));
+      }
+    }
+    
+  },
+  //是否根据子节点选中
+  _isForceChecked : function(node){
+    var _self = this,
+      multipleCheck = _self.get(&#39;multipleCheck&#39;);
+    return multipleCheck ? _self._isAllChildrenChecked() : _isForceChecked();
+  },
+  //是否所有子节点被选中
+  _isAllChildrenChecked : function(node){
+    if(!node || node.leaf){
+      return false;
+    }
+    var _self = this,
+      children = node.children,
+      rst = true;
+    BUI.each(children,function(subNode){
+      rst = rst &amp;&amp; _self.isChecked(subNode);
+      if(!rst){ //存在未选中的，返回
+        return false;
+      }
+    });
+    return rst;
+  },
+  //是否有子节点选中
+  _hasChildChecked : function(node){
+    if(!node || node.leaf){
+      return false;
+    }
+    var _self = this;
+
+    return _self.getCheckedNodes(node).length != 0;
+  },
+  //是否是根节点
+  _isRoot : function(node){
+    var _self = this,
+      store = _self.get(&#39;store&#39;);
+    if(store &amp;&amp; store.get(&#39;root&#39;) == node){
+      return true;
+    }
+    return false;
+  },
+  //设置加载状态
+  _setLoadStatus : function(node,element,loading){
+    var _self = this;
+    _self.setItemStatus(node,LOADING,loading,element);
+  },  
+  //加载节点前
+  _beforeLoadNode : function(node){
+    var _self = this,
+      element;
+    if(BUI.isString(node)){
+      node = _self.findNode(node);
+    }
+    element = _self.findElement(node);
+
+    if(element){ //折叠节点，设置加载状态
+      _self._collapseNode(node,element);
+      _self._setLoadStatus(node,element,true);
+      
+    }
+    else if(node){
+      BUI.each(node.children,function(subNode){
+        _self._removeNode(subNode);
+      });
+    }
+    
+  },
+<span id='BUI-Tree-Mixin-method-onBeforeLoad'>  /**
+</span>   * @override
+   * @protected
+   * 加载节点前触发
+   */
+  onBeforeLoad : function(e){
+    var _self = this,
+      params = e.params,
+      id = params.id,
+      node = _self.findNode(id) || _self.get(&#39;root&#39;);
+    _self._beforeLoadNode(node);
+  },
+  //添加节点
+  _addNode : function(node,index){
+    var _self = this,
+      parent = node.parent,
+      scount,//兄弟节点的数量
+      prevNode, //前一个节点
+      nextNode, //后一个节点，用于计算本节点放置的位置,不一定是同级节点
+      cIndex;//节点插入的位置
+    _self._initChecked(node,true);
+    if(parent){
+      if(_self.isExpanded(parent)){ //展开的节点
+        scount = parent.children.length;
+
+        cIndex = _self._getInsetIndex(node);//下一个节点的位置
+        _self.addItemAt(node,cIndex);
+        if(index == scount -1 &amp;&amp; index &gt; 0){ //作为最后一个节点，更新前一个兄弟节点的图标
+          prevNode = parent.children[index - 1];
+          _self._updateIcons(prevNode);
+        }
+      }
+      _self._updateIcons(parent); //更新父节点的icon
+    }else{ //没有父节点，则添加到跟节点下
+      cIndex = _self._getInsetIndex(node);
+      _self.addItemAt(node,cIndex);
+      prevNode = _self.get(&#39;nodes&#39;)[index - 1];
+      _self._updateIcons(prevNode);
+    }
+  },
+  //获取节点的插入位置
+  _getInsetIndex : function(node){
+    var _self = this,
+      nextNode,
+      rst = null;
+    nextNode = _self._getNextItem(node);
+    if(nextNode){
+      return _self.indexOfItem(nextNode);
+    }
+    return _self.getItemCount();
+  },
+  //获取显示在列表上的下一项，不仅仅是同级节点
+  _getNextItem : function(item){
+    var _self = this,
+      parent = item.parent,
+      slibings,
+      cIndex,
+      rst = null;
+    if(!parent){
+      return null;
+    }
+    slibings = parent.children;
+    cIndex = BUI.Array.indexOf(item,slibings)
+    rst = slibings[cIndex + 1];
+
+    return rst || _self._getNextItem(parent);
+  },
+<span id='BUI-Tree-Mixin-method-onAdd'>  /**
+</span>   * @override 
+   * @protected
+   * 重写添加节点方法
+   */
+  onAdd : function(e){
+    var _self = this,
+      node = e.node,
+      index = e.index;
+    _self._addNode(node,index);
+  },
+  //更新节点
+  _updateNode : function(node){
+    var _self = this;
+    _self.updateItem(node);
+    _self._updateIcons(node);
+  },
+<span id='BUI-Tree-Mixin-method-onUpdate'>  /**
+</span>   * @override 
+   * @protected
+   * 重写更新节点方法
+   */
+  onUpdate : function(e){
+    var _self = this,
+      node = e.node;
+    _self._updateNode(node);
+  },
+  //删除节点
+  _removeNode : function(node,index){
+    var _self = this,
+      parent = node.parent,
+      scount,
+      prevNode;
+    _self.collapseNode(node); //收缩节点，以便于同时删除子节点
+    if(!parent){
+      return;
+    }
+    _self.removeItem(node);
+    if(_self.isExpanded(parent)){ //如果父节点展开
+      
+      scount = parent.children.length;
+      if(scount == index &amp;&amp; index !== 0){ //如果删除的是最后一个，更新前一个节点图标
+        prevNode = parent.children[index - 1];
+        _self._updateIcons(prevNode);
+      }
+    }
+    _self._updateIcons(parent);
+    _self._resetParentChecked(parent);
+  },
+<span id='BUI-Tree-Mixin-method-onRemove'>  /**
+</span>   * @override 
+   * @protected
+   * 重写删除节点方法
+   */
+  onRemove : function(e){
+    var _self = this,
+      node = e.node,
+      index = e.index;
+    _self._removeNode(node,index);
+  },
+  //加载完节点
+  _loadNode : function(node){
+    var _self = this;
+    _self._initChecked(node,true);
+    _self.expandNode(node);
+    _self._updateIcons(node);
+    _self.setItemStatus(node,LOADING,false);
+  },
+  __syncUI : function(){
+    var _self = this,
+      store = _self.get(&#39;store&#39;),
+      showRoot = _self.get(&#39;showRoot&#39;);
+    if(showRoot &amp;&amp; !store.hasData()){ //树节点没有数据，但是需要显示根节点时
+      _self._initRoot();
+    }
+  },
+
+<span id='BUI-Tree-Mixin-method-onLoad'>   /**
+</span>   * @override 
+   * @protected
+   * 加载节点
+   */
+  onLoad : function(e){
+    var _self = this,
+      store = _self.get(&#39;store&#39;),
+      root = store.get(&#39;root&#39;),
+      node;
+
+    if(!e || e.node == root){ //初始化加载时,或者加载根节点
+      _self._initRoot();
+    }
+    if(e &amp;&amp; e.node){
+      _self._loadNode(e.node);
+    } 
+  },
+  _isExpanded : function(node,element){
+    return this.hasStatus(node,EXPAND,element);
+  },
+  //获取Icon的模板
+  _getIconsTpl : function(node){
+    var _self = this,
+      level = node.level,
+      start = _self.get(&#39;startLevel&#39;),
+      iconWraperTpl = _self.get(&#39;iconWraperTpl&#39;),
+      icons = [],
+      i;
+    for(i = start ; i &lt; level ; i = i + 1){
+      icons.push(_self._getLevelIcon(node,i));
+    }
+    icons.push(_self._getExpandIcon(node));
+    icons.push(_self._getCheckedIcon(node));
+    icons.push(_self._getNodeTypeIcon(node));
+    return BUI.substitute(iconWraperTpl,{icons : icons.join(&#39;&#39;)});
+  },
+  //获取勾选icon
+  _getCheckedIcon : function(node){
+    var _self = this,
+      checkable = _self.isCheckable(node),
+      cls;
+    if(checkable){
+      cls = _self.get(&#39;multipleCheck&#39;) ? CLS_CHECKBOX : CLS_RADIO;
+      return _self._getIcon(cls);
+    }
+    return &#39;&#39;;
+  },
+<span id='BUI-Tree-Mixin-method-isCheckable'>  /**
+</span>   * 是否可以勾选
+   * @protected
+   * @param  {Object | BUI.Data.Node} node 节点
+   * @return {Boolean}  是否可以勾选
+   */
+  isCheckable : function(node){
+    return node[this.get(&#39;checkableField&#39;)];
+  },
+  //获取展开折叠的icon
+  _getExpandIcon : function(node){
+    var _self = this,
+      cls = CLS_EXPANDER; 
+    if(node.leaf){
+      return _self._getLevelIcon(node);
+    }
+    if(_self._isLastNode(node)){
+      cls = cls + &#39; &#39; + CLS_EXPANDER_END;
+    }
+    return _self._getIcon(cls);
+  },
+  //叶子节点和树节点有不同的icon
+  _getNodeTypeIcon : function(node){
+    var _self = this,
+      cls = node.cls ? node.cls :(node.leaf ? _self.get(&#39;leafCls&#39;) : _self.get(&#39;dirCls&#39;));
+    return _self._getIcon(cls);
+  },
+  //获取对应Level的icon
+  _getLevelIcon : function(node,level){
+    var _self = this,
+      showLine = _self.get(&#39;showLine&#39;),
+      cls = CLS_EMPTY,
+      levelNode;
+    if(showLine){ //如果显示连接线
+      if(node.level === level || level == null){ //当前的连接线
+        cls = _self._isLastNode(node) ? CLS_END : CLS_ELBOW;
+      }else{ //上一级的连接线
+        levelNode = _self._getParentNode(node,level);
+        cls = _self._isLastNode(levelNode) ? CLS_EMPTY : CLS_LINE;
+      }
+    }
+    return _self._getIcon(cls);
+  },
+  //获取对应level的父节点
+  _getParentNode : function(node,level){
+    var nodeLevel = node.level,
+      parent = node.parent,
+      i = nodeLevel - 1;
+    if(nodeLevel &lt;= level){
+      return null;
+    }
+    while(i &gt; level){
+      parent = parent.parent;
+      i = i - 1;
+    }
+    return parent;
+  },
+  //获取icon
+  _getIcon : function(cls){
+     var _self = this,
+      iconTpl = _self.get(&#39;iconTpl&#39;);
+    return BUI.substitute(iconTpl,{cls : cls});
+  },
+  //是否是父节点的最后一个节点
+  _isLastNode : function(node){
+
+    if(!node){
+      return false;
+    }
+    if(node == this.get(&#39;root&#39;)){
+      return true;
+    }
+
+    var _self = this,
+      parent = node.parent,
+      siblings = parent ? parent.children : _self.get(&#39;nodes&#39;),
+      count;
+
+    count = siblings.length;
+    return siblings[count - 1] === node;
+  },
+  //初始化所有节点，设置level 和 leaf
+  _initNodes : function(nodes,level,parent){
+    var _self = this;
+    BUI.each(nodes,function(node){
+      node.level = level;
+      if(node.leaf == null){
+        node.leaf = node.children ? false : true;
+      }
+      if(parent &amp;&amp; !node.parent){
+        node.parent = parent;
+      }
+      _self._initChecked(node);
+      if(node.children){
+        _self._initNodes(node.children,level + 1,node);
+      }
+      
+    });
+  },
+  //折叠节点
+  _collapseNode : function(node,element,deep){
+    var _self = this;
+    if(node.leaf){
+      return;
+    }
+    if(_self.hasStatus(node,EXPAND,element)){
+      _self.setItemStatus(node,EXPAND,false,element);
+      if(deep){
+        _self._collapseChildren(node,deep);
+        _self.removeItems(node.children);
+      }else{
+        _self._hideChildrenNodes(node);
+      }
+      _self.fire(&#39;collapsed&#39;,{node : node ,element : element});
+    }
+  },
+  //隐藏子节点
+  _hideChildrenNodes : function(node){
+    var _self = this,
+      children = node.children,
+      elements = [];
+    BUI.each(children,function(subNode){
+      //_self.removeItem(subNode);
+      var element = _self.findElement(subNode);
+      if(element){
+        elements.push(element);
+        _self._hideChildrenNodes(subNode);
+      }
+    });
+    if(_self.get(&#39;expandAnimate&#39;)){
+      elements = $(elements);
+      elements.animate({height : 0},function(){
+        _self.removeItems(children);
+      });
+    }else{
+      _self.removeItems(children);
+    }
+    
+  },
+  _collapseChildren : function(parentNode,deep){
+    var _self = this,
+      children = parentNode.children;
+    
+    BUI.each(children,function(node){
+      _self.collapseNode(node,deep);
+    });
+  },
+  //展开选项
+  _expandNode : function(node,element,deep){
+    var _self = this,
+      accordion = _self.get(&#39;accordion&#39;),
+      store = _self.get(&#39;store&#39;);
+    if(node.leaf){ //子节点不展开
+      return;
+    }
+    if(!_self.hasStatus(node,EXPAND,element)){
+      if(accordion &amp;&amp; node.parent){
+        var slibings = node.parent.children;
+        BUI.each(slibings,function(sNode){
+          if(sNode != node){
+            _self.collapseNode(sNode);
+          }
+        });
+      }
+      if(store &amp;&amp; !store.isLoaded(node)){ //节点未加载，则加载节点
+        if(!_self._isLoading(node,element)){
+          store.loadNode(node);
+        }
+      }else if(element){
+        _self.setItemStatus(node,EXPAND,true,element);
+        _self._showChildren(node);
+        _self.fire(&#39;expanded&#39;,{node : node ,element : element});
+      }
+
+    }
+    BUI.each(node.children,function(subNode){
+      if(deep || _self.isExpanded(subNode)){
+        _self.expandNode(subNode,deep);
+      }
+    });
+    
+  },
+  //显示子节点
+  _showChildren : function(node){
+    if(!node || !node.children){
+      return;
+    }
+    var _self = this,
+      index = _self.indexOfItem(node),
+      length = node.children.length,
+      subNode,
+      i = length - 1,
+      elements = [];
+    for (i = length - 1; i &gt;= 0; i--) {
+      subNode = node.children[i];
+      if(!_self.getItem(subNode)){
+        if(_self.get(&#39;expandAnimate&#39;)){
+          el = _self._addNodeAt(subNode,index + 1);
+          el.hide();
+          el.slideDown();
+        }else{
+          _self.addItemAt(subNode,index + 1);
+        } 
+      }
+    };
+  },
+  _addNodeAt : function(item,index){
+     var _self = this,
+      items = _self.get(&#39;items&#39;);
+    if(index === undefined) {
+        index = items.length;
+    }
+    items.splice(index, 0, item);
+    return _self.addItemToView(item,index);
+  },
+  //_showNode
+  _isLoading : function(node,element){
+    var _self = this;
+    return _self.hasStatus(node,LOADING,element);
+  },
+  //重置选项的图标
+  _resetIcons :function(node,element){
+    if(!this.get(&#39;showIcons&#39;)){ //如果不显示图标，则不重置
+      return;
+    }
+    var _self = this,
+      iconContainer = _self.get(&#39;iconContainer&#39;),
+      containerEl,
+      iconsTpl = _self._getIconsTpl(node);
+    $(element).find(&#39;.&#39; + CLS_ICON_WRAPER).remove(); //移除掉以前的图标
+    containerEl = $(element).find(iconContainer).first();
+    if(iconContainer &amp;&amp; containerEl.length){
+      $(iconsTpl).prependTo(containerEl);
+    }else{
+      $(element).prepend($(iconsTpl));
+    }
+  },
+  //切换显示隐藏
+  _toggleExpand : function(node,element){
+    var _self = this;
+    if(_self._isExpanded(node,element)){
+      _self._collapseNode(node,element);
+    }else{
+      _self._expandNode(node,element);
+    }
+  }, 
+  //更新节点图标 
+  _updateIcons : function(node){
+    var _self = this,
+      element = _self.findElement(node);
+    if(element){
+      _self._resetIcons(node,element);
+      if(_self._isExpanded(node,element) &amp;&amp; !node.leaf){ //如果节点展开，那么更新子节点的图标样式
+        BUI.each(node.children,function(subNode){
+          _self._updateIcons(subNode);
+        });
+      }
+    }
+  },
+  //设置显示根节点
+  _uiSetShowRoot : function(v){
+    var _self = this,
+      start = this.get(&#39;showRoot&#39;) ? 0 : 1;
+    _self.set(&#39;startLevel&#39;,start);
+  },
+  _uiSetNodes : function(v){
+    var _self = this,
+      store = _self.get(&#39;store&#39;);
+    store.setResult(v);
+  },
+  _uiSetShowLine : function(v){
+    var _self = this,
+      el = _self.get(&#39;el&#39;);
+    if(v){
+      el.addClass(CLS_SHOW_LINE);
+    }else{
+      el.removeClass(CLS_SHOW_LINE);
+    }
+  }
+});
+
+module.exports = Mixin;
+</pre>
+</body>
+</html>

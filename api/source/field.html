@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='BUI'>/**
+</span> * @fileOverview 表单域的入口文件
+ * @ignore
+ */
+var BUI = require(&#39;bui-common&#39;),
+  Field = require(&#39;./fields/base&#39;);
+
+BUI.mix(Field, {
+  Text : require(&#39;./fields/text&#39;),
+  Date : require(&#39;./fields/date&#39;),
+  Select : require(&#39;./fields/select&#39;),
+  Hidden : require(&#39;./fields/hidden&#39;),
+  Number : require(&#39;./fields/number&#39;),
+  Check : require(&#39;./fields/check&#39;),
+  Radio : require(&#39;./fields/radio&#39;),
+  Checkbox : require(&#39;./fields/checkbox&#39;),
+  Plain : require(&#39;./fields/plain&#39;),
+  List : require(&#39;./fields/list&#39;),
+  TextArea : require(&#39;./fields/textarea&#39;),
+  Uploader : require(&#39;./fields/uploader&#39;),
+  CheckList : require(&#39;./fields/checklist&#39;),
+  RadioList : require(&#39;./fields/radiolist&#39;)
+});
+
+module.exports = Field;
+</pre>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='BUI'>/**
+</span> * @fileOverview 表单里的一行元素
+ * @ignore
+ */
+
+var BUI = require(&#39;bui-common&#39;),
+  FieldContainer = require(&#39;./fieldcontainer&#39;);
+
+<span id='BUI-Form-Row'>/**
+</span> * @class BUI.Form.Row
+ * 表单行
+ * @extends BUI.Form.FieldContainer
+ */
+var Row = FieldContainer.extend({
+
+},{
+  ATTRS : {
+    elCls : {
+      value : &#39;row&#39;
+    },
+    defaultChildCfg:{
+      value : {
+        tpl : &#39; &lt;label class=&quot;control-label&quot;&gt;{label}&lt;/label&gt;\
+              &lt;div class=&quot;controls&quot;&gt;\
+              &lt;/div&gt;&#39;,
+        childContainer : &#39;.controls&#39;,
+        showOneError : true,
+        controlContainer : &#39;.controls&#39;,
+        elCls : &#39;control-group span8&#39;,
+        errorTpl : &#39;&lt;span class=&quot;valid-text&quot;&gt;&lt;span class=&quot;estate error&quot;&gt;&lt;span class=&quot;x-icon x-icon-mini x-icon-error&quot;&gt;!&lt;/span&gt;&lt;em&gt;{error}&lt;/em&gt;&lt;/span&gt;&lt;/span&gt;&#39;
+      }
+      
+    },
+    defaultChildClass : {
+      value : &#39;form-field-text&#39;
+    }
+  }
+},{
+  xclass:&#39;form-row&#39;
+});
+
+module.exports = Row;
+</pre>
+</body>
+</html>

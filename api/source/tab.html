@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='BUI'>/**
+</span> * @fileOverview 切换标签
+ * @ignore
+ */
+
+  var BUI = require(&#39;bui-common&#39;),
+    Component = BUI.Component,
+    UIBase = Component.UIBase;
+
+<span id='BUI-Tab-Tab'>  /**
+</span>   * 列表
+   * xclass:&#39;tab&#39;
+   * &lt;pre&gt;&lt;code&gt;
+   * BUI.use(&#39;bui/tab&#39;,function(Tab){
+   *   
+   *     var tab = new Tab.Tab({
+   *         render : &#39;#tab&#39;,
+   *         elCls : &#39;nav-tabs&#39;,
+   *         autoRender: true,
+   *         children:[
+   *           {text:&#39;标签一&#39;,value:&#39;1&#39;},
+   *           {text:&#39;标签二&#39;,value:&#39;2&#39;},
+   *           {text:&#39;标签三&#39;,value:&#39;3&#39;}
+   *         ]
+   *       });
+   *     tab.on(&#39;selectedchange&#39;,function (ev) {
+   *       var item = ev.item;
+   *       $(&#39;#log&#39;).text(item.get(&#39;text&#39;) + &#39; &#39; + item.get(&#39;value&#39;));
+   *     });
+   *     tab.setSelected(tab.getItemAt(0)); //设置选中第一个
+   *   
+   *   });
+   *  &lt;/code&gt;&lt;/pre&gt;
+   * @class BUI.Tab.Tab
+   * @extends BUI.Component.Controller
+   * @mixins BUI.Component.UIBase.ChildList
+   */
+  var tab = Component.Controller.extend([UIBase.ChildList],{
+
+  },{
+    ATTRS : {
+      elTagName:{
+        view:true,
+        value:&#39;ul&#39;
+      },
+<span id='BUI-Tab-Tab-property-defaultChildClass'>      /**
+</span>       * 子类的默认类名，即类的 xclass
+       * @type {String}
+       * @override
+       * @default &#39;tab-item&#39;
+       */
+      defaultChildClass : {
+        value : &#39;tab-item&#39;
+      }
+    }
+  },{
+    xclass : &#39;tab&#39;
+  });
+
+  module.exports = tab;
+</pre>
+</body>
+</html>

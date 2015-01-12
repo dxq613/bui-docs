@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='BUI'>/**
+</span> * @fileOverview 树形菜单
+ * @ignore
+ */
+
+var BUI = require(&#39;bui-common&#39;),
+  List = require(&#39;bui-list&#39;),
+  Mixin = require(&#39;./treemixin&#39;),
+  Selection = require(&#39;./selection&#39;);
+
+var TreeMenuView = List.SimpleList.View.extend({
+  //覆写获取模板方法
+  getItemTpl : function  (item,index) {
+    var _self = this,
+      render = _self.get(&#39;itemTplRender&#39;),
+      itemTpl = item.leaf ? _self.get(&#39;leafTpl&#39;) : _self.get(&#39;dirTpl&#39;);  
+    if(render){
+      return render(item,index);
+    }
+    
+    return BUI.substitute(itemTpl,item);
+  }
+},{
+  xclass : &#39;tree-menu-view&#39;
+});
+
+<span id='BUI-Tree-TreeMenu'>/**
+</span> * @class BUI.Tree.TreeMenu
+ * 树形列表控件
+ * ** 你可以简单的使用配置数据 **
+ * &lt;pre&gt;&lt;code&gt;
+ *  BUI.use(&#39;bui/tree&#39;,function(Tree){
+ *    var tree = new Tree.TreeMenu({
+ *      render : &#39;#t1&#39;,
+ *      nodes : [
+ *        {id : &#39;1&#39;,text : &#39;1&#39;,children : [{id : &#39;11&#39;,text : &#39;11&#39;}]},
+ *        {id : &#39;2&#39;,text : &#39;2&#39;}
+ *      ]
+ *    });
+ *    tree.render();
+ *  });
+ * &lt;/code&gt;&lt;/pre&gt;
+ *
+ * ** 你还可以替换icon ** 
+ * &lt;pre&gt;&lt;code&gt;
+ *  BUI.use(&#39;bui/tree&#39;,function(Tree){
+ *    var tree = new Tree.TreeMenu({
+ *      render : &#39;#t1&#39;,
+ *      dirCls : &#39;folder&#39;, //替换树节点的样式
+ *      leafCls : &#39;file&#39;, //叶子节点的样式
+ *      nodes : [ //数据中存在cls 会替换节点的图标样式
+ *        {id : &#39;1&#39;,text : &#39;1&#39;cls:&#39;task-folder&#39;,children : [{id : &#39;11&#39;,text : &#39;11&#39;,cls:&#39;task&#39;}]},
+ *        {id : &#39;2&#39;,text : &#39;2&#39;}
+ *      ]
+ *    });
+ *    tree.render();
+ *  });
+ * &lt;/code&gt;&lt;/pre&gt;
+ * @mixin BUI.Tree.Mixin
+ * @extends BUI.List.SimpleList
+ */
+var TreeMenu = List.SimpleList.extend([Mixin,Selection],{
+  
+},{
+  ATTRS : {
+    itemCls : {
+      value : BUI.prefix + &#39;tree-item&#39;
+    },
+<span id='BUI-Tree-TreeMenu-cfg-dirSelectable'>    /**
+</span>     * 文件夹是否可选，用于选择节点时，避免选中非叶子节点
+     * @cfg {Boolean} [dirSelectable = false]
+     */
+    dirSelectable  : {
+      value : false
+    },
+<span id='BUI-Tree-TreeMenu-property-expandEvent'>    /**
+</span>     * 节点展开的事件
+     * @type {String}
+     */
+    expandEvent : {
+      value : &#39;itemclick&#39;
+    },
+
+    itemStatusFields  : {
+      /**/
+      value : {
+        selected : &#39;selected&#39;
+      }
+    },
+<span id='BUI-Tree-TreeMenu-property-collapseEvent'>    /**
+</span>     * 节点折叠的事件
+     * @type {String}
+     */
+    collapseEvent : {
+      value : &#39;itemclick&#39;
+    },
+    /**/xview : {
+      value : TreeMenuView
+    },
+<span id='BUI-Tree-TreeMenu-property-dirTpl'>    /**
+</span>     * 非叶子节点的模板
+     * @type {String}
+     */
+    dirTpl : {
+      view : true,
+      value : &#39;&lt;li class=&quot;{cls}&quot;&gt;&lt;a href=&quot;#&quot;&gt;{text}&lt;/a&gt;&lt;/li&gt;&#39;
+    },
+<span id='BUI-Tree-TreeMenu-property-leafTpl'>    /**
+</span>     * 叶子节点的模板
+     * @type {String}
+     */
+    leafTpl : {
+      view : true,
+      value : &#39;&lt;li class=&quot;{cls}&quot;&gt;&lt;a href=&quot;{href}&quot;&gt;{text}&lt;/a&gt;&lt;/li&gt;&#39;
+    },
+    idField : {
+      value : &#39;id&#39;
+    }
+  }
+},{
+  xclass : &#39;tree-menu&#39;
+});
+
+TreeMenu.View = TreeMenuView;
+
+module.exports = TreeMenu;
+</pre>
+</body>
+</html>

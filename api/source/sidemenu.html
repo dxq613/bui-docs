@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 侧边栏菜单
+ * @author dxq613@gmail.com
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;),
+  BUI = require(&#39;bui-common&#39;),
+  Menu = require(&#39;./menu&#39;),
+  Component =  BUI.Component,
+  CLS_MENU_TITLE = BUI.prefix + &#39;menu-title&#39;,
+  CLS_MENU_LEAF = &#39;menu-leaf&#39;;
+  
+<span id='BUI-Menu-SideMenu'>/**
+</span> * 侧边栏菜单
+ * xclass:&#39;side-menu&#39;
+ * @class BUI.Menu.SideMenu
+ * @extends BUI.Menu.Menu
+ */
+var sideMenu = Menu.extend(
+{
+  //初始化配置项
+  initializer : function(){
+    var _self = this,
+      items = _self.get(&#39;items&#39;),
+      children = _self.get(&#39;children&#39;);
+
+    BUI.each(items,function(item){
+      var menuCfg = _self._initMenuCfg(item);
+      children.push(menuCfg);
+    });
+  },
+  bindUI : function(){
+    var _self = this,
+      children = _self.get(&#39;children&#39;);
+    BUI.each(children,function(item){
+      var menu = item.get(&#39;children&#39;)[0];
+      if(menu){
+        menu.publish(&#39;click&#39;,{
+          bubbles:1
+        });
+      }
+    });
+    //防止链接跳转
+    _self.get(&#39;el&#39;).delegate(&#39;a&#39;,&#39;click&#39;,function(ev){
+      ev.preventDefault();
+    });
+    //处理点击事件，展开、折叠、选中
+    _self.on(&#39;itemclick&#39;,function(ev){
+      var item = ev.item,
+        titleEl = $(ev.domTarget).closest(&#39;.&#39; + _self.get(&#39;collapsedCls&#39;));
+      if(titleEl.length){
+        var collapsed = item.get(&#39;collapsed&#39;);
+          item.set(&#39;collapsed&#39;,!collapsed);
+      }else if(item.get(&#39;el&#39;).hasClass(CLS_MENU_LEAF)){
+        _self.fire(&#39;menuclick&#39;,{item:item});
+        _self.clearSelection();
+        _self.setSelected(item);
+      }
+    });
+  },
+<span id='global-method-getItems'>  /**
+</span>   * @protected
+   * @ignore
+   */
+  getItems:function(){
+    var _self = this,
+      items = [],
+      children = _self.get(&#39;children&#39;);
+    BUI.each(children,function(item){
+      var menu = item.get(&#39;children&#39;)[0];
+      items = items.concat(menu.get(&#39;children&#39;));
+    }); 
+    return items;
+  },
+  //初始化菜单配置项
+  _initMenuCfg : function(item){
+    var _self = this,
+      items = item.items,
+      subItems = [],
+      cfg = {
+        selectable: false,
+        children : [{
+          xclass : &#39;menu&#39;,
+          children : subItems
+        }]
+      };
+
+    BUI.mix(cfg,{
+      xclass : &#39;menu-item&#39;,
+      elCls : &#39;menu-second&#39;
+    },item);
+
+    BUI.each(items,function(subItem){
+      var subItemCfg = _self._initSubMenuCfg(subItem);
+      subItems.push(subItemCfg);
+    });
+
+    return cfg;
+
+  },
+  //初始化二级菜单
+  _initSubMenuCfg : function(subItem){
+    var _self = this,
+      cfg = {
+        xclass : &#39;menu-item&#39;,
+        elCls : &#39;menu-leaf&#39;,
+        tpl : _self.get(&#39;subMenuItemTpl&#39;)
+      };
+    return BUI.mix(cfg,subItem);
+  }
+},{
+
+  ATTRS : 
+  {
+    defaultChildCfg : {
+      value : {
+        subMenuType : &#39;menu&#39;,
+        openable : false,
+        arrowTpl : &#39;&#39;
+      }
+    },
+    
+<span id='BUI-Menu-SideMenu-property-autoInitItems'>    /**
+</span>     * 配置的items 项是在初始化时作为children
+     * @protected
+     * @type {Boolean}
+     */
+    autoInitItems : {
+        value : false
+    },
+<span id='BUI-Menu-SideMenu-property-itemTpl'>    /**
+</span>     * 菜单项的模板
+     * @type {String}
+     */
+    itemTpl : {
+      value : &#39;&lt;div class=&quot;&#39;+CLS_MENU_TITLE+&#39;&quot;&gt;&lt;s&gt;&lt;/s&gt;&lt;span class=&quot;&#39;+CLS_MENU_TITLE+&#39;-text&quot;&gt;{text}&lt;/span&gt;&lt;/div&gt;&#39;
+    },
+<span id='BUI-Menu-SideMenu-cfg-subMenuTpl'>    /**
+</span>     * 子菜单的选项模板
+     * @cfg {String} subMenuTpl
+     */
+    subMenuItemTpl : {
+      value : &#39;&lt;a href=&quot;{href}&quot;&gt;&lt;em&gt;{text}&lt;/em&gt;&lt;/a&gt;&#39;
+    },
+<span id='BUI-Menu-SideMenu-property-collapsedCls'>    /**
+</span>     * 展开收缩的样式，用来触发展开折叠事件,默认是 &#39;bui-menu-title&#39;
+     * @type {String} 
+     */
+    collapsedCls : {
+      value : CLS_MENU_TITLE
+    },
+    events : {
+      value : {
+<span id='BUI-Menu-SideMenu-event-menuclick'>        /**
+</span>         * 点击菜单项
+	       * @name BUI.Menu.SideMenu#menuclick
+         * @event 
+         * @param {Object} e 事件对象
+         * @param {Object} e.item 当前选中的项
+         */
+        &#39;menuclick&#39; : false
+      }
+    }
+  }
+},{
+  xclass :&#39;side-menu&#39;
+});
+
+module.exports = sideMenu;
+</pre>
+</body>
+</html>

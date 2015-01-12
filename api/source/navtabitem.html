@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 导航项
+ * @author dxq613@gmail.com
+ * @ignore
+ */
+var $ = require(&#39;jquery&#39;),
+  BUI = require(&#39;bui-common&#39;),
+  Component =  BUI.Component,
+  CLS_ITEM_TITLE = &#39;tab-item-title&#39;,
+  CLS_ITEM_CLOSE = &#39;tab-item-close&#39;,
+  CLS_ITEM_INNER = &#39;tab-item-inner&#39;,
+  CLS_NAV_ACTIVED = &#39;tab-nav-actived&#39;,
+  CLS_CONTENT = &#39;tab-content&#39;;
+
+<span id='BUI-Tab-NavTabItemView'>/**
+</span> * 导航标签项的视图类
+ * @class BUI.Tab.NavTabItemView
+ * @extends BUI.Component.View
+ * @private
+ */
+var navTabItemView =  Component.View.extend({
+  renderUI : function(){
+    var _self = this,
+      contentContainer = _self.get(&#39;tabContentContainer&#39;),
+      contentTpl = _self.get(&#39;tabContentTpl&#39;);
+    if(contentContainer){
+      var tabContentEl = $(contentTpl).appendTo(contentContainer);
+      _self.set(&#39;tabContentEl&#39;,tabContentEl);
+    }
+  },
+  //设置链接地址
+  _uiSetHref : function(v){
+    this._setHref(v);
+  },
+  _setHref : function(href){
+    var _self = this,
+      tabContentEl = _self.get(&#39;tabContentEl&#39;);
+    href = href || _self.get(&#39;href&#39;);
+    if(tabContentEl){
+      $(&#39;iframe&#39;,tabContentEl).attr(&#39;src&#39;,href);
+    }
+  },
+  resetHref : function(){
+    this._setHref();
+  },
+  //设置标题
+  _uiSetTitle : function(v){
+    var _self = this,
+      el = _self.get(&#39;el&#39;);
+    //el.attr(&#39;title&#39;,v);
+    $(&#39;.&#39; + CLS_ITEM_TITLE,el).html(v);
+  },
+  _uiSetActived : function(v){
+    var _self = this,
+      el = _self.get(&#39;el&#39;);
+
+    _self.setTabContentVisible(v);
+    if(v){
+      el.addClass(CLS_NAV_ACTIVED);
+    }else{
+      el.removeClass(CLS_NAV_ACTIVED);
+    }
+
+  },
+  //析构函数
+  destructor : function(){
+    var _self = this,
+      tabContentEl = _self.get(&#39;tabContentEl&#39;);
+    if(tabContentEl){
+      tabContentEl.remove();
+    }
+  },
+  //设置标签内容是否可见
+  setTabContentVisible : function(v){
+    var _self = this,
+      tabContentEl = _self.get(&#39;tabContentEl&#39;);
+
+    if(tabContentEl){
+      if(v){
+        tabContentEl.show();
+      }else{
+        tabContentEl.hide();
+      }
+    }
+  }
+
+},{
+
+  ATTRS : {
+
+    tabContentContainer:{
+
+    },
+    tabContentEl: {
+
+    },
+    title:{
+
+    },
+    href:{
+
+    }
+  }
+});
+
+<span id='BUI-Tab-NavTabItem'>/**
+</span> * 导航标签项
+ * xclass : &#39;nav-tab-item&#39;
+ * @class BUI.Tab.NavTabItem
+ * @extends BUI.Component.Controller
+ */
+var navTabItem = Component.Controller.extend(
+{
+<span id='BUI-Tab-NavTabItem-method-createDom'>  /**
+</span>   * 创建DOM
+   * @protected
+   */
+  createDom : function(){
+    var _self = this,
+        parent = _self.get(&#39;parent&#39;);
+    if(parent){
+      _self.set(&#39;tabContentContainer&#39;,parent.getTabContentContainer());
+    }
+  },
+<span id='BUI-Tab-NavTabItem-method-bindUI'>  /**
+</span>   * 绑定事件
+   * @protected
+   */
+  bindUI : function(){
+    var _self = this,
+      el = _self.get(&#39;el&#39;),
+      events = _self.get(&#39;events&#39;);
+
+    el.on(&#39;click&#39;,function(ev){
+      var sender = $(ev.target);
+     if(sender.hasClass(CLS_ITEM_CLOSE)){
+        if(_self.fire(&#39;closing&#39;)!== false){
+          _self.close();
+        }
+      }
+    });
+  },
+<span id='BUI-Tab-NavTabItem-method-handleDblClick'>  /**
+</span>   * 处理双击
+   * @protected
+   */
+  handleDblClick:function(ev){
+    var _self = this;
+
+    if(_self.get(&#39;closeable&#39;) &amp;&amp; _self.fire(&#39;closing&#39;)!== false){
+      _self.close();
+    }
+    _self.fire(&#39;dblclick&#39;,{domTarget : ev.target,domEvent : ev});
+  },
+<span id='BUI-Tab-NavTabItem-method-handleContextMenu'>  /**
+</span>   * 处理右键
+   * @protected
+   */
+  handleContextMenu:function(ev){
+    ev.preventDefault();
+    this.fire(&#39;showmenu&#39;,{position:{x:ev.pageX,y:ev.pageY}});
+  },
+<span id='BUI-Tab-NavTabItem-method-setTitle'>  /**
+</span>   * 设置标题
+   * @param {String} title 标题
+   */
+  setTitle : function(title){
+    this.set(&#39;title&#39;,title);
+  },
+<span id='BUI-Tab-NavTabItem-method-close'>  /**
+</span>  * 关闭
+  */
+  close:function(){
+    this.fire(&#39;closed&#39;);
+  },
+<span id='BUI-Tab-NavTabItem-method-reload'>  /**
+</span>   * 重新加载页面
+   */
+  reload : function(){
+    this.get(&#39;view&#39;).resetHref();
+  },
+<span id='global-method-show'>  /**
+</span>   * @protected
+   * @ignore
+   */
+  show : function(){
+    var _self = this;
+      _self.get(&#39;el&#39;).show(500,function(){
+        _self.set(&#39;visible&#39;,true);
+      });
+  },
+<span id='global-method-hide'>  /**
+</span>   * @protected
+   * @ignore
+   */
+  hide : function(callback){
+    var _self = this;
+    this.get(&#39;el&#39;).hide(500,function(){
+      _self.set(&#39;visible&#39;,false);
+      callback &amp;&amp; callback();
+    });
+  },
+
+  _uiSetActived : function(v){
+    var _self = this,
+      parent = _self.get(&#39;parent&#39;);
+    if(parent &amp;&amp; v){
+      parent._setItemActived(_self);
+    }
+  },
+  _uiSetCloseable : function(v){
+    var _self = this,
+      el = _self.get(&#39;el&#39;),
+      closeEl = el.find(&#39;.&#39; + CLS_ITEM_CLOSE);
+    if(v){
+      closeEl.show();
+    }else{
+      closeEl.hide();
+    }
+  }
+},{
+  ATTRS : 
+  {
+    elTagName : {
+      value: &#39;li&#39;
+    },
+<span id='BUI-Tab-NavTabItem-property-actived'>    /**
+</span>     * 标签是否选中
+     * @type {Boolean}
+     */
+    actived : {
+      view:true,
+      value : false
+    }, 
+<span id='BUI-Tab-NavTabItem-property-closeable'>    /**
+</span>     * 是否可关闭
+     * @type {Boolean}
+     */
+    closeable : {
+      value : true
+    },
+    allowTextSelection:{
+      view:false,
+      value:false
+    },
+    events:{
+      value : {
+<span id='BUI-Tab-NavTabItem-event-click'>        /**
+</span>         * 点击菜单项
+         * @name BUI.Tab.NavTabItem#click
+         * @event 
+         * @param {Object} e 事件对象
+         * @param {BUI.Tab.NavTabItem} e.target 正在点击的标签
+         */
+        &#39;click&#39; : true,
+<span id='BUI-Tab-NavTabItem-event-closing'>        /**
+</span>         * 正在关闭，返回false可以阻止关闭事件发生
+         * @name BUI.Tab.NavTabItem#closing
+         * @event 
+         * @param {Object} e 事件对象
+         * @param {BUI.Tab.NavTabItem} e.target 正在关闭的标签
+         */
+        &#39;closing&#39; : true,
+<span id='BUI-Tab-NavTabItem-event-closed'>        /**
+</span>         * 关闭事件
+         * @name BUI.Tab.NavTabItem#closed
+         * @event 
+         * @param {Object} e 事件对象
+         * @param {BUI.Tab.NavTabItem} e.target 关闭的标签
+         */
+        &#39;closed&#39; : true,
+<span id='BUI-Tab-NavTabItem-event-showmenu'>        /**
+</span>         * @name BUI.Tab.NavTabItem#showmenu
+         * @event
+         * @param {Object} e 事件对象
+         * @param {BUI.Tab.NavTabItem} e.target 显示菜单的标签
+         */
+        &#39;showmenu&#39; : true,
+        &#39;afterVisibleChange&#39; : true
+      }
+    },
+<span id='BUI-Tab-NavTabItem-property-tabContentContainer'>    /**
+</span>     * @private
+     * @type {Object}
+     */
+    tabContentContainer:{
+      view : true
+    },
+<span id='BUI-Tab-NavTabItem-property-tabContentTpl'>    /**
+</span>     * @private
+     * @type {Object}
+     */
+    tabContentTpl : {
+      view : true,
+      value : &#39;&lt;div class=&quot;&#39; + CLS_CONTENT + &#39;&quot; style=&quot;display:none;&quot;&gt;&lt;iframe src=&quot;&quot; width=&quot;100%&quot; height=&quot;100%&quot; frameborder=&quot;0&quot;&gt;&lt;/iframe&gt;&lt;/div&gt;&#39;
+    },
+<span id='BUI-Tab-NavTabItem-cfg-href'>    /**
+</span>     * 标签页指定的URL
+     * @cfg {String} href
+     */
+<span id='BUI-Tab-NavTabItem-property-href'>    /**
+</span>     * 标签页指定的URL
+     * @type {String}
+     */
+    href : {
+      view : true,
+      value:&#39;&#39;
+    },
+    visible:{
+      view:true,
+      value:true
+    },
+<span id='BUI-Tab-NavTabItem-cfg-title'>    /**
+</span>     * 标签文本
+     * @cfg {String} title
+     */
+<span id='BUI-Tab-NavTabItem-property-title'>    /**
+</span>     * 标签文本
+     * tab.getItem(&#39;id&#39;).set(&#39;title&#39;,&#39;new title&#39;);
+     * @type {String}
+     * @default &#39;&#39;
+     */
+    title : {
+      view:true,
+      value : &#39;&#39;
+    },
+    tpl : {
+      view:true,
+      value :&#39;&lt;s class=&quot;l&quot;&gt;&lt;/s&gt;&lt;div class=&quot;&#39; + CLS_ITEM_INNER + &#39;&quot;&gt;{icon}&lt;span class=&quot;&#39; + CLS_ITEM_TITLE + &#39;&quot;&gt;&lt;/span&gt;&lt;s class=&quot;&#39; + CLS_ITEM_CLOSE + &#39;&quot;&gt;&lt;/s&gt;&lt;/div&gt;&lt;s class=&quot;r&quot;&gt;&lt;/s&gt;&#39;
+    },
+    xview:{
+      value : navTabItemView
+    }
+  }
+},{
+  xclass : &#39;nav-tab-item&#39;,
+  priority : 0
+});
+
+navTabItem.View = navTabItemView;
+
+module.exports = navTabItem;
+</pre>
+</body>
+</html>

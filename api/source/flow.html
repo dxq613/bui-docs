@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='BUI'>/**
+</span> * @fileOverview 浮动布局，所有的元素float:left
+ * @ignore
+ */
+
+var BUI = require(&#39;bui-common&#39;),
+	Abstract = require(&#39;./abstract&#39;),
+	Item = require(&#39;./item/base&#39;);
+
+<span id='BUI-Layout-Flow'>/**
+</span> * @class BUI.Layout.Flow
+ * 流布局控件
+ * @extends BUI.Layout.Abstract
+ * &lt;pre&gt;
+ * 	&lt;code&gt;
+ * 		var layout = new Flow(),
+				control = new BUI.Component.Controller({
+				width:600,
+				height:500,
+				render : &#39;#J_Layout&#39;,
+				elCls : &#39;layout-test&#39;,
+				children : [{
+					layout : {
+						width : 100,
+						height:100
+					},
+					xclass : &#39;controller&#39;,
+					content : &quot;一&quot;
+				},{
+					xclass : &#39;controller&#39;,
+					layout : {
+						width:200,
+						height:50
+					},
+					content : &#39;二&#39;
+				},{
+					xclass : &#39;controller&#39;,
+					layout : {
+						width:50,
+						height:100
+					},
+					content : &quot;三&quot;
+				},{
+					xclass : &#39;controller&#39;,
+					layout : {
+						width:200,
+						height : 200
+					},
+					content : &quot;四&quot;
+				}],
+				plugins : [layout]
+			});
+
+			control.render();
+ * 	&lt;/code&gt;
+ * &lt;/pre&gt;
+ */
+var Flow = function(config){
+	Flow.superclass.constructor.call(this,config)
+};
+
+Flow.ATTRS = {
+	itemConstructor : {
+		value : Item
+	},
+	itemTpl : {
+		value : &#39;&lt;div class=&quot;x-layout-item-flow pull-left&quot;&gt;&lt;/div&gt;&#39;
+	}
+};
+
+BUI.extend(Flow,Abstract);
+
+module.exports = Flow;
+</pre>
+</body>
+</html>

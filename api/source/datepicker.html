@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='BUI'>/**
+</span> * @fileOverview 日期选择器
+ * @author dxq613@gmail.com
+ * @ignore
+ */
+  
+var BUI = require(&#39;bui-common&#39;),
+  Picker = require(&#39;bui-picker&#39;).Picker,
+  Calendar = require(&#39;./calendar&#39;),
+  DateUtil = BUI.Date;
+
+<span id='BUI-Calendar-DatePicker'>/**
+</span> * 日期选择器，可以由输入框等触发
+ * &lt;p&gt;
+ * &lt;img src=&quot;../assets/img/class-calendar.jpg&quot;/&gt;
+ * &lt;/p&gt;
+ * xclass : &#39;calendar-datepicker&#39;
+ * &lt;pre&gt;&lt;code&gt;
+ *   BUI.use(&#39;bui/calendar&#39;,function(Calendar){
+ *      var datepicker = new Calendar.DatePicker({
+ *        trigger:&#39;.calendar&#39;,
+ *        //delegateTrigger : true, //如果设置此参数，那么新增加的.calendar元素也会支持日历选择
+ *        autoRender : true
+ *      });
+ *    });
+ * &lt;/code&gt;&lt;/pre&gt;
+ * @class BUI.Calendar.DatePicker
+ * @extends BUI.Picker.Picker
+ */
+var datepicker = Picker.extend({
+
+  initializer:function(){
+    
+  },
+<span id='BUI-Calendar-DatePicker-method-createControl'>  /**
+</span>   * @protected
+   * 初始化内部控件
+   */
+  createControl : function(){
+    var _self = this,
+      children = _self.get(&#39;children&#39;),
+      calendar = new Calendar({
+        render : _self.get(&#39;el&#39;),
+        showTime : _self.get(&#39;showTime&#39;),
+        lockTime : _self.get(&#39;lockTime&#39;),
+        minDate: _self.get(&#39;minDate&#39;),
+        maxDate: _self.get(&#39;maxDate&#39;),
+        autoRender : true
+      });
+
+    calendar.on(&#39;clear&#39;, function(){
+      var curTrigger = _self.get(&#39;curTrigger&#39;),
+        oldValue = curTrigger.val();
+
+      if(oldValue){
+        curTrigger.val(&#39;&#39;);
+        curTrigger.trigger(&#39;change&#39;);
+      }
+    });
+
+    if (!_self.get(&#39;dateMask&#39;)) {
+      if (_self.get(&#39;showTime&#39;)) {
+          _self.set(&#39;dateMask&#39;, &#39;yyyy-mm-dd HH:MM:ss&#39;);
+      } else {
+          _self.set(&#39;dateMask&#39;, &#39;yyyy-mm-dd&#39;);
+      }
+     }  
+    children.push(calendar);
+    _self.set(&#39;calendar&#39;,calendar);
+    return calendar;
+  },
+<span id='BUI-Calendar-DatePicker-method-setSelectedValue'>  /**
+</span>   * 设置选中的值
+   * &lt;pre&gt;&lt;code&gt;
+   *   datePicker.setSelectedValue(&#39;2012-01-1&#39;);
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @param {String} val 设置值
+   * @protected
+   */
+  setSelectedValue : function(val){
+    if(!this.get(&#39;calendar&#39;)){
+      return;
+    }
+    var _self = this,
+      calendar = this.get(&#39;calendar&#39;),
+      date = DateUtil.parse(val,_self.get(&quot;dateMask&quot;));
+    date = date || _self.get(&#39;selectedDate&#39;);
+    calendar.set(&#39;selectedDate&#39;,DateUtil.getDate(date));
+
+    if(_self.get(&#39;showTime&#39;)){
+
+        var lockTime = this.get(&quot;lockTime&quot;),
+          hour = date.getHours(),
+          minute = date.getMinutes(),
+          second = date.getSeconds();
+
+        if(lockTime){
+          if(!val || !lockTime.editable){
+            hour = lockTime[&#39;hour&#39;] != null ?lockTime[&#39;hour&#39;]:hour;
+            minute = lockTime[&#39;minute&#39;] != null ?lockTime[&#39;minute&#39;]:minute;
+            second = lockTime[&#39;second&#39;] != null ?lockTime[&#39;second&#39;]:second;
+          }
+        }
+
+      calendar.set(&#39;hour&#39;,hour);
+      calendar.set(&#39;minute&#39;,minute);
+      calendar.set(&#39;second&#39;,second);
+    }
+  },
+<span id='BUI-Calendar-DatePicker-method-getSelectedValue'>  /**
+</span>   * 获取选中的值
+   * @protected
+   * @return {String} 选中的值
+   */
+  getSelectedValue : function(){
+    if(!this.get(&#39;calendar&#39;)){
+      return null;
+    }
+    var _self = this, 
+      calendar = _self.get(&#39;calendar&#39;),
+    date =  DateUtil.getDate(calendar.get(&#39;selectedDate&#39;));
+    if(_self.get(&#39;showTime&#39;)){
+      date = DateUtil.addHour(calendar.get(&#39;hour&#39;),date);
+      date = DateUtil.addMinute(calendar.get(&#39;minute&#39;),date);
+      date = DateUtil.addSecond(calendar.get(&#39;second&#39;),date);
+    }
+    return date;
+  },
+<span id='BUI-Calendar-DatePicker-method-getSelectedText'>  /**
+</span>   * 获取选中项的文本，多选状态下，文本以&#39;,&#39;分割
+   * @protected
+   * @return {String} 选中的文本
+   */
+  getSelectedText : function(){
+    if(!this.get(&#39;calendar&#39;)){
+      return &#39;&#39;;
+    }
+    return DateUtil.format(this.getSelectedValue(),this._getFormatType());
+  },
+  _getFormatType : function(){
+    return this.get(&#39;dateMask&#39;);
+  },
+  //设置最大值
+  _uiSetMaxDate : function(v){
+    if(!this.get(&#39;calendar&#39;)){
+      return null;
+    }
+    var _self = this;
+    _self.get(&#39;calendar&#39;).set(&#39;maxDate&#39;,v);
+  },
+  //设置最小值
+  _uiSetMinDate : function(v){
+    if(!this.get(&#39;calendar&#39;)){
+      return null;
+    }
+    var _self = this;
+    _self.get(&#39;calendar&#39;).set(&#39;minDate&#39;,v);
+  }
+
+},{
+  ATTRS : 
+  {
+<span id='BUI-Calendar-DatePicker-property-showTime'>    /**
+</span>     * 是否显示日期
+     * &lt;pre&gt;&lt;code&gt;
+     *  var datepicker = new Calendar.DatePicker({
+     *    trigger:&#39;.calendar&#39;,
+     *    showTime : true, //可以选择日期
+     *    autoRender : true
+     *  });
+     * &lt;/code&gt;&lt;/pre&gt;
+     * @type {Boolean}
+     */
+    showTime : {
+      value:false
+    },
+<span id='BUI-Calendar-DatePicker-property-lockTime'>     /**
+</span>     * 锁定时间选择，默认锁定的时间不能修改可以通过 editable : true 来允许修改锁定的时间
+     *&lt;pre&gt;&lt;code&gt;
+     *  var calendar = new Calendar.Calendar({
+     *  render:&#39;#calendar&#39;,
+     *  lockTime : {hour:00,minute:30} //表示锁定时为00,分为30分,秒无锁用户可选择
+     * });
+     * &lt;/code&gt;&lt;/pre&gt;
+     *
+     * @type {Object}
+     */
+    lockTime :{
+
+    },
+<span id='BUI-Calendar-DatePicker-property-maxDate'>    /**
+</span>     * 最大日期
+     * &lt;pre&gt;&lt;code&gt;
+     *   var datepicker = new Calendar.DatePicker({
+     *     trigger:&#39;.calendar&#39;,
+     *     maxDate : &#39;2014-01-01&#39;,
+     *     minDate : &#39;2013-7-25&#39;,
+     *     autoRender : true
+     *   });
+     * &lt;/code&gt;&lt;/pre&gt;
+     * @type {Date}
+     */
+    maxDate : {
+
+    },
+<span id='BUI-Calendar-DatePicker-property-minDate'>    /**
+</span>     * 最小日期
+     * &lt;pre&gt;&lt;code&gt;
+     *   var datepicker = new Calendar.DatePicker({
+     *     trigger:&#39;.calendar&#39;,
+     *     maxDate : &#39;2014-01-01&#39;,
+     *     minDate : &#39;2013-7-25&#39;,
+     *     autoRender : true
+     *   });
+     * &lt;/code&gt;&lt;/pre&gt;
+     * @type {Date}
+     */
+    minDate : {
+
+    },
+<span id='BUI-Calendar-DatePicker-property-dateMask'>  /**
+</span>     * 返回日期格式，如果不设置默认为 yyyy-mm-dd，时间选择为true时为 yyyy-mm-dd HH:MM:ss
+     * &lt;pre&gt;&lt;code&gt;
+     *   calendar.set(&#39;dateMask&#39;,&#39;yyyy-mm-dd&#39;);
+     * &lt;/code&gt;&lt;/pre&gt;
+     * @type {String}
+    */
+    dateMask: {
+
+    },
+    changeEvent:{
+      value:&#39;accept&#39;
+    },
+    hideEvent:{
+      value:&#39;accept clear&#39;
+    },
+<span id='BUI-Calendar-DatePicker-property-calendar'>    /**
+</span>     * 日历对象,可以进行更多的操作，参看{@link BUI.Calendar.Calendar}
+     * @type {BUI.Calendar.Calendar}
+     */
+    calendar:{
+
+    },
+<span id='BUI-Calendar-DatePicker-property-selectedDate'>    /**
+</span>     * 默认选中的日期
+     * @type {Date}
+     */
+    selectedDate: {
+    	value: new Date(new Date().setSeconds(0))
+    }
+  }
+},{
+  xclass : &#39;datepicker&#39;,
+  priority : 0
+});
+
+module.exports = datepicker;
+</pre>
+</body>
+</html>

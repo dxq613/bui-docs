@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-use strict'>/**
+</span> * @fileOverview 加载控件内容
+ * @ignore
+ */
+
+&#39;use strict&#39;;
+var $ = require(&#39;jquery&#39;),
+  BUI = require(&#39;../util&#39;),
+  Base = require(&#39;../base&#39;),
+<span id='BUI-Component-Loader'>  /**
+</span>   * @class BUI.Component.Loader
+   * @extends BUI.Base
+   * ** 控件的默认Loader属性是：**
+   * &lt;pre&gt;&lt;code&gt;
+   *
+   *   defaultLoader : {
+   *     value : {
+   *       property : &#39;content&#39;,
+   *       autoLoad : true
+   *     }
+   *   }
+   * &lt;/code&gt;&lt;/pre&gt;
+   * ** 一般的控件默认读取html，作为控件的content值 **
+   * &lt;pre&gt;&lt;code&gt;
+   *   var control = new BUI.Component.Controller({
+   *     render : &#39;#c1&#39;,
+   *     loader : {
+   *       url : &#39;data/text.json&#39;
+   *     }
+   *   });
+   *
+   *   control.render();
+   * &lt;/code&gt;&lt;/pre&gt;
+   *
+   * ** 可以修改Loader的默认属性，加载children **
+   * &lt;pre&gt;&lt;code&gt;
+   *   var control = new BUI.Component.Controller({
+   *     render : &#39;#c1&#39;,
+   *     loader : {
+   *       url : &#39;data/children.json&#39;,
+   *       property : &#39;children&#39;,
+   *       dataType : &#39;json&#39;
+   *     }
+   *   });
+   *
+   *   control.render();
+   * &lt;/code&gt;&lt;/pre&gt;
+   * 加载控件内容的类，一般不进行实例化
+   */
+  Loader = function(config) {
+    Loader.superclass.constructor.call(this, config);
+    this._init();
+  };
+
+Loader.ATTRS = {
+
+<span id='BUI-Component-Loader-cfg-url'>  /**
+</span>   * 加载内容的地址
+   * &lt;pre&gt;&lt;code&gt;
+   *   var control = new BUI.Component.Controller({
+   *     render : &#39;#c1&#39;,
+   *     loader : {
+   *       url : &#39;data/text.json&#39;
+   *     }
+   *   });
+   *
+   *   control.render();
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {String} url
+   */
+  url: {
+
+  },
+<span id='BUI-Component-Loader-property-target'>  /**
+</span>   * 对应的控件，加载完成后设置属性到对应的控件
+   * @readOnly
+   * @type {BUI.Component.Controller}
+   */
+  target: {
+
+  },
+<span id='BUI-Component-Loader-property-hasLoad'>  /**
+</span>   * @private
+   * 是否load 过
+   */
+  hasLoad: {
+    value: false
+  },
+<span id='BUI-Component-Loader-cfg-autoLoad'>  /**
+</span>   * 是否自动加载数据
+   * &lt;pre&gt;&lt;code&gt;
+   *   var control = new BUI.Component.Controller({
+   *     render : &#39;#c1&#39;,
+   *     loader : {
+   *       url : &#39;data/text.json&#39;,
+   *       autoLoad : false
+   *     }
+   *   });
+   *
+   *   control.render();
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {Boolean} [autoLoad = true]
+   */
+  autoLoad: {
+
+  },
+<span id='BUI-Component-Loader-cfg-lazyLoad'>  /**
+</span>   * 延迟加载
+   *
+   *   - event : 触发加载的事件
+   *   - repeat ：是否重复加载
+   * &lt;pre&gt;&lt;code&gt;
+   *   var control = new BUI.Component.Controller({
+   *     render : &#39;#c1&#39;,
+   *     loader : {
+   *       url : &#39;data/text.json&#39;,
+   *       lazyLoad : {
+   *         event : &#39;show&#39;,
+   *         repeat : true
+   *       }
+   *     }
+   *   });
+   *
+   *   control.render();
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {Object} [lazyLoad = null]
+   */
+  lazyLoad: {
+
+  },
+<span id='BUI-Component-Loader-cfg-property'>  /**
+</span>   * 加载返回的数据作为控件的那个属性
+   * &lt;pre&gt;&lt;code&gt;
+   *   var control = new BUI.List.SimpleList({
+   *     render : &#39;#c1&#39;,
+   *     loader : {
+   *       url : &#39;data/text.json&#39;,
+   *       dataType : &#39;json&#39;,
+   *       property : &#39;items&#39;
+   *     }
+   *   });
+   *
+   *   control.render();
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {String} property
+   */
+  property: {
+
+  },
+<span id='BUI-Component-Loader-cfg-renderer'>  /**
+</span>   * 格式化返回的数据
+   * @cfg {Function} renderer
+   */
+  renderer: {
+    value: function(value) {
+      return value;
+    }
+  },
+<span id='BUI-Component-Loader-cfg-loadMask'>  /**
+</span>   * 加载数据时是否显示屏蔽层和加载提示 {@link BUI.Mask.LoadMask}
+   *
+   *  -  loadMask : true时使用loadMask 默认的配置信息
+   *  -  loadMask : {msg : &#39;正在加载，请稍后。。&#39;} LoadMask的配置信息
+   *   &lt;pre&gt;&lt;code&gt;
+   *   var control = new BUI.Component.Controller({
+   *     render : &#39;#c1&#39;,
+   *     loader : {
+   *       url : &#39;data/text.json&#39;,
+   *       loadMask : true
+   *     }
+   *   });
+   *
+   *   control.render();
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {Boolean|Object} [loadMask = false]
+   */
+  loadMask: {
+    value: false
+  },
+<span id='BUI-Component-Loader-cfg-dataType'>  /**
+</span>   * ajax 请求返回数据的类型
+   * &lt;pre&gt;&lt;code&gt;
+   *   var control = new BUI.Component.Controller({
+   *     render : &#39;#c1&#39;,
+   *     loader : {
+   *       url : &#39;data/text.json&#39;,
+   *       dataType : &#39;json&#39;,
+   *       property : &#39;items&#39;
+   *     }
+   *   });
+   *
+   *   control.render();
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {String} [dataType = &#39;text&#39;]
+   */
+  dataType: {
+    value: &#39;text&#39;
+  },
+<span id='BUI-Component-Loader-cfg-ajaxOptions'>  /**
+</span>   * Ajax请求的配置项,会覆盖 url,dataType数据
+   * @cfg {Object} ajaxOptions
+   */
+  ajaxOptions: {
+    //shared : false,
+    value: {
+      type: &#39;get&#39;,
+      cache: false
+    }
+  },
+<span id='BUI-Component-Loader-cfg-params'>  /**
+</span>   * 初始化的请求参数
+   * &lt;pre&gt;&lt;code&gt;
+   *   var control = new BUI.Component.Controller({
+   *     render : &#39;#c1&#39;,
+   *     loader : {
+   *       url : &#39;data/text.json&#39;,
+   *       params : {
+   *         a : &#39;a&#39;,
+   *         b : &#39;b&#39;
+   *       }
+   *     }
+   *   });
+   *
+   *   control.render();
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {Object} params
+   * @default null
+   */
+  params: {
+
+  },
+<span id='BUI-Component-Loader-cfg-appendParams'>  /**
+</span>   * 附加参数，每次请求都带的参数
+   * @cfg {Object} appendParams
+   */
+  appendParams: {
+
+  },
+<span id='BUI-Component-Loader-property-lastParams'>  /**
+</span>   * 最后一次请求的参数
+   * @readOnly
+   * @private
+   * @type {Object}
+   */
+  lastParams: {
+    shared: false,
+    value: {}
+  },
+<span id='BUI-Component-Loader-cfg-callback'>  /**
+</span>   * 加载数据，并添加属性到控件后的回调函数
+   *   - data : 加载的数据
+   *   - params : 加载的参数
+   * &lt;pre&gt;&lt;code&gt;
+   *   var control = new BUI.Component.Controller({
+   *     render : &#39;#c1&#39;,
+   *     loader : {
+   *       url : &#39;data/text.json&#39;,
+   *       callback : function(text){
+   *         var target = this.get(&#39;target&#39;);//control
+   *         //TO DO
+   *       }
+   *     }
+   *   });
+   *
+   *   control.render();
+   * &lt;/code&gt;&lt;/pre&gt;
+   * @cfg {Function} callback
+   */
+  callback: {
+
+  },
+<span id='BUI-Component-Loader-cfg-failure'>  /**
+</span>   * 失败的回调函数
+   *   - response : 返回的错误对象
+   *   - params : 加载的参数
+   * @cfg {Function} failure
+   */
+  failure: {
+
+  }
+
+};
+
+BUI.extend(Loader, Base);
+
+BUI.augment(Loader, {
+<span id='BUI-Component-Loader-property-isLoader'>  /**
+</span>   * @protected
+   * 是否是Loader
+   * @type {Boolean}
+   */
+  isLoader: true,
+  //初始化
+  _init: function() {
+    var _self = this,
+      autoLoad = _self.get(&#39;autoLoad&#39;),
+      params = _self.get(&#39;params&#39;);
+
+    _self._initMask();
+    if (autoLoad) {
+      _self.load(params);
+    } else {
+      _self._initParams();
+      _self._initLazyLoad();
+    }
+  },
+  //初始化延迟加载
+  _initLazyLoad: function() {
+    var _self = this,
+      target = _self.get(&#39;target&#39;),
+      lazyLoad = _self.get(&#39;lazyLoad&#39;);
+
+    if (target &amp;&amp; lazyLoad &amp;&amp; lazyLoad.event) {
+      target.on(lazyLoad.event, function() {
+        if (!_self.get(&#39;hasLoad&#39;) || lazyLoad.repeat) {
+          _self.load();
+        }
+      });
+    }
+  },
+<span id='BUI-Component-Loader-method-_initMask'>  /**
+</span>   * 初始化mask
+   * @private
+   */
+  _initMask: function() {
+    var _self = this,
+      target = _self.get(&#39;target&#39;),
+      loadMask = _self.get(&#39;loadMask&#39;);
+    if (target &amp;&amp; loadMask) {
+      require.async(&#39;bui-mask/1.1.0/index&#39;, function(Mask) {
+        var cfg = $.isPlainObject(loadMask) ? loadMask : {};
+        loadMask = new Mask.LoadMask(BUI.mix({
+          el: target.get(&#39;el&#39;)
+        }, cfg));
+        _self.set(&#39;loadMask&#39;, loadMask);
+      });
+    }
+  },
+  //初始化查询参数
+  _initParams: function() {
+    var _self = this,
+      lastParams = _self.get(&#39;lastParams&#39;),
+      params = _self.get(&#39;params&#39;);
+
+    //初始化 参数
+    BUI.mix(lastParams, params);
+  },
+<span id='BUI-Component-Loader-method-load'>  /**
+</span>   * 加载内容
+   * @param {Object} params 加载数据的参数
+   */
+  load: function(params) {
+    var _self = this,
+      url = _self.get(&#39;url&#39;),
+      ajaxOptions = _self.get(&#39;ajaxOptions&#39;),
+      lastParams = _self.get(&#39;lastParams&#39;),
+      appendParams = _self.get(&#39;appendParams&#39;);
+
+    //BUI.mix(true,lastParams,appendParams,params);
+    params = params || lastParams;
+    params = BUI.merge(appendParams, params); //BUI.cloneObject(lastParams);
+    _self.set(&#39;lastParams&#39;, params);
+    //未提供加载地址，阻止加载
+    if (!url) {
+      return;
+    }
+
+    _self.onBeforeLoad();
+    _self.set(&#39;hasLoad&#39;, true);
+    $.ajax(BUI.mix({
+      dataType: _self.get(&#39;dataType&#39;),
+      data: params,
+      url: url,
+      success: function(data) {
+        _self.onload(data, params);
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        _self.onException({
+          jqXHR: jqXHR,
+          textStatus: textStatus,
+          errorThrown: errorThrown
+        }, params);
+      }
+    }, ajaxOptions));
+  },
+<span id='BUI-Component-Loader-method-onBeforeLoad'>  /**
+</span>   * @private
+   * 加载前
+   */
+  onBeforeLoad: function() {
+    var _self = this,
+      loadMask = _self.get(&#39;loadMask&#39;);
+    if (loadMask &amp;&amp; loadMask.show) {
+      loadMask.show();
+    }
+  },
+<span id='BUI-Component-Loader-method-onload'>  /**
+</span>   * @private
+   * 加载完毕
+   */
+  onload: function(data, params) {
+    var _self = this,
+      loadMask = _self.get(&#39;loadMask&#39;),
+      property = _self.get(&#39;property&#39;),
+      callback = _self.get(&#39;callback&#39;),
+      renderer = _self.get(&#39;renderer&#39;),
+      target = _self.get(&#39;target&#39;);
+
+    if (BUI.isString(data)) {
+      target.set(property, &#39;&#39;); //防止2次返回的数据一样
+    }
+    target.set(property, renderer.call(_self, data));
+
+    /**/
+    if (loadMask &amp;&amp; loadMask.hide) {
+      loadMask.hide();
+    }
+    if (callback) {
+      callback.call(this, data, params);
+    }
+  },
+<span id='BUI-Component-Loader-method-onException'>  /**
+</span>   * @private
+   * 加载出错
+   */
+  onException: function(response, params) {
+    var _self = this,
+      failure = _self.get(&#39;failure&#39;);
+    if (failure) {
+      failure.call(this, response, params);
+    }
+  }
+
+});
+module.exports = Loader;
+</pre>
+</body>
+</html>

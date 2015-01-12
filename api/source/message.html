@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview 消息框，警告、确认
+ * @author dxq613@gmail.com
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;),
+  Dialog = require(&#39;./dialog&#39;),
+  PREFIX = BUI.prefix,
+  iconText ={
+      info : &#39;i&#39;,
+      error : &#39;×&#39;,
+      success : &#39;&lt;i class=&quot;icon-ok icon-white&quot;&gt;&lt;/i&gt;&#39;,
+      question : &#39;?&#39;,
+      warning: &#39;!&#39;
+  };
+
+<span id='BUI-Overlay-Message'>/**
+</span> * 消息框类，一般不直接创建对象，而是调用其Alert和Confirm方法
+ * &lt;pre&gt;&lt;code&gt;
+ ** BUI.use(&#39;bui/overlay&#39;,function(overlay){
+ * 
+ *    BUI.Message.Alert(&#39;这只是简单的提示信息&#39;,&#39;info&#39;);
+ *    BUI.Message.Alert(&#39;这只是简单的成功信息&#39;,&#39;success&#39;);
+ *    BUI.Message.Alert(&#39;这只是简单的警告信息&#39;,&#39;warning&#39;);
+ *    BUI.Message.Alert(&#39;这只是简单的错误信息&#39;,&#39;error&#39;);
+ *    BUI.Message.Alert(&#39;这只是简单的询问信息&#39;,&#39;question&#39;);
+ *
+ *    //回调函数
+ *    BUI.Message.Alert(&#39;点击触发回调函数&#39;,function() {
+ *         alert(&#39;执行回调&#39;);
+ *       },&#39;error&#39;);
+ *       
+ *    //复杂的提示信息
+ *    var msg = &#39;&amp;lt;h2&amp;gt;上传失败，请上传10M以内的文件&amp;lt;/h2&amp;gt;&#39;+
+ *       &#39;&amp;lt;p class=&quot;auxiliary-text&quot;&amp;gt;如连续上传失败，请及时联系客服热线：0511-23883767834&amp;lt;/p&amp;gt;&#39;+
+ *       &#39;&amp;lt;p&amp;gt;&amp;lt;a href=&quot;#&quot;&amp;gt;返回list页面&amp;lt;/a&amp;gt; &amp;lt;a href=&quot;#&quot;&amp;gt;查看详情&amp;lt;/a&amp;gt;&amp;lt;/p&amp;gt;&#39;;
+ *     BUI.Message.Alert(msg,&#39;error&#39;);
+ *    //确认信息
+ *    BUI.Message.Confirm(&#39;确认要更改么？&#39;,function(){
+ *       alert(&#39;确认&#39;);
+ *     },&#39;question&#39;);
+ * });
+ * &lt;/code&gt;&lt;/pre&gt;
+ * @class BUI.Overlay.Message
+ * @private
+ * @extends BUI.Overlay.Dialog
+ */
+var message = Dialog.extend({
+
+<span id='global-method-renderUI'>  /**
+</span>   * @protected
+   * @ignore
+   */
+  renderUI : function(){
+    this._setContent();
+  },
+  bindUI : function(){
+    var _self = this,
+      body = _self.get(&#39;body&#39;);
+    _self.on(&#39;afterVisibleChange&#39;,function(ev){
+      if(ev.newVal){
+        if(BUI.UA.ie &lt; 8){
+<span id='global-property-outerWidth'>         /**
+</span>         * fix ie6,7 bug
+         * @ignore
+         */
+          var outerWidth = body.outerWidth();
+          if(BUI.UA.ie == 6){
+            outerWidth = outerWidth &gt; 350 ? 350 : outerWidth;
+          }
+          _self.get(&#39;header&#39;).width(outerWidth - 20);
+          _self.get(&#39;footer&#39;).width(outerWidth);
+        }
+      }
+    });
+  },
+  //根据模版设置内容
+  _setContent : function(){
+    var _self = this,
+      body = _self.get(&#39;body&#39;),
+      contentTpl = BUI.substitute(_self.get(&#39;contentTpl&#39;),{
+        msg : _self.get(&#39;msg&#39;),
+        iconTpl : _self.get(&#39;iconTpl&#39;)
+      });
+    body.empty();
+
+    $(contentTpl).appendTo(body);
+  },
+  //设置类型
+  _uiSetIcon : function(v){
+     if (!this.get(&#39;rendered&#39;)) {
+          return;
+      }
+      this._setContent();
+  },
+  //设置文本
+  _uiSetMsg : function(v){
+     if (!this.get(&#39;rendered&#39;)) {
+          return;
+      }
+      this._setContent();
+  }
+
+},{
+  ATTRS : 
+  {
+<span id='BUI-Overlay-Message-property-icon'>    /**
+</span>     * 图标类型
+     * &lt;ol&gt;
+     * &lt;li&gt;提示信息，类型参数&lt;code&gt;info&lt;/code&gt;&lt;/li&gt;
+     * &lt;li&gt;成功信息，类型参数&lt;code&gt;success&lt;/code&gt;&lt;/li&gt;
+     * &lt;li&gt;警告信息，类型参数&lt;code&gt;warning&lt;/code&gt;&lt;/li&gt;
+     * &lt;li&gt;错误信息，类型参数&lt;code&gt;error&lt;/code&gt;&lt;/li&gt;
+     * &lt;li&gt;确认信息，类型参数&lt;code&gt;question&lt;/code&gt;&lt;/li&gt;
+     * &lt;/ol&gt;
+     * @type {String}
+     */
+    icon : {
+
+    },
+<span id='BUI-Overlay-Message-cfg-msg'>    /**
+</span>     * 提示消息，可以是文本或者html
+     * @cfg {String} msg
+     */
+<span id='BUI-Overlay-Message-property-msg'>    /**
+</span>     * 提示消息，可以是文本或者html
+     * @type {String}
+     */
+    msg : {
+
+    },
+<span id='BUI-Overlay-Message-property-iconTpl'>    /**
+</span>     * @private
+     */
+    iconTpl : {
+<span id='BUI-Overlay-Message-method-getter'>      /**
+</span>       * @private
+       */
+      getter:function(){
+        var _self = this,
+          type = _self.get(&#39;icon&#39;);
+        return &#39;&lt;div class=&quot;x-icon x-icon-&#39; + type + &#39;&quot;&gt;&#39; + iconText[type] + &#39;&lt;/div&gt;&#39;;
+      }
+    },
+<span id='BUI-Overlay-Message-property-contentTpl'>    /**
+</span>     * 内容的模版
+     * @type {String}
+     * @protected
+     */
+    contentTpl : {
+      value : &#39;{iconTpl}&lt;div class=&quot;&#39; + PREFIX + &#39;message-content&quot;&gt;{msg}&lt;/div&gt;&#39;
+    }
+  }
+},{
+  xclass : &#39;message&#39;,
+  priority : 0
+});
+
+var singlelon;
+    
+function messageFun(buttons,defaultIcon){
+ 
+  return function (msg,callback,icon){
+
+    if(BUI.isString(callback)){
+      icon = callback;
+      callback = null;
+    }
+    icon = icon || defaultIcon;
+    callback = callback || hide;
+    showMessage({
+      &#39;buttons&#39;: buttons,
+      &#39;icon&#39;:icon,
+      &#39;msg&#39;:msg,
+      &#39;success&#39; : callback
+    });
+    return singlelon;
+  };
+}
+
+function showMessage(config){
+  if(!singlelon){
+    singlelon = new message({
+        icon:&#39;info&#39;,
+        title:&#39;&#39;
+    });
+  }
+  singlelon.set(config);
+    
+  singlelon.show();
+}
+
+function success(){
+ var _self = this,
+    success = _self.get(&#39;success&#39;);
+  if(success){
+    success.call(_self);
+    _self.hide();
+  }
+}
+
+function hide(){
+   this.hide();
+}
+
+
+var Alert = messageFun([{
+        text:&#39;确定&#39;,
+        elCls : &#39;button button-primary&#39;,
+        handler : success
+      }
+    ],&#39;info&#39;),
+  Confirm = messageFun([{
+        text:&#39;确定&#39;,
+        elCls : &#39;button button-primary&#39;,
+        handler : success
+      },{
+          text:&#39;取消&#39;,
+          elCls : &#39;button&#39;,
+          handler : hide
+        }
+    ],&#39;question&#39;);
+
+<span id='BUI-Message'>/**
+</span> * 提示框静态类
+ * @class BUI.Message
+ */
+
+<span id='BUI-Message-static-method-Alert'>/**
+</span> * 显示提示信息框
+ * @static
+ * @method
+ * @member BUI.Message
+ * @param  {String}   msg      提示信息
+ * @param  {Function} callback 确定的回调函数
+ * @param  {String}   icon     图标，提供以下几种图标：info,error,success,question,warning
+ */
+message.Alert = Alert;
+
+<span id='BUI-Message-static-method-Confirm'>/**
+</span> * 显示确认框
+ * &lt;pre&gt;&lt;code&gt;
+ * BUI.Message.Confirm(&#39;确认要更改么？&#39;,function(){
+ *       alert(&#39;确认&#39;);
+ * },&#39;question&#39;);
+ * &lt;/code&gt;&lt;/pre&gt;
+ * @static
+ * @method
+ * @member BUI.Message
+ * @param  {String}   msg      提示信息
+ * @param  {Function} callback 确定的回调函数
+ * @param  {String}   icon     图标，提供以下几种图标：info,error,success,question,warning
+ */
+message.Confirm = Confirm;
+
+<span id='BUI-Message-static-method-Show'>/**
+</span> * 自定义消息框，传入配置信息 {@link BUI.Overlay.Dialog} 和 {@link BUI.Overlay.Message}
+ * @static
+ * @method
+ * @member BUI.Message
+ * @param  {Object}   config  配置信息
+ */
+message.Show = showMessage;
+
+module.exports = message;
+</pre>
+</body>
+</html>

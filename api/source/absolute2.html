@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='BUI'>/**
+</span> * @fileOverview 绝对布局的布局项
+ * @ignore
+ */
+
+	
+var BUI = require(&#39;bui-common&#39;),
+	Base = require(&#39;./base&#39;);
+
+<span id='BUI-Layout-Item-Absolute'>/**
+</span>* @class BUI.Layout.Item.Absolute
+* 绝对布局的布局项
+* @extends BUI.Layout.Item
+*/
+var AbsoluteItem = function(config){
+	AbsoluteItem.superclass.constructor.call(this,config);
+};
+
+BUI.extend(AbsoluteItem,Base);
+
+AbsoluteItem.ATTRS = {
+
+<span id='BUI-Layout-Item-Absolute-property-cssProperties'>	/**
+</span>	 * @protected
+	 * 同步的css属性
+	 * @type {Array}
+	 */
+	cssProperties : {
+		value : [&#39;top&#39;,&#39;left&#39;,&#39;bottom&#39;,&#39;right&#39;]
+	}
+	
+<span id='BUI-Layout-Item-Absolute-cfg-top'>	/**
+</span>	 * top 位置
+	 * @cfg {Number} top
+	 */
+	
+<span id='BUI-Layout-Item-Absolute-cfg-left'>	/**
+</span>	 * left 位置
+	 * @cfg {Number} left
+	 */
+	
+<span id='BUI-Layout-Item-Absolute-cfg-bottom'>	/**
+</span>	 * bottom 位置
+	 * @cfg {Number} bottom
+	 */
+	
+<span id='BUI-Layout-Item-Absolute-cfg-right'>	/**
+</span>	 * right 位置
+	 * @cfg {Number} right
+	 */
+	
+};
+
+BUI.augment(AbsoluteItem,{
+
+	
+});
+
+module.exports = AbsoluteItem;
+</pre>
+</body>
+</html>
