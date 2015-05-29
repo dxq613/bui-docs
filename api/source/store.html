@@ -115,51 +115,7 @@
       shared : false,
       value:[]
     },
-<span id='BUI-Data-Store-cfg-errorProperty'>    /**
-</span>     * 错误字段,包含在返回信息中表示错误信息的字段
-     * &lt;pre&gt;&lt;code&gt;
-     *   //可以修改接收的后台参数的含义
-     *   var store = new Store({
-     *     url : &#39;data.json&#39;,
-     *     errorProperty : &#39;errorMsg&#39;, //存放错误信息的字段(error)
-     *     hasErrorProperty : &#39;isError&#39;, //是否错误的字段（hasError)
-     *     root : &#39;data&#39;,               //存放数据的字段名(rows)
-     *     totalProperty : &#39;total&#39;     //存放记录总数的字段名(results)
-     *   });
-     * &lt;/code&gt;&lt;/pre&gt;
-     * @cfg {String} [errorProperty=&#39;error&#39;]
-     */
-<span id='global-property-errorProperty'>    /**
-</span>     * 错误字段
-     * @type {String}
-     * @ignore
-     */
-    errorProperty : {
-      value : &#39;error&#39;
-    },
-<span id='BUI-Data-Store-cfg-hasErrorProperty'>    /**
-</span>     * 是否存在错误,加载数据时如果返回错误，此字段表示有错误发生
-     * &lt;pre&gt;&lt;code&gt;
-     *   //可以修改接收的后台参数的含义
-     *   var store = new Store({
-     *     url : &#39;data.json&#39;,
-     *     errorProperty : &#39;errorMsg&#39;, //存放错误信息的字段(error)
-     *     hasErrorProperty : &#39;isError&#39;, //是否错误的字段（hasError)
-     *     root : &#39;data&#39;,               //存放数据的字段名(rows)
-     *     totalProperty : &#39;total&#39;     //存放记录总数的字段名(results)
-     *   });
-     * &lt;/code&gt;&lt;/pre&gt;
-     * @cfg {String} [hasErrorProperty=&#39;hasError&#39;]
-     */
-<span id='global-property-hasErrorProperty'>    /**
-</span>     * 是否存在错误
-     * @type {String}
-     * @default &#39;hasError&#39;
-     * @ignore
-     */
-    hasErrorProperty : {
-      value : &#39;hasError&#39;
-    },
+    
 
 <span id='BUI-Data-Store-property-matchFunction'>    /**
 </span>     * 对比2个对象是否相当，在去重、更新、删除，查找数据时使用此函数
@@ -503,8 +459,9 @@
     getTotalCount : function(){
       var _self = this,
         resultMap = _self.get(&#39;resultMap&#39;),
-        total = _self.get(&#39;totalProperty&#39;);
-      return parseInt(resultMap[total],10) || 0;
+        total = _self.get(&#39;totalProperty&#39;),
+        totalVal = BUI.getValue(resultMap,total); 
+      return parseInt(totalVal,10) || 0;
     },
 <span id='BUI-Data-Store-method-getResult'>    /**
 </span>     * 获取当前缓存的纪录
@@ -517,7 +474,7 @@
       var _self = this,
         resultMap = _self.get(&#39;resultMap&#39;),
         root = _self.get(&#39;root&#39;);
-      return resultMap[root];
+      return BUI.getValue(resultMap,root);
     },
 <span id='BUI-Data-Store-method-hasData'>    /**
 </span>     * 是否包含数据
@@ -673,7 +630,7 @@
       var _self = this,
          hasErrorField = _self.get(&#39;hasErrorProperty&#39;);
 
-      if(data[hasErrorField] || data.exception){ //如果失败
+      if (BUI.getValue(data,hasErrorField) || data.exception){ //如果失败
         _self.onException(data);
         return;
       }
@@ -902,7 +859,7 @@
       if(BUI.isArray(data)){
         _self._setResult(data);
       }else{
-        _self._setResult(data[root],data[totalProperty]);
+        _self._setResult(BUI.getValue(data,root), BUI.getValue(data,totalProperty));
       }
 
       _self.set(&#39;start&#39;,start);
@@ -929,8 +886,9 @@
         resultMap = _self.get(&#39;resultMap&#39;);
 
       totalCount = totalCount || rows.length;
-      resultMap[_self.get(&#39;root&#39;)] = rows;
-      resultMap[_self.get(&#39;totalProperty&#39;)] = totalCount;
+
+      BUI.setValue(resultMap,_self.get(&#39;root&#39;),rows);
+      BUI.setValue(resultMap,_self.get(&#39;totalProperty&#39;),totalCount);
 
       //清理之前发生的改变
       _self._clearChanges();

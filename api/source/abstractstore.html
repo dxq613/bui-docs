@@ -81,6 +81,51 @@
     params : {
 
     },
+<span id='BUI-Data-AbstractStore-cfg-errorProperty'>    /**
+</span>     * 错误字段,包含在返回信息中表示错误信息的字段
+     * &lt;pre&gt;&lt;code&gt;
+     *   //可以修改接收的后台参数的含义
+     *   var store = new Store({
+     *     url : &#39;data.json&#39;,
+     *     errorProperty : &#39;errorMsg&#39;, //存放错误信息的字段(error)
+     *     hasErrorProperty : &#39;isError&#39;, //是否错误的字段（hasError)
+     *     root : &#39;data&#39;,               //存放数据的字段名(rows)
+     *     totalProperty : &#39;total&#39;     //存放记录总数的字段名(results)
+     *   });
+     * &lt;/code&gt;&lt;/pre&gt;
+     * @cfg {String} [errorProperty=&#39;error&#39;]
+     */
+<span id='global-property-errorProperty'>    /**
+</span>     * 错误字段
+     * @type {String}
+     * @ignore
+     */
+    errorProperty : {
+      value : &#39;error&#39;
+    },
+<span id='BUI-Data-AbstractStore-cfg-hasErrorProperty'>    /**
+</span>     * 是否存在错误,加载数据时如果返回错误，此字段表示有错误发生
+     * &lt;pre&gt;&lt;code&gt;
+     *   //可以修改接收的后台参数的含义
+     *   var store = new Store({
+     *     url : &#39;data.json&#39;,
+     *     errorProperty : &#39;errorMsg&#39;, //存放错误信息的字段(error)
+     *     hasErrorProperty : &#39;isError&#39;, //是否错误的字段（hasError)
+     *     root : &#39;data&#39;,               //存放数据的字段名(rows)
+     *     totalProperty : &#39;total&#39;     //存放记录总数的字段名(results)
+     *   });
+     * &lt;/code&gt;&lt;/pre&gt;
+     * @cfg {String} [hasErrorProperty=&#39;hasError&#39;]
+     */
+<span id='global-property-hasErrorProperty'>    /**
+</span>     * 是否存在错误
+     * @type {String}
+     * @default &#39;hasError&#39;
+     * @ignore
+     */
+    hasErrorProperty : {
+      value : &#39;hasError&#39;
+    },
 <span id='BUI-Data-AbstractStore-cfg-proxy'>    /**
 </span>     * 数据代理对象,用于加载数据的ajax配置，{@link BUI.Data.Proxy}
      * &lt;pre&gt;&lt;code&gt;
@@ -466,7 +511,7 @@
       //获取的原始数据
       _self.fire(&#39;beforeProcessLoad&#39;,data);
 
-      if(data[hasErrorField] || data.exception){
+      if(BUI.getValue(data,hasErrorField) || data.exception){
         _self.onException(data);
         return false;
       }
@@ -492,10 +537,10 @@
       //网络异常、转码错误之类，发生在json获取或转变时
       if(data.exception){
         obj.type = &#39;exception&#39;;
-        obj[errorProperty] = data.exception;
+        obj.error = data.exception;
       }else{//用户定义的错误
         obj.type = &#39;error&#39;;
-        obj[errorProperty] = data[errorProperty];
+        obj.error = BUI.getValue(data,errorProperty);
       }
       _self.fire(&#39;exception&#39;,obj);
 

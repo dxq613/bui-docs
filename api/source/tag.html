@@ -102,6 +102,7 @@ BUI.augment(Tag,{
   __bindUI : function(){
     var _self = this,
       showTag = _self.get(&#39;showTag&#39;),
+      valueField = _self.get(&#39;valueField&#39;),
       tagInput = _self.getTagInput();
     if(showTag){
       tagInput.on(&#39;keydown&#39;,function(ev){
@@ -144,7 +145,10 @@ BUI.augment(Tag,{
           },50);
         });
       }
-      
+      // 同步数据
+      valueField.on(&#39;change&#39;,function(){
+        _self.setSelectedValue(valueField.val());
+      });
 
       _self.on(&#39;change&#39;,function(ev){
         setTimeout(function(){
@@ -276,6 +280,19 @@ BUI.augment(Tag,{
     var _self = this,
         el = _self.get(&#39;el&#39;);
     return el.is(&#39;input&#39;) ? el : el.find(&#39;input&#39;);
+  },
+  setSelectedValue: function(value){
+    var _self = this;
+    if (_self.get(&#39;showTag&#39;)) {
+      var tagList = _self.get(&#39;tagList&#39;);
+      tagList.clearItems();
+      _self._setTags(value);
+      _self._synTagsValue();
+    } else {
+      var _self = this,
+        picker = _self.get(&#39;picker&#39;);
+      picker.setSelectedValue(value);
+    }
   },
   _synTagsValue : function(){
     var _self = this,

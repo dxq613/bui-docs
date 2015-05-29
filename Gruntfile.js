@@ -9,7 +9,7 @@ module.exports = function(grunt) {
                     "../bui/bui-common/src",
                     "../bui/bui-mask/src",
                     "../bui/bui-data/src",
-                    "../bui/bui-bar/src",
+                    "../bui/bui-toolbar/src",
                     "../bui/bui-cookie/src",
                     "../bui/bui-overlay/src",
                     "../bui/bui-calendar/src",

@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview  a specialized toolbar that is bound to a Grid.Store and provides automatic paging control.
+ * @author dxq613@gmail.com, yiminghe@gmail.com
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;),
+    BUI = require(&#39;bui-common&#39;),
+    Bar = require(&#39;./bar&#39;),
+    Component = BUI.Component,
+    Bindable = Component.UIBase.Bindable;
+
+var PREFIX = BUI.prefix,
+	ID_FIRST = &#39;first&#39;,
+    ID_PREV = &#39;prev&#39;,
+    ID_NEXT = &#39;next&#39;,
+    ID_LAST = &#39;last&#39;,
+    ID_SKIP = &#39;skip&#39;,
+    ID_REFRESH = &#39;refresh&#39;,
+    ID_TOTAL_PAGE = &#39;totalPage&#39;,
+    ID_CURRENT_PAGE = &#39;curPage&#39;,
+    ID_TOTAL_COUNT = &#39;totalCount&#39;,
+    ID_BUTTONS = [ID_FIRST,ID_PREV,ID_NEXT,ID_LAST,ID_SKIP,ID_REFRESH],
+    ID_TEXTS = [ID_TOTAL_PAGE,ID_CURRENT_PAGE,ID_TOTAL_COUNT];
+
+<span id='BUI-Toolbar-PagingBar'>/**
+</span> * 分页栏
+ * xclass:&#39;pagingbar&#39;
+ * @extends BUI.Toolbar.Bar
+ * @mixins BUI.Component.UIBase.Bindable
+ * @class BUI.Toolbar.PagingBar
+ */
+var PagingBar = Bar.extend([Bindable],
+    {
+<span id='BUI-Toolbar-PagingBar-method-initializer'>        /**
+</span>         * From Bar, Initialize this paging bar items.
+         *
+         * @protected
+         */
+        initializer:function () {
+            var _self = this,
+                children = _self.get(&#39;children&#39;),
+                items = _self.get(&#39;items&#39;),
+                store = _self.get(&#39;store&#39;);
+            if(!items){
+                items = _self._getItems();
+                BUI.each(items, function (item) {
+                    children.push(item);//item
+                });
+            }else{
+                BUI.each(items, function (item,index) { //转换对应的分页栏
+                    if(BUI.isString(item)){
+                        if(BUI.Array.contains(item,ID_BUTTONS)){
+                            item = _self._getButtonItem(item);
+                        }else if(BUI.Array.contains(item,ID_TEXTS)){
+                        
+                            item = _self._getTextItem(item);
+                        }else{
+                            item = {xtype : item};
+                        }
+
+                    }
+                    children.push(item);
+                }); 
+            }
+            
+            if (store &amp;&amp; store.get(&#39;pageSize&#39;)) {
+                _self.set(&#39;pageSize&#39;, store.get(&#39;pageSize&#39;));
+            }
+        },
+<span id='BUI-Toolbar-PagingBar-method-bindUI'>        /**
+</span>         * bind page change and store events
+         *
+         * @protected
+         */
+        bindUI:function () {
+            var _self = this;
+            _self._bindButtonEvent();
+            //_self._bindStoreEvents();
+
+        },
+<span id='BUI-Toolbar-PagingBar-method-jumpToPage'>        /**
+</span>         * skip to page
+         * this method can fire &quot;beforepagechange&quot; event,
+         * if you return false in the handler the action will be canceled
+         * @param {Number} page target page
+         */
+        jumpToPage:function (page) {
+            if (page &lt;= 0 || page &gt; this.get(&#39;totalPage&#39;)) {
+                return;
+            }
+            var _self = this,
+                store = _self.get(&#39;store&#39;),
+                pageSize = _self.get(&#39;pageSize&#39;),
+                index = page - 1,
+                start = index * pageSize;
+            var result = _self.fire(&#39;beforepagechange&#39;, {from:_self.get(&#39;curPage&#39;), to:page});
+            if (store &amp;&amp; result !== false) {
+                store.load({ start:start, limit:pageSize, pageIndex:index });
+            }
+        },
+        //after store loaded data,reset the information of paging bar and buttons state
+        _afterStoreLoad:function (store, params) {
+            var _self = this,
+                pageSize = _self.get(&#39;pageSize&#39;),
+                start = 0, //页面的起始记录
+                end, //页面的结束记录
+                totalCount, //记录的总数
+                curPage, //当前页
+                totalPage;//总页数;
+
+            start = store.get(&#39;start&#39;);
+            
+            //设置加载数据后翻页栏的状态
+            totalCount = store.getTotalCount();
+            end = totalCount - start &gt; pageSize ? start + store.getCount() - 1: totalCount;
+            totalPage = parseInt((totalCount + pageSize - 1) / pageSize, 10);
+            totalPage = totalPage &gt; 0 ? totalPage : 1;
+            curPage = parseInt(start / pageSize, 10) + 1;
+
+            _self.set(&#39;start&#39;, start);
+            _self.set(&#39;end&#39;, end);
+            _self.set(&#39;totalCount&#39;, totalCount);
+            _self.set(&#39;curPage&#39;, curPage);
+            _self.set(&#39;totalPage&#39;, totalPage);
+
+            //设置按钮状态
+            _self._setAllButtonsState();
+            _self._setNumberPages();
+        },
+
+        //bind page change events
+        _bindButtonEvent:function () {
+            var _self = this;
+
+            //first page handler
+            _self._bindButtonItemEvent(ID_FIRST, function () {
+                _self.jumpToPage(1);
+            });
+
+            //previous page handler
+            _self._bindButtonItemEvent(ID_PREV, function () {
+                _self.jumpToPage(_self.get(&#39;curPage&#39;) - 1);
+            });
+
+            //previous page next
+            _self._bindButtonItemEvent(ID_NEXT, function () {
+                _self.jumpToPage(_self.get(&#39;curPage&#39;) + 1);
+            });
+
+            //previous page next
+            _self._bindButtonItemEvent(ID_LAST, function () {
+                _self.jumpToPage(_self.get(&#39;totalPage&#39;));
+            });
+            //skip to one page
+            _self._bindButtonItemEvent(ID_SKIP, function () {
+                handleSkip();
+            });
+
+            //refresh
+            _self._bindButtonItemEvent(ID_REFRESH, function () {
+                _self.jumpToPage(_self.get(&#39;curPage&#39;));
+            });
+            //input page number and press key &quot;enter&quot;
+            var curPage = _self.getItem(ID_CURRENT_PAGE);
+            if(curPage){
+                curPage.get(&#39;el&#39;).on(&#39;keyup&#39;, function (event) {
+                    event.stopPropagation();
+                    if (event.keyCode === 13) {
+                        handleSkip();
+                    }
+                });
+            }
+            
+            //when click skip button or press key &quot;enter&quot;,cause an action of skipping page
+<span id='global-method-handleSkip'>            /**
+</span>             * @private
+             * @ignore
+             */
+            function handleSkip() {
+                var value = parseInt(_self._getCurrentPageValue(), 10);
+                if (_self._isPageAllowRedirect(value)) {
+                    _self.jumpToPage(value);
+                } else {
+                    _self._setCurrentPageValue(_self.get(&#39;curPage&#39;));
+                }
+            }
+        },
+        // bind button item event
+        _bindButtonItemEvent:function (id, func) {
+            var _self = this,
+                item = _self.getItem(id);
+            if (item) {
+                item.on(&#39;click&#39;, func);
+            }
+        },
+        onLoad:function (params) {
+            var _self = this,
+                store = _self.get(&#39;store&#39;);
+            _self._afterStoreLoad(store, params);
+        },
+        //get the items of paging bar
+        _getItems:function () {
+            var _self = this,
+                items = _self.get(&#39;items&#39;);
+            if (items &amp;&amp; items.length) {
+                return items;
+            }
+            //default items
+            items = [];
+            //first item
+            items.push(_self._getButtonItem(ID_FIRST));
+            //previous item
+            items.push(_self._getButtonItem(ID_PREV));
+            //separator item
+            items.push(_self._getSeparator());
+            //total page of store
+            items.push(_self._getTextItem(ID_TOTAL_PAGE));
+            //current page of store
+            items.push(_self._getTextItem(ID_CURRENT_PAGE));
+            //button for skip to
+            items.push(_self._getButtonItem(ID_SKIP));
+            //separator item
+            items.push(_self._getSeparator());
+            //next item
+            items.push(_self._getButtonItem(ID_NEXT));
+            //last item
+            items.push(_self._getButtonItem(ID_LAST));
+            //separator item
+            items.push(_self._getSeparator());
+            //current page of store
+            items.push(_self._getTextItem(ID_TOTAL_COUNT));
+            return items;
+        },
+        //get item which the xclass is button
+        _getButtonItem:function (id) {
+            var _self = this;
+            return {
+                id:id,
+                xclass:&#39;bar-item-button&#39;,
+                text:_self.get(id + &#39;Text&#39;),
+                disabled:true,
+                elCls:_self.get(id + &#39;Cls&#39;)
+            };
+        },
+        //get separator item
+        _getSeparator:function () {
+            return {xclass:&#39;bar-item-separator&#39;};
+        },
+        //get text item
+        _getTextItem:function (id) {
+            var _self = this;
+            return {
+                id:id,
+                xclass:&#39;bar-item-text&#39;,
+                text:_self._getTextItemTpl(id)
+            };
+        },
+        //get text item&#39;s template
+        _getTextItemTpl:function (id) {
+            var _self = this,
+                obj = _self.getAttrVals();
+            return BUI.substitute(this.get(id + &#39;Tpl&#39;), obj);
+        },
+        //Whether to allow jump, if it had been in the current page or not within the scope of effective page, not allowed to jump
+        _isPageAllowRedirect:function (value) {
+            var _self = this;
+            return value &amp;&amp; value &gt; 0 &amp;&amp; value &lt;= _self.get(&#39;totalPage&#39;) &amp;&amp; value !== _self.get(&#39;curPage&#39;);
+        },
+        //when page changed, reset all buttons state
+        _setAllButtonsState:function () {
+            var _self = this,
+                store = _self.get(&#39;store&#39;);
+            if (store) {
+                _self._setButtonsState([ID_PREV, ID_NEXT, ID_FIRST, ID_LAST, ID_SKIP], true);
+            }
+
+            if (_self.get(&#39;curPage&#39;) === 1) {
+                _self._setButtonsState([ID_PREV, ID_FIRST], false);
+            }
+            if (_self.get(&#39;curPage&#39;) === _self.get(&#39;totalPage&#39;)) {
+                _self._setButtonsState([ID_NEXT, ID_LAST], false);
+            }
+        },
+        //if button id in the param buttons,set the button state
+        _setButtonsState:function (buttons, enable) {
+            var _self = this,
+                children = _self.get(&#39;children&#39;);
+            BUI.each(children, function (child) {
+                if (BUI.Array.indexOf(child.get(&#39;id&#39;), buttons) !== -1) {
+                    child.set(&#39;disabled&#39;, !enable);
+                }
+            });
+        },
+        //show the information of current page , total count of pages and total count of records
+        _setNumberPages:function () {
+            var _self = this,
+                items = _self.getItems();/*,
+                totalPageItem = _self.getItem(ID_TOTAL_PAGE),
+                totalCountItem = _self.getItem(ID_TOTAL_COUNT);
+            if (totalPageItem) {
+                totalPageItem.set(&#39;content&#39;, _self._getTextItemTpl(ID_TOTAL_PAGE));
+            }
+            _self._setCurrentPageValue(_self.get(ID_CURRENT_PAGE));
+            if (totalCountItem) {
+                totalCountItem.set(&#39;content&#39;, _self._getTextItemTpl(ID_TOTAL_COUNT));
+            }*/
+            BUI.each(items,function(item){
+                if(item.__xclass === &#39;bar-item-text&#39;){
+                    item.set(&#39;content&#39;, _self._getTextItemTpl(item.get(&#39;id&#39;)));
+                }
+            });
+
+        },
+        _getCurrentPageValue:function (curItem) {
+            var _self = this;
+            curItem = curItem || _self.getItem(ID_CURRENT_PAGE);
+            if(curItem){
+                var textEl = curItem.get(&#39;el&#39;).find(&#39;input&#39;);
+                return textEl.val();
+            }
+            
+        },
+        //show current page in textbox
+        _setCurrentPageValue:function (value, curItem) {
+            var _self = this;
+            curItem = curItem || _self.getItem(ID_CURRENT_PAGE);
+            if(curItem){
+                var textEl = curItem.get(&#39;el&#39;).find(&#39;input&#39;);
+                textEl.val(value);
+            }
+            
+        }
+    }, {
+        ATTRS:
+ 
+        {
+           
+<span id='BUI-Toolbar-PagingBar-property-firstText'>            /**
+</span>             * the text of button for first page
+             * @default {String} &quot;首 页&quot;
+             */
+            firstText:{
+                value:&#39;首 页&#39;
+            },
+<span id='BUI-Toolbar-PagingBar-property-firstCls'>            /**
+</span>             * the cls of button for first page
+             * @default {String} &quot;bui-pb-first&quot;
+             */
+            firstCls:{
+                value:PREFIX + &#39;pb-first&#39;
+            },
+<span id='BUI-Toolbar-PagingBar-property-prevText'>            /**
+</span>             * the text for previous page button
+             * @default {String} &quot;前一页&quot;
+             */
+            prevText:{
+                value:&#39;上一页&#39;
+            },
+<span id='BUI-Toolbar-PagingBar-property-prevCls'>            /**
+</span>             * the cls for previous page button
+             * @default {String} &quot;bui-pb-prev&quot;
+             */
+            prevCls:{
+                value: PREFIX + &#39;pb-prev&#39;
+            },
+<span id='BUI-Toolbar-PagingBar-property-nextText'>            /**
+</span>             * the text for next page button
+             * @default {String} &quot;下一页&quot;
+             */
+            nextText:{
+                value:&#39;下一页&#39;
+            },
+<span id='BUI-Toolbar-PagingBar-property-nextCls'>            /**
+</span>             * the cls for next page button
+             * @default {String} &quot;bui-pb-next&quot;
+             */
+            nextCls:{
+                value: PREFIX + &#39;pb-next&#39;
+            },
+<span id='BUI-Toolbar-PagingBar-property-lastText'>            /**
+</span>             * the text for last page button
+             * @default {String} &quot;末 页&quot;
+             */
+            lastText:{
+                value:&#39;末 页&#39;
+            },
+<span id='BUI-Toolbar-PagingBar-property-lastCls'>            /**
+</span>             * the cls for last page button
+             * @default {String} &quot;bui-pb-last&quot;
+             */
+            lastCls:{
+                value:PREFIX + &#39;pb-last&#39;
+            },
+<span id='BUI-Toolbar-PagingBar-property-skipText'>            /**
+</span>             * the text for skip page button
+             * @default {String} &quot;跳 转&quot;
+             */
+            skipText:{
+                value:&#39;确定&#39;
+            },
+<span id='BUI-Toolbar-PagingBar-property-skipCls'>            /**
+</span>             * the cls for skip page button
+             * @default {String} &quot;bui-pb-last&quot;
+             */
+            skipCls:{
+                value:PREFIX + &#39;pb-skip&#39;
+            },
+            refreshText : {
+                value : &#39;刷新&#39;
+            },
+            refreshCls : {
+                value:PREFIX + &#39;pb-refresh&#39;
+            },
+<span id='BUI-Toolbar-PagingBar-property-totalPageTpl'>            /**
+</span>             * the template of total page info
+             * @default {String} &#39;共 {totalPage} 页&#39;
+             */
+            totalPageTpl:{
+                value:&#39;共 {totalPage} 页&#39;
+            },
+<span id='BUI-Toolbar-PagingBar-property-curPageTpl'>            /**
+</span>             * the template of current page info
+             * @default {String} &#39;第 &amp;lt;input type=&quot;text&quot; autocomplete=&quot;off&quot; class=&quot;bui-pb-page&quot; size=&quot;20&quot; name=&quot;inputItem&quot;&amp;gt; 页&#39;
+             */
+            curPageTpl:{
+                value:&#39;第 &lt;input type=&quot;text&quot; &#39;+
+                    &#39;autocomplete=&quot;off&quot; class=&quot;&#39;+PREFIX+&#39;pb-page&quot; size=&quot;20&quot; value=&quot;{curPage}&quot; name=&quot;inputItem&quot;&gt; 页&#39;
+            },
+<span id='BUI-Toolbar-PagingBar-property-totalCountTpl'>            /**
+</span>             * the template of total count info
+             * @default {String} &#39;共{totalCount}条记录&#39;
+             */
+            totalCountTpl:{
+                value:&#39;共{totalCount}条记录&#39;
+            },
+            autoInitItems : {
+                value : false
+            },
+<span id='BUI-Toolbar-PagingBar-property-curPage'>            /**
+</span>             * current page of the paging bar
+             * @private
+             * @default {Number} 0
+             */
+            curPage:{
+                value:0
+            },
+<span id='BUI-Toolbar-PagingBar-property-totalPage'>            /**
+</span>             * total page of the paging bar
+             * @private
+             * @default {Number} 0
+             */
+            totalPage:{
+                value:0
+            },
+<span id='BUI-Toolbar-PagingBar-property-totalCount'>            /**
+</span>             * total count of the store that the paging bar bind to
+             * @private
+             * @default {Number} 0
+             */
+            totalCount:{
+                value:0
+            },
+<span id='BUI-Toolbar-PagingBar-property-pageSize'>            /**
+</span>             * The number of records considered to form a &#39;page&#39;.
+             * if store set the property ,override this value by store&#39;s pageSize
+             * @private
+             */
+            pageSize:{
+                value:30
+            },
+<span id='BUI-Toolbar-PagingBar-property-store'>            /**
+</span>             * The {@link BUI.Data.Store} the paging toolbar should use as its data source.
+             * @protected
+             */
+            store:{
+
+            }
+        },
+        ID_FIRST:ID_FIRST,
+        ID_PREV:ID_PREV,
+        ID_NEXT:ID_NEXT,
+        ID_LAST:ID_LAST,
+        ID_SKIP:ID_SKIP,
+        ID_REFRESH: ID_REFRESH,
+        ID_TOTAL_PAGE:ID_TOTAL_PAGE,
+        ID_CURRENT_PAGE:ID_CURRENT_PAGE,
+        ID_TOTAL_COUNT:ID_TOTAL_COUNT
+    }, {
+        xclass:&#39;pagingbar&#39;,
+        priority:2
+    });
+module.exports = PagingBar;
+</pre>
+</body>
+</html>

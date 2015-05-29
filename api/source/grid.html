@@ -332,7 +332,9 @@ var gridView = List.SimpleListView.extend({
     try{
       var _self = this,
         renderer = column.get(&#39;renderer&#39;),
-        text = renderer ? renderer(record[dataIndex], record,index) : record[dataIndex];
+        text = BUI.getValue(record,dataIndex);
+
+      text = renderer ? renderer(text, record,index) : text;
       return text == null ? &#39;&#39; : text;
     }catch(ex){
       throw &#39;column:&#39; + column.get(&#39;title&#39;) +&#39; fomat error!&#39;;

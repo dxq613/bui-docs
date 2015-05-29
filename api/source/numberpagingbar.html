@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview  a specialized toolbar that is bound to a Grid.Store and provides automatic paging control.
+ * @author 
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;),
+    BUI = require(&#39;bui-common&#39;),
+    Component = BUI.Component,
+    PBar = require(&#39;./pagingbar&#39;);
+
+var PREFIX = BUI.prefix,
+    NUMBER_CONTAINER = &#39;numberContainer&#39;,
+    CLS_NUMBER_BUTTON = PREFIX + &#39;button-number&#39;;
+
+<span id='BUI-Toolbar-NumberPagingBar'>/**
+</span> * 数字分页栏
+ * xclass:&#39;pagingbar-number&#39;
+ * @extends BUI.Toolbar.PagingBar
+ * @class BUI.Toolbar.NumberPagingBar
+ */
+var NumberPagingBar = PBar.extend(
+    {
+<span id='BUI-Toolbar-NumberPagingBar-method-_getItems'>    /**
+</span>    * get the initial items of paging bar
+    * @protected
+    *
+    */
+    _getItems : function(){
+        var _self = this,
+            items = _self.get(&#39;items&#39;);
+
+        if(items){
+            return items;
+        }
+        //default items
+        items = [];
+        //previous item
+        items.push(_self._getButtonItem(PBar.ID_PREV));
+        //next item
+        items.push(_self._getButtonItem(PBar.ID_NEXT));
+        return items;
+    },
+    _getButtonItem : function(id){
+      var _self = this;
+
+      return {
+          id:id,
+          content:&#39;&lt;a href=&quot;javascript:;&quot;&gt;&#39;+_self.get(id + &#39;Text&#39;)+&#39;&lt;/a&gt;&#39;,
+          disabled:true
+      };
+    },
+<span id='BUI-Toolbar-NumberPagingBar-method-_bindButtonEvent'>    /**
+</span>    * bind buttons event
+    * @protected
+    *
+    */
+    _bindButtonEvent : function(){
+        var _self = this,
+            cls = _self.get(&#39;numberButtonCls&#39;);
+        NumberPagingBar.superclass._bindButtonEvent.call(this);
+        _self.get(&#39;el&#39;).delegate(&#39;a&#39;,&#39;click&#39;,function(ev){
+          ev.preventDefault();
+        });
+        _self.on(&#39;click&#39;,function(ev){
+          var item = ev.target;
+          if(item &amp;&amp; item.get(&#39;el&#39;).hasClass(cls)){
+            var page = item.get(&#39;id&#39;);
+            _self.jumpToPage(page);
+          }
+        });
+    },
+    //设置页码信息，设置 页数 按钮
+    _setNumberPages : function(){
+        var _self = this;
+
+        _self._setNumberButtons();
+    },
+    //设置 页数 按钮
+    _setNumberButtons : function(){
+        var _self = this,
+            curPage = _self.get(&#39;curPage&#39;),
+            totalPage = _self.get(&#39;totalPage&#39;),
+            numberItems = _self._getNumberItems(curPage,totalPage),
+            curItem;
+
+        _self._clearNumberButtons();
+
+        BUI.each(numberItems,function(item){
+            _self._appendNumberButton(item);
+        });
+        curItem = _self.getItem(curPage);
+        if(curItem){
+            curItem.set(&#39;selected&#39;,true);
+        }
+           
+    },
+    _appendNumberButton : function(cfg){
+      var _self = this,
+        count = _self.getItemCount();
+      var item = _self.addItemAt(cfg,count - 1);
+    },
+    _clearNumberButtons : function(){
+      var _self = this,
+        items = _self.getItems(),
+        count = _self.getItemCount();
+
+      while(count &gt; 2){
+        _self.removeItemAt(count-2);  
+        count = _self.getItemCount();          
+      }
+    },
+    //获取所有页码按钮的配置项
+    _getNumberItems : function(curPage, totalPage){
+        var _self = this,
+            result = [],
+            maxLimitCount = _self.get(&#39;maxLimitCount&#39;),
+            showRangeCount = _self.get(&#39;showRangeCount&#39;),
+            maxPage;
+
+        function addNumberItem(from,to){
+            for(var i = from ;i&lt;=to;i++){
+                result.push(_self._getNumberItem(i));
+            }
+        }
+
+        function addEllipsis(){
+            result.push(_self._getEllipsisItem());
+        }
+
+        if(totalPage &lt; maxLimitCount){
+            maxPage = totalPage;
+            addNumberItem(1,totalPage);
+        }else{
+            var startNum = (curPage &lt;= maxLimitCount) ? 1 : (curPage - showRangeCount),
+                lastLimit = curPage + showRangeCount,
+                endNum = lastLimit &lt; totalPage ? (lastLimit &gt; maxLimitCount ? lastLimit : maxLimitCount) : totalPage;
+            if (startNum &gt; 1) {
+                addNumberItem(1, 1);
+                if(startNum &gt; 2){
+                    addEllipsis();
+                }
+            }
+            maxPage = endNum;
+            addNumberItem(startNum, endNum);
+        }
+
+        if (maxPage &lt; totalPage) {
+            if(maxPage &lt; totalPage -1){
+                addEllipsis();
+            }
+            addNumberItem(totalPage, totalPage);
+        }
+
+        return result;
+    },
+    //获取省略号
+    _getEllipsisItem : function(){
+        var _self = this;
+        return {
+            disabled: true,           
+            content : _self.get(&#39;ellipsisTpl&#39;)
+        };
+    },
+    //生成页面按钮配置项
+    _getNumberItem : function(page){
+        var _self = this;
+        return {
+            id : page,
+            elCls : _self.get(&#39;numberButtonCls&#39;)
+        };
+    }
+    
+},{
+    ATTRS:{
+        itemStatusCls : {
+          value : {
+            selected : &#39;active&#39;,
+            disabled : &#39;disabled&#39;
+          }
+        },
+        itemTpl : {
+          value : &#39;&lt;a href=&quot;&quot;&gt;{id}&lt;/a&gt;&#39;
+        },
+        prevText : {
+          value : &#39;&lt;&lt;&#39;
+        },
+        nextText : {
+          value : &#39;&gt;&gt;&#39;
+        },
+<span id='BUI-Toolbar-NumberPagingBar-property-maxLimitCount'>        /**
+</span>        * 当页码超过该设置页码时候显示省略号
+        * @default {Number} 4
+        */
+        maxLimitCount : {
+            value : 4
+        },
+        showRangeCount : {
+            value : 1   
+        },
+<span id='BUI-Toolbar-NumberPagingBar-property-numberButtonCls'>        /**
+</span>        * the css used on number button
+        */
+        numberButtonCls:{
+            value : CLS_NUMBER_BUTTON
+        },
+<span id='BUI-Toolbar-NumberPagingBar-property-ellipsisTpl'>        /**
+</span>        * the template of ellipsis which represent the omitted pages number
+        */
+        ellipsisTpl : {
+            value : &#39;&lt;a href=&quot;#&quot;&gt;...&lt;/a&gt;&#39;
+        }
+    }
+},{
+    xclass : &#39;pagingbar-number&#39;,
+    priority : 3    
+});
+
+module.exports = NumberPagingBar;
+</pre>
+</body>
+</html>

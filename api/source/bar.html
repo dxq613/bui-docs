@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-S-'>/**
+</span> * @fileOverview A collection of commonly used function buttons or controls represented in compact visual form.
+ * @author dxq613@gmail.com, yiminghe@gmail.com
+ * @ignore
+ */
+
+var $ = require(&#39;jquery&#39;),
+  BUI = require(&#39;bui-common&#39;),
+  Component = BUI.Component,
+  UIBase = Component.UIBase;
+	
+<span id='BUI-Toolbar-BarView'>/**
+</span> * bar的视图类
+ * @class BUI.Toolbar.BarView
+ * @extends BUI.Component.View
+ * @private
+ */
+var barView = Component.View.extend({
+
+	renderUI:function() {
+      var el = this.get(&#39;el&#39;);
+      el.attr(&#39;role&#39;, &#39;toolbar&#39;);
+         
+      if (!el.attr(&#39;id&#39;)) {
+          el.attr(&#39;id&#39;, BUI.guid(&#39;bar&#39;));
+      }
+  }
+});
+
+<span id='BUI-Toolbar-Bar'>/**
+</span> * 工具栏
+ * 可以放置按钮、文本、链接等，是分页栏的基类
+ * xclass : &#39;bar&#39;
+ * &lt;p&gt;
+ * &lt;img src=&quot;../assets/img/class-toolbar.jpg&quot;/&gt;
+ * &lt;/p&gt;
+ * ## 按钮组
+ * &lt;pre&gt;&lt;code&gt;
+ *   BUI.use(&#39;bui/toolbar&#39;,function(Toolbar){
+ *     var buttonGroup = new Toolbar.Bar({
+ *       elCls : &#39;button-group&#39;,
+ *       defaultChildCfg : {
+ *         elCls : &#39;button button-small&#39;
+ *       },
+ *       children : [{content : &#39;增加&#39;},{content : &#39;修改&#39;},{content : &#39;删除&#39;}],
+ *       
+ *       render : &#39;#b1&#39;
+ *     });
+ *
+ *     buttonGroup.render();
+ *   });
+ * &lt;/code&gt;&lt;/pre&gt;
+ * @class BUI.Toolbar.Bar
+ * @extends BUI.Component.Controller
+ * @mixins BUI.Component.UIBase.ChildList
+ */
+var Bar = Component.Controller.extend([UIBase.ChildList],	
+{
+<span id='BUI-Toolbar-Bar-method-getItem'>	/**
+</span>	* 通过id 获取项
+	* @param {String|Number} id the id of item 
+	* @return {BUI.Toolbar.BarItem}
+	*/
+	getItem : function(id){
+		return this.getChild(id);
+	}
+},{
+	ATTRS:
+	{
+    elTagName :{
+        view : true,
+        value : &#39;ul&#39;
+    },
+<span id='BUI-Toolbar-Bar-property-defaultChildClass'>    /**
+</span>     * 默认子项的样式
+     * @type {String}
+     * @override
+     */
+    defaultChildClass: {
+      value : &#39;bar-item&#39;
+    },
+<span id='global-property-focusable'>		/**
+</span>		* 获取焦点
+    * @protected
+    * @ignore
+		*/
+		focusable : {
+			value : false
+		},
+<span id='global-property-xview'>		/**
+</span>		* @private
+    * @ignore
+		*/
+		xview : {
+			value : barView	
+		}
+	}
+},{
+	xclass : &#39;bar&#39;,
+	priority : 1	
+});
+
+module.exports = Bar;
+</pre>
+</body>
+</html>

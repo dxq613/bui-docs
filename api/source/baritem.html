@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span> * @fileOverview buttons or controls of toolbar
+ * @author dxq613@gmail.com, yiminghe@gmail.com
+ * @ignore
+ */
+
+<span id='global-property-S-'>/**
+</span> * @name BUI.Toolbar
+ * @namespace 工具栏命名空间
+ * @ignore
+ */
+var $ = require(&#39;jquery&#39;),
+  BUI = require(&#39;bui-common&#39;),
+  PREFIX = BUI.prefix,
+  Component = BUI.Component,
+  UIBase = Component.UIBase;
+  
+<span id='BUI-Toolbar-BarItemView'>/**
+</span> * barItem的视图类
+ * @class BUI.Toolbar.BarItemView
+ * @extends BUI.Component.View
+ * @mixins BUI.Component.UIBase.ListItemView
+ * @private
+ */
+var BarItemView = Component.View.extend([UIBase.ListItemView]);
+<span id='BUI-Toolbar-BarItem'>/**
+</span>   * 工具栏的子项，包括按钮、文本、链接和分隔符等
+   * @class BUI.Toolbar.BarItem
+   * @extends BUI.Component.Controller
+   */
+var BarItem = Component.Controller.extend([UIBase.ListItem],{
+  
+<span id='BUI-Toolbar-BarItem-method-renderUI'>  /**
+</span>  * render baritem &#39;s dom
+  * @protected
+  */
+  renderUI:function() {
+      var el = this.get(&#39;el&#39;);
+      el.addClass(PREFIX + &#39;inline-block&#39;);
+      if (!el.attr(&#39;id&#39;)) {
+          el.attr(&#39;id&#39;, this.get(&#39;id&#39;));
+      }
+  }
+},{
+  ATTRS:
+  {
+    elTagName :{
+        view : true,
+        value : &#39;li&#39;
+    },
+<span id='BUI-Toolbar-BarItem-cfg-selectable'>    /**
+</span>     * 是否可选择
+     * &lt;pre&gt;&lt;code&gt;
+     * 
+     * &lt;/code&gt;&lt;/pre&gt;
+     * @cfg {Object} [selectable = false]
+     */
+    selectable : {
+      value : false
+    },
+<span id='BUI-Toolbar-BarItem-property-focusable'>    /**
+</span>    * 是否获取焦点
+    * @default {boolean} false
+    */
+    focusable : {
+      value : false
+    },
+    xview: {
+      value : BarItemView
+    }
+  }
+},{
+  xclass : &#39;bar-item&#39;,
+  priority : 1  
+});
+
+<span id='BUI-Toolbar-BarItem-Button'>/**
+</span>   * 工具栏的子项，添加按钮
+   * xclass : &#39;bar-item-button&#39;
+   * @extends  BUI.Toolbar.BarItem
+   * @class BUI.Toolbar.BarItem.Button
+   */
+var ButtonBarItem = BarItem.extend({
+  
+  _uiSetDisabled : function(value){
+    var _self = this,
+      el = _self.get(&#39;el&#39;),
+      method = value ? &#39;addClass&#39; : &#39;removeClass&#39;;
+    
+    el.find(&#39;button&#39;).attr(&#39;disabled&#39;,value)[method](PREFIX + &#39;button-disabled&#39;);
+  },
+  _uiSetChecked: function(value){
+    var _self = this,
+      el = _self.get(&#39;el&#39;),
+      method = value ? &#39;addClass&#39; : &#39;removeClass&#39;;
+
+      el.find(&#39;button&#39;)[method](PREFIX + &#39;button-checked&#39;);
+  },
+  _uiSetText : function(v){
+    var _self = this,
+      el = _self.get(&#39;el&#39;);
+    el.find(&#39;button&#39;).text(v);
+  },
+  _uiSetbtnCls : function(v){
+    var _self = this,
+      el = _self.get(&#39;el&#39;);
+    el.find(&#39;button&#39;).addClass(v);
+  }
+  
+},{
+  ATTRS:
+  {
+<span id='BUI-Toolbar-BarItem-Button-property-checked'>    /**
+</span>     * 是否选中
+     * @type {Boolean}
+     */
+    checked : {
+      value :false
+    },
+<span id='BUI-Toolbar-BarItem-Button-property-tpl'>    /**
+</span>     * 模板
+     * @type {String}
+     */
+    tpl : {
+      view : true,
+      value : &#39;&lt;button type=&quot;button&quot; class=&quot;{btnCls}&quot;&gt;{text}&lt;/button&gt;&#39;
+    },
+<span id='BUI-Toolbar-BarItem-Button-cfg-btnCls'>    /**
+</span>     * 按钮的样式
+     * @cfg {String} btnCls
+     */
+<span id='BUI-Toolbar-BarItem-Button-property-btnCls'>    /**
+</span>     * 按钮的样式
+     * @type {String}
+     */
+    btnCls:{
+      sync:false
+    },
+<span id='BUI-Toolbar-BarItem-Button-cfg-text'>    /**
+</span>    * The text to be used as innerHTML (html tags are accepted).
+    * @cfg {String} text
+    */
+<span id='BUI-Toolbar-BarItem-Button-property-text'>    /**
+</span>    * The text to be used as innerHTML (html tags are accepted).
+    * @type {String} 
+    */
+    text : {
+      sync:false,
+      value : &#39;&#39;
+    }
+  }
+},{
+  xclass : &#39;bar-item-button&#39;,
+  priority : 2  
+});
+
+<span id='BUI-Toolbar-BarItem-Separator'>/**
+</span>   * 工具栏项之间的分隔符
+   * xclass:&#39;bar-item-separator&#39;
+   * @extends  BUI.Toolbar.BarItem
+   * @class BUI.Toolbar.BarItem.Separator
+   */
+var SeparatorBarItem = BarItem.extend({
+  /* render separator&#39;s dom
+  * @protected
+      *
+  */
+  renderUI:function() {
+          var el = this.get(&#39;el&#39;);
+          el .attr(&#39;role&#39;, &#39;separator&#39;);
+      }
+},
+{
+  xclass : &#39;bar-item-separator&#39;,
+  priority : 2  
+});
+
+
+<span id='BUI-Toolbar-BarItem-Spacer'>/**
+</span>   * 工具栏项之间的空白
+   * xclass:&#39;bar-item-spacer&#39;
+   * @extends  BUI.Toolbar.BarItem
+   * @class BUI.Toolbar.BarItem.Spacer
+   */
+var SpacerBarItem = BarItem.extend({
+  
+},{
+  ATTRS:
+  {
+<span id='BUI-Toolbar-BarItem-Spacer-property-width'>    /**
+</span>    * 空白宽度
+    * @type {Number}
+    */
+    width : {
+      view:true,
+      value : 2
+    }
+  }
+},{
+  xclass : &#39;bar-item-spacer&#39;,
+  priority : 2  
+});
+
+
+<span id='BUI-Toolbar-BarItem-Text'>/**
+</span>   * 显示文本的工具栏项
+   * xclass:&#39;bar-item-text&#39;
+   * @extends  BUI.Toolbar.BarItem
+   * @class BUI.Toolbar.BarItem.Text
+   */
+var TextBarItem = BarItem.extend({
+  _uiSetText : function(text){
+    var _self = this,
+      el = _self.get(&#39;el&#39;);
+    el.html(text);
+  }
+},{
+  ATTRS:
+  {
+    
+<span id='BUI-Toolbar-BarItem-Text-cfg-text'>    /**
+</span>    * 文本用作 innerHTML (html tags are accepted).
+    * @cfg {String} text
+    */
+<span id='BUI-Toolbar-BarItem-Text-property-text'>    /**
+</span>    * 文本用作 innerHTML (html tags are accepted).
+    * @default {String} &quot;&quot;
+    */
+    text : {
+      value : &#39;&#39;
+    }
+  }
+},{
+  xclass : &#39;bar-item-text&#39;,
+  priority : 2  
+});
+
+
+BarItem.types = {
+  &#39;button&#39; : ButtonBarItem,
+  &#39;separator&#39; : SeparatorBarItem,
+  &#39;spacer&#39; : SpacerBarItem,
+  &#39;text&#39;  : TextBarItem
+};
+
+module.exports = BarItem;
+</pre>
+</body>
+</html>
